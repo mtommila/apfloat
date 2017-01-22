@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.apfloat</groupId>
+  <artifactId>apfloat-parent</artifactId>
+  <version>1.8.3-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>apfloat-parent</name>
+  <description>Administrative parent pom for apfloat</description>
+  <url>http://www.apfloat.org</url>
+
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License, Version 2.1</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/mtommila/apfloat.git</connection>
+    <url>https://github.com/mtommila/apfloat</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>mtommila</id>
+      <name>Mikko Tommila</name>
+      <email>mikko.tommila@apfloat.org</email>
+    </developer>
+  </developers>
+
+  <properties>
+    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+    <gpg.useagent>true</gpg.useagent>
+  </properties>
+
+  <modules>
+    <module>apfloat</module>
+    <module>apfloat-samples</module>
+    <module>apfloat-applet</module>
+    <module>apfloat-calc</module>
+    <module>apfloat-jscience</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jscience</groupId>
+        <artifactId>jscience</artifactId>
+        <version>4.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apfloat</groupId>
+        <artifactId>apfloat</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apfloat</groupId>
+        <artifactId>apfloat</artifactId>
+        <type>test-jar</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apfloat</groupId>
+        <artifactId>apfloat-samples</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.12</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>javacc-maven-plugin</artifactId>
+          <version>2.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.8</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.5.1</version>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.19.1</version>
+          <configuration>
+            <reuseForks>false</reuseForks>
+            <includes>
+              <include>**/*Test.java</include>
+            </includes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.4</version>
+          <configuration>
+            <docencoding>ISO-8859-1</docencoding>
+            <links>
+              <link>http://docs.oracle.com/javase/8/docs/api/</link>
+              <link>http://jscience.org/api/</link>
+              <link>http://javolution.org/apidocs/</link>
+            </links>
+            <sourceFileExcludes>
+              <exclude>apfloat.java</exclude>
+            </sourceFileExcludes>
+            <source>1.5</source>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jarsigner-plugin</artifactId>
+          <version>1.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>2.4.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-plugin</artifactId>
+          <version>1.9.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.2.1</version>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <pushChanges>false</pushChanges>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>release</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <zip destfile="${project.build.directory}/apfloat-${project.version}.zip">
+                  <fileset dir="." includes="readme.html,lgpl.txt" />
+                  <fileset dir="src/site/resources" />
+                  <zipfileset dir="${project.build.directory}/site/apidocs" prefix="docs" />
+                  <zipfileset src="${project.build.directory}/apfloat-parent-${project.version}-sources.jar" prefix="source" />
+                  <zipfileset file="apfloat/target/apfloat.jar" fullpath="lib/apfloat.jar" />
+                  <zipfileset file="apfloat-applet/target/applet.jar" fullpath="lib/applet.jar" />
+                  <zipfileset file="apfloat-calc/target/calc.jar" fullpath="lib/calc.jar" />
+                  <zipfileset file="apfloat-jscience/target/apfloat-jscience.jar" fullpath="lib/apfloat-jscience.jar" />
+                  <zipfileset file="apfloat-samples/target/samples.jar" fullpath="lib/samples.jar" />
+                  <zipfileset file="apfloat-samples/target/signedapplet.jar" fullpath="lib/signedapplet.jar" />
+                </zip>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <name>Nexus Release Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
+</project>

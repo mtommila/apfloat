@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apfloat</groupId>
+    <artifactId>apfloat-parent</artifactId>
+    <version>1.8.3-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.apfloat</groupId>
+  <artifactId>apfloat-applet</artifactId>
+  <version>1.8.3-SNAPSHOT</version>
+
+  <name>apfloat-applet</name>
+  <description>Configuration for apfloat to not use disk files for data storage</description>
+  <url>http://www.apfloat.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apfloat</groupId>
+      <artifactId>apfloat</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.apfloat:apfloat</exclude>
+                </excludes>
+              </artifactSet>
+              <outputFile>${project.build.directory}/applet.jar</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

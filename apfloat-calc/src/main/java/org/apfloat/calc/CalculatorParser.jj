@@ -1,0 +1,231 @@
+options
+{
+    LOOKAHEAD = 2;
+    STATIC = false;
+    UNICODE_INPUT = true;
+    ERROR_REPORTING = false;
+}
+
+PARSER_BEGIN(CalculatorParser)
+
+package org.apfloat.calc;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.List;
+import java.util.ArrayList;
+
+public class CalculatorParser
+{
+    public CalculatorParser(InputStream in, OutputStream out, CalculatorImpl calculatorImpl)
+    {
+        this(in);
+        this.out = new PrintWriter(new OutputStreamWriter(out), true);
+        this.calculatorImpl = calculatorImpl;
+    }
+
+    public CalculatorParser(Reader in, Writer out, CalculatorImpl calculatorImpl)
+    {
+        this(in);
+        this.out = new PrintWriter(out, true);
+        this.calculatorImpl = calculatorImpl;
+    }
+
+    public CalculatorParser(Reader in, PrintWriter out, CalculatorImpl calculatorImpl)
+    {
+        this(in);
+        this.out = out;
+        this.calculatorImpl = calculatorImpl;
+    }
+
+    private PrintWriter out;
+    private CalculatorImpl calculatorImpl;
+}
+
+PARSER_END(CalculatorParser)
+
+SKIP:
+{
+    " "
+  | "\t"
+}
+
+TOKEN:
+{
+    < INTEGER: ((<DIGIT>)+ (<IMAGINARY>)? | (<IMAGINARY>)) >
+  | < DECIMAL: ((<DIGIT>)+ ("." (<DIGIT>)*)? | "." (<DIGIT>)+) (["e","E"] (["+","-"])? (<DIGIT>)+)? (<IMAGINARY>)? >
+  | < DIGIT: ["0"-"9"] >
+  | < IMAGINARY: ["i","I"] >
+  | < IDENTIFIER: (<LETTER>) (<LETTER> | <DIGIT>)* >
+  | < LETTER: ["$","A"-"Z","_","a"-"z","\u00c0"-"\u00d6","\u00d8"-"\u00f6","\u00f8"-"\u00ff","\u0100"-"\u1fff","\u3040"-"\u318f","\u3300"-"\u337f","\u3400"-"\u3d2d","\u4e00"-"\u9fff","\uf900"-"\ufaff"] >
+  | < DELIMITER: (";")+ >
+  | < EOL: ("\n" | "\r\n" | "\r") >
+}
+
+boolean parseOneLine():
+{
+    Number a;
+}
+{
+    (
+        a = expression()                        { this.out.println(this.calculatorImpl.format(a)); }
+    )?
+    (
+        <DELIMITER>
+        a = expression()                        { this.out.println(this.calculatorImpl.format(a)); }
+    )*
+    (
+        <DELIMITER>
+    )?
+    (
+        <EOL>                                   { return true; }
+      | <EOF>                                   { return false; }
+    )
+}
+
+Number expression():
+{
+    Number a;
+}
+{
+    (
+        a = assignmentExpression()
+      | a = additiveExpression()
+    )
+                                                { return a; }
+}
+
+Number assignmentExpression():
+{
+    String v;
+    Number a;
+}
+{
+    v = variable()
+    "=" a = additiveExpression()                { this.calculatorImpl.setVariable(v, a); }
+                                                { return a; }
+}
+
+Number additiveExpression():
+{
+    Number a;
+    Number b;
+}
+{
+    a = multiplicativeExpression()
+    (
+        "+" b = multiplicativeExpression()      { a = this.calculatorImpl.add(a, b); }
+      | "-" b = multiplicativeExpression()      { a = this.calculatorImpl.subtract(a, b); }
+    )*
+                                                { return a; }
+}
+
+Number multiplicativeExpression():
+{
+    Number a;
+    Number b;
+}
+{
+    a = unaryExpression()
+    (
+        "*" b = unaryExpression()               { a = this.calculatorImpl.multiply(a, b); }
+      | "/" b = unaryExpression()               { a = this.calculatorImpl.divide(a, b); }
+      | "%" b = unaryExpression()               { a = this.calculatorImpl.mod(a, b); }
+    )*
+                                                { return a; }
+}
+
+Number unaryExpression():
+{
+    Number a;
+}
+{
+    "-" a = unaryExpression()                   { return this.calculatorImpl.negate(a); }
+  | "+" a = unaryExpression()                   { return a; }
+  | a = powerExpression()                       { return a; }
+}
+
+Number powerExpression():
+{
+    Number a;
+    Number b;
+}
+{
+    a = element()
+    (
+        "^" b = unaryExpression()               { a = this.calculatorImpl.pow(a, b); }
+    )?
+                                                { return a; }
+}
+
+Number element():
+{
+    String v;
+    Number a;
+}
+{
+    a = constant()                              { return a; }
+  | a = function()                              { return a; }
+  | v = variable()                              { return this.calculatorImpl.getVariable(v); }
+  | "(" a = expression() ")"                    { return a; }
+}
+
+String variable():
+{
+    String v;
+}
+{
+    v = identifier()                            { return v; }
+}
+
+Number function():
+{
+    String v;
+    List<Number> l;
+    Number a;
+}
+{
+    v = identifier()
+    "(" l = argumentList() ")"                  { return this.calculatorImpl.function(v, l); }
+}
+
+List<Number> argumentList():
+{
+    List<Number> list = new ArrayList<Number>();
+    Number a;
+}
+{
+    (
+        a = expression()                        { list.add(a); }
+        (
+            "," a = expression()                { list.add(a); }
+        )*
+    )?
+                                                { return list; }
+}
+
+String identifier():
+{
+    Token t;
+}
+{
+    t = <IDENTIFIER>                            { return t.toString(); }
+}
+
+Number constant():
+{
+    Token t;
+}
+{
+    t = <INTEGER>                               { return this.calculatorImpl.parseInteger(t.toString()); }
+  | t = <DECIMAL>                               { return this.calculatorImpl.parseDecimal(t.toString()); }
+}
+
+TOKEN:
+{
+    < INVALID_CHAR: ~[] >
+}
