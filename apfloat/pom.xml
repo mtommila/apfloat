@@ -10,10 +10,7 @@
     <version>1.8.3-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apfloat</groupId>
   <artifactId>apfloat</artifactId>
-  <version>1.8.3-SNAPSHOT</version>
-  <packaging>jar</packaging>
 
   <name>apfloat</name>
   <description>High performance arbitrary precision arithmetic library</description>

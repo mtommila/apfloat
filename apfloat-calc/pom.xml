@@ -10,9 +10,7 @@
     <version>1.8.3-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apfloat</groupId>
   <artifactId>apfloat-calc</artifactId>
-  <version>1.8.3-SNAPSHOT</version>
 
   <name>apfloat-calc</name>
   <description>Interactive arbitrary precision calculator application</description>

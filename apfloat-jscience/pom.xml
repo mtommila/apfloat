@@ -10,9 +10,7 @@
     <version>1.8.3-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apfloat</groupId>
   <artifactId>apfloat-jscience</artifactId>
-  <version>1.8.3-SNAPSHOT</version>
 
   <name>apfloat-jscience</name>
   <description>JScience wrapper for apfloat</description>

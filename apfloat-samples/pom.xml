@@ -10,9 +10,7 @@
     <version>1.8.3-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apfloat</groupId>
   <artifactId>apfloat-samples</artifactId>
-  <version>1.8.3-SNAPSHOT</version>
 
   <name>apfloat-samples</name>
   <description>Sample programs for apfloat for calculating pi</description>

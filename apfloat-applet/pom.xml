@@ -10,9 +10,7 @@
     <version>1.8.3-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apfloat</groupId>
   <artifactId>apfloat-applet</artifactId>
-  <version>1.8.3-SNAPSHOT</version>
 
   <name>apfloat-applet</name>
   <description>Configuration for apfloat to not use disk files for data storage</description>

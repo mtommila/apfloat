@@ -248,6 +248,7 @@ class FormattingHelper
         return new LocalizeWriter(out, formatter.locale(), radix <= 10, isUpperCase);
     }
 
+    @SuppressWarnings("resource")
     public static Writer wrapPadWriter(Writer out, boolean isLeftJustify)
     {
         if (isLeftJustify)
