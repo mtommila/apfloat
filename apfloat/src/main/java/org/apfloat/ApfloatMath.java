@@ -1177,6 +1177,12 @@ public class ApfloatMath
         long targetPrecision = x.precision();
         Apfloat one = new Apfloat(1, Apfloat.INFINITE, x.radix());
         long finalPrecision = Util.ifFinite(targetPrecision, targetPrecision - one.equalDigits(x));     // If the argument is close to 1, the result is less accurate
+        if (x.scale() > 1)
+        {
+            double logScale = Math.log((double) x.scale() - 1) / Math.log((double) x.radix());
+            logScale += Math.ulp(logScale);
+            finalPrecision = Util.ifFinite(finalPrecision, finalPrecision + (long) logScale);           // If the argument is very big, the result is more accurate
+        }
 
         long originalScale = x.scale();
 
@@ -1333,8 +1339,19 @@ public class ApfloatMath
              precision,
              doublePrecision = ApfloatHelper.getDoublePrecision(radix);
 
-        // If the argument is close to 0, the result is more accurate
-        targetPrecision = Util.ifFinite(targetPrecision, targetPrecision + Math.max(1 - x.scale(), 0));
+        // If the argument is close to 0, the result is more accurate; if the argument is very big, the result is less accurate
+        if (x.scale() < 1)
+        {
+            targetPrecision = Util.ifFinite(targetPrecision, targetPrecision + 1 - x.scale());
+        }
+        else if (x.scale() > 1)
+        {
+            if (x.scale() - 1 >= targetPrecision)
+            {
+                throw new LossOfPrecisionException("Complete loss of accurate digits");
+            }
+            targetPrecision = Util.ifFinite(targetPrecision, targetPrecision - (x.scale() - 1));
+        }
 
         if (targetPrecision == Apfloat.INFINITE)
         {
@@ -1701,6 +1718,11 @@ public class ApfloatMath
         else if (Math.min(y.precision(), x.precision()) == Apfloat.INFINITE)
         {
             throw new InfiniteExpansionException("Cannot calculate atan2 to infinite precision");
+        }
+        else if (x.signum() > 0 && y.scale() < x.scale())
+        {
+            // The log formula below is inaccurate if y is small in magnitude compared to x
+            return atan(y.divide(x));
         }
         else
         {

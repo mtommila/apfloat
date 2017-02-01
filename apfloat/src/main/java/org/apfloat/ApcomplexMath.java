@@ -735,6 +735,15 @@ public class ApcomplexMath
             throw new InfiniteExpansionException("Cannot calculate logarithm to infinite precision");
         }
 
+        // If the absolute value of the argument is very big, the result is more accurate
+        Apfloat x = abs(z);
+        if (x.scale() > 1)
+        {
+            double logScale = Math.log((double) x.scale() - 1) / Math.log((double) x.radix());
+            logScale += Math.ulp(logScale);
+            targetPrecision = Util.ifFinite(targetPrecision, targetPrecision + (long) logScale);
+        }
+
         Apfloat imagBias;
 
         // Scale z so that real part of z is always >= 0, that is its angle is -pi/2 <= angle(z) <= pi/2 to avoid possible instability near z.imag() = +-pi
@@ -759,8 +768,7 @@ public class ApcomplexMath
             imagBias = Apfloat.ZERO;
         }
 
-        Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix()),
-                x = abs(z);
+        Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix());
 
         long originalScale = z.scale();
 
@@ -890,12 +898,19 @@ public class ApcomplexMath
 
         long doublePrecision = ApfloatHelper.getDoublePrecision(radix);
 
-        // If the real part of the argument is close to 0, the result is more accurate
+        // If the real part of the argument is close to 0, the result is more accurate; if it's very big the result is less accurate
+        if (z.real().precision() < z.real().scale() - 1)
+        {
+            throw new LossOfPrecisionException("Complete loss of accurate digits in real part");
+        }
         // The imaginary part must be scaled to the range of -pi ... pi, which may limit the precision
-        long targetPrecision = (z.imag().precision() >= z.imag().scale() ?
-                                Math.min(Util.ifFinite(z.real().precision(), z.real().precision() + Math.max(1 - z.real().scale(), 0)),
-                                         Util.ifFinite(z.imag().precision(), 1 + z.imag().precision() - z.imag().scale())) :
-                                0);
+        if (z.imag().precision() < z.imag().scale())
+        {
+            throw new LossOfPrecisionException("Complete loss of accurate digits in imaginary part");
+        }
+        long realPrecision = Util.ifFinite(z.real().precision(), z.real().precision() + 1 - z.real().scale()),
+             imagPrecision = Util.ifFinite(z.imag().precision(), 1 + z.imag().precision() - z.imag().scale()),
+             targetPrecision = Math.min(realPrecision, imagPrecision);
 
         if (targetPrecision == Apfloat.INFINITE)
         {
@@ -910,10 +925,6 @@ public class ApcomplexMath
             // Underflow
 
             return Apcomplex.ZERO;
-        }
-        else if (targetPrecision == 0)
-        {
-            throw new LossOfPrecisionException("Complete loss of accurate digits in imaginary part");
         }
 
         boolean negateResult = false;                           // If the final result is to be negated

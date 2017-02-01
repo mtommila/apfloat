@@ -593,6 +593,14 @@ public class ApcomplexMathTest
         a = ApcomplexMath.log(new Apcomplex("(1.01,0.01)"));
         assertEquals("(1.01,0.01), precision", 1, a.precision());
 
+        a = ApcomplexMath.log(new Apcomplex(Apfloat.ZERO, new Apfloat("2.567534329783818000500533029709932117494558299117260796421579784603311989535237879614227625064708170e2171472", 100)));
+        assertEquals("(0,e^5000000), 100 precision", 106, a.precision());
+        assertEquals("(0,e^5000000), 100 value", new Apcomplex(new Apfloat(5000000), new Apfloat("1.570796326794896619231321691639751442098584699687552910487472296153908203143104499314017412671058534")), a, new Apfloat("5e-99"));
+
+        a = ApcomplexMath.log(new Apcomplex(Apfloat.ZERO, new Apfloat("3.894787261069254290252471079176073765185215930321023940272302235080330044710873765250549604329029361e-2171473", 100)));
+        assertEquals("(0,-e^5000000), 100 precision", 100, a.precision());
+        assertEquals("(0,-e^5000000), 100 value", new Apcomplex(new Apfloat(-5000000), new Apfloat("1.570796326794896619231321691639751442098584699687552910487472296153908203143104499314017412671058534")), a, new Apfloat("5e-92"));
+
         a = ApcomplexMath.log(new Apcomplex(new Apfloat(-2, 100, 2)));
         assertEquals("-2, 100 radix 2 precision", 101, a.precision());
         assertEquals("-2, 100 radix 2 value", new Apcomplex(new Apfloat("0.10110001011100100001011111110111110100011100111101111001101010111100100111100011101100111001100000000011111100101111011010101111010000001111001101000011001001100111001010011000101101100010110110001010000011010001011101011011100010111010101011111010001010111110011110111000011101100010000001101101111010111010110010011000010101011001", Apfloat.DEFAULT, 2), new Apfloat("11.001001000011111101101010100010001000010110100011000010001101001100010011000110011000101000101110000000110111000001110011010001001010010000001001001110000010001000101001100111110011000111010000000010000010111011111010100110001110110001001110011011001000100101000101001010000010000111100110001110001101000000010011011101111011111001", Apfloat.DEFAULT, 2)), a, new Apfloat("1e-99", 1, 2));
@@ -716,22 +724,17 @@ public class ApcomplexMathTest
         a = ApcomplexMath.exp(new Apcomplex(new Apfloat("1e-10", 32), new Apfloat("3.1415926535897932384626433832795")));
         assertEquals("(1e-10,pi)", new Apcomplex("-1.0000000001000000000050000000002"), a, new Apfloat("5e-31"));
 
-        // NOTE: imaginary part of argument is specified with more precision
-        // NOTE: EXTRA ALLOWED ERROR NEEDED
-        a = ApcomplexMath.exp(new Apcomplex(new Apfloat(5000000, 15), new Apfloat("1.570796326794897")));
+        a = ApcomplexMath.exp(new Apcomplex(new Apfloat(5000000, 21), new Apfloat("1.570796326794897")));
         assertEquals("(5000000,pi/2), 15 precision", 15, a.precision());
-        assertEquals("(5000000,pi/2), 15 value", new Apcomplex(Apfloat.ZERO, new Apfloat("2.567534329783818e2171472")), a, new Apfloat("9e2171457"));
+        assertEquals("(5000000,pi/2), 15 value", new Apcomplex(Apfloat.ZERO, new Apfloat("2.56753432978382e2171472")), a, new Apfloat("5e2171458"));
 
-        // NOTE: imaginary part of argument is specified with more precision
-        a = ApcomplexMath.exp(new Apcomplex(new Apfloat(5000000, 100), new Apfloat("4.71238898038468985769396507491925432629575409906265873146241688846172460942931349794205223801317560197")));
+        a = ApcomplexMath.exp(new Apcomplex(new Apfloat(5000000, 106), new Apfloat("4.712388980384689857693965074919254326295754099062658731462416888461724609429313497942052238013175602")));
         assertEquals("(5000000,3pi/2), 100 precision", 100, a.precision());
-        assertEquals("(5000000,3pi/2), 100 value", new Apcomplex(Apfloat.ZERO, new Apfloat("-2.567534329783818000500533029709932117494558299117260796421579784603311989535237879614227625064708170e2171472")), a, new Apfloat("5e2171372"));
+        assertEquals("(5000000,3pi/2), 100 value", new Apcomplex(Apfloat.ZERO, new Apfloat("-2.567534329783818000500533029709932117494558299117260796421579784603311989535237879614227625064708170e2171472")), a, new Apfloat("5e2171373"));
 
-        // NOTE: imaginary part of argument is specified with more precision
-        // Error is too big!
-        a = ApcomplexMath.exp(new Apcomplex(new Apfloat(-5000000, 100), new Apfloat("3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803482534211706798")));
+        a = ApcomplexMath.exp(new Apcomplex(new Apfloat(-5000000, 106), new Apfloat("3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068")));
         assertEquals("(-5000000,pi), 100 precision", 100, a.precision());
-        assertEquals("(-5000000,pi), 100 value", new Apfloat("-3.894787261069254290252471079176073765185215930321023940272302235080330044710873765250549604329029361e-2171473"), a, new Apfloat("90e-2171573"));
+        assertEquals("(-5000000,pi), 100 value", new Apfloat("-3.894787261069254290252471079176073765185215930321023940272302235080330044710873765250549604329029362e-2171473"), a, new Apfloat("5e-2171572"));
 
         a = ApcomplexMath.exp(new Apcomplex(new Apfloat("-1e25", 50), new Apfloat("3.1415926535897932384626433832795028841971693993751")));
         assertEquals("(-1e25,pi), 50 value", new Apfloat(0), a);
@@ -739,7 +742,7 @@ public class ApcomplexMathTest
         a = ApcomplexMath.exp(new Apcomplex("(-21237598959199934509.830775042768,3.1415926535897932384626433832795)"));
         assertEquals("(-21237598959199934509.830775042768,pi) value", new Apfloat(0), a);
 
-        a = ApcomplexMath.exp(new Apcomplex("(-2.123759895919992e19,3.141592653589793)"));
+        a = ApcomplexMath.exp(new Apcomplex("(-2.1237598959199920000000000000000000e19,3.141592653589793)"));
         assertEquals("(-2.123759895919992e19,pi) precision", 16, a.precision());
         assertEquals("(-2.123759895919992e19,pi) value", new Apfloat("-3.462892031805012e-9223372036854769507"), a, new Apfloat("5e-9223372036854769491"));
 
@@ -793,16 +796,15 @@ public class ApcomplexMathTest
         assertEquals("(-2)^0.5, 100 precision", 100, a.precision(), 1);
         assertEquals("(-2)^0.5, 100 value", new Apcomplex("(0,1.414213562373095048801688724209698078569671875376948073176679737990732478462107038850387534327641573)"), a, new Apfloat("5e-98"));
 
-        // NOTE: error increased
         a = ApcomplexMath.pow(new Apcomplex(new Apfloat(5, 100), new Apfloat(4, 100)), new Apcomplex(new Apfloat(3, 100), new Apfloat(2, 100)));
-        assertEquals("(5,4)^(3,2), 100 precision", 100, a.precision(), 1);
-        assertEquals("(5,4)^(3,2), 100 value", new Apcomplex("(58.21450097059152465652652712230313017748868340728034764752454732020721827721557252703139305798831592,-35.32343693485837533012378741846981988609521878485308616153729164456178404672985609549591376583171254)"), a, new Apfloat("15e-98"));
+        assertEquals("(5,4)^(3,2), 100 precision", 99, a.precision(), 1);
+        assertEquals("(5,4)^(3,2), 100 value", new Apcomplex("(58.2145009705915246565265271223031301774886834072803476475245473202072182772155725270313930579883159,-35.3234369348583753301237874184698198860952187848530861615372916445617840467298560954959137658317125)"), a, new Apfloat("5e-97"));
 
         Apfloat r = new Apfloat("1.193EA7AAD030A976A4198D55053B7CB5BE1442D9B7E08DF03D97EEEA5149358CAA9782D20CC698505071F733039A8ED5625C15071EA7BCA1CF37D8F11024C66486D094E21E74D0A547DF6", 150, 16);
         a = ApcomplexMath.pow(new Apcomplex(r, r), new Apcomplex(r, r));
         assertEquals("3, 150 precision", 150, a.precision(), 1);
         assertEquals("3, 150 value", new Apcomplex(new Apfloat("0.26ea28ff7cb530fc94a0b61e891cb2a15e1c72d7e9421ab41a2d0c46f1ba18f0b43409b5440adf17b33a95646b30b96f44634e286d546b2f543415d6d2deaaf79a715fa30e30cb858edb14", Apfloat.DEFAULT, 16),
-                                                   new Apfloat("0.aae89b585652b078f623e7f850ebc3cd7c87afeb0a32feb1003d57a82352857778a89519b99e0001e1c276d3ddb09e1c07fc6b8129240a724aea584a7283a5e98bba61f57b20926ffac626", Apfloat.DEFAULT, 16)), a, ApfloatMath.scale(new Apfloat(5, 1, 16), -148));
+                                                   new Apfloat("0.aae89b585652b078f623e7f850ebc3cd7c87afeb0a32feb1003d57a82352857778a89519b99e0001e1c276d3ddb09e1c07fc6b8129240a724aea584a7283a5e98bba61f57b20926ffac626", Apfloat.DEFAULT, 16)), a, ApfloatMath.scale(new Apfloat(5, 1, 16), -149));
 
         a = ApcomplexMath.pow(new Apfloat(2), new Apfloat(0));
         assertEquals("2^0", new Apfloat(1), a);
@@ -834,8 +836,14 @@ public class ApcomplexMathTest
         a = ApcomplexMath.pow(new Apfloat(1), Apcomplex.I);
         assertEquals("1^i", new Apfloat(1), a);
 
-        a = ApcomplexMath.pow(new Apfloat("1.2"), new Apfloat("57"));
-        assertEquals("1.2^57, precision", 1, a.precision());
+        try
+        {
+            ApcomplexMath.pow(new Apfloat("1.2"), new Apfloat("57"));
+        }
+        catch (LossOfPrecisionException lope)
+        {
+            // OK
+        }
 
         a = ApcomplexMath.pow(new Apfloat("1.02"), new Apfloat("57"));
         assertEquals("1.02^57, precision", 1, a.precision());
