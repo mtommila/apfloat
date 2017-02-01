@@ -37,7 +37,7 @@ public class ApfloatTestCase
     {
         if (ApcomplexMath.abs(a.subtract(b)).compareTo(delta) > 0)
         {
-            assertEquals(message, a, b);
+            assertEquals(message, a.toString(), b.toString());
         }
     }
 
@@ -45,7 +45,7 @@ public class ApfloatTestCase
     {
         if (ApfloatMath.abs(a.subtract(b)).compareTo(delta) > 0)
         {
-            assertEquals(message, a, b);
+            assertEquals(message, a.toString(), b.toString());
         }
     }
 }
