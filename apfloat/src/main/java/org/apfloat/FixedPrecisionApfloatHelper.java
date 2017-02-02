@@ -362,10 +362,7 @@ public class FixedPrecisionApfloatHelper
     public Apfloat log(Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        // If x is close to one then result will actually have limited accuracy
-        // So, if the argument would have more precision, it could be used, however checking for
-        // this as well as the computation itself could be very time-consuming so we don't do it
-        return valueOf(ApfloatMath.log(setPrecision(x)));
+        return valueOf(ApfloatMath.log(setLogarithmicPrecision(x)));
     }
 
     /**
@@ -461,7 +458,7 @@ public class FixedPrecisionApfloatHelper
     public Apfloat tanh(Apfloat x)
         throws ApfloatRuntimeException
     {
-        return valueOf(ApfloatMath.tanh(setExponentialPrecision(x)));
+        return valueOf(ApfloatMath.tanhFixedPrecision(setExponentialPrecision(x)));
     }
 
     /**

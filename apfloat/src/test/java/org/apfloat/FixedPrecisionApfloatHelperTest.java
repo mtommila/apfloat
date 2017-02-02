@@ -485,6 +485,11 @@ public class FixedPrecisionApfloatHelperTest
         assertEquals("value", new Apfloat("0.693147180559945309417232121458176568075500134360255254120680009493393621969694715605863326996418687"), result, new Apfloat("1e-99"));
         assertEquals("precision", 100, result.precision());
 
+        x = new Apfloat("1.000000000000000000000000000000001");
+        result = helper.log(x);
+        assertEquals("close to 1 value", new Apfloat("9.999999999999999999999999999999995000000000000000000000000000000003333333333333333333333333333333331e-34"), result, new Apfloat("1e-134"));
+        assertEquals("close to 1 precision", 100, result.precision());
+
         try
         {
             helper.log(new Apfloat(0));
@@ -534,6 +539,11 @@ public class FixedPrecisionApfloatHelperTest
         result = helper.exp(x);
         assertEquals("value limited", new Apfloat("1.000100005000166670833416668055575397073415454172178381034635390972311235972781757573430475110294393"), result);
         assertEquals("precision limited", 100, result.precision());
+
+        x = new Apfloat(5000000000000L);
+        result = helper.exp(x);
+        assertEquals("big value", new Apfloat("1.816093715813449977121047779023089136640518780204394932476747172911899687306423540158950650025496032e2171472409516"), result, new Apfloat("5e2171472409417"));
+        assertEquals("big precision", 100, result.precision());
 
         try
         {
@@ -684,6 +694,11 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.tanh(x);
         assertEquals("value", new Apfloat("0.96402758007581688394641372410092315025502997624093477604826321741310794631761020255947485004520768915"), result, new Apfloat("1e-99"));
         assertEquals("precision", 100, result.precision());
+
+        x = new Apfloat(5000000000000L);
+        result = helper.tanh(x);
+        assertEquals("big value", new Apfloat(1), result, new Apfloat("1e-99"));
+        assertEquals("big precision", 100, result.precision());
     }
 
     public static void testAcos()

@@ -1197,9 +1197,9 @@ public class ApfloatMathTest
         assertEquals("-2, 100 precision", 100, a.precision(), 1);
         assertEquals("-2, 100 value", new Apfloat("-0.96402758007581688394641372410092315025502997624093477604826321741310794631761020255947485004520768915"), a, new Apfloat("5e-99"));
 
-        a = ApfloatMath.tanh(new Apfloat(5000000, 106));
-        assertEquals("5000000, 100 precision", 100, a.precision(), 1);
-        assertEquals("5000000, 100 value", new Apfloat("0.9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"), a, new Apfloat("5e-99"));
+        a = ApfloatMath.tanh(new Apfloat(5000000, 100));
+        assertEquals("5000000, 100 precision", 4343037, a.precision(), 1);
+        assertEquals("5000000, 100 value", new Apfloat(1).subtract(new Apfloat("3.03387356179746871517892756452203249280217116298171287391802587502345779082540217305405121824e-4342945")), a, new Apfloat("5e-4343037"));
 
         a = ApfloatMath.tanh(new Apfloat(0));
         assertEquals("0, 100 value", new Apfloat(0), a);

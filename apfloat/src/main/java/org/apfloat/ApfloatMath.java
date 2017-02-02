@@ -1339,18 +1339,20 @@ public class ApfloatMath
              precision,
              doublePrecision = ApfloatHelper.getDoublePrecision(radix);
 
-        // If the argument is close to 0, the result is more accurate; if the argument is very big, the result is less accurate
+        // If the argument is close to 0, the result is more accurate
         if (x.scale() < 1)
         {
             targetPrecision = Util.ifFinite(targetPrecision, targetPrecision + 1 - x.scale());
         }
-        else if (x.scale() > 1)
+        // If the argument is very big, the result is less accurate
+        long finalPrecision = targetPrecision;
+        if (x.scale() > 1)
         {
             if (x.scale() - 1 >= targetPrecision)
             {
                 throw new LossOfPrecisionException("Complete loss of accurate digits");
             }
-            targetPrecision = Util.ifFinite(targetPrecision, targetPrecision - (x.scale() - 1));
+            finalPrecision = Util.ifFinite(targetPrecision, targetPrecision - (x.scale() - 1));
         }
 
         if (targetPrecision == Apfloat.INFINITE)
@@ -1461,7 +1463,7 @@ public class ApfloatMath
             }
         }
 
-        return result.precision(targetPrecision);
+        return result.precision(finalPrecision);
     }
 
     /**
@@ -1614,12 +1616,27 @@ public class ApfloatMath
     public static Apfloat tanh(Apfloat x)
         throws ApfloatRuntimeException
     {
+        return tanh(x, x.signum() > 0);
+    }
+
+    static Apfloat tanhFixedPrecision(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return tanh(x, x.signum() < 0);
+    }
+
+    private static Apfloat tanh(Apfloat x, boolean negate)
+        throws ApfloatRuntimeException
+    {
+        x = (negate ? x.negate() : x);
+
         Apfloat one = new Apfloat(1, Apfloat.INFINITE, x.radix()),
                 two = new Apfloat(2, Apfloat.INFINITE, x.radix()),
-                y = exp(two.multiply(abs(x)));
+                y = exp(two.multiply(x));
 
         y = y.subtract(one).divide(y.add(one));
-        return (x.signum() < 0 ? y.negate() : y);
+
+        return (negate ? y.negate() : y);
     }
 
     /**

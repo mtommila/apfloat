@@ -1420,12 +1420,23 @@ public class ApcomplexMath
     public static Apcomplex tanh(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        return tanh(z, z.real().signum() > 0);
+    }
+
+    static Apcomplex tanhFixedPrecision(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return tanh(z, z.real().signum() < 0);
+    }
+
+    private static Apcomplex tanh(Apcomplex z, boolean negate)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
         if (z.imag().signum() == 0)
         {
             return ApfloatMath.tanh(z.real());
         }
 
-        boolean negate = z.real().signum() < 0;
         z = (negate ? z.negate() : z);
 
         Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix()),

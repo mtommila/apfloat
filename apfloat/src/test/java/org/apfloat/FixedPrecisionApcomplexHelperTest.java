@@ -292,6 +292,11 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.log(z);
         assertEquals("value", new Apcomplex("(0,3.141592653589793238462643383279502884197)"), result, new Apfloat("1e-39"));
         assertEquals("precision", 40, result.precision());
+
+        z = new Apcomplex("-1.000000000000000000000000000000001");
+        result = helper.log(z);
+        assertEquals("close to 1 value", new Apcomplex("(9.999999999999999999999999999999995000000e-34,3.141592653589793238462643383279502884197)"), result, new Apfloat("1e-39"));
+        assertEquals("close to 1 precision", 40, result.precision());
     }
 
     public static void testLogBase()
@@ -312,6 +317,16 @@ public class FixedPrecisionApcomplexHelperTest
         assertEquals("value", Apfloat.ONE, result);
         assertEquals("precision", 40, result.precision());
         assertEquals("radix", 17, result.radix());
+
+        z = new Apcomplex(new Apfloat(5000000000000L));
+        result = helper.exp(z);
+        assertEquals("big value", new Apcomplex("1.816093715813449977121047779023089136641e2171472409516"), result, new Apfloat("5e2171472409477"));
+        assertEquals("big precision", 40, result.precision());
+
+        z = new Apcomplex("(5000000000000,3.141592653589793238462643383279502884197)");
+        result = helper.exp(z);
+        assertEquals("big value", new Apcomplex("-1.816093715813449977121047779023089136641e2171472409516"), result, new Apfloat("5e2171472409477"));
+        assertEquals("big precision", 40, result.precision());
     }
 
     public static void testPow()
@@ -440,6 +455,11 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.tanh(z);
         assertEquals("value", new Apcomplex("(1.000709536067232939329585472404172746215320905146760218019260729904286640361616955165037427906522640,0.004908258067496060259078786929932766843374215579355506974895511342674738432081043949327359968992711)"), result, new Apfloat("1e-98"));
         assertEquals("precision", 100, result.precision());
+
+        z = new Apcomplex(new Apfloat(5000000000000L), new Apfloat("3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068"));
+        result = helper.tanh(z);
+        assertEquals("big value", new Apcomplex(new Apfloat(1)), result, new Apfloat("1e-99"));
+        assertEquals("big precision", 100, result.precision());
     }
 
     public static void testAcos()

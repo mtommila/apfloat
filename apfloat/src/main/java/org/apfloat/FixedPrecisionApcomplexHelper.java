@@ -432,7 +432,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex log(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return valueOf(ApcomplexMath.log(setPrecision(z)));
+        return valueOf(ApcomplexMath.log(setLogarithmicPrecision(z)));
     }
 
     /**
@@ -525,7 +525,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex tanh(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return valueOf(ApcomplexMath.tanh(setExpTrigPrecision(z)));
+        return valueOf(ApcomplexMath.tanhFixedPrecision(setExpTrigPrecision(z)));
     }
 
     /**
@@ -762,11 +762,24 @@ public class FixedPrecisionApcomplexHelper
             long precision = Util.ifFinite(precision(), precision() + x.scale());
             x = x.precision(precision);
         }
+        else if (x.scale() > 1)
+        {
+            // Very large inputs have decreased precision, thus increase it
+            long precision = Util.ifFinite(precision(), precision() + x.scale() - 1);
+            x = x.precision(precision);
+        }
         else
         {
             x = x.precision(precision());
         }
         return x;
+    }
+
+    Apfloat setLogarithmicPrecision(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        long precision = ApfloatHelper.extendPrecision(precision(), x.equalDigits(new Apfloat(1, Apfloat.INFINITE, x.radix())));
+        return x.precision(precision);
     }
 
     private Apcomplex setPrecision(Apcomplex z)
@@ -794,6 +807,12 @@ public class FixedPrecisionApcomplexHelper
     private Apcomplex setTrigExpPrecision(Apcomplex z)
     {
         return new Apcomplex(setTrigonometricPrecision(z.real()), setExponentialPrecision(z.imag()));
+    }
+
+    private Apcomplex setLogarithmicPrecision(Apcomplex z)
+    {
+        long precision = ApfloatHelper.extendPrecision(precision(), abs(z).equalDigits(new Apfloat(1, Apfloat.INFINITE, z.radix())));
+        return z.precision(precision);
     }
 
     private long precision;
