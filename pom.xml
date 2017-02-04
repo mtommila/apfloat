@@ -113,7 +113,7 @@
           <configuration>
             <reuseForks>false</reuseForks>
             <includes>
-              <include>**/*Test.java</include>
+            Â  <include>**/*Test.java</include>
             </includes>
           </configuration>
         </plugin>
@@ -226,13 +226,19 @@
                   <fileset dir="." includes="readme.html,lgpl.txt" />
                   <fileset dir="src/site/resources" />
                   <zipfileset dir="${project.build.directory}/site/apidocs" prefix="docs" />
-                  <zipfileset src="${project.build.directory}/apfloat-parent-${project.version}-sources.jar" prefix="source" />
+                  <zipfileset src="${project.build.directory}/apfloat-parent-${project.version}-sources.jar" prefix="source" excludes="META-INF/" />
                   <zipfileset file="apfloat/target/apfloat.jar" fullpath="lib/apfloat.jar" />
                   <zipfileset file="apfloat-applet/target/applet.jar" fullpath="lib/applet.jar" />
                   <zipfileset file="apfloat-calc/target/calc.jar" fullpath="lib/calc.jar" />
                   <zipfileset file="apfloat-jscience/target/apfloat-jscience.jar" fullpath="lib/apfloat-jscience.jar" />
                   <zipfileset file="apfloat-samples/target/samples.jar" fullpath="lib/samples.jar" />
                   <zipfileset file="apfloat-samples/target/signedapplet.jar" fullpath="lib/signedapplet.jar" />
+                </zip>
+                <zip destfile="${project.build.directory}/apfloat-unittest-${project.version}.zip">
+                  <fileset dir="." includes="readme.html,lgpl.txt" />
+                  <zipfileset src="apfloat/target/apfloat-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
+                  <zipfileset src="apfloat-calc/target/apfloat-calc-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
+                  <zipfileset src="apfloat-jscience/target/apfloat-jscience-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
                 </zip>
               </target>
             </configuration>
