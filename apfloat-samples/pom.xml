@@ -26,6 +26,11 @@
       <artifactId>apfloat</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apfloat</groupId>
+      <artifactId>apfloat-aparapi</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
