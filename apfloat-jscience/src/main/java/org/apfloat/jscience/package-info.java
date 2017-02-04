@@ -1,11 +1,3 @@
-/**
-JScience wrapper for apfloat.<p>
-
-This package contains classes that allow using the apfloat library
-classes with the JScience library. For example, it's possible
-to perform arbitrary-precision matrix or polynomial operations.
-*/
-
 /*
  * Apfloat arbitrary precision arithmetic library
  * Copyright (C) 2002-2017  Mikko Tommila
@@ -24,4 +16,13 @@ to perform arbitrary-precision matrix or polynomial operations.
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+/**
+JScience wrapper for apfloat.<p>
+
+This package contains classes that allow using the apfloat library
+classes with the JScience library. For example, it's possible
+to perform arbitrary-precision matrix or polynomial operations.
+*/
+
 package org.apfloat.jscience;
