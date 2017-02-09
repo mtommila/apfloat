@@ -315,7 +315,7 @@ public class RawtypeMatrixStrategy
         ApfloatContext ctx = ApfloatContext.getContext();
         int cacheBurstBlockSize = Util.round2down(ctx.getCacheBurst() / 8),   // Cache burst in rawtypes
             cacheBlockSize = Util.sqrt4down(ctx.getCacheL1Size() / 8),        // Transpose block size b that fits in processor L1 cache
-            cacheTreshold = Util.round2down(ctx.getCacheL2Size() / 8);        // Size of matrix that fits in L2 cache
+            cacheThreshold = Util.round2down(ctx.getCacheL2Size() / 8);       // Size of matrix that fits in L2 cache
 
         if (n1 <= cacheBurstBlockSize || n1 <= cacheBlockSize)
         {
@@ -323,7 +323,7 @@ public class RawtypeMatrixStrategy
 
             transposeBlock(data, offset, n2, n1);
         }
-        else if (n1 * n2 <= cacheTreshold)
+        else if (n1 * n2 <= cacheThreshold)
         {
             // Whole matrix fits in L2 cache (but not in L1 cache)
             // Sometimes the first algorithm (the block above) is faster, if your L2 cache is very fast

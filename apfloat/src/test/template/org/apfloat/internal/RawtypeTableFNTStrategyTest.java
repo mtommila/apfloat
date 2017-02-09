@@ -57,7 +57,7 @@ public class RawtypeTableFNTStrategyTest
     {
         for (int modulus = 0; modulus < 3; modulus++)
         {
-            int size = 8192;        // Good for memory treshold of 64kB
+            int size = 8192;        // Good for memory threshold of 64kB
             DataStorage dataStorage = createDataStorage(size + 5).subsequence(5, size);
 
             rawtype[] data = getPlainArray(dataStorage),
@@ -86,7 +86,7 @@ public class RawtypeTableFNTStrategyTest
     {
         for (int modulus = 0; modulus < 3; modulus++)
         {
-            int size = 8192;        // Good for memory treshold of 64kB
+            int size = 8192;        // Good for memory threshold of 64kB
             DataStorage dataStorage = createDataStorage(size + 5).subsequence(5, size);
 
             rawtype[] data = getPlainArray(dataStorage);
@@ -113,7 +113,7 @@ public class RawtypeTableFNTStrategyTest
 
     public static void testRoundTrip()
     {
-        int size = 8192;        // Good for memory treshold of 64kB
+        int size = 8192;        // Good for memory threshold of 64kB
         DataStorage dataStorage = createDataStorage(size + 5).subsequence(5, size);
 
         for (int modulus = 0; modulus < 3; modulus++)

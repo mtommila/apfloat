@@ -36,7 +36,7 @@ import org.apfloat.spi.NTTStrategy;
  * using multiple threads, if the number of processors is greater than one
  * in {@link ApfloatContext#getNumberOfProcessors()}.<p>
  *
- * If the data block to be transformed is larger than the shared memory treshold setting
+ * If the data block to be transformed is larger than the shared memory threshold setting
  * in the current ApfloatContext, this class will synchronize all data access on
  * the shared memory lock retrieved from {@link ApfloatContext#getSharedMemoryLock()}.<p>
  *

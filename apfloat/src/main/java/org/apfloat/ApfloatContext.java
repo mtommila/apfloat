@@ -149,7 +149,7 @@ import org.apfloat.spi.Util;
  *       For example the default apfloat multiplication algorithm uses such a
  *       mechanism. Note that synchronization against the shared memory lock
  *       will be used for all data blocks larger than the shared memory
- *       treshold (see {@link #getSharedMemoryTreshold()}).</li>
+ *       threshold (see {@link #getSharedMemoryTreshold()}).</li>
  *   <li>{@link #setFilenameGenerator(FilenameGenerator)}: When you clone an
  *       ApfloatContext, the filename generator is by default shared. For most
  *       situations this is fine. If you for some reason want to separate
@@ -710,7 +710,7 @@ public class ApfloatContext
      * If the memory threshold is too small, performance will suffer as
      * small numbers are stored to disk, and the amount of disk I/O
      * overhead becomes significant. On the other hand, if the memory
-     * treshold is too big, you can get an <code>OutOfMemoryError</code>.<p>
+     * threshold is too big, you can get an <code>OutOfMemoryError</code>.<p>
      *
      * The optimal value depends greatly on each application. Obviously,
      * if you have plenty of heap space and don't create too many too big
@@ -730,9 +730,9 @@ public class ApfloatContext
     }
 
     /**
-     * Get the shared memory treshold.
+     * Get the shared memory threshold.
      *
-     * @return The shared memory treshold.
+     * @return The shared memory threshold.
      *
      * @see #setSharedMemoryTreshold(long)
      */
@@ -752,7 +752,7 @@ public class ApfloatContext
      * performance will suffer as the synchronization blocking and
      * other overhead becomes significant. On the other hand, if the
      * numbers are being stored in memory, and the shared memory
-     * treshold is too big, you can get an <code>OutOfMemoryError</code>.<p>
+     * threshold is too big, you can get an <code>OutOfMemoryError</code>.<p>
      *
      * The optimal value depends on the application and the way parallelism
      * is used. As a rule of thumb, this should be set to a value that is
@@ -1030,7 +1030,7 @@ public class ApfloatContext
     /**
      * Get the shared memory lock object.
      * All internal functions that allocate a memory block larger than the
-     * shared memory treshold should synchronize the allocation and memory access
+     * shared memory threshold should synchronize the allocation and memory access
      * on the object returned by this method.
      *
      * @return The object on which large memory block allocation and access should be synchronized.
@@ -1044,7 +1044,7 @@ public class ApfloatContext
     /**
      * Set the shared memory lock object.
      * All internal functions that allocate a memory block larger than the
-     * shared memory treshold should synchronize the allocation and memory access
+     * shared memory threshold should synchronize the allocation and memory access
      * on the object passed to this method.<p>
      *
      * The object is not used for anything else than synchronization, so the
