@@ -21,6 +21,7 @@ package org.apfloat.aparapi;
 import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.ArrayAccess;
 import org.apfloat.spi.DataStorage;
+import org.apfloat.spi.MatrixStrategy;
 import org.apfloat.spi.NTTStepStrategy;
 import org.apfloat.internal.SixStepFNTStrategy;
 
@@ -28,7 +29,8 @@ import org.apfloat.internal.SixStepFNTStrategy;
  * Six-step NTT implementation that processes the data in the columns of the matrix.<p>
  *
  * This transform only works together with an {@link NTTStepStrategy} implementation
- * that processes the data in columns instead of rows.<p>
+ * that processes the data in columns instead of rows and a {@link MatrixStrategy}
+ * implementation that can transpose the data.<p>
  *
  * If the data size is not sufficiently large to meet the parallelization needs of the GPU
  * then this transform delegates to the default pure-Java transform for more efficient processing.
@@ -42,16 +44,20 @@ import org.apfloat.internal.SixStepFNTStrategy;
 public class ColumnSixStepFNTStrategy
     extends SixStepFNTStrategy
 {
+    private static final int MIN_GPU_LENGTH = 1048576;
+
     /**
      * Basic constructor.
      *
      * @param stepStrategy A step strategy that can process data in columns.
+     * @param matrixStrategy A matrix strategy that can process the data.
      */
 
-    public ColumnSixStepFNTStrategy(NTTStepStrategy stepStrategy)
+    public ColumnSixStepFNTStrategy(NTTStepStrategy stepStrategy, MatrixStrategy matrixStrategy)
     {
         this.defaultStrategy = new SixStepFNTStrategy();
         super.stepStrategy = stepStrategy;
+        super.matrixStrategy = matrixStrategy;
     }
 
     public void transform(DataStorage dataStorage, int modulus)
@@ -61,7 +67,7 @@ public class ColumnSixStepFNTStrategy
 
         // Because data is treated as a matrix, the number of columns in the matrix
         // i.e. the GPU global size is 1024 if the data size is 1024 * 1024 = 1048576
-        if (length < 1048576)
+        if (length < MIN_GPU_LENGTH)
         {
             this.defaultStrategy.transform(dataStorage, modulus);
         }
@@ -78,7 +84,7 @@ public class ColumnSixStepFNTStrategy
 
         // Because data is treated as a matrix, the number of columns in the matrix
         // i.e. the GPU global size is 1024 if the data size is 1024 * 1024 = 1048576
-        if (length < 1048576)
+        if (length < MIN_GPU_LENGTH)
         {
             this.defaultStrategy.inverseTransform(dataStorage, modulus, totalTransformLength);
         }

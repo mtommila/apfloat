@@ -52,7 +52,7 @@ import org.apfloat.spi.MatrixStrategy;
  * All access to this class must be externally synchronized.
  *
  * @since 1.7.0
- * @version 1.7.0
+ * @version 1.8.3
  * @author Mikko Tommila
  */
 
@@ -81,6 +81,8 @@ public class SixStepFNTStrategy
 
         ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length);
 
+        preTransform(arrayAccess);
+
         // Step 1: Transpose the data
         transposeInitial(arrayAccess, n1, n2, false);
 
@@ -99,6 +101,8 @@ public class SixStepFNTStrategy
         // Step 6: Transpose the data - omitted as unnecessary
         transposeFinal(arrayAccess, n1, n2, false);
 
+        postTransform(arrayAccess);
+
         arrayAccess.close();
     }
 
@@ -113,6 +117,8 @@ public class SixStepFNTStrategy
         assert (n2 >= n1);
 
         ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length);
+
+        preTransform(arrayAccess);
 
         // Step 1: Transpose the data - omitted as unnecessary
         transposeFinal(arrayAccess, n2, n1, true);
@@ -132,7 +138,20 @@ public class SixStepFNTStrategy
         // Step 6: Transpose the data
         transposeInitial(arrayAccess, n2, n1, true);
 
+        postTransform(arrayAccess);
+
         arrayAccess.close();
+    }
+
+    /**
+     * Prepare the data for the (inverse) transform.
+     * 
+     * @param arrayAccess The data to prepare.
+     */
+
+    protected void preTransform(ArrayAccess arrayAccess)
+    {
+        // By default does nothing
     }
 
     /**
@@ -246,5 +265,20 @@ public class SixStepFNTStrategy
         super.stepStrategy.multiplyElements(arrayAccess, 0, 0, rows, columns, length, totalTransformLength, isInverse, modulus);
     }
 
-    private MatrixStrategy matrixStrategy;
+    /**
+     * Finish processing the data after the (inverse) transform.
+     * 
+     * @param arrayAccess The data to finish.
+     */
+
+    protected void postTransform(ArrayAccess arrayAccess)
+    {
+        // By default does nothing
+    }
+
+    /**
+     * The matrix strategy.
+     */
+
+    protected MatrixStrategy matrixStrategy;
 }

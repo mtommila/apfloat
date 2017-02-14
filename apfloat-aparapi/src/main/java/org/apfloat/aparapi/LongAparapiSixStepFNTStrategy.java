@@ -18,35 +18,43 @@
  */
 package org.apfloat.aparapi;
 
-import org.apfloat.spi.NTTStrategy;
-import org.apfloat.internal.IntNTTBuilder;
+import org.apfloat.spi.ArrayAccess;
 
 /**
- * NTT Builder for aparapi transform implementations for the <code>int</code> element type.
+ * Six-step NTT implementation for the <code>long</code> element type.<p>
  *
  * @since 1.8.3
  * @version 1.8.3
  * @author Mikko Tommila
  */
 
-public class IntAparapiNTTBuilder
-    extends IntNTTBuilder
+public class LongAparapiSixStepFNTStrategy
+    extends ColumnSixStepFNTStrategy
 {
     /**
      * Default constructor.
      */
 
-    public IntAparapiNTTBuilder()
+    public LongAparapiSixStepFNTStrategy()
     {
+        super(new LongAparapiNTTStepStrategy(), new LongAparapiMatrixStrategy());
     }
 
-    protected NTTStrategy createSixStepFNTStrategy()
+    protected void preTransform(ArrayAccess arrayAccess)
     {
-        return new IntAparapiSixStepFNTStrategy();
+        LongKernel kernel = LongKernel.getInstance();
+        kernel.setExplicit(true);
+        kernel.put(arrayAccess.getLongData());
+
+        super.preTransform(arrayAccess);
     }
 
-    protected NTTStrategy createTwoPassFNTStrategy()
+    protected void postTransform(ArrayAccess arrayAccess)
     {
-        return new ColumnTwoPassFNTStrategy(new IntAparapiNTTStepStrategy());
+        super.postTransform(arrayAccess);
+
+        LongKernel kernel = LongKernel.getInstance();
+        kernel.get(arrayAccess.getLongData());
+        kernel.cleanUpArrays();
     }
 }

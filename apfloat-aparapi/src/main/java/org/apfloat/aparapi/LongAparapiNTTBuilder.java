@@ -42,7 +42,7 @@ public class LongAparapiNTTBuilder
 
     protected NTTStrategy createSixStepFNTStrategy()
     {
-        return new ColumnSixStepFNTStrategy(new LongAparapiNTTStepStrategy());
+        return new LongAparapiSixStepFNTStrategy();
     }
 
     protected NTTStrategy createTwoPassFNTStrategy()

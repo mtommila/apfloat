@@ -63,6 +63,6 @@ public class IntAparapiSixStepFNTStrategyTest
 
     private static void runRoundTrip(int size)
     {
-        runRoundTrip(new ColumnSixStepFNTStrategy(new IntAparapiNTTStepStrategy()), size);
+        runRoundTrip(new IntAparapiSixStepFNTStrategy(), size);
     }
 }
