@@ -87,17 +87,20 @@ public class RawtypeMediumConvolutionStrategy
                              dst = resultStorage.iterator(DataStorage.WRITE, size, 0),
                              tmpDst = new DataStorage.Iterator()                        // Cyclic iterator
                              {
+                                 @Override
                                  public void next()
                                  {
                                      this.position++;
                                      this.position = (this.position == bufferSize ? 0 : this.position);
                                  }
 
+                                 @Override
                                  public rawtype getRawtype()
                                  {
                                      return this.buffer[this.position];
                                  }
 
+                                 @Override
                                  public void setRawtype(rawtype value)
                                  {
                                      this.buffer[this.position] = value;

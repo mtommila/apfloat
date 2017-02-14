@@ -287,6 +287,7 @@ public class PiAWT
             this.lastLinefeedPosition = 0;
         }
 
+        @Override
         public void flush()
         {
             super.flush();
@@ -377,6 +378,7 @@ public class PiAWT
         // Thread for calculating pi and showing the result
         this.calculatorThread = new Thread()
         {
+            @Override
             public void run()
             {
                 long precision = Long.parseLong(PiAWT.this.precisionField.getText());

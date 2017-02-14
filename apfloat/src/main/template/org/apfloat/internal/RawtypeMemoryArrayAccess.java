@@ -45,21 +45,25 @@ public class RawtypeMemoryArrayAccess
         this.data = data;
     }
 
+    @Override
     public ArrayAccess subsequence(int offset, int length)
     {
         return new RawtypeMemoryArrayAccess(this.data, getOffset() + offset, length);
     }
 
+    @Override
     public Object getData()
     {
         return this.data;
     }
 
+    @Override
     public rawtype[] getRawtypeData()
     {
         return this.data;
     }
 
+    @Override
     public void close()
         throws ApfloatRuntimeException
     {

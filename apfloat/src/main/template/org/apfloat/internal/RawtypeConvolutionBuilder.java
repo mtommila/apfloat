@@ -45,37 +45,43 @@ public class RawtypeConvolutionBuilder
     {
     }
 
+    @Override
     protected int getKaratsubaCutoffPoint()
     {
         return RawtypeKaratsubaConvolutionStrategy.CUTOFF_POINT;
     }
 
+    @Override
     protected float getKaratsubaCostFactor()
     {
         return KARATSUBA_COST_FACTOR;
     }
 
+    @Override
     protected float getNTTCostFactor()
     {
         return NTT_COST_FACTOR;
     }
 
+    @Override
     protected ConvolutionStrategy createShortConvolutionStrategy(int radix)
     {
         return new RawtypeShortConvolutionStrategy(radix);
     }
 
+    @Override
     protected ConvolutionStrategy createMediumConvolutionStrategy(int radix)
     {
         return new RawtypeMediumConvolutionStrategy(radix);
     }
 
+    @Override
     protected ConvolutionStrategy createKaratsubaConvolutionStrategy(int radix)
     {
         return new RawtypeKaratsubaConvolutionStrategy(radix);
     }
 
-
+    @Override
     protected ConvolutionStrategy createThreeNTTConvolutionStrategy(int radix, NTTStrategy nttStrategy)
     {
         return new ParallelThreeNTTConvolutionStrategy(radix, nttStrategy);

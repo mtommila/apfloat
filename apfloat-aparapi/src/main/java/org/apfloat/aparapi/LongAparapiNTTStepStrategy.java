@@ -45,6 +45,7 @@ public class LongAparapiNTTStepStrategy
     {
     }
 
+    @Override
     public void multiplyElements(ArrayAccess arrayAccess, int startRow, int startColumn, int rows, int columns, long length, long totalTransformLength, boolean isInverse, int modulus)
         throws ApfloatRuntimeException
     {
@@ -84,6 +85,7 @@ public class LongAparapiNTTStepStrategy
      * @param modulus Index of the modulus.
      */
 
+    @Override
     public void transformRows(ArrayAccess arrayAccess, int length, int count, boolean isInverse, boolean permute, int modulus)
         throws ApfloatRuntimeException
     {

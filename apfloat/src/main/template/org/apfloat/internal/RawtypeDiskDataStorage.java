@@ -59,6 +59,7 @@ public class RawtypeDiskDataStorage
         super(rawtypeDiskDataStorage, offset, length);
     }
 
+    @Override
     protected DataStorage implSubsequence(long offset, long length)
         throws ApfloatRuntimeException
     {
@@ -104,6 +105,7 @@ public class RawtypeDiskDataStorage
             }
         }
 
+        @Override
         public void close()
             throws ApfloatRuntimeException
         {
@@ -143,17 +145,20 @@ public class RawtypeDiskDataStorage
         private long fileOffset;
     }
 
+    @Override
     protected ArrayAccess implGetArray(int mode, long offset, int length)
         throws ApfloatRuntimeException
     {
         return new RawtypeDiskArrayAccess(mode, getOffset() + offset, length);
     }
 
+    @Override
     protected ArrayAccess createArrayAccess(int mode, int startColumn, int columns, int rows)
     {
         return new MemoryArrayAccess(mode, new rawtype[columns * rows], startColumn, columns, rows);
     }
 
+    @Override
     protected ArrayAccess createTransposedArrayAccess(int mode, int startColumn, int columns, int rows)
     {
         return new TransposedMemoryArrayAccess(mode, new rawtype[columns * rows], startColumn, columns, rows);
@@ -171,6 +176,7 @@ public class RawtypeDiskDataStorage
             this.rows = rows;
         }
 
+        @Override
         public void close()
             throws ApfloatRuntimeException
         {
@@ -201,6 +207,7 @@ public class RawtypeDiskDataStorage
             this.rows = rows;
         }
 
+        @Override
         public void close()
             throws ApfloatRuntimeException
         {
@@ -230,6 +237,7 @@ public class RawtypeDiskDataStorage
             this.remaining = 0;
         }
 
+        @Override
         public void next()
             throws IllegalStateException, ApfloatRuntimeException
         {
@@ -250,6 +258,7 @@ public class RawtypeDiskDataStorage
             super.next();
         }
 
+        @Override
         public rawtype getRawtype()
             throws IllegalStateException, ApfloatRuntimeException
         {
@@ -258,6 +267,7 @@ public class RawtypeDiskDataStorage
             return this.data[this.offset];
         }
 
+        @Override
         public void setRawtype(rawtype value)
             throws IllegalStateException, ApfloatRuntimeException
         {
@@ -266,6 +276,7 @@ public class RawtypeDiskDataStorage
             this.data[this.offset] = value;
         }
 
+        @Override
         public <T> T get(Class<T> type)
             throws UnsupportedOperationException, IllegalStateException
         {
@@ -278,6 +289,7 @@ public class RawtypeDiskDataStorage
             return value;
         }
 
+        @Override
         public <T> void set(Class<T> type, T value)
             throws UnsupportedOperationException, IllegalArgumentException, IllegalStateException
         {
@@ -297,6 +309,7 @@ public class RawtypeDiskDataStorage
          * iterator is not iterated to the end.
          */
 
+        @Override
         public void close()
             throws ApfloatRuntimeException
         {
@@ -332,6 +345,7 @@ public class RawtypeDiskDataStorage
                     remaining;
     }
 
+    @Override
     public Iterator iterator(int mode, long startPosition, long endPosition)
         throws IllegalArgumentException, IllegalStateException, ApfloatRuntimeException
     {
@@ -342,6 +356,7 @@ public class RawtypeDiskDataStorage
         return new BlockIterator(mode, startPosition, endPosition);
     }
 
+    @Override
     protected int getUnitSize()
     {
         return sizeof(rawtype);

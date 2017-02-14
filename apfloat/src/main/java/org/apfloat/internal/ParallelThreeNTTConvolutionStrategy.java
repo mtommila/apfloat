@@ -59,6 +59,7 @@ public class ParallelThreeNTTConvolutionStrategy
             this.lock = lock;
         }
 
+        @Override
         public boolean isDone()
         {
             return this.lock.tryLock();
@@ -88,6 +89,7 @@ public class ParallelThreeNTTConvolutionStrategy
         super(radix, nttStrategy);
     }
 
+    @Override
     protected void lock(long length)
     {
         assert(this.key == null);
@@ -120,6 +122,7 @@ public class ParallelThreeNTTConvolutionStrategy
         }
     }
 
+    @Override
     protected void unlock()
     {
         if (this.key != null)

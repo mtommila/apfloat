@@ -40,11 +40,13 @@ public class LongAparapiNTTBuilder
     {
     }
 
+    @Override
     protected NTTStrategy createSixStepFNTStrategy()
     {
         return new LongAparapiSixStepFNTStrategy();
     }
 
+    @Override
     protected NTTStrategy createTwoPassFNTStrategy()
     {
         return new ColumnTwoPassFNTStrategy(new LongAparapiNTTStepStrategy());

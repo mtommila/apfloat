@@ -223,6 +223,7 @@ public class ApfloatContextTest
 
         Thread thread = new Thread()
         {
+            @Override
             public void run()
             {
                 assertNotSame("In-thread context is not global", ApfloatContext.getGlobalContext(), ApfloatContext.getContext());

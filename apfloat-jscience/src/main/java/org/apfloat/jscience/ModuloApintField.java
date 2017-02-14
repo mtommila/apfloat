@@ -103,21 +103,25 @@ public class ModuloApintField
         return value;
     }
 
+    @Override
     public ModuloApintField plus(ModuloApintField that)
     {
         return new ModuloApintField(value().add(that.value()));
     }
 
+    @Override
     public ModuloApintField opposite()
     {
         return new ModuloApintField(value().negate());
     }
 
+    @Override
     public ModuloApintField times(ModuloApintField that)
     {
         return new ModuloApintField(value().multiply(that.value()));
     }
 
+    @Override
     public ModuloApintField inverse()
         throws ArithmeticException
     {
@@ -129,6 +133,7 @@ public class ModuloApintField
         return new ModuloApintField(ApintMath.modPow(value(), new Apint(-1), modulus));
     }
 
+    @Override
     public ModuloApintField copy()
     {
         return new ModuloApintField(value());

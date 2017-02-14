@@ -660,23 +660,26 @@ public class ApcomplexTest
 
         Writer writer = new Writer()
         {
-             public void write(char cbuf[], int off, int len)
-                 throws IOException
-             {
-                 throw new IOException();
-             }
+            @Override
+            public void write(char cbuf[], int off, int len)
+                throws IOException
+            {
+                throw new IOException();
+            }
 
-             public void flush()
-                 throws IOException
-             {
-                 throw new IOException();
-             }
+            @Override
+            public void flush()
+                throws IOException
+            {
+                throw new IOException();
+            }
 
-             public void close()
-                 throws IOException
-             {
-                 throw new IOException();
-             }
+            @Override
+            public void close()
+                throws IOException
+            {
+                throw new IOException();
+            }
         };
         Formatter formatter = new Formatter(writer);
         new Apcomplex("123456.789").formatTo(formatter, 0, -1, -1);

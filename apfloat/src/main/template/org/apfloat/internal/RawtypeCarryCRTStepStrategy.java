@@ -179,22 +179,26 @@ public class RawtypeCarryCRTStepStrategy
     {
         return new DataStorage.Iterator()
         {
+            @Override
             public boolean hasNext()
             {
                 return true;
             }
 
+            @Override
             public void next()
             {
                 this.position--;
             }
 
+            @Override
             public rawtype getRawtype()
             {
                 assert (this.position >= 0);
                 return data[this.position];
             }
 
+            @Override
             public void setRawtype(rawtype value)
             {
                 assert (this.position >= 0);
@@ -212,11 +216,13 @@ public class RawtypeCarryCRTStepStrategy
     {
         return new DataStorage.Iterator()
         {
+            @Override
             public boolean hasNext()
             {
                 return (this.position < size ? iterator1.hasNext() : iterator2.hasNext());
             }
 
+            @Override
             public void next()
                 throws ApfloatRuntimeException
             {
@@ -224,18 +230,21 @@ public class RawtypeCarryCRTStepStrategy
                 this.position++;
             }
 
+            @Override
             public rawtype getRawtype()
                 throws ApfloatRuntimeException
             {
                 return (this.position < size ? iterator1 : iterator2).getRawtype();
             }
 
+            @Override
             public void setRawtype(rawtype value)
                 throws ApfloatRuntimeException
             {
                 (this.position < size ? iterator1 : iterator2).setRawtype(value);
             }
 
+            @Override
             public void close()
                 throws ApfloatRuntimeException
             {

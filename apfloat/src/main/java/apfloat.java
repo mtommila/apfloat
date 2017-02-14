@@ -35,6 +35,7 @@ import org.apfloat.spi.Util;
 public class apfloat
     extends ListResourceBundle
 {
+    @Override
     public Object[][] getContents()
     {
         return CONTENTS;

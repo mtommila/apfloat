@@ -62,6 +62,7 @@ public class FixedPrecisionApfloatHelper
      * @return The value with to the specified precision.
      */
 
+    @Override
     public Apfloat valueOf(Apfloat x)
     {
         return super.valueOf(x);
@@ -773,6 +774,7 @@ public class FixedPrecisionApfloatHelper
      * @return <code>&pi;</code>.
      */
 
+    @Override
     public Apfloat pi()
         throws ApfloatRuntimeException
     {
@@ -789,6 +791,7 @@ public class FixedPrecisionApfloatHelper
      * @exception java.lang.NumberFormatException If the radix is invalid.
      */
 
+    @Override
     public Apfloat pi(int radix)
         throws NumberFormatException, ApfloatRuntimeException
     {

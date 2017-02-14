@@ -57,6 +57,7 @@ public class RawtypeParallelThreeNTTConvolutionStrategyTest
         return suite;
     }
 
+    @Override
     protected ConvolutionStrategy createConvolutionStrategy(int radix, NTTStrategy transform)
     {
         return new ParallelThreeNTTConvolutionStrategy(radix, transform);

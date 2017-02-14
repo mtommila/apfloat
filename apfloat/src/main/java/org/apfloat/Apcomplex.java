@@ -518,6 +518,7 @@ public class Apcomplex
      * @return The numeric value represented by this object after conversion to type <code>double</code>.
      */
 
+    @Override
     public double doubleValue()
     {
         return real().doubleValue();
@@ -532,6 +533,7 @@ public class Apcomplex
      * @return The numeric value represented by this object after conversion to type <code>float</code>.
      */
 
+    @Override
     public float floatValue()
     {
         return real().floatValue();
@@ -546,6 +548,7 @@ public class Apcomplex
      * @return The numeric value represented by this object after conversion to type <code>byte</code>.
      */
 
+    @Override
     public byte byteValue()
     {
         return real().byteValue();
@@ -560,6 +563,7 @@ public class Apcomplex
      * @return The numeric value represented by this object after conversion to type <code>short</code>.
      */
 
+    @Override
     public short shortValue()
     {
         return real().shortValue();
@@ -574,6 +578,7 @@ public class Apcomplex
      * @return The numeric value represented by this object after conversion to type <code>int</code>.
      */
 
+    @Override
     public int intValue()
     {
         return real().intValue();
@@ -588,6 +593,7 @@ public class Apcomplex
      * @return The numeric value represented by this object after conversion to type <code>long</code>.
      */
 
+    @Override
     public long longValue()
     {
         return real().longValue();
@@ -672,6 +678,7 @@ public class Apcomplex
      * @return <code>true</code> if the objects are equal; <code>false</code> otherwise.
      */
 
+    @Override
     public boolean equals(Object obj)
     {
         if (obj == this)
@@ -696,6 +703,7 @@ public class Apcomplex
      * @return The hash code value for this object.
      */
 
+    @Override
     public int hashCode()
     {
         return real().hashCode() * 3 +
@@ -708,6 +716,7 @@ public class Apcomplex
      * @return A string representing this object.
      */
 
+    @Override
     public String toString()
     {
         return toString(false);

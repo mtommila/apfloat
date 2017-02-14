@@ -55,11 +55,13 @@ public class RawtypeMemoryDataStorageTest
         return suite;
     }
 
+    @Override
     public TestCase createTestCase(String methodName)
     {
         return new RawtypeMemoryDataStorageTest(methodName);
     }
 
+    @Override
     public DataStorage createDataStorage()
         throws ApfloatRuntimeException
     {

@@ -324,11 +324,13 @@ public abstract class DiskDataStorage
         this.fileStorage = diskDataStorage.fileStorage;
     }
 
+    @Override
     public boolean isCached()
     {
         return false;
     }
 
+    @Override
     protected void implCopyFrom(DataStorage dataStorage, long size)
         throws ApfloatRuntimeException
     {
@@ -392,6 +394,7 @@ public abstract class DiskDataStorage
         }
     }
 
+    @Override
     protected long implGetSize()
         throws ApfloatRuntimeException
     {
@@ -405,6 +408,7 @@ public abstract class DiskDataStorage
         }
     }
 
+    @Override
     protected void implSetSize(long size)
         throws ApfloatRuntimeException
     {
@@ -429,6 +433,7 @@ public abstract class DiskDataStorage
         }
     }
 
+    @Override
     protected synchronized ArrayAccess implGetArray(int mode, int startColumn, int columns, int rows)
         throws ApfloatRuntimeException
     {
@@ -457,6 +462,7 @@ public abstract class DiskDataStorage
         return arrayAccess;
     }
 
+    @Override
     protected synchronized ArrayAccess implGetTransposedArray(int mode, int startColumn, int columns, int rows)
         throws ApfloatRuntimeException
     {

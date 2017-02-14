@@ -40,46 +40,55 @@ public class DataStorageTest
             this.size = size;
         }
 
+        @Override
         protected DataStorage implSubsequence(long offset, long length)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         protected void implCopyFrom(DataStorage dataStorage, long size)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         protected long implGetSize()
         {
             return this.size;
         }
 
+        @Override
         protected void implSetSize(long size)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         protected ArrayAccess implGetArray(int mode, long offset, int length)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         protected ArrayAccess implGetArray(int mode, int startColumn, int columns, int rows)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         protected ArrayAccess implGetTransposedArray(int mode, int startColumn, int columns, int rows)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Iterator iterator(int mode, long startPosition, long endPosition)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean isCached()
         {
             throw new UnsupportedOperationException();
@@ -98,16 +107,19 @@ public class DataStorageTest
             super(0, 0);
         }
 
+        @Override
         public ArrayAccess subsequence(int offset, int length)
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Object getData()
         {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void close()
         {
             throw new UnsupportedOperationException();
@@ -145,6 +157,7 @@ public class DataStorageTest
         final ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage(10)
         {
+            @Override
             protected ArrayAccess implGetArray(int mode, long offset, int length)
             {
                 return arrayAccess;
@@ -202,6 +215,7 @@ public class DataStorageTest
         final ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage(Long.MAX_VALUE)
         {
+            @Override
             protected ArrayAccess implGetArray(int mode, long offset, int length)
             {
                 return arrayAccess;
@@ -229,6 +243,7 @@ public class DataStorageTest
         final ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage(100)
         {
+            @Override
             protected ArrayAccess implGetArray(int mode, int startColumn, int columns, int rows)
             {
                 return arrayAccess;
@@ -307,6 +322,7 @@ public class DataStorageTest
         final ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage((long) Integer.MAX_VALUE * Integer.MAX_VALUE)
         {
+            @Override
             protected ArrayAccess implGetArray(int mode, int startColumn, int columns, int rows)
             {
                 return arrayAccess;
@@ -354,6 +370,7 @@ public class DataStorageTest
         final ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage(100)
         {
+            @Override
             protected ArrayAccess implGetTransposedArray(int mode, int startColumn, int columns, int rows)
             {
                 return arrayAccess;
@@ -432,6 +449,7 @@ public class DataStorageTest
         final ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage((long) Integer.MAX_VALUE * Integer.MAX_VALUE)
         {
+            @Override
             protected ArrayAccess implGetTransposedArray(int mode, int startColumn, int columns, int rows)
             {
                 return arrayAccess;

@@ -49,27 +49,32 @@ public class ApfloatField
         super(value);
     }
 
+    @Override
     public ApfloatField plus(ApfloatField that)
     {
         return new ApfloatField(value().add(that.value()));
     }
 
+    @Override
     public ApfloatField opposite()
     {
         return new ApfloatField(value().negate());
     }
 
+    @Override
     public ApfloatField times(ApfloatField that)
     {
         return new ApfloatField(value().multiply(that.value()));
     }
 
+    @Override
     public ApfloatField inverse()
         throws ArithmeticException
     {
         return new ApfloatField(ApfloatMath.inverseRoot(value(), 1));
     }
 
+    @Override
     public ApfloatField copy()
     {
         return new ApfloatField(value());

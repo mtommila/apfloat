@@ -50,21 +50,25 @@ class ConcurrentSoftHashMap<K, V>
         this.map = new ConcurrentHashMap<K, SoftReference<V>>();
     }
 
+    @Override
     public void clear()
     {
         this.map.clear();
     }
 
+    @Override
     public Set<Map.Entry<K, V>> entrySet()
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public V get(Object key)
     {
         return unwrap(this.map.get(key));
     }
 
+    @Override
     public V put(K key, V value)
     {
         return unwrap(this.map.put(key, wrap(value)));
@@ -75,6 +79,7 @@ class ConcurrentSoftHashMap<K, V>
         return unwrap(this.map.putIfAbsent(key, wrap(value)));
     }
 
+    @Override
     public V remove(Object key)
     {
         return unwrap(this.map.remove(key));
@@ -95,6 +100,7 @@ class ConcurrentSoftHashMap<K, V>
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public int size()
     {
         return this.map.size();

@@ -188,6 +188,7 @@ public class RawtypeFactor3NTTStepStrategy
 
         ParallelRunnable parallelRunnable = new ParallelRunnable(columns)
         {
+            @Override
             public Runnable getRunnable(long strideStartColumn, long strideColumns)
             {
                 return new ColumnTransformRunnable(dataStorage0, dataStorage1, dataStorage2, startColumn + strideStartColumn, strideColumns, w, ww, w1, w2, isInverse);

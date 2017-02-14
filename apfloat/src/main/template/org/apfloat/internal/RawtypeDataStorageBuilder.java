@@ -42,23 +42,27 @@ public class RawtypeDataStorageBuilder
     {
     }
 
+    @Override
     protected long getMaxCachedSize()
     {
         return (long) sizeof(rawtype) * Integer.MAX_VALUE;
     }
 
+    @Override
     protected DataStorage createCachedDataStorage()
         throws ApfloatRuntimeException
     {
         return new RawtypeMemoryDataStorage();
     }
 
+    @Override
     protected DataStorage createNonCachedDataStorage()
         throws ApfloatRuntimeException
     {
         return new RawtypeDiskDataStorage();
     }
 
+    @Override
     protected boolean isCached(DataStorage dataStorage)
         throws ApfloatRuntimeException
     {

@@ -96,6 +96,7 @@ public class ParallelRunnerTest
             final int[] values = new int[LENGTH];
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
+                @Override
                 public Runnable getRunnable(final int start, final int length)
                 {
                     return new Runnable()
@@ -133,6 +134,7 @@ public class ParallelRunnerTest
             final Map<Long, Long> starts = new ConcurrentHashMap<Long, Long>();
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
+                @Override
                 public Runnable getRunnable(final long start, final long length)
                 {
                     return new Runnable()
@@ -175,6 +177,7 @@ public class ParallelRunnerTest
             final int[] values = new int[LENGTH];
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
+                @Override
                 public Runnable getRunnable(final int start, final int length)
                 {
                     return new Runnable()
@@ -193,6 +196,7 @@ public class ParallelRunnerTest
             final int[] values2 = new int[LENGTH];
             ParallelRunnable parallelRunnable2 = new ParallelRunnable(LENGTH)
             {
+                @Override
                 public Runnable getRunnable(final int start, final int length)
                 {
                     return new Runnable()
@@ -237,6 +241,7 @@ public class ParallelRunnerTest
             final AtomicBoolean half = new AtomicBoolean();
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
+                @Override
                 public Runnable getRunnable(final int start, final int length)
                 {
                     return new Runnable()

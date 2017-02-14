@@ -62,21 +62,25 @@ public class RawtypeNTTBuilder
         return new RawtypeFactor3NTTStepStrategy();
     }
 
+    @Override
     protected NTTStrategy createSimpleFNTStrategy()
     {
         return new RawtypeTableFNTStrategy();
     }
 
+    @Override
     protected NTTStrategy createSixStepFNTStrategy()
     {
         return new SixStepFNTStrategy();
     }
 
+    @Override
     protected NTTStrategy createTwoPassFNTStrategy()
     {
         return new TwoPassFNTStrategy();
     }
 
+    @Override
     protected NTTStrategy createFactor3NTTStrategy(NTTStrategy nttStrategy)
     {
         return new Factor3NTTStrategy(nttStrategy);

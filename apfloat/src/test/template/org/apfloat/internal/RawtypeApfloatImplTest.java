@@ -1008,6 +1008,7 @@ public class RawtypeApfloatImplTest
     {
         return new PushbackReader(new Reader()
         {
+            @Override
             public int read()
             {
                 if (this.remaining > 0 )
@@ -1021,6 +1022,7 @@ public class RawtypeApfloatImplTest
                 }
             }
 
+            @Override
             public int read(char[] buffer, int offset, int length)
             {
                 length = (int) Math.min(length, this.remaining);
@@ -1032,6 +1034,7 @@ public class RawtypeApfloatImplTest
                 return length;
             }
 
+            @Override
             public void close() {}
 
             private long remaining = size;

@@ -182,6 +182,7 @@ public class RawtypeNTTStepStrategy
 
         ParallelRunnable parallelRunnable = new ParallelRunnable(rows)
         {
+            @Override
             public Runnable getRunnable(int strideStartRow, int strideRows)
             {
                 ArrayAccess subArrayAccess = arrayAccess.subsequence(strideStartRow * columns, strideRows * columns);
@@ -216,6 +217,7 @@ public class RawtypeNTTStepStrategy
 
         ParallelRunnable parallelRunnable = new ParallelRunnable(count)
         {
+            @Override
             public Runnable getRunnable(int startIndex, int strideCount)
             {
                 ArrayAccess subArrayAccess = arrayAccess.subsequence(startIndex * length, strideCount * length);

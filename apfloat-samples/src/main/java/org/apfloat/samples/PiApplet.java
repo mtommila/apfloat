@@ -49,6 +49,7 @@ public class PiApplet
      * Initialize this applet.
      */
 
+    @Override
     public void init()
     {
         add(getContents());
@@ -89,6 +90,7 @@ public class PiApplet
      * Called when this applet is destroyed.
      */
 
+    @Override
     public void destroy()
     {
         removeAll();
@@ -100,6 +102,7 @@ public class PiApplet
      * @return Information about this applet.
      */
 
+    @Override
     public String getAppletInfo()
     {
         Object builderFactory = ApfloatContext.getContext().getBuilderFactory();

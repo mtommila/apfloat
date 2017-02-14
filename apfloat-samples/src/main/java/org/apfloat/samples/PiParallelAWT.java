@@ -48,6 +48,7 @@ public class PiParallelAWT
         super(statusIndicator);
     }
 
+    @Override
     protected void initThreads(Container container, GridBagConstraints constraints)
     {
         this.threadsLabel = new Label("Threads:");
@@ -58,6 +59,7 @@ public class PiParallelAWT
         container.add(this.threadsField, constraints);
     }
 
+    @Override
     protected boolean isInputValid()
     {
         if (!super.isInputValid())
@@ -86,6 +88,7 @@ public class PiParallelAWT
         }
     }
 
+    @Override
     protected Operation<Apfloat> getOperation(long precision, int radix)
         throws ApfloatRuntimeException
     {

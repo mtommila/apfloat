@@ -47,6 +47,7 @@ public class PiGUI
 
         addWindowListener(new WindowAdapter()
         {
+            @Override
             public void windowClosing(WindowEvent windowEvent)
             {
                 setVisible(false);

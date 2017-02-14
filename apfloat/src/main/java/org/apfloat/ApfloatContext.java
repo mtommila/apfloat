@@ -286,6 +286,7 @@ public class ApfloatContext
             super("apfloat shutdown clean-up thread");
         }
 
+        @Override
         public void run()
         {
             ApfloatMath.cleanUp();      // Clear references to static cached apfloats
@@ -1268,6 +1269,7 @@ public class ApfloatContext
      * @return A mostly shallow copy of this object.
      */
 
+    @Override
     public Object clone()
     {
         try

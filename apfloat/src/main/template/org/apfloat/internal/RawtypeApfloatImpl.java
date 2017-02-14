@@ -1344,8 +1344,8 @@ public class RawtypeApfloatImpl
                 carry = (rawtype) 1;
                 DataStorage.Iterator dummy = new DataStorage.Iterator()
                 {
-                    public void setRawtype(rawtype value) {}
-                    public void next() {}
+                    @Override public void setRawtype(rawtype value) {}
+                    @Override public void next() {}
                     private static final long serialVersionUID = 1L;
                 };
                 long sequenceSize;
@@ -1923,6 +1923,7 @@ public class RawtypeApfloatImpl
 
         return new DataStorage.Iterator()
         {
+            @Override
             public rawtype getRawtype()
                 throws ApfloatRuntimeException
             {
@@ -1944,6 +1945,7 @@ public class RawtypeApfloatImpl
                 return value;
             }
 
+            @Override
             public void next()
                 throws ApfloatRuntimeException
             {
@@ -1954,6 +1956,7 @@ public class RawtypeApfloatImpl
                 }
             }
 
+            @Override
             public void close()
                 throws ApfloatRuntimeException
             {
@@ -2054,6 +2057,7 @@ public class RawtypeApfloatImpl
      * @return <code>true</code> if the objects are equal; <code>false</code> otherwise.
      */
 
+    @Override
     public boolean equals(Object obj)
     {
         if (!(obj instanceof ApfloatImpl))
@@ -2097,6 +2101,7 @@ public class RawtypeApfloatImpl
         }
     }
 
+    @Override
     public int hashCode()
     {
         if (this.hashCode == 0)
@@ -2443,8 +2448,8 @@ public class RawtypeApfloatImpl
     private static final DataStorage.Iterator ZERO_ITERATOR =
     new DataStorage.Iterator()
     {
-        public rawtype getRawtype() { return 0; }
-        public void next() { }
+        @Override public rawtype getRawtype() { return 0; }
+        @Override public void next() { }
         private static final long serialVersionUID = 1L;
     };
 

@@ -39,11 +39,13 @@ class ShutdownMap<K, V>
     {
     }
 
+    @Override
     public Set<Map.Entry<K, V>> entrySet()
     {
         throw new ApfloatRuntimeException("Shutdown in progress");
     }
 
+    @Override
     public V put(K key, V value)
     {
         throw new ApfloatRuntimeException("Shutdown in progress");

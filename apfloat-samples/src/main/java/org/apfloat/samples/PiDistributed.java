@@ -594,6 +594,7 @@ public class PiDistributed
             this.radix = radix;
         }
 
+        @Override
         public Apfloat execute()
         {
             Pi.err.println("Using the Chudnovsky brothers' binary splitting algorithm");
@@ -681,6 +682,7 @@ public class PiDistributed
             this.radix = radix;
         }
 
+        @Override
         public Apfloat execute()
         {
             Pi.err.println("Using the Ramanujan binary splitting algorithm");
@@ -776,11 +778,13 @@ public class PiDistributed
             this.numberOfProcessors = numberOfProcessors;
         }
 
+        @Override
         public <T> T execute(Operation<T> operation)
         {
             return super.execute(new ThreadLimitedOperation<T>(operation, this.numberOfProcessors));
         }
 
+        @Override
         public <T> BackgroundOperation<T> executeBackground(Operation<T> operation)
         {
             return super.executeBackground(new ThreadLimitedOperation<T>(operation, this.numberOfProcessors));
@@ -797,6 +801,7 @@ public class PiDistributed
             this.weight = weight;
         }
 
+        @Override
         public int getWeight()
         {
             return this.weight;
@@ -845,6 +850,7 @@ public class PiDistributed
          * @return The string representation.
          */
 
+        @Override
         public String toString()
         {
             return this.weight + "/" + this.numberOfProcessors;

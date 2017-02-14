@@ -42,21 +42,25 @@ public class AprationalField
         super(value);
     }
 
+    @Override
     public AprationalField plus(AprationalField that)
     {
         return new AprationalField(value().add(that.value()));
     }
 
+    @Override
     public AprationalField opposite()
     {
         return new AprationalField(value().negate());
     }
 
+    @Override
     public AprationalField times(AprationalField that)
     {
         return new AprationalField(value().multiply(that.value()));
     }
 
+    @Override
     public AprationalField inverse()
         throws ArithmeticException
     {
@@ -67,6 +71,7 @@ public class AprationalField
         return new AprationalField(new Aprational(value().denominator(), value().numerator()));
     }
 
+    @Override
     public AprationalField copy()
     {
         return new AprationalField(value());

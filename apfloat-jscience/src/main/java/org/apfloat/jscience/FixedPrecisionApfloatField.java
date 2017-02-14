@@ -52,27 +52,32 @@ public class FixedPrecisionApfloatField
         this.helper = helper;
     }
 
+    @Override
     public FixedPrecisionApfloatField plus(FixedPrecisionApfloatField that)
     {
         return new FixedPrecisionApfloatField(helper().add(value(), that.value()), helper());
     }
 
+    @Override
     public FixedPrecisionApfloatField opposite()
     {
         return new FixedPrecisionApfloatField(helper().negate(value()), helper());
     }
 
+    @Override
     public FixedPrecisionApfloatField times(FixedPrecisionApfloatField that)
     {
         return new FixedPrecisionApfloatField(helper().multiply(value(), that.value()), helper());
     }
 
+    @Override
     public FixedPrecisionApfloatField inverse()
         throws ArithmeticException
     {
         return new FixedPrecisionApfloatField(helper().inverseRoot(value(), 1), helper());
     }
 
+    @Override
     public FixedPrecisionApfloatField copy()
     {
         return new FixedPrecisionApfloatField(value(), helper());

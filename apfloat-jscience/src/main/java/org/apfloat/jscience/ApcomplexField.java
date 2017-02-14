@@ -49,27 +49,32 @@ public class ApcomplexField
         super(value);
     }
 
+    @Override
     public ApcomplexField plus(ApcomplexField that)
     {
         return new ApcomplexField(value().add(that.value()));
     }
 
+    @Override
     public ApcomplexField opposite()
     {
         return new ApcomplexField(value().negate());
     }
 
+    @Override
     public ApcomplexField times(ApcomplexField that)
     {
         return new ApcomplexField(value().multiply(that.value()));
     }
 
+    @Override
     public ApcomplexField inverse()
         throws ArithmeticException
     {
         return new ApcomplexField(ApcomplexMath.inverseRoot(value(), 1));
     }
 
+    @Override
     public ApcomplexField copy()
     {
         return new ApcomplexField(value());

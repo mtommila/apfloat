@@ -45,6 +45,7 @@ public class CalculatorGUI
 
         addWindowListener(new WindowAdapter()
         {
+            @Override
             public void windowClosing(WindowEvent windowEvent)
             {
                 setVisible(false);

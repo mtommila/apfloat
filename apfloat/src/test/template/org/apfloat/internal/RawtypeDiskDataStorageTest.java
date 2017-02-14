@@ -63,11 +63,13 @@ public class RawtypeDiskDataStorageTest
         return suite;
     }
 
+    @Override
     public TestCase createTestCase(String methodName)
     {
         return new RawtypeDiskDataStorageTest(methodName);
     }
 
+    @Override
     public DataStorage createDataStorage()
         throws ApfloatRuntimeException
     {

@@ -45,12 +45,14 @@ class FormattingHelper
             this.out = out;
         }
 
+        @Override
         public void write(int c)
             throws IOException
         {
             this.out.append((char) c);
         }
 
+        @Override
         public void write(char[] buffer, int offset, int length)
             throws IOException
         {
@@ -60,12 +62,14 @@ class FormattingHelper
             }
         }
 
+        @Override
         public void write(String text, int offset, int length)
             throws IOException
         {
             this.out.append(text, offset, length);
         }
 
+        @Override
         public Writer append(CharSequence sequence)
             throws IOException
         {
@@ -73,6 +77,7 @@ class FormattingHelper
             return this;
         }
 
+        @Override
         public Writer append(CharSequence sequence, int start, int end)
             throws IOException
         {
@@ -80,6 +85,7 @@ class FormattingHelper
             return this;
         }
 
+        @Override
         public void flush()
             throws IOException
         {
@@ -89,6 +95,7 @@ class FormattingHelper
             }
         }
 
+        @Override
         public void close()
             throws IOException
         {
@@ -123,6 +130,7 @@ class FormattingHelper
             }
         }
 
+        @Override
         public void write(int c)
             throws IOException
         {
@@ -156,6 +164,7 @@ class FormattingHelper
             }
         }
 
+        @Override
         public void write(char[] buffer, int offset, int length)
             throws IOException
         {
@@ -165,6 +174,7 @@ class FormattingHelper
             }
         }
 
+        @Override
         public void write(String text, int offset, int length)
             throws IOException
         {
@@ -189,6 +199,7 @@ class FormattingHelper
             super(out);
         }
 
+        @Override
         public void write(int c)
             throws IOException
         {
@@ -196,6 +207,7 @@ class FormattingHelper
             this.count++;
         }
 
+        @Override
         public void write(char[] buffer, int offset, int length)
             throws IOException
         {
@@ -203,6 +215,7 @@ class FormattingHelper
             this.count += length;
         }
 
+        @Override
         public void write(String text, int offset, int length)
             throws IOException
         {

@@ -62,6 +62,7 @@ public class PiParallel
             super(series);
         }
 
+        @Override
         public void r(final long n1, final long n2, final ApfloatHolder T, final ApfloatHolder Q, final ApfloatHolder P, final BinarySplittingProgressIndicator progressIndicator)
             throws ApfloatRuntimeException
         {
@@ -198,6 +199,7 @@ public class PiParallel
             super(calculator, precision, radix);
         }
 
+        @Override
         public Apfloat execute()
         {
             ApfloatContext ctx = ApfloatContext.getContext();
@@ -246,6 +248,7 @@ public class PiParallel
             super(calculator, precision, radix);
         }
 
+        @Override
         public Apfloat execute()
         {
             ApfloatContext ctx = ApfloatContext.getContext();

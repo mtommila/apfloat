@@ -52,27 +52,32 @@ public class FixedPrecisionApcomplexField
         this.helper = helper;
     }
 
+    @Override
     public FixedPrecisionApcomplexField plus(FixedPrecisionApcomplexField that)
     {
         return new FixedPrecisionApcomplexField(helper().add(value(), that.value()), helper());
     }
 
+    @Override
     public FixedPrecisionApcomplexField opposite()
     {
         return new FixedPrecisionApcomplexField(helper().negate(value()), helper());
     }
 
+    @Override
     public FixedPrecisionApcomplexField times(FixedPrecisionApcomplexField that)
     {
         return new FixedPrecisionApcomplexField(helper().multiply(value(), that.value()), helper());
     }
 
+    @Override
     public FixedPrecisionApcomplexField inverse()
         throws ArithmeticException
     {
         return new FixedPrecisionApcomplexField(helper().inverseRoot(value(), 1), helper());
     }
 
+    @Override
     public FixedPrecisionApcomplexField copy()
     {
         return new FixedPrecisionApcomplexField(value(), helper());

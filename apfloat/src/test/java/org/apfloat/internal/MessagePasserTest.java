@@ -70,6 +70,7 @@ public class MessagePasserTest
         final MessagePasser<Integer, String> messagePasser = new MessagePasser<Integer, String>();
         Thread thread = new Thread()
         {
+            @Override
             public void run()
             {
                 assertNull("No message yet", messagePasser.getMessage(1));

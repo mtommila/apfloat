@@ -188,6 +188,7 @@ public class Apint
      * @return <code>this</code>.
      */
 
+    @Override
     public Apint numerator()
     {
         return this;
@@ -199,6 +200,7 @@ public class Apint
      * @return {@link #ONE}.
      */
 
+    @Override
     public Apint denominator()
     {
         return ONES[radix()];
@@ -210,6 +212,7 @@ public class Apint
      * @return Radix of this apint.
      */
 
+    @Override
     public int radix()
     {
         return this.value.radix();
@@ -225,6 +228,7 @@ public class Apint
      * @see Apfloat#scale()
      */
 
+    @Override
     public long scale()
         throws ApfloatRuntimeException
     {
@@ -244,6 +248,7 @@ public class Apint
      * @since 1.6
      */
 
+    @Override
     public long size()
         throws ApfloatRuntimeException
     {
@@ -256,6 +261,7 @@ public class Apint
      * @return -1, 0 or 1 as the value of this apint is negative, zero or positive.
      */
 
+    @Override
     public int signum()
     {
         return this.value.signum();
@@ -269,6 +275,7 @@ public class Apint
      * @see Apfloat#isShort()
      */
 
+    @Override
     public boolean isShort()
         throws ApfloatRuntimeException
     {
@@ -283,6 +290,7 @@ public class Apint
      * @since 1.1
      */
 
+    @Override
     public Apint negate()
         throws ApfloatRuntimeException
     {
@@ -419,6 +427,7 @@ public class Apint
      * @return This apint.
      */
 
+    @Override
     public Apint floor()
     {
         return this;
@@ -431,6 +440,7 @@ public class Apint
      * @return This apint.
      */
 
+    @Override
     public Apint ceil()
     {
         return this;
@@ -442,6 +452,7 @@ public class Apint
      * @return This apint.
      */
 
+    @Override
     public Apint truncate()
     {
         return this;
@@ -455,6 +466,7 @@ public class Apint
      * @since 1.7.0
      */
 
+    @Override
     public Apint frac()
         throws ApfloatRuntimeException
     {
@@ -494,6 +506,7 @@ public class Apint
      * @since 1.2
      */
 
+    @Override
     public Apint toRadix(int radix)
         throws NumberFormatException, ApfloatRuntimeException
     {
@@ -521,6 +534,7 @@ public class Apint
      * @return -1, 0 or 1 as this apint is numerically less than, equal to, or greater than <code>x</code>.
      */
 
+    @Override
     public int compareTo(Aprational x)
     {
         if (x instanceof Apint)
@@ -541,6 +555,7 @@ public class Apint
      * @return -1, 0 or 1 as this apint is numerically less than, equal to, or greater than <code>x</code>.
      */
 
+    @Override
     public int compareTo(Apfloat x)
     {
         if (x instanceof Aprational)
@@ -565,6 +580,7 @@ public class Apint
      * @return <code>true</code> if the objects are the same; <code>false</code> otherwise.
      */
 
+    @Override
     public boolean equals(Object obj)
     {
         if (obj == this)
@@ -593,6 +609,7 @@ public class Apint
      * @return The hash code value for this object.
      */
 
+    @Override
     public int hashCode()
     {
         return this.value.hashCode();
@@ -606,6 +623,7 @@ public class Apint
      * @return A string representing this object.
      */
 
+    @Override
     public String toString(boolean pretty)
         throws ApfloatRuntimeException
     {
@@ -621,12 +639,14 @@ public class Apint
      * @exception java.io.IOException In case of I/O error writing to the stream.
      */
 
+    @Override
     public void writeTo(Writer out, boolean pretty)
         throws IOException, ApfloatRuntimeException
     {
         this.value.writeTo(out, pretty);
     }
 
+    @Override
     public void formatTo(Formatter formatter, int flags, int width, int precision)
     {
         if ((flags & ALTERNATE) == ALTERNATE)
@@ -648,17 +668,20 @@ public class Apint
      * @return An <code>ApfloatImpl</code> representing this object to the requested precision.
      */
 
+    @Override
     protected ApfloatImpl getImpl(long precision)
         throws ApfloatRuntimeException
     {
         return this.value.getImpl(precision);
     }
 
+    @Override
     Apint roundAway()
     {
         return this;
     }
 
+    @Override
     Apint abs()
     {
         return ApintMath.abs(this);

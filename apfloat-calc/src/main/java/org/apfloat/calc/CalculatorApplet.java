@@ -47,6 +47,7 @@ public class CalculatorApplet
      * Initialize this applet.
      */
 
+    @Override
     public void init()
     {
         add(new CalculatorAWT());
@@ -76,6 +77,7 @@ public class CalculatorApplet
      * Called when this applet is destroyed.
      */
 
+    @Override
     public void destroy()
     {
         removeAll();
@@ -87,6 +89,7 @@ public class CalculatorApplet
      * @return Information about this applet.
      */
 
+    @Override
     public String getAppletInfo()
     {
         String lineSeparator = System.getProperty("line.separator");

@@ -40,6 +40,7 @@ public class LongAparapiSixStepFNTStrategy
         super(new LongAparapiNTTStepStrategy(), new LongAparapiMatrixStrategy());
     }
 
+    @Override
     protected void preTransform(ArrayAccess arrayAccess)
     {
         LongKernel kernel = LongKernel.getInstance();
@@ -49,6 +50,7 @@ public class LongAparapiSixStepFNTStrategy
         super.preTransform(arrayAccess);
     }
 
+    @Override
     protected void postTransform(ArrayAccess arrayAccess)
     {
         super.postTransform(arrayAccess);

@@ -448,6 +448,7 @@ public class Apfloat
      * @return Radix of this apfloat.
      */
 
+    @Override
     public int radix()
     {
         return this.impl.radix();
@@ -459,6 +460,7 @@ public class Apfloat
      * @return <code>this</code>
      */
 
+    @Override
     public Apfloat real()
     {
         return this;
@@ -470,6 +472,7 @@ public class Apfloat
      * @return {@link #ZERO}
      */
 
+    @Override
     public Apfloat imag()
     {
         return Apfloat.ZERO;
@@ -481,6 +484,7 @@ public class Apfloat
      * @return The precision of this apfloat in number of digits of the radix in which it's presented.
      */
 
+    @Override
     public long precision()
         throws ApfloatRuntimeException
     {
@@ -513,6 +517,7 @@ public class Apfloat
      * @exception java.lang.IllegalArgumentException If <code>precision</code> is &lt;= 0.
      */
 
+    @Override
     public Apfloat precision(long precision)
         throws IllegalArgumentException, ApfloatRuntimeException
     {
@@ -539,6 +544,7 @@ public class Apfloat
      * @return The exponent of this apfloat in number of digits of the radix in which it's presented.
      */
 
+    @Override
     public long scale()
         throws ApfloatRuntimeException
     {
@@ -573,6 +579,7 @@ public class Apfloat
      * @since 1.6
      */
 
+    @Override
     public long size()
         throws ApfloatRuntimeException
     {
@@ -625,6 +632,7 @@ public class Apfloat
      * @since 1.1
      */
 
+    @Override
     public Apfloat negate()
         throws ApfloatRuntimeException
     {
@@ -897,6 +905,7 @@ public class Apfloat
      * @return The numeric value represented by this object after conversion to type <code>double</code>.
      */
 
+    @Override
     public double doubleValue()
     {
         int targetPrecision = ApfloatHelper.getDoublePrecision(radix());
@@ -914,6 +923,7 @@ public class Apfloat
      * @return The numeric value represented by this object after conversion to type <code>float</code>.
      */
 
+    @Override
     public float floatValue()
     {
         return (float) doubleValue();
@@ -928,6 +938,7 @@ public class Apfloat
      * @return The numeric value represented by this object after conversion to type <code>byte</code>.
      */
 
+    @Override
     public byte byteValue()
     {
         long longValue = longValue();
@@ -943,6 +954,7 @@ public class Apfloat
      * @return The numeric value represented by this object after conversion to type <code>short</code>.
      */
 
+    @Override
     public short shortValue()
     {
         long longValue = longValue();
@@ -958,6 +970,7 @@ public class Apfloat
      * @return The numeric value represented by this object after conversion to type <code>int</code>.
      */
 
+    @Override
     public int intValue()
     {
         long longValue = longValue();
@@ -973,6 +986,7 @@ public class Apfloat
      * @return The numeric value represented by this object after conversion to type <code>long</code>.
      */
 
+    @Override
     public long longValue()
     {
         int targetPrecision = ApfloatHelper.getLongPrecision(radix());
@@ -1023,6 +1037,7 @@ public class Apfloat
      * @since 1.2
      */
 
+    @Override
     public Apfloat toRadix(int radix)
         throws NumberFormatException, ApfloatRuntimeException
     {
@@ -1094,6 +1109,7 @@ public class Apfloat
      * @return <code>true</code> if the objects are equal; <code>false</code> otherwise.
      */
 
+    @Override
     public boolean equals(Object obj)
     {
         if (obj == this)
@@ -1122,6 +1138,7 @@ public class Apfloat
      * @return The hash code value for this object.
      */
 
+    @Override
     public int hashCode()
     {
         return this.impl.hashCode();
@@ -1135,6 +1152,7 @@ public class Apfloat
      * @return A string representing this object.
      */
 
+    @Override
     public String toString(boolean pretty)
         throws ApfloatRuntimeException
     {
@@ -1150,6 +1168,7 @@ public class Apfloat
      * @exception java.io.IOException In case of I/O error writing to the stream.
      */
 
+    @Override
     public void writeTo(Writer out, boolean pretty)
         throws IOException, ApfloatRuntimeException
     {
@@ -1180,6 +1199,7 @@ public class Apfloat
      * @since 1.3
      */
 
+    @Override
     public void formatTo(Formatter formatter, int flags, int width, int precision)
     {
         Apfloat x = (precision == -1 ? this : ApfloatHelper.limitPrecision(this, precision));

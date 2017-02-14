@@ -66,6 +66,7 @@ class IntKernel
 
     private static ThreadLocal<IntKernel> kernel = new ThreadLocal<IntKernel>()
     {
+        @Override
         public IntKernel initialValue()
         {
             return new IntKernel();
@@ -363,6 +364,7 @@ class IntKernel
         this.scaleFactor = scaleFactor;
     }
 
+    @Override
     public void run()
     {
         if (this.op == TRANSFORM_ROWS)

@@ -41,6 +41,7 @@ public class RawtypeTestCase
         super(methodName);
     }
 
+    @Override
     protected void setUp()
     {
         Properties properties = new Properties();

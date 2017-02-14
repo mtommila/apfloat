@@ -38,6 +38,7 @@ public class PiParallelApplet
     {
     }
 
+    @Override
     protected Container getContents()
     {
         return new PiParallelAWT(this);

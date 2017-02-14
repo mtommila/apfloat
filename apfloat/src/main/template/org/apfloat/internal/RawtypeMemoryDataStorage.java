@@ -57,17 +57,20 @@ public class RawtypeMemoryDataStorage
         this.data = rawtypeMemoryDataStorage.data;
     }
 
+    @Override
     public boolean isCached()
     {
         return true;
     }
 
+    @Override
     protected DataStorage implSubsequence(long offset, long length)
         throws ApfloatRuntimeException
     {
         return new RawtypeMemoryDataStorage(this, offset + getOffset(), length);
     }
 
+    @Override
     protected void implCopyFrom(DataStorage dataStorage, long size)
         throws ApfloatRuntimeException
     {
@@ -106,11 +109,13 @@ public class RawtypeMemoryDataStorage
        }
     }
 
+    @Override
     protected long implGetSize()
     {
         return this.data.length;
     }
 
+    @Override
     protected void implSetSize(long size)
         throws ApfloatRuntimeException
     {
@@ -135,18 +140,21 @@ public class RawtypeMemoryDataStorage
         this.data = newData;
     }
 
+    @Override
     protected ArrayAccess implGetArray(int mode, long offset, int length)
         throws ApfloatRuntimeException
     {
         return new RawtypeMemoryArrayAccess(this.data, (int) (offset + getOffset()), length);
     }
 
+    @Override
     protected ArrayAccess implGetArray(int mode, int startColumn, int columns, int rows)
         throws ApfloatRuntimeException
     {
         throw new ApfloatInternalException("Method not implemented - would be sub-optimal; change the apfloat configuration settings");
     }
 
+    @Override
     protected ArrayAccess implGetTransposedArray(int mode, int startColumn, int columns, int rows)
         throws ApfloatRuntimeException
     {
@@ -173,11 +181,13 @@ public class RawtypeMemoryDataStorage
             this.length = (int) getLength();
         }
 
+        @Override
         public boolean hasNext()
         {
             return (this.length > 0);
         }
 
+        @Override
         public void next()
             throws IllegalStateException
         {
@@ -186,6 +196,7 @@ public class RawtypeMemoryDataStorage
             this.length--;
         }
 
+        @Override
         public rawtype getRawtype()
             throws IllegalStateException
         {
@@ -193,6 +204,7 @@ public class RawtypeMemoryDataStorage
             return this.data[this.position];
         }
 
+        @Override
         public void setRawtype(rawtype value)
             throws IllegalStateException
         {
@@ -200,6 +212,7 @@ public class RawtypeMemoryDataStorage
             this.data[this.position] = value;
         }
 
+        @Override
         public <T> T get(Class<T> type)
             throws UnsupportedOperationException, IllegalStateException
         {
@@ -212,6 +225,7 @@ public class RawtypeMemoryDataStorage
             return value;
         }
 
+        @Override
         public <T> void set(Class<T> type, T value)
             throws UnsupportedOperationException, IllegalArgumentException, IllegalStateException
         {
@@ -226,6 +240,7 @@ public class RawtypeMemoryDataStorage
             setRawtype((RawType) value);
         }
 
+        @Override
         protected void checkLength()
             throws IllegalStateException
         {
@@ -251,6 +266,7 @@ public class RawtypeMemoryDataStorage
             super(READ, startPosition, endPosition);
         }
 
+        @Override
         public void setRawtype(rawtype value)
             throws IllegalStateException
         {
@@ -269,6 +285,7 @@ public class RawtypeMemoryDataStorage
             super(WRITE, startPosition, endPosition);
         }
 
+        @Override
         public rawtype getRawtype()
             throws IllegalStateException
         {
@@ -278,6 +295,7 @@ public class RawtypeMemoryDataStorage
         private static final long serialVersionUID = ${org.apfloat.internal.RawtypeMemoryDataStorage$WriteOnlyIterator};
     }
 
+    @Override
     public Iterator iterator(int mode, long startPosition, long endPosition)
         throws IllegalArgumentException, IllegalStateException, ApfloatRuntimeException
     {

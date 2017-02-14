@@ -60,6 +60,7 @@ public class ColumnSixStepFNTStrategy
         super.matrixStrategy = matrixStrategy;
     }
 
+    @Override
     public void transform(DataStorage dataStorage, int modulus)
         throws ApfloatRuntimeException
     {
@@ -77,6 +78,7 @@ public class ColumnSixStepFNTStrategy
         }
     }
 
+    @Override
     public void inverseTransform(DataStorage dataStorage, int modulus, long totalTransformLength)
         throws ApfloatRuntimeException
     {
@@ -94,17 +96,20 @@ public class ColumnSixStepFNTStrategy
         }
     }
 
+    @Override
     protected void transposeInitial(ArrayAccess arrayAccess, int n1, int n2, boolean isInverse)
     {
         // Omitted as we want to process the columns, not rows
     }
 
+    @Override
     protected void transposeMiddle(ArrayAccess arrayAccess, int n1, int n2, boolean isInverse)
     {
         // Matrix is in transposed form compared to the normal six-step algorithm, so swap n1 and n2 
         super.transposeMiddle(arrayAccess, n2, n1, isInverse);
     }
 
+    @Override
     protected void multiplyElements(ArrayAccess arrayAccess, int rows, int columns, long length, long totalTransformLength, boolean isInverse, int modulus)
     {
         // Matrix is in transposed form compared to the normal six-step algorithm, so swap rows and columns

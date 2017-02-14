@@ -38,6 +38,7 @@ public class PiParallelGUI
     {
     }
 
+    @Override
     protected Container getContents()
     {
         return new PiParallelAWT(this);

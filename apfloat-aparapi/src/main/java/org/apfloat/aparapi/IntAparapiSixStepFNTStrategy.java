@@ -40,6 +40,7 @@ public class IntAparapiSixStepFNTStrategy
         super(new IntAparapiNTTStepStrategy(), new IntAparapiMatrixStrategy());
     }
 
+    @Override
     protected void preTransform(ArrayAccess arrayAccess)
     {
         IntKernel kernel = IntKernel.getInstance();
@@ -49,6 +50,7 @@ public class IntAparapiSixStepFNTStrategy
         super.preTransform(arrayAccess);
     }
 
+    @Override
     protected void postTransform(ArrayAccess arrayAccess)
     {
         super.postTransform(arrayAccess);

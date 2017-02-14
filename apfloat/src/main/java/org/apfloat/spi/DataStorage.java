@@ -375,6 +375,7 @@ public abstract class DataStorage
          * @return <code>true</code> if {@link #next()} can be called, otherwise <code>false</code>.
          */
 
+        @Override
         public boolean hasNext()
         {
             return (this.length > 0);
@@ -390,6 +391,7 @@ public abstract class DataStorage
          * be called for the last element.
          */
 
+        @Override
         public void next()
             throws IllegalStateException, ApfloatRuntimeException
         {
@@ -398,6 +400,7 @@ public abstract class DataStorage
             this.length--;
         }
 
+        @Override
         public int getInt()
             throws UnsupportedOperationException, IllegalStateException, ApfloatRuntimeException
         {
@@ -405,6 +408,7 @@ public abstract class DataStorage
             return super.getInt();
         }
 
+        @Override
         public long getLong()
             throws UnsupportedOperationException, IllegalStateException, ApfloatRuntimeException
         {
@@ -412,6 +416,7 @@ public abstract class DataStorage
             return super.getLong();
         }
 
+        @Override
         public float getFloat()
             throws UnsupportedOperationException, IllegalStateException, ApfloatRuntimeException
         {
@@ -419,6 +424,7 @@ public abstract class DataStorage
             return super.getFloat();
         }
 
+        @Override
         public double getDouble()
             throws UnsupportedOperationException, IllegalStateException, ApfloatRuntimeException
         {
@@ -426,6 +432,7 @@ public abstract class DataStorage
             return super.getDouble();
         }
 
+        @Override
         public void setInt(int value)
             throws UnsupportedOperationException, IllegalStateException, ApfloatRuntimeException
         {
@@ -433,6 +440,7 @@ public abstract class DataStorage
             super.setInt(value);
         }
 
+        @Override
         public void setLong(long value)
             throws UnsupportedOperationException, IllegalStateException, ApfloatRuntimeException
         {
@@ -440,6 +448,7 @@ public abstract class DataStorage
             super.setLong(value);
         }
 
+        @Override
         public void setFloat(float value)
             throws UnsupportedOperationException, IllegalStateException, ApfloatRuntimeException
         {
@@ -447,6 +456,7 @@ public abstract class DataStorage
             super.setFloat(value);
         }
 
+        @Override
         public void setDouble(double value)
             throws UnsupportedOperationException, IllegalStateException, ApfloatRuntimeException
         {

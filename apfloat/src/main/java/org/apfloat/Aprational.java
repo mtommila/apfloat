@@ -252,6 +252,7 @@ public class Aprational
      * @return Radix of this aprational.
      */
 
+    @Override
     public int radix()
     {
         return (numerator() == ONE ? denominator().radix() : numerator().radix());
@@ -263,6 +264,7 @@ public class Aprational
      * @return <code>INFINITE</code>
      */
 
+    @Override
     public long precision()
         throws ApfloatRuntimeException
     {
@@ -279,6 +281,7 @@ public class Aprational
      * @see Apfloat#scale()
      */
 
+    @Override
     public long scale()
         throws ApfloatRuntimeException
     {
@@ -321,6 +324,7 @@ public class Aprational
      * @since 1.6
      */
 
+    @Override
     public long size()
         throws ApfloatRuntimeException
     {
@@ -380,6 +384,7 @@ public class Aprational
      * @return -1, 0 or 1 as the value of this aprational is negative, zero or positive.
      */
 
+    @Override
     public int signum()
     {
         return numerator().signum();
@@ -393,6 +398,7 @@ public class Aprational
      * @see Apfloat#isShort()
      */
 
+    @Override
     public boolean isShort()
         throws ApfloatRuntimeException
     {
@@ -407,6 +413,7 @@ public class Aprational
      * @since 1.1
      */
 
+    @Override
     public Aprational negate()
         throws ApfloatRuntimeException
     {
@@ -531,6 +538,7 @@ public class Aprational
      * @return This aprational rounded towards negative infinity.
      */
 
+    @Override
     public Apint floor()
         throws ApfloatRuntimeException
     {
@@ -551,6 +559,7 @@ public class Aprational
      * @return This aprational rounded towards positive infinity.
      */
 
+    @Override
     public Apint ceil()
         throws ApfloatRuntimeException
     {
@@ -570,6 +579,7 @@ public class Aprational
      * @return This aprational rounded towards zero.
      */
 
+    @Override
     public Apint truncate()
         throws ApfloatRuntimeException
     {
@@ -587,6 +597,7 @@ public class Aprational
      * @since 1.7.0
      */
 
+    @Override
     public Aprational frac()
         throws ApfloatRuntimeException
     {
@@ -603,6 +614,7 @@ public class Aprational
      * @since 1.2
      */
 
+    @Override
     public Aprational toRadix(int radix)
         throws NumberFormatException, ApfloatRuntimeException
     {
@@ -633,6 +645,7 @@ public class Aprational
      * @return -1, 0 or 1 as this aprational is numerically less than, equal to, or greater than <code>x</code>.
      */
 
+    @Override
     public int compareTo(Apfloat x)
     {
         if (x instanceof Aprational)
@@ -649,6 +662,7 @@ public class Aprational
         }
     }
 
+    @Override
     public boolean preferCompare(Apfloat x)
     {
         return !(x instanceof Aprational);
@@ -666,6 +680,7 @@ public class Aprational
      * @return <code>true</code> if the objects are the same; <code>false</code> otherwise.
      */
 
+    @Override
     public boolean equals(Object obj)
     {
         if (obj == this)
@@ -700,6 +715,7 @@ public class Aprational
      * @return The hash code value for this object.
      */
 
+    @Override
     public int hashCode()
     {
         return numerator().hashCode() * 3 +
@@ -712,6 +728,7 @@ public class Aprational
      * @return A string representing this object.
      */
 
+    @Override
     public String toString()
     {
         return toString(true);
@@ -725,6 +742,7 @@ public class Aprational
      * @return A string representing this object.
      */
 
+    @Override
     public String toString(boolean pretty)
         throws ApfloatRuntimeException
     {
@@ -740,6 +758,7 @@ public class Aprational
      * @exception java.io.IOException In case of I/O error writing to the stream.
      */
 
+    @Override
     public void writeTo(Writer out)
         throws IOException, ApfloatRuntimeException
     {
@@ -755,6 +774,7 @@ public class Aprational
      * @exception java.io.IOException In case of I/O error writing to the stream.
      */
 
+    @Override
     public void writeTo(Writer out, boolean pretty)
         throws IOException, ApfloatRuntimeException
     {
@@ -777,6 +797,7 @@ public class Aprational
      * @since 1.3
      */
 
+    @Override
     public void formatTo(Formatter formatter, int flags, int width, int precision)
     {
         if (denominator().equals(ONE))
@@ -820,6 +841,7 @@ public class Aprational
      * @return An <code>ApfloatImpl</code> representing this object to the requested precision.
      */
 
+    @Override
     protected ApfloatImpl getImpl(long precision)
         throws ApfloatRuntimeException
     {
@@ -827,6 +849,7 @@ public class Aprational
     }
 
     // Round away from zero i.e. opposite direction of rounding than in truncate()
+    @Override
     Apint roundAway()
         throws ApfloatRuntimeException
     {
@@ -844,16 +867,19 @@ public class Aprational
         }
     }
 
+    @Override
     Aprational scale(long scale)
     {
         return AprationalMath.scale(this, scale);
     }
 
+    @Override
     Aprational abs()
     {
         return AprationalMath.abs(this);
     }
 
+    @Override
     int compareToHalf()
     {
         return RoundingHelper.compareToHalf(this);

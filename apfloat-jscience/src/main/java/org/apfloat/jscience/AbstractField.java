@@ -101,6 +101,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @return A copy of this object.
      */
 
+    @Override
     public abstract T copy();
 
     /**
@@ -112,6 +113,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @return <code>|this| &gt; |that|</code>
      */
 
+    @Override
     public boolean isLargerThan(T that)
     {
         return ApcomplexMath.abs(value()).compareTo(ApcomplexMath.abs(that.value())) > 0;
@@ -134,6 +136,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @return The value.
      */
 
+    @Override
     public double doubleValue()
     {
         return value().doubleValue();
@@ -145,6 +148,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @return The value.
      */
 
+    @Override
     public long longValue()
     {
         return value().longValue();
@@ -156,6 +160,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @return The string representation of this number as a <code>Text</code>.
      */
 
+    @Override
     public Text toText()
     {
         return Text.valueOf(value().toString());
@@ -169,6 +174,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @return -1, 0, or 1 depending on the ordering. 
      */
 
+    @Override
     public int compareTo(T that)
     {
         int result = value().real().compareTo(that.value().real());
@@ -185,6 +191,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @return The hash code value.
      */
 
+    @Override
     public int hashCode()
     {
         return value().hashCode();
@@ -196,6 +203,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @return If the objects are equal.
      */
 
+    @Override
     public boolean equals(Object obj)
     {
         if (obj instanceof AbstractField)

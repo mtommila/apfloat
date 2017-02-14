@@ -68,6 +68,7 @@ class LongKernel
 
     private static ThreadLocal<LongKernel> kernel = new ThreadLocal<LongKernel>()
     {
+        @Override
         public LongKernel initialValue()
         {
             return new LongKernel();
@@ -362,6 +363,7 @@ class LongKernel
         this.scaleFactor = scaleFactor;
     }
 
+    @Override
     public void run()
     {
         if (this.op == TRANSFORM_ROWS)

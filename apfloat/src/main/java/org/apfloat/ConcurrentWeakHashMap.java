@@ -48,11 +48,13 @@ class ConcurrentWeakHashMap<K, V>
             this.hashCode = key.hashCode();
         }
 
+        @Override
         public int hashCode()
         {
             return this.hashCode;
         }
 
+        @Override
         public boolean equals(Object obj)
         {
             if (this == obj)
@@ -79,41 +81,48 @@ class ConcurrentWeakHashMap<K, V>
         this.queue = new ReferenceQueue<Object>();
     }
 
+    @Override
     public void clear()
     {
         expungeStaleEntries();
         this.map.clear();
     }
 
+    @Override
     public Set<Map.Entry<K, V>> entrySet()
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public V get(Object key)
     {
         // Do not expunge stale entries here to improve performance
         return this.map.get(wrap(key));
     }
 
+    @Override
     public V put(K key, V value)
     {
         expungeStaleEntries();
         return this.map.put(wrap(key), value);
     }
 
+    @Override
     public V remove(Object key)
     {
         expungeStaleEntries();
         return this.map.remove(wrap(key));
     }
 
+    @Override
     public boolean isEmpty()
     {
         // This is for the quick check, therefore we do not expunge stale entries here
         return this.map.isEmpty();
     }
 
+    @Override
     public int size()
     {
         expungeStaleEntries();

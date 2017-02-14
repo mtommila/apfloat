@@ -169,6 +169,7 @@ public class RawtypeNTTConvolutionStepStrategy
 
         ParallelRunnable parallelRunnable = new ParallelRunnable(size)
         {
+            @Override
             public Runnable getRunnable(long offset, long length)
             {
                 return new MultiplyInPlaceRunnable(sourceAndDestination, source, offset, length);
@@ -194,6 +195,7 @@ public class RawtypeNTTConvolutionStepStrategy
 
         ParallelRunnable parallelRunnable = new ParallelRunnable(size)
         {
+            @Override
             public Runnable getRunnable(long offset, long length)
             {
                 return new SquareInPlaceRunnable(sourceAndDestination, offset, length);

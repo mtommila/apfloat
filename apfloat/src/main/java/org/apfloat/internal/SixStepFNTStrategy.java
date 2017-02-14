@@ -69,6 +69,7 @@ public class SixStepFNTStrategy
         this.matrixStrategy = ctx.getBuilderFactory().getMatrixBuilder().createMatrix();
     }
 
+    @Override
     protected void transform(DataStorage dataStorage, int n1, int n2, long length, int modulus)
         throws ApfloatRuntimeException
     {
@@ -106,6 +107,7 @@ public class SixStepFNTStrategy
         arrayAccess.close();
     }
 
+    @Override
     protected void inverseTransform(DataStorage dataStorage, int n1, int n2, long length, long totalTransformLength, int modulus)
         throws ApfloatRuntimeException
     {

@@ -396,61 +396,73 @@ public class ApfloatCalculatorImpl
     private static class ApfloatFunctions
         extends ApcomplexFunctions
     {
+        @Override
         public Number mod(Number x, Number y)
         {
             return ((Apfloat) x).mod((Apfloat) y);
         }
 
+        @Override
         public Number ceil(Number x)
         {
             return ((Apfloat) x).ceil();
         }
 
+        @Override
         public Number floor(Number x)
         {
             return ((Apfloat) x).floor();
         }
 
+        @Override
         public Number frac(Number x)
         {
             return ((Apfloat) x).frac();
         }
 
+        @Override
         public Number truncate(Number x)
         {
             return ((Apfloat) x).truncate();
         }
 
+        @Override
         public Number toDegrees(Number x)
         {
             return ApfloatMath.toDegrees((Apfloat) x);
         }
 
+        @Override
         public Number toRadians(Number x)
         {
             return ApfloatMath.toRadians((Apfloat) x);
         }
 
+        @Override
         public Number atan2(Number x, Number y)
         {
             return ApfloatMath.atan2((Apfloat) x, (Apfloat) y);
         }
 
+        @Override
         public Number copySign(Number x, Number y)
         {
             return ApfloatMath.copySign((Apfloat) x, (Apfloat) y);
         }
 
+        @Override
         public Number fmod(Number x, Number y)
         {
             return ApfloatMath.fmod((Apfloat) x, (Apfloat) y);
         }
 
+        @Override
         public Number hypot(Number x, Number y)
         {
             return ApcomplexMath.abs(new Apcomplex((Apfloat) x, (Apfloat) y));
         }
 
+        @Override
         public Number round(Number x, Number y)
         {
             if (!isLong(y))
@@ -469,41 +481,49 @@ public class ApfloatCalculatorImpl
     private static class AprationalFunctions
         extends ApfloatFunctions
     {
+        @Override
         public Number add(Number x, Number y)
         {
             return ((Aprational) x).add((Aprational) y);
         }
 
+        @Override
         public Number subtract(Number x, Number y)
         {
             return ((Aprational) x).subtract((Aprational) y);
         }
 
+        @Override
         public Number multiply(Number x, Number y)
         {
             return ((Aprational) x).multiply((Aprational) y);
         }
 
+        @Override
         public Number divide(Number x, Number y)
         {
             return ((Aprational) x).divide((Aprational) y);
         }
 
+        @Override
         public Number mod(Number x, Number y)
         {
             return ((Aprational) x).mod((Aprational) y);
         }
 
+        @Override
         protected Number pow(Number x, long y)
         {
             return AprationalMath.pow((Aprational) x, y);
         }
 
+        @Override
         public Number hypot(Number x, Number y)
         {
             return root(add(pow(x, 2), pow(y, 2)), 2);
         }
 
+        @Override
         protected Number root(Number x, long y)
         {
             return new Aprational(root(((Aprational) x).numerator(), y), root(((Aprational) x).denominator(), y));
@@ -519,11 +539,13 @@ public class ApfloatCalculatorImpl
             return root[0];
         }
 
+        @Override
         protected Number round(Number x, long precision)
         {
             return AprationalMath.round((Aprational) x, precision, RoundingMode.HALF_EVEN);
         }
 
+        @Override
         protected Number scale(Number x, long y)
         {
             return AprationalMath.scale((Aprational) x, y);
@@ -533,16 +555,19 @@ public class ApfloatCalculatorImpl
     private static class ApintFunctions
         extends AprationalFunctions
     {
+        @Override
         public Number gcd(Number x, Number y)
         {
             return ApintMath.gcd((Apint) x, (Apint) y);
         }
 
+        @Override
         public Number lcm(Number x, Number y)
         {
             return ApintMath.lcm((Apint) x, (Apint) y);
         }
 
+        @Override
         protected Number scale(Number x, long y)
         {
             return (y >= 0 ? ApintMath.scale((Apint) x, y) : super.scale(x, y));
@@ -617,6 +642,7 @@ public class ApfloatCalculatorImpl
         return text;
     }
 
+    @Override
     protected Functions getFunctions(Number x)
     {
         Functions functions;
@@ -639,6 +665,7 @@ public class ApfloatCalculatorImpl
         return functions;
     }
 
+    @Override
     protected Number promote(Number x)
     {
         if (!(x instanceof Apfloat) && ((Apcomplex) x).imag().signum() == 0)

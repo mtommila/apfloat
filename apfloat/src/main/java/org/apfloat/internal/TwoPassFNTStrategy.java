@@ -87,6 +87,7 @@ public class TwoPassFNTStrategy
     {
     }
 
+    @Override
     protected void transform(DataStorage dataStorage, int n1, int n2, long length, int modulus)
         throws ApfloatRuntimeException
     {
@@ -130,6 +131,7 @@ public class TwoPassFNTStrategy
         }
     }
 
+    @Override
     protected void inverseTransform(DataStorage dataStorage, int n1, int n2, long length, long totalTransformLength, int modulus)
         throws ApfloatRuntimeException
     {

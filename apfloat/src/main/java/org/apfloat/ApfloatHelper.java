@@ -615,6 +615,7 @@ class ApfloatHelper
         {
             a.writeTo(new Writer()
             {
+                @Override
                 public void write(int c)
                 {
                     c = Character.digit(c, 16);
@@ -631,6 +632,7 @@ class ApfloatHelper
                     this.hi = !this.hi;
                 }
 
+                @Override
                 public void write(char cbuf[], int off, int len)
                 {
                     for (int i = 0; i < len; i++)
@@ -639,10 +641,12 @@ class ApfloatHelper
                     }
                 }
 
+                @Override
                 public void close()
                 {
                 }
 
+                @Override
                 public void flush()
                 {
                 }
@@ -671,6 +675,7 @@ class ApfloatHelper
         final int startB = (x.signum() < 0 ? '-' : -1);     // Start the stream with minus sign in case of negative number
         InputStream in = new ByteArrayInputStream(bytes)
         {
+            @Override
             public int read()
             {
                 int c;
@@ -695,6 +700,7 @@ class ApfloatHelper
                 return c;
             }
 
+            @Override
             public int read(byte[] b, int off, int len)
             {
                 int i = 0;

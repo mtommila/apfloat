@@ -39,6 +39,7 @@ class LambertWHelper {
             super(cause);
         }
 
+        @Override
         public ArithmeticException getCause()
         {
             return (ArithmeticException) super.getCause();

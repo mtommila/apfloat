@@ -55,18 +55,21 @@ public class ColumnTwoPassFNTStrategy
         super.stepStrategy = stepStrategy;
     }
 
+    @Override
     protected ArrayAccess getColumns(DataStorage dataStorage, int startColumn, int columns, int rows)
     {
         // Get columns un-transposed
         return dataStorage.getArray(DataStorage.READ_WRITE, startColumn, columns, rows);
     }
 
+    @Override
     protected ArrayAccess getRows(DataStorage dataStorage, int startRow, int rows, int columns)
     {
         // Get rows transposed as we want to organize the data in columns
         return dataStorage.subsequence(startRow * columns, rows * columns).getTransposedArray(DataStorage.READ_WRITE, 0, columns, rows);
     }
 
+    @Override
     protected void multiplyElements(ArrayAccess arrayAccess, int startRow, int startColumn, int rows, int columns, long length, long totalTransformLength, boolean isInverse, int modulus)
     {
         // Data is processed in transposed form compared to the normal two-pass algorithm, so swap rows and columns

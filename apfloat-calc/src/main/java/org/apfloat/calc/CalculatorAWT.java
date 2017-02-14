@@ -139,6 +139,7 @@ public class CalculatorAWT
         // Command history handler for up and down arrow keys
         this.inputField.addKeyListener(new KeyAdapter()
         {
+            @Override
             public void keyPressed(KeyEvent keyEvent)
             {
                 switch(keyEvent.getKeyCode())
@@ -200,6 +201,7 @@ public class CalculatorAWT
             this.dst = dst;
         }
 
+        @Override
         public void flush()
         {
             super.flush();
