@@ -91,7 +91,7 @@ public abstract class AbstractDataStorageBuilder
             // Sizes are in bytes
             if (size > ctx.getMemoryThreshold())
             {
-               // If it is a memory data storage and should be moved to disk then do so
+                // If it is a memory data storage and should be moved to disk then do so
                 DataStorage tmp = createNonCachedDataStorage();
                 tmp.copyFrom(dataStorage);
                 dataStorage = tmp;
