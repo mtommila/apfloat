@@ -18,6 +18,10 @@
  */
 package org.apfloat.aparapi;
 
+import java.util.Arrays;
+
+import org.apfloat.*;
+import org.apfloat.spi.*;
 import org.apfloat.internal.*;
 
 import junit.framework.TestSuite;
@@ -44,10 +48,53 @@ public class LongAparapiSixStepFNTStrategyTest
     {
         TestSuite suite = new TestSuite();
 
+        suite.addTest(new LongAparapiSixStepFNTStrategyTest("testForward"));
+        suite.addTest(new LongAparapiSixStepFNTStrategyTest("testForwardBig"));
         suite.addTest(new LongAparapiSixStepFNTStrategyTest("testRoundTrip"));
         suite.addTest(new LongAparapiSixStepFNTStrategyTest("testRoundTripBig"));
 
         return suite;
+    }
+
+    public static void testForward()
+    {
+        runTestForward(1024);
+    }
+
+    public static void testForwardBig()
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+
+        ctx.setMemoryThreshold(8192);
+        runTestForward(4096);
+    }
+
+    private static void runTestForward(int size)
+    {
+        for (int modulus = 0; modulus < 3; modulus++)
+        {
+            DataStorage dataStorage = createDataStorage(size + 5).subsequence(5, size);
+
+            long[] data = getPlainArray(dataStorage),
+                      expectedTransform = ntt(data, modulus);
+            LongScramble.scramble(expectedTransform, 0, Scramble.createScrambleTable(size));
+            Arrays.sort(expectedTransform);
+
+            AbstractStepFNTStrategy nttStrategy = new LongAparapiSixStepFNTStrategy();
+
+            nttStrategy.transform(dataStorage, modulus);
+
+            long[] actualTransform = getPlainArray(dataStorage);
+            Arrays.sort(actualTransform);
+
+            assertEquals("expected length", size, expectedTransform.length);
+            assertEquals("actual length", size, actualTransform.length);
+
+            for (int i = 0; i < size; i++)
+            {
+                assertEquals("MODULUS[" + modulus + "], [" + i + "]", (long) expectedTransform[i], (long) actualTransform[i]);
+            }
+        }
     }
 
     public static void testRoundTrip()

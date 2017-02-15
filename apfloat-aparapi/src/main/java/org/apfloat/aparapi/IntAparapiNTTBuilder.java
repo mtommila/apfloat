@@ -18,7 +18,9 @@
  */
 package org.apfloat.aparapi;
 
+import org.apfloat.spi.BuilderFactory;
 import org.apfloat.spi.NTTStrategy;
+import org.apfloat.ApfloatContext;
 import org.apfloat.internal.IntNTTBuilder;
 
 /**
@@ -32,6 +34,8 @@ import org.apfloat.internal.IntNTTBuilder;
 public class IntAparapiNTTBuilder
     extends IntNTTBuilder
 {
+    private static final int MIN_GPU_LENGTH = 1048576;
+
     /**
      * Default constructor.
      */
@@ -41,14 +45,41 @@ public class IntAparapiNTTBuilder
     }
 
     @Override
-    protected NTTStrategy createSixStepFNTStrategy()
+    protected NTTStrategy createSixStepFNTStrategy(long size)
     {
+        long length = size;
+        if (length < MIN_GPU_LENGTH)
+        {
+            return super.createSixStepFNTStrategy(size); 
+        }
         return new IntAparapiSixStepFNTStrategy();
     }
 
     @Override
-    protected NTTStrategy createTwoPassFNTStrategy()
+    protected NTTStrategy createTwoPassFNTStrategy(long size)
     {
+        long length = size;
+        if (length < MIN_GPU_LENGTH)
+        {
+            return super.createTwoPassFNTStrategy(size);
+        }
         return new ColumnTwoPassFNTStrategy(new IntAparapiNTTStepStrategy());
+    }
+
+    @Override
+    protected NTTStrategy createFactor3NTTStrategy(long size, NTTStrategy nttStrategy)
+    {
+        if (nttStrategy instanceof IntAparapiSixStepFNTStrategy)
+        {
+            ApfloatContext ctx = ApfloatContext.getContext();
+            BuilderFactory builderFactory = ctx.getBuilderFactory();
+            long maxMemoryBlockSize = ctx.getMaxMemoryBlockSize() / builderFactory.getElementSize();
+
+            if (size <= maxMemoryBlockSize && size <= Integer.MAX_VALUE)
+            {
+                return new IntAparapiFactor3NTTStrategy();
+            }
+        }
+        return super.createFactor3NTTStrategy(size, nttStrategy);
     }
 }

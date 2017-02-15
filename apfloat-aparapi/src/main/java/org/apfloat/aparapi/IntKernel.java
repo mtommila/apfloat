@@ -329,11 +329,6 @@ class IntKernel
     // Methods for multiplying elements in the matrix
     public static final int MULTIPLY_ELEMENTS = 5;
 
-    public void setOp(int op)
-    {
-        this.op = op;
-    }
-
     public void setStartRow(int startRow)
     {
         this.startRow = startRow;
@@ -362,31 +357,6 @@ class IntKernel
     public void setScaleFactor(int scaleFactor)
     {
         this.scaleFactor = scaleFactor;
-    }
-
-    @Override
-    public void run()
-    {
-        if (this.op == TRANSFORM_ROWS)
-        {
-            columnTableFNT();
-        }
-        else if (this.op == INVERSE_TRANSFORM_ROWS)
-        {
-            inverseColumnTableFNT();
-        }
-        else if (this.op == TRANSPOSE)
-        {
-            transpose();
-        }
-        else if (this.op == PERMUTE)
-        {
-            permute();
-        }
-        else if (this.op == MULTIPLY_ELEMENTS)
-        {
-            multiplyElements();
-        }
     }
 
     private void multiplyElements()
@@ -439,11 +409,111 @@ class IntKernel
         return r;
     }
 
-    private int op;
     private int startRow;
     private int startColumn;
     private int rows;
     private int columns;
     private int w;
     private int scaleFactor;
+
+    // Methods for factor-3 transform
+    public static final int TRANSFORM_COLUMNS = 6;
+    public static final int INVERSE_TRANSFORM_COLUMNS = 7;
+
+    public void setOp(int op)
+    {
+        this.op = op;
+    }
+
+    public void setWw(int ww)
+    {
+        this.ww = ww;
+    }
+
+    public void setW1(int w1)
+    {
+        this.w1 = w1;
+    }
+
+    public void setW2(int w2)
+    {
+        this.w2 = w2;
+    }
+
+    @Override
+    public void run()
+    {
+        if (this.op == TRANSFORM_ROWS)
+        {
+            columnTableFNT();
+        }
+        else if (this.op == INVERSE_TRANSFORM_ROWS)
+        {
+            inverseColumnTableFNT();
+        }
+        else if (this.op == TRANSPOSE)
+        {
+            transpose();
+        }
+        else if (this.op == PERMUTE)
+        {
+            permute();
+        }
+        else if (this.op == MULTIPLY_ELEMENTS)
+        {
+            multiplyElements();
+        }
+        else if (this.op == TRANSFORM_COLUMNS || this.op == INVERSE_TRANSFORM_COLUMNS)
+        {
+            transformColumns();
+        }
+    }
+
+    private void transformColumns()
+    {
+        int i = getGlobalId();
+
+        int tmp1 = modPow(this.w, (int) this.startColumn + i),
+            tmp2 = modPow(this.ww, (int) this.startColumn + i);
+
+        // 3-point WFTA on the corresponding array elements
+
+        int x0 = this.data[this.offset + i],
+            x1 = this.data[this.offset + this.columns + i],
+            x2 = this.data[this.offset + 2 * this.columns + i],
+            t;
+
+        if (this.op == INVERSE_TRANSFORM_COLUMNS)
+        {
+            // Multiply before transform
+            x1 = modMultiply(x1, tmp1);
+            x2 = modMultiply(x2, tmp2);
+        }
+
+        // Transform column
+        t = modAdd(x1, x2);
+        x2 = modSubtract(x1, x2);
+        x0 = modAdd(x0, t);
+        t = modMultiply(t, this.w1);
+        x2 = modMultiply(x2, this.w2);
+        t = modAdd(t, x0);
+        x1 = modAdd(t, x2);
+        x2 = modSubtract(t, x2);
+
+        if (this.op == TRANSFORM_COLUMNS)
+        {
+            // Multiply after transform
+            x1 = modMultiply(x1, tmp1);
+            x2 = modMultiply(x2, tmp2);
+        }
+
+        this.data[this.offset + i] = x0;
+        this.data[this.offset + this.columns + i] = x1;
+        this.data[this.offset + 2 * this.columns + i] = x2;
+    }
+
+    private int op;
+    private int ww;
+    private int w1;
+    private int w2;
 }

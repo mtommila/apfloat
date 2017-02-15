@@ -33,7 +33,7 @@ import org.apfloat.spi.Util;
  * @see Factor3NTTStepStrategy
  *
  * @since 1.7.0
- * @version 1.8.0
+ * @version 1.8.3
  * @author Mikko Tommila
  */
 
@@ -132,6 +132,10 @@ public class Factor3NTTStrategy
         return Util.round23up(size);
     }
 
+    /**
+     * The factor-3 NTT steps.
+     */
+    protected Factor3NTTStepStrategy stepStrategy;
+
     private NTTStrategy factor2Strategy;
-    private Factor3NTTStepStrategy stepStrategy;
 }

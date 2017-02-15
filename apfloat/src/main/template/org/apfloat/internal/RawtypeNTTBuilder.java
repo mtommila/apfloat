@@ -32,7 +32,7 @@ import org.apfloat.spi.NTTConvolutionStepStrategy;
  * @see TwoPassFNTStrategy
  * @see Factor3NTTStrategy
  *
- * @version 1.7.0
+ * @version 1.8.3
  * @author Mikko Tommila
  */
 
@@ -63,26 +63,8 @@ public class RawtypeNTTBuilder
     }
 
     @Override
-    protected NTTStrategy createSimpleFNTStrategy()
+    protected NTTStrategy createSimpleFNTStrategy(long size)
     {
         return new RawtypeTableFNTStrategy();
-    }
-
-    @Override
-    protected NTTStrategy createSixStepFNTStrategy()
-    {
-        return new SixStepFNTStrategy();
-    }
-
-    @Override
-    protected NTTStrategy createTwoPassFNTStrategy()
-    {
-        return new TwoPassFNTStrategy();
-    }
-
-    @Override
-    protected NTTStrategy createFactor3NTTStrategy(NTTStrategy nttStrategy)
-    {
-        return new Factor3NTTStrategy(nttStrategy);
     }
 }
