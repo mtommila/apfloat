@@ -142,6 +142,7 @@ public class CalculatorTest
         assertCalculation("-9", "-----9");
         assertCalculation("1", " ;;; \t 1 ;;;;;;;;; ");
         assertCalculation("1.41421", "2.0000^0.50000");
+        assertCalculation("8.8080652584e646456992", "2^2147483647.0");
         assertCalculation("-1", "i^2");
         assertCalculation("1", "1^2i");
 

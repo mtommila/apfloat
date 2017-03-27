@@ -32,7 +32,7 @@ import org.apfloat.AprationalMath;
 /**
  * Arbitrary precision calculator implementation.
  *
- * @version 1.8.1
+ * @version 1.8.3
  * @author Mikko Tommila
  */
 
@@ -76,6 +76,10 @@ public class ApfloatCalculatorImpl
         {
             if (isLong(y))
             {
+                if (((Apcomplex) y).precision() < ((Apcomplex) x).precision())
+                {
+                    x = ((Apcomplex) x).precision(((Apcomplex) y).precision());
+                }
                 return pow(x, y.longValue());
             }
             else
