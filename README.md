@@ -27,3 +27,7 @@ To run the arbitrary precision calculator, run:
 To run the pi calculator, run:
 
 `mvn -pl :apfloat-samples exec:java -Dexec.mainClass=org.apfloat.samples.PiParallelGUI`
+
+## Apfloat website
+
+Go to the [apfloat for Java website](http://www.apfloat.org/apfloat_java/).
