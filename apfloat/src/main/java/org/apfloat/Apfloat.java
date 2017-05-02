@@ -210,7 +210,13 @@ public class Apfloat
 
     /**
      * Constructs an apfloat from the specified <code>float</code>
-     * and precision. The default radix will be used.
+     * and precision. The default radix will be used.<p>
+     *
+     * Note that the resulting apfloat won't accurately represent the given
+     * <code>float</code> value to more than the default precision of a
+     * <code>float</code>, for example in radix 10 the result is accurate to
+     * only 7 digits. The rest of the digits are unspecified even if a greater
+     * precision is specified.
      *
      * @param value The value of the number.
      * @param precision The precision of the number.
@@ -227,7 +233,13 @@ public class Apfloat
 
     /**
      * Constructs an apfloat from the specified <code>float</code>,
-     * precision and radix.
+     * precision and radix.<p>
+     *
+     * Note that the resulting apfloat won't accurately represent the given
+     * <code>float</code> value to more than the default precision of a
+     * <code>float</code>, for example in radix 10 the result is accurate to
+     * only 7 digits. The rest of the digits are unspecified even if a greater
+     * precision is specified.
      *
      * @param value The value of the number.
      * @param precision The precision of the number.
@@ -262,7 +274,18 @@ public class Apfloat
 
     /**
      * Constructs an apfloat from the specified <code>double</code>
-     * and precision. The default radix will be used.
+     * and precision. The default radix will be used.<p>
+     *
+     * Note that the resulting apfloat won't accurately represent the given
+     * <code>double</code> value to more than the default precision of a
+     * <code>double</code>, for example in radix 10 the result is accurate to
+     * only 16 digits. The rest of the digits are unspecified even if a greater
+     * precision is specified.<p>
+     *
+     * In particular, this constructor does <i>not</i> work the same way as the
+     * {@link BigDecimal#BigDecimal(double)} constructor. If you want that kind
+     * of behavior then please use the {@link #Apfloat(BigDecimal, long)}
+     * constructor.
      *
      * @param value The value of the number.
      * @param precision The precision of the number.
@@ -279,7 +302,18 @@ public class Apfloat
 
     /**
      * Constructs an apfloat from the specified <code>double</code>,
-     * precision and radix.
+     * precision and radix.<p>
+     *
+     * Note that the resulting apfloat won't accurately represent the given
+     * <code>double</code> value to more than the default precision of a
+     * <code>double</code>, for example in radix 10 the result is accurate to
+     * only 16 digits. The rest of the digits are unspecified even if a greater
+     * precision is specified.<p>
+     *
+     * In particular, this constructor does <i>not</i> work the same way as the
+     * {@link BigDecimal#BigDecimal(double)} constructor. If you want that kind
+     * of behavior then please use the {@link #Apfloat(BigDecimal, long)}
+     * constructor.
      *
      * @param value The value of the number.
      * @param precision The precision of the number.
