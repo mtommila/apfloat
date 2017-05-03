@@ -244,12 +244,14 @@
                   <zipfileset file="apfloat-jscience/target/apfloat-jscience.jar" fullpath="lib/apfloat-jscience.jar" />
                   <zipfileset file="apfloat-samples/target/samples.jar" fullpath="lib/samples.jar" />
                   <zipfileset file="apfloat-samples/target/signedapplet.jar" fullpath="lib/signedapplet.jar" />
+                  <zipfileset file="apfloat-aparapi/target/apfloat-aparapi.jar" fullpath="lib/apfloat-aparapi.jar" />
                 </zip>
                 <zip destfile="${project.build.directory}/apfloat-unittest-${project.version}.zip">
                   <fileset dir="." includes="readme.html,lgpl.txt" />
                   <zipfileset src="apfloat/target/apfloat-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
                   <zipfileset src="apfloat-calc/target/apfloat-calc-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
                   <zipfileset src="apfloat-jscience/target/apfloat-jscience-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
+                  <zipfileset src="apfloat-aparapi/target/apfloat-aparapi-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
                 </zip>
               </target>
             </configuration>

@@ -42,4 +42,30 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.apfloat:apfloat</exclude>
+                  <exclude>com.aparapi:aparapi</exclude>
+                  <exclude>com.aparapi:aparapi-jni</exclude>
+                </excludes>
+              </artifactSet>
+              <outputFile>${project.build.directory}/apfloat-aparapi.jar</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
