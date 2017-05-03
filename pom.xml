@@ -23,6 +23,7 @@
 
   <scm>
     <connection>scm:git:git://github.com/mtommila/apfloat.git</connection>
+    <developerConnection>scm:git:ssh://github.com:mtommila/apfloat.git</developerConnection>
     <url>https://github.com/mtommila/apfloat</url>
   </scm>
 
@@ -203,6 +204,7 @@
           <version>2.2.1</version>
           <configuration>
             <autoVersionSubmodules>true</autoVersionSubmodules>
+            <localCheckout>true</localCheckout>
             <pushChanges>false</pushChanges>
           </configuration>
         </plugin>
