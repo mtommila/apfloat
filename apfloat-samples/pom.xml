@@ -71,6 +71,9 @@
               <artifactSet>
                 <excludes>
                   <exclude>org.apfloat:apfloat</exclude>
+                  <exclude>org.apfloat:apfloat-aparapi</exclude>
+                  <exclude>com.aparapi:aparapi</exclude>
+                  <exclude>com.aparapi:aparapi-jni</exclude>
                 </excludes>
               </artifactSet>
               <outputFile>${project.build.directory}/samples.jar</outputFile>
@@ -89,6 +92,13 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.apfloat:apfloat-aparapi</exclude>
+                  <exclude>com.aparapi:aparapi</exclude>
+                  <exclude>com.aparapi:aparapi-jni</exclude>
+                </excludes>
+              </artifactSet>
               <outputFile>${project.build.directory}/signedapplet.jar</outputFile>
             </configuration>
           </execution>
