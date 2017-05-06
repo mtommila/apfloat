@@ -134,6 +134,8 @@
           <version>2.10.4</version>
           <configuration>
             <docencoding>ISO-8859-1</docencoding>
+            <doctitle>Apfloat v. ${project.version} Specification</doctitle>
+            <windowtitle>Apfloat Documentation</windowtitle>
             <links>
               <link>http://docs.oracle.com/javase/8/docs/api/</link>
               <link>http://jscience.org/api/</link>
