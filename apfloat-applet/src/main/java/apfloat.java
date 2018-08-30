@@ -30,7 +30,7 @@ import org.apfloat.spi.Util;
  * These settings are intended for applets that are not allowed to create
  * disk files.
  *
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -66,12 +66,9 @@ public class apfloat
         long memoryThreshold = maxMemoryBlockSize;
         int blockSize = Util.round2down((int) Math.min(memoryThreshold, Integer.MAX_VALUE));
 
-        // Guess if we are using a 32-bit or 64-bit platform
-        String elementType = (totalMemory >= 4L << 30 ? "Long" : "Int");
-
         Object[][] contents =
         {
-            { ApfloatContext.BUILDER_FACTORY, "org.apfloat.internal." + elementType + "BuilderFactory" },
+            { ApfloatContext.BUILDER_FACTORY, "org.apfloat.internal.LongBuilderFactory" },
             { ApfloatContext.DEFAULT_RADIX, "10" },
             { ApfloatContext.MAX_MEMORY_BLOCK_SIZE, String.valueOf(maxMemoryBlockSize) },
             { ApfloatContext.CACHE_L1_SIZE, "8192" },

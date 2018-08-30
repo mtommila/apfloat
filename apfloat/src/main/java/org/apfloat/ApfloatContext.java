@@ -177,7 +177,7 @@ import org.apfloat.spi.Util;
  * If these features are added to the Java platform in the future, they
  * may be added to the <code>ApfloatContext</code> API as well.
  *
- * @version 1.8.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -1332,10 +1332,7 @@ public class ApfloatContext
         long memoryThreshold = Math.max(maxMemoryBlockSize >> 10, 65536);
         int blockSize = Util.round2down((int) Math.min(memoryThreshold, Integer.MAX_VALUE));
 
-        // Guess if we are using a 32-bit or 64-bit platform
-        String elementType = (totalMemory >= 4L << 30 ? "Long" : "Int");
-
-        ApfloatContext.defaultProperties.setProperty(BUILDER_FACTORY, "org.apfloat.internal." + elementType + "BuilderFactory");
+        ApfloatContext.defaultProperties.setProperty(BUILDER_FACTORY, "org.apfloat.internal.LongBuilderFactory");
         ApfloatContext.defaultProperties.setProperty(DEFAULT_RADIX, "10");
         ApfloatContext.defaultProperties.setProperty(MAX_MEMORY_BLOCK_SIZE, String.valueOf(maxMemoryBlockSize));
         ApfloatContext.defaultProperties.setProperty(CACHE_L1_SIZE, "8192");
