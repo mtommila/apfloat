@@ -24,7 +24,7 @@ import org.apfloat.spi.*;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -58,8 +58,8 @@ public class RawtypeNTTBuilderTest
         long maxMemoryBlockSize = ctx.getMaxMemoryBlockSize() / sizeof(rawtype);
 
         assertTrue("Fits in cache", nttBuilder.createNTT(cacheSize / 2) instanceof RawtypeTableFNTStrategy);
-        assertTrue("Fits in memory", nttBuilder.createNTT(maxMemoryBlockSize) instanceof SixStepFNTStrategy);
-        assertTrue("Does not fit in memory", nttBuilder.createNTT(maxMemoryBlockSize * 2) instanceof TwoPassFNTStrategy);
+        assertTrue("Fits in memory", nttBuilder.createNTT(Util.round2down(maxMemoryBlockSize)) instanceof SixStepFNTStrategy);
+        assertTrue("Does not fit in memory", nttBuilder.createNTT(Util.round2down(maxMemoryBlockSize * 2)) instanceof TwoPassFNTStrategy);
         assertTrue("Factor 3", nttBuilder.createNTT(3) instanceof Factor3NTTStrategy);
 
         assertTrue("NTTStepStrategy", nttBuilder.createNTTSteps() instanceof NTTStepStrategy);
