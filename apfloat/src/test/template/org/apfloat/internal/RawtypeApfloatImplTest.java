@@ -35,7 +35,7 @@ import org.apfloat.spi.*;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -2252,7 +2252,7 @@ public class RawtypeApfloatImplTest
     public static void testDoubleValue()
     {
         ApfloatImpl impl;
-        double e1 = 0.9999999999999998; // 1 minus two epsilons
+        double e1 = 1.0 - 2.0 * Math.ulp(1.0); // 1 minus two epsilons
 
         for (int radix = Character.MIN_RADIX; radix <= Character.MAX_RADIX; radix++)
         {
