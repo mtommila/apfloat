@@ -24,7 +24,7 @@ import org.apfloat.spi.ArrayAccess;
  * Six-step NTT implementation for the <code>long</code> element type.<p>
  *
  * @since 1.8.3
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -57,6 +57,6 @@ public class LongAparapiSixStepFNTStrategy
 
         LongKernel kernel = LongKernel.getInstance();
         kernel.get(arrayAccess.getLongData());
-        kernel.cleanUpArrays();
+        //kernel.cleanUpArrays(); // FIXME needs to be fixed in aparapi
     }
 }

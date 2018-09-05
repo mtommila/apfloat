@@ -28,7 +28,7 @@ import org.apfloat.internal.Factor3NTTStrategy;
  * Factor-3 NTT implementation for the <code>int</code> element type.<p>
  *
  * @since 1.8.3
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -89,6 +89,6 @@ public class IntAparapiFactor3NTTStrategy
 
         IntKernel kernel = IntKernel.getInstance();
         kernel.get(arrayAccess.getIntData());
-        kernel.cleanUpArrays();
+        //kernel.cleanUpArrays(); // FIXME needs to be fixed in aparapi
     }
 }

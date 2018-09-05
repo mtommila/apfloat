@@ -28,7 +28,7 @@ import org.apfloat.internal.Factor3NTTStrategy;
  * Factor-3 NTT implementation for the <code>long</code> element type.<p>
  *
  * @since 1.8.3
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -89,6 +89,6 @@ public class LongAparapiFactor3NTTStrategy
 
         LongKernel kernel = LongKernel.getInstance();
         kernel.get(arrayAccess.getLongData());
-        kernel.cleanUpArrays();
+        //kernel.cleanUpArrays(); // FIXME needs to be fixed in aparapi
     }
 }
