@@ -1100,6 +1100,7 @@ public class Apfloat
      * @return -1, 0 or 1 as this apfloat is numerically less than, equal to, or greater than <code>x</code>.
      */
 
+    @Override
     public int compareTo(Apfloat x)
     {
         if (x.preferCompare(this))

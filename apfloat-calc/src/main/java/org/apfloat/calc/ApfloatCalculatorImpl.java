@@ -32,46 +32,55 @@ import org.apfloat.AprationalMath;
 /**
  * Arbitrary precision calculator implementation.
  *
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
 public class ApfloatCalculatorImpl
     extends FunctionCalculatorImpl
 {
+    private static final long serialVersionUID = 1L;
+
     private static class ApcomplexFunctions
         implements Functions
     {
+        @Override
         public Number negate(Number x)
         {
             return ((Apcomplex) x).negate();
         }
 
+        @Override
         public Number add(Number x, Number y)
         {
             return ((Apcomplex) x).add((Apcomplex) y);
         }
 
+        @Override
         public Number subtract(Number x, Number y)
         {
             return ((Apcomplex) x).subtract((Apcomplex) y);
         }
 
+        @Override
         public Number multiply(Number x, Number y)
         {
             return ((Apcomplex) x).multiply((Apcomplex) y);
         }
 
+        @Override
         public Number divide(Number x, Number y)
         {
             return ((Apcomplex) x).divide((Apcomplex) y);
         }
 
+        @Override
         public Number mod(Number x, Number y)
         {
             throw new IllegalArgumentException("Modulus can only be used with scalar values");
         }
 
+        @Override
         public Number pow(Number x, Number y)
         {
             if (isLong(y))
@@ -93,86 +102,103 @@ public class ApfloatCalculatorImpl
             return ApcomplexMath.pow((Apcomplex) x, y);
         }
 
+        @Override
         public Number arg(Number x)
         {
             return ApcomplexMath.arg((Apcomplex) x);
         }
 
+        @Override
         public Number conj(Number x)
         {
             return ((Apcomplex) x).conj();
         }
 
+        @Override
         public Number imag(Number x)
         {
             return ((Apcomplex) x).imag();
         }
 
+        @Override
         public Number real(Number x)
         {
             return ((Apcomplex) x).real();
         }
 
+        @Override
         public Number abs(Number x)
         {
             return ApcomplexMath.abs((Apcomplex) x);
         }
 
+        @Override
         public Number acos(Number x)
         {
             return ApcomplexMath.acos((Apcomplex) x);
         }
 
+        @Override
         public Number acosh(Number x)
         {
             return ApcomplexMath.acosh((Apcomplex) x);
         }
 
+        @Override
         public Number asin(Number x)
         {
             return ApcomplexMath.asin((Apcomplex) x);
         }
 
+        @Override
         public Number asinh(Number x)
         {
             return ApcomplexMath.asinh((Apcomplex) x);
         }
 
+        @Override
         public Number atan(Number x)
         {
             return ApcomplexMath.atan((Apcomplex) x);
         }
 
+        @Override
         public Number atanh(Number x)
         {
             return ApcomplexMath.atanh((Apcomplex) x);
         }
 
+        @Override
         public Number cbrt(Number x)
         {
             return root(x, 3);
         }
 
+        @Override
         public Number ceil(Number x)
         {
             throw new IllegalArgumentException("Ceiling can only be used with scalar values");
         }
 
+        @Override
         public Number cos(Number x)
         {
             return ApcomplexMath.cos((Apcomplex) x);
         }
 
+        @Override
         public Number cosh(Number x)
         {
             return ApcomplexMath.cosh((Apcomplex) x);
         }
 
+        @Override
         public Number exp(Number x)
         {
             return ApcomplexMath.exp((Apcomplex) x);
         }
 
+        @Override
         public Number factorial(Number x)
         {
             if (!isLong(x))
@@ -183,26 +209,31 @@ public class ApfloatCalculatorImpl
             return ApintMath.factorial(n);
         }
 
+        @Override
         public Number floor(Number x)
         {
             throw new IllegalArgumentException("Floor can only be used with scalar values");
         }
 
+        @Override
         public Number frac(Number x)
         {
             throw new IllegalArgumentException("Frac can only be used with scalar values");
         }
 
+        @Override
         public Number log(Number x)
         {
             return ApcomplexMath.log((Apcomplex) x);
         }
 
+        @Override
         public Number log(Number x, Number y)
         {
             return ApcomplexMath.log((Apcomplex) x, (Apcomplex) y);
         }
 
+        @Override
         public Number pi(Number x)
         {
             if (!isLong(x))
@@ -213,61 +244,73 @@ public class ApfloatCalculatorImpl
             return ApfloatMath.pi(n);
         }
 
+        @Override
         public Number round(Number x, Number y)
         {
             throw new IllegalArgumentException("Round can only be used with scalar values");
         }
 
+        @Override
         public Number sin(Number x)
         {
             return ApcomplexMath.sin((Apcomplex) x);
         }
 
+        @Override
         public Number sinh(Number x)
         {
             return ApcomplexMath.sinh((Apcomplex) x);
         }
 
+        @Override
         public Number sqrt(Number x)
         {
             return root(x, 2);
         }
 
+        @Override
         public Number tan(Number x)
         {
             return ApcomplexMath.tan((Apcomplex) x);
         }
 
+        @Override
         public Number tanh(Number x)
         {
             return ApcomplexMath.tanh((Apcomplex) x);
         }
 
+        @Override
         public Number truncate(Number x)
         {
             throw new IllegalArgumentException("Truncate can only be used with scalar values");
         }
 
+        @Override
         public Number toDegrees(Number x)
         {
             throw new IllegalArgumentException("ToDegrees can only be used with scalar values");
         }
 
+        @Override
         public Number toRadians(Number x)
         {
             throw new IllegalArgumentException("ToRadians can only be used with scalar values");
         }
 
+        @Override
         public Number agm(Number x, Number y)
         {
             return ApcomplexMath.agm((Apcomplex) x, (Apcomplex) y);
         }
 
+        @Override
         public Number w(Number x)
         {
             return ApcomplexMath.w((Apcomplex) x);
         }
 
+        @Override
         public Number w(Number x, Number y)
         {
             if (!isLong(y))
@@ -277,31 +320,37 @@ public class ApfloatCalculatorImpl
             return ApcomplexMath.w((Apcomplex) x, y.longValue());
         }
 
+        @Override
         public Number atan2(Number x, Number y)
         {
             throw new IllegalArgumentException("Atan2 can only be used with scalar values");
         }
 
+        @Override
         public Number copySign(Number x, Number y)
         {
             throw new IllegalArgumentException("CopySign can only be used with scalar values");
         }
 
+        @Override
         public Number fmod(Number x, Number y)
         {
             throw new IllegalArgumentException("Fmod can only be used with scalar values");
         }
 
+        @Override
         public Number gcd(Number x, Number y)
         {
             throw new IllegalArgumentException("Greatest Common Ddivisor can only be used with integer values");
         }
 
+        @Override
         public Number hypot(Number x, Number y)
         {
             throw new IllegalArgumentException("Hypot can only be used with scalar values");
         }
 
+        @Override
         public Number inverseRoot(Number x, Number y)
         {
             if (!isLong(y))
@@ -311,6 +360,7 @@ public class ApfloatCalculatorImpl
             return inverseRoot(x, y.longValue());
         }
 
+        @Override
         public Number inverseRoot(Number x, Number y, Number z)
         {
             if (!isLong(y) || !isLong(z))
@@ -330,11 +380,13 @@ public class ApfloatCalculatorImpl
             return ApcomplexMath.inverseRoot((Apcomplex) x, y, z);
         }
 
+        @Override
         public Number lcm(Number x, Number y)
         {
             throw new IllegalArgumentException("Least Common Multiplier can only be used with integer values");
         }
 
+        @Override
         public Number root(Number x, Number y)
         {
             if (!isLong(y))
@@ -344,6 +396,7 @@ public class ApfloatCalculatorImpl
             return root(x, y.longValue());
         }
 
+        @Override
         public Number root(Number x, Number y, Number z)
         {
             if (!isLong(y) || !isLong(z))
@@ -363,6 +416,7 @@ public class ApfloatCalculatorImpl
             return ApcomplexMath.root((Apcomplex) x, y, z);
         }
 
+        @Override
         public Number scale(Number x, Number y)
         {
             if (!isLong(y))
@@ -377,6 +431,7 @@ public class ApfloatCalculatorImpl
             return ApcomplexMath.scale((Apcomplex) x, y);
         }
 
+        @Override
         public Number precision(Number x, Number y)
         {
             if (!isLong(y))
@@ -586,6 +641,7 @@ public class ApfloatCalculatorImpl
     {
     }
 
+    @Override
     public Number parseInteger(String value)
     {
         Number x;
@@ -604,6 +660,7 @@ public class ApfloatCalculatorImpl
         return x;
     }
 
+    @Override
     public Number parseDecimal(String value)
     {
         Number x;
@@ -618,6 +675,7 @@ public class ApfloatCalculatorImpl
         return x;
     }
 
+    @Override
     public String format(Number x)
     {
         String text;

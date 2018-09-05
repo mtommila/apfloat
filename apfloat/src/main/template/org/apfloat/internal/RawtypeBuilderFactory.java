@@ -48,16 +48,19 @@ public class RawtypeBuilderFactory
     {
     }
 
+    @Override
     public ApfloatBuilder getApfloatBuilder()
     {
         return RawtypeBuilderFactory.apfloatBuilder;
     }
 
+    @Override
     public DataStorageBuilder getDataStorageBuilder()
     {
         return RawtypeBuilderFactory.dataStorageBuilder;
     }
 
+    @Override
     public <T> AdditionBuilder<T> getAdditionBuilder(Class<T> elementType)
         throws IllegalArgumentException
     {
@@ -70,21 +73,25 @@ public class RawtypeBuilderFactory
         return additionBuilder;
     }
 
+    @Override
     public ConvolutionBuilder getConvolutionBuilder()
     {
         return RawtypeBuilderFactory.convolutionBuilder;
     }
 
+    @Override
     public NTTBuilder getNTTBuilder()
     {
         return RawtypeBuilderFactory.nttBuilder;
     }
 
+    @Override
     public MatrixBuilder getMatrixBuilder()
     {
         return RawtypeBuilderFactory.matrixBuilder;
     }
 
+    @Override
     public <T> CarryCRTBuilder<T> getCarryCRTBuilder(Class<T> elementArrayType)
         throws IllegalArgumentException
     {
@@ -97,27 +104,32 @@ public class RawtypeBuilderFactory
         return carryCRTBuilder;
     }
 
+    @Override
     public Class<?> getElementType()
     {
         return RawType.TYPE;
     }
 
+    @Override
     public Class<?> getElementArrayType()
     {
         return rawtype[].class;
     }
 
+    @Override
     public int getElementSize()
     {
         return sizeof(rawtype);
     }
 
+    @Override
     public void shutdown()
         throws ApfloatRuntimeException
     {
         DiskDataStorage.cleanUp();
     }
 
+    @Override
     public void gc()
         throws ApfloatRuntimeException
     {

@@ -46,6 +46,7 @@ public abstract class AbstractDataStorageBuilder
     {
     }
 
+    @Override
     public DataStorage createDataStorage(long size)
         throws ApfloatRuntimeException
     {
@@ -62,6 +63,7 @@ public abstract class AbstractDataStorageBuilder
         }
     }
 
+    @Override
     public DataStorage createCachedDataStorage(long size)
         throws ApfloatRuntimeException
     {
@@ -80,6 +82,7 @@ public abstract class AbstractDataStorageBuilder
         }
     }
 
+    @Override
     public DataStorage createDataStorage(DataStorage dataStorage)
         throws ApfloatRuntimeException
     {

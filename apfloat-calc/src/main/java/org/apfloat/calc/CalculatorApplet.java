@@ -28,13 +28,16 @@ import org.apfloat.spi.FilenameGenerator;
 /**
  * Calculator applet.
  *
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
+@SuppressWarnings("deprecation")
 public class CalculatorApplet
     extends Applet
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Default constructor.
      */

@@ -30,15 +30,13 @@ import java.awt.CheckboxGroup;
 import java.awt.TextField;
 import java.awt.TextArea;
 import java.awt.Button;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Collections;
 import java.io.StringWriter;
 import java.io.PrintWriter;
-import javax.imageio.spi.ServiceRegistry;       // Silly that this is under javax.imageio
 
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatContext;
@@ -48,13 +46,15 @@ import org.apfloat.spi.BuilderFactory;
 /**
  * Graphical AWT elements for calculating pi using four different algorithms.
  *
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
 public class PiAWT
     extends Panel
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Interface to indicate an error status in the application.
      */
@@ -148,7 +148,7 @@ public class PiAWT
         this.implementationChoice = new Choice();
         this.builderFactories = new ArrayList<BuilderFactory>();
         String defaultBuilderFactoryClassName = ApfloatContext.getContext().getBuilderFactory().getClass().getName();
-        Iterator<BuilderFactory> providers = ServiceRegistry.lookupProviders(org.apfloat.spi.BuilderFactory.class);
+        Iterator<BuilderFactory> providers = ServiceLoader.load(org.apfloat.spi.BuilderFactory.class).iterator();
         if (!providers.hasNext())
         {
             BuilderFactory builderFactory = ApfloatContext.getContext().getBuilderFactory();
@@ -197,29 +197,23 @@ public class PiAWT
         constraints.fill = GridBagConstraints.HORIZONTAL;
         add(this.resultArea, constraints);
 
-        this.goButton.addActionListener(new ActionListener()
+        this.goButton.addActionListener((actionEvent) ->
         {
-            public void actionPerformed(ActionEvent actionEvent)
+            if (isInputValid())
             {
-                if (isInputValid())
-                {
-                    PiAWT.this.statusArea.getText();    // FIXME: workaround for Java bug 9008097, to be removed
-                    PiAWT.this.resultArea.getText();    // FIXME: workaround for Java bug 9008097, to be removed
-                    PiAWT.this.statusArea.setText(null);
-                    PiAWT.this.resultArea.setText(null);
-                    PiAWT.this.goButton.setEnabled(false);
-                    startThread();
-                }
+                PiAWT.this.statusArea.getText();    // FIXME: workaround for Java bug 9008097, to be removed
+                PiAWT.this.resultArea.getText();    // FIXME: workaround for Java bug 9008097, to be removed
+                PiAWT.this.statusArea.setText(null);
+                PiAWT.this.resultArea.setText(null);
+                PiAWT.this.goButton.setEnabled(false);
+                startThread();
             }
         });
 
-        this.abortButton.addActionListener(new ActionListener()
+        this.abortButton.addActionListener((actionEvent) ->
         {
-            public void actionPerformed(ActionEvent actionEvent)
-            {
-                PiAWT.this.abortButton.setEnabled(false);
-                stopThread();
-            }
+            PiAWT.this.abortButton.setEnabled(false);
+            stopThread();
         });
     }
 

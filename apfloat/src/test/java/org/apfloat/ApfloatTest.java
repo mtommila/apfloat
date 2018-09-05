@@ -35,7 +35,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -954,6 +954,8 @@ public class ApfloatTest
     public static void testFormatTo()
         throws IOException
     {
+        System.setProperty("java.locale.providers", "COMPAT,SPI"); // Required since Java 10 to have all locale providers available
+
         Locale locale = null;
         assertEquals("null %s", "1.234567890123456e5", String.format(locale, "%s", new Apfloat("123456.7890123456")));
         assertEquals("null %S", "1.234567890123456E5", String.format(locale, "%S", new Apfloat("123456.7890123456")));

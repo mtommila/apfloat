@@ -31,7 +31,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.1
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -41,21 +41,25 @@ public class ParallelRunnerTest
     private static abstract class DummyFuture
         implements Future<Object>
     {
+        @Override
         public boolean cancel(boolean mayInterruptIfRunning)
         {
             return false;
         }
 
+        @Override
         public boolean isCancelled()
         {
             return false;
         }
 
+        @Override
         public Object get()
         {
             return null;
         }
 
+        @Override
         public Object get(long timeout, TimeUnit unit)
         {
             return null;
@@ -99,14 +103,11 @@ public class ParallelRunnerTest
                 @Override
                 public Runnable getRunnable(final int start, final int length)
                 {
-                    return new Runnable()
+                    return () ->
                     {
-                        public void run()
+                        for (int i = start; i < start + length; i++)
                         {
-                            for (int i = start; i < start + length; i++)
-                            {
-                                values[i] += i;
-                            }
+                            values[i] += i;
                         }
                     };
                 }
@@ -137,13 +138,10 @@ public class ParallelRunnerTest
                 @Override
                 public Runnable getRunnable(final long start, final long length)
                 {
-                    return new Runnable()
+                    return () ->
                     {
-                        public void run()
-                        {
-                            starts.put(start, start);
-                            assertEquals("length", SQRT_LENGTH, length);
-                        }
+                        starts.put(start, start);
+                        assertEquals("length", SQRT_LENGTH, length);
                     };
                 }
 
@@ -180,14 +178,11 @@ public class ParallelRunnerTest
                 @Override
                 public Runnable getRunnable(final int start, final int length)
                 {
-                    return new Runnable()
+                    return () ->
                     {
-                        public void run()
+                        for (int i = start; i < start + length; i++)
                         {
-                            for (int i = start; i < start + length; i++)
-                            {
-                                values[i] += i;
-                            }
+                            values[i] += i;
                         }
                     };
                 }
@@ -199,14 +194,11 @@ public class ParallelRunnerTest
                 @Override
                 public Runnable getRunnable(final int start, final int length)
                 {
-                    return new Runnable()
+                    return () ->
                     {
-                        public void run()
+                        for (int i = start; i < start + length; i++)
                         {
-                            for (int i = start; i < start + length; i++)
-                            {
-                                values2[i] += i;
-                            }
+                            values2[i] += i;
                         }
                     };
                 }
@@ -244,33 +236,28 @@ public class ParallelRunnerTest
                 @Override
                 public Runnable getRunnable(final int start, final int length)
                 {
-                    return new Runnable()
+                    return () ->
                     {
-                        public void run()
-                        {
-                            threadNames.put(Thread.currentThread().getName(), "");
-                            half.set(start + length >= LENGTH / 2);
-                            sleepUninterrupted(20);
-                        }
+                        threadNames.put(Thread.currentThread().getName(), "");
+                        half.set(start + length >= LENGTH / 2);
+                        sleepUninterrupted(20);
                     };
                 }
             };
 
             // In some other thread, steal some work for half the time (make sure the wait ends before the task is done)
-            Runnable otherTask = new Runnable()
+            Runnable otherTask = () ->
             {
-                public void run()
+                sleepUninterrupted(10);
+                Future<?> dummyFuture = new DummyFuture()
                 {
-                    sleepUninterrupted(10);
-                    Future<?> dummyFuture = new DummyFuture()
+                    @Override
+                    public boolean isDone()
                     {
-                        public boolean isDone()
-                        {
-                            return half.get();
-                        }
-                    };
-                    ParallelRunner.wait(dummyFuture);
-                }
+                        return half.get();
+                    }
+                };
+                ParallelRunner.wait(dummyFuture);
             };
 
             ctx.getExecutorService().execute(otherTask);

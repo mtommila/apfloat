@@ -30,13 +30,15 @@ import java.util.Map;
  * Provides a storage for variables, and maps
  * the elementary operators to function calls.
  *
- * @version 1.6.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
 public abstract class AbstractCalculatorImpl
     implements CalculatorImpl, Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Default constructor.
      */
@@ -47,48 +49,56 @@ public abstract class AbstractCalculatorImpl
         this.pretty = false;
     }
 
+    @Override
     public Number negate(Number x)
         throws ParseException
     {
         return function("negate", toList(x));
     }
 
+    @Override
     public Number add(Number x, Number y)
         throws ParseException
     {
         return function("add", toList(x, y));
     }
 
+    @Override
     public Number subtract(Number x, Number y)
         throws ParseException
     {
         return function("subtract", toList(x, y));
     }
 
+    @Override
     public Number multiply(Number x, Number y)
         throws ParseException
     {
         return function("multiply", toList(x, y));
     }
 
+    @Override
     public Number divide(Number x, Number y)
         throws ParseException
     {
         return function("divide", toList(x, y));
     }
 
+    @Override
     public Number mod(Number x, Number y)
         throws ParseException
     {
         return function("mod", toList(x, y));
     }
 
+    @Override
     public Number pow(Number x, Number y)
         throws ParseException
     {
         return function("pow", toList(x, y));
     }
 
+    @Override
     public Number getVariable(String name)
         throws ParseException
     {
@@ -100,11 +110,13 @@ public abstract class AbstractCalculatorImpl
         return variable;
     }
 
+    @Override
     public void setVariable(String name, Number value)
     {
         this.variables.put(name, value);
     }
 
+    @Override
     public void setFormat(boolean pretty)
     {
         this.pretty = pretty;

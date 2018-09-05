@@ -26,7 +26,7 @@ import java.util.Comparator;
 /**
  * Various mathematical functions for arbitrary precision rational numbers.
  *
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -272,15 +272,7 @@ public class AprationalMath
         // Sort by size
         x = x.clone();
 
-        Arrays.sort(x, new Comparator<Aprational>()
-        {
-            public int compare(Aprational x, Aprational y)
-            {
-                long xSize = ApfloatHelper.size(x),
-                     ySize = ApfloatHelper.size(y);
-                return (xSize < ySize ? -1 : (xSize > ySize ? 1 : 0));
-            }
-        });
+        Arrays.sort(x, Comparator.comparing(ApfloatHelper::size));
 
         // Recursively add
         return recursiveSum(x, 0, x.length - 1);

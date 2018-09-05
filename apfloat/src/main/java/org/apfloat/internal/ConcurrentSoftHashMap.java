@@ -74,6 +74,7 @@ class ConcurrentSoftHashMap<K, V>
         return unwrap(this.map.put(key, wrap(value)));
     }
 
+    @Override
     public V putIfAbsent(K key, V value)
     {
         return unwrap(this.map.putIfAbsent(key, wrap(value)));
@@ -85,16 +86,19 @@ class ConcurrentSoftHashMap<K, V>
         return unwrap(this.map.remove(key));
     }
 
+    @Override
     public boolean remove(Object key, Object value)
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public V replace(K key, V value)
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean replace(K key, V oldValue, V newValue)
     {
         throw new UnsupportedOperationException();

@@ -43,7 +43,7 @@ import org.apfloat.spi.NTTStrategy;
  * All access to this class must be externally synchronized.
  *
  * @since 1.7.0
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -65,13 +65,7 @@ public class ParallelThreeNTTConvolutionStrategy
             return this.lock.tryLock();
         }
 
-        private static final Callable<Void> VOID_CALLABLE = new Callable<Void>()
-        {
-            public Void call()
-            {
-                return null;
-            }
-        };
+        private static final Callable<Void> VOID_CALLABLE = () -> null;
 
         private Lock lock;
     }

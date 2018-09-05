@@ -47,6 +47,7 @@ public class RawtypeTableFNTStrategy
     {
     }
 
+    @Override
     public void transform(DataStorage dataStorage, int modulus)
         throws ApfloatRuntimeException
     {
@@ -71,6 +72,7 @@ public class RawtypeTableFNTStrategy
         arrayAccess.close();
     }
 
+    @Override
     public void inverseTransform(DataStorage dataStorage, int modulus, long totalTransformLength)
         throws ApfloatRuntimeException
     {
@@ -97,6 +99,7 @@ public class RawtypeTableFNTStrategy
         arrayAccess.close();
     }
 
+    @Override
     public long getTransformLength(long size)
     {
         return Util.round2up(size);

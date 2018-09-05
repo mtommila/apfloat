@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.7.0
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -128,9 +128,9 @@ public class ConcurrentSoftHashMapTest
     public static void testPutIfAbsent()
     {
         ConcurrentMap<Integer, Integer> map = new ConcurrentSoftHashMap<Integer, Integer>();
-        Integer key1 = new Integer(1);
-        Integer value1 = new Integer(2);
-        Integer value2 = new Integer(3);
+        Integer key1 = 1;
+        Integer value1 = 2;
+        Integer value2 = 3;
         assertNull("First putIfAbsent", map.putIfAbsent(key1, value1));
         assertSame("Second putIfAbsent", value1, map.putIfAbsent(key1, value2));
         assertSame("Get", value1, map.get(key1));

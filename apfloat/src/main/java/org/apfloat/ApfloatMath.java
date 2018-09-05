@@ -42,7 +42,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApintMath
  *
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -856,7 +856,7 @@ public class ApfloatMath
         }
 
         // Get synchronization lock - getting the lock is also synchronized
-        Integer radixKey = getRadixPiKey(new Integer(radix));   // Use new Integer since we synchronize on it; Integer.valueOf() could be shared instance
+        Integer radixKey = getRadixPiKey(radix);
 
         Apfloat pi;
 
@@ -881,12 +881,14 @@ public class ApfloatMath
     }
 
     // Get shared radix key for synchronizing getting and calculating the pi related constants
-    private static Integer getRadixPiKey(Integer radix)
+    private static Integer getRadixPiKey(int radix)
     {
-        Integer radixKey = ApfloatMath.radixPiKeys.putIfAbsent(radix, radix);
+        @SuppressWarnings("deprecation")
+        Integer value = new Integer(radix); // Use new Integer since we synchronize on it; Integer.valueOf() could be shared instance
+        Integer radixKey = ApfloatMath.radixPiKeys.putIfAbsent(value, value);
         if (radixKey == null)
         {
-            radixKey = radix;
+            radixKey = value;
         }
 
         return radixKey;
@@ -1244,12 +1246,14 @@ public class ApfloatMath
     }
 
     // Get shared radix key for synchronizing getting and calculating the logarithm related constants
-    private static Integer getRadixLogKey(Integer radix)
+    private static Integer getRadixLogKey(int radix)
     {
-        Integer radixKey = ApfloatMath.radixLogKeys.putIfAbsent(radix, radix);
+        @SuppressWarnings("deprecation")
+        Integer value = new Integer(radix); // Use new Integer since we synchronize on it; Integer.valueOf() could be shared instance
+        Integer radixKey = ApfloatMath.radixLogKeys.putIfAbsent(value, value);
         if (radixKey == null)
         {
-            radixKey = radix;
+            radixKey = value;
         }
 
         return radixKey;
@@ -1277,7 +1281,7 @@ public class ApfloatMath
         throws ApfloatRuntimeException
     {
         // Get synchronization lock - getting the lock is also synchronized
-        Integer radixKey = getRadixLogKey(new Integer(radix));      // Use new Integer since we synchronize on it; Integer.valueOf() could be shared instance
+        Integer radixKey = getRadixLogKey(radix);
 
         Apfloat logRadix;
 
@@ -1900,26 +1904,15 @@ public class ApfloatMath
         x = tmp;
 
         // Create a heap, ordered by size
-        final Queue<Apfloat> heap = new PriorityQueue<Apfloat>(x.length, new Comparator<Apfloat>()
-        {
-            public int compare(Apfloat x, Apfloat y)
-            {
-                long xSize = x.size(),
-                     ySize = y.size();
-                return (xSize < ySize ? -1 : (xSize > ySize ? 1 : 0));
-            }
-        });
+        final Queue<Apfloat> heap = new PriorityQueue<Apfloat>(x.length, Comparator.comparing(Apfloat::size));
 
         // Perform the multiplications in parallel
-        ParallelHelper.ProductKernel<Apfloat> kernel = new ParallelHelper.ProductKernel<Apfloat>()
+        ParallelHelper.ProductKernel<Apfloat> kernel = (h) ->
         {
-            public void run(Queue<Apfloat> heap)
-            {
-                Apfloat a = heap.remove();
-                Apfloat b = heap.remove();
-                Apfloat c = a.multiply(b);
-                heap.add(c);
-            }
+            Apfloat a = h.remove();
+            Apfloat b = h.remove();
+            Apfloat c = a.multiply(b);
+            h.add(c);
         };
         ParallelHelper.parallelProduct(x, heap, kernel);
 
@@ -1986,15 +1979,7 @@ public class ApfloatMath
         x = tmp;
 
         // Sort by scale (might be mostly equal to size)
-        Comparator<Apfloat> comparator = new Comparator<Apfloat>()
-        {
-            public int compare(Apfloat x, Apfloat y)
-            {
-                long xScale = x.scale(),
-                     yScale = y.scale();
-                return (xScale < yScale ? -1 : (xScale > yScale ? 1 : 0));
-            }
-        };
+        Comparator<Apfloat> comparator = Comparator.comparing(Apfloat::scale);
         Arrays.sort(x, comparator);
 
         // The list of numbers to be added
@@ -2020,20 +2005,17 @@ public class ApfloatMath
                 (a.size() <= maxSize ? queue : list).add(a);
             }
 
-            Runnable runnable = new Runnable()
+            Runnable runnable = () ->
             {
-                public void run()
+                // Add numbers as long as there are any left in the queue
+                Apfloat s = Apfloat.ZERO,
+                        a;
+                while ((a = queue.poll()) != null)
                 {
-                    // Add numbers as long as there are any left in the queue
-                    Apfloat s = Apfloat.ZERO,
-                            a;
-                    while ((a = queue.poll()) != null)
-                    {
-                        s = s.add(a);
-                    }
-                    // Finally, put the sub-sum back in the queue
-                    queue.add(s);
+                    s = s.add(a);
                 }
+                // Finally, put the sub-sum back in the queue
+                queue.add(s);
             };
 
             // Run the runnable in multiple threads

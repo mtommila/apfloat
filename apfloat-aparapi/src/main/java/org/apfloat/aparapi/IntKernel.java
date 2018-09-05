@@ -48,7 +48,7 @@ import org.apfloat.spi.ArrayAccess;
  * </ul>
  *
  * @since 1.8.3
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -64,14 +64,7 @@ class IntKernel
         return IntKernel.kernel.get();
     }
 
-    private static ThreadLocal<IntKernel> kernel = new ThreadLocal<IntKernel>()
-    {
-        @Override
-        public IntKernel initialValue()
-        {
-            return new IntKernel();
-        }
-    };
+    private static ThreadLocal<IntKernel> kernel = ThreadLocal.withInitial(IntKernel::new);
 
     // Methods for calculating the column transforms in parallel
     public static final int TRANSFORM_ROWS = 1;

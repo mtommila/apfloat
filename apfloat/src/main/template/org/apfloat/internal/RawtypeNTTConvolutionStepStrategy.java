@@ -54,6 +54,7 @@ public class RawtypeNTTConvolutionStepStrategy
             this.length = length;
         }
 
+        @Override
         public void run()
         {
             DataStorage.Iterator dest = this.sourceAndDestination.iterator(DataStorage.READ_WRITE, this.offset, this.offset + this.length),
@@ -86,6 +87,7 @@ public class RawtypeNTTConvolutionStepStrategy
             this.length = length;
         }
 
+        @Override
         public void run()
         {
             DataStorage.Iterator iterator = this.sourceAndDestination.iterator(DataStorage.READ_WRITE, this.offset, this.offset + this.length);
@@ -113,6 +115,7 @@ public class RawtypeNTTConvolutionStepStrategy
     {
     }
 
+    @Override
     public void multiplyInPlace(DataStorage sourceAndDestination, DataStorage source, int modulus)
         throws ApfloatRuntimeException
     {
@@ -133,6 +136,7 @@ public class RawtypeNTTConvolutionStepStrategy
         }
     }
 
+    @Override
     public void squareInPlace(DataStorage sourceAndDestination, int modulus)
         throws ApfloatRuntimeException
     {

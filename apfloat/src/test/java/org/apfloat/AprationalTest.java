@@ -33,7 +33,7 @@ import java.util.IllegalFormatException;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -771,6 +771,8 @@ public class AprationalTest
     public static void testFormatTo()
         throws IOException
     {
+        System.setProperty("java.locale.providers", "COMPAT,SPI"); // Required since Java 10 to have all locale providers available
+
         Locale locale = null;
         assertEquals("null %s", "123456789/1234", String.format(locale, "%s", new Aprational("123456789/1234")));
         assertEquals("null %S", "123456789/123A", String.format(locale, "%S", new Aprational("123456789/123a", 11)));

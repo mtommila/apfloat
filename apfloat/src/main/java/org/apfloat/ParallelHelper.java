@@ -32,12 +32,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Helper methods for parallel algorithms.
  *
  * @since 1.8.0
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
 class ParallelHelper
 {
+    @FunctionalInterface
     public interface ProductKernel<T extends Apcomplex>
     {
         public void run(Queue<T> heap);
@@ -81,24 +82,21 @@ class ParallelHelper
                 i = (i == numberOfProcessors ? 0 : i);
             }
             final AtomicInteger index = new AtomicInteger();
-            Runnable runnable = new Runnable()
+            Runnable runnable = () ->
             {
-                public void run()
+                Queue<T> subHeap = subHeaps.get(index.getAndIncrement());
+                long size = 0;
+                // Multiply numbers as long as there are at least two and they are small enough
+                // Note that with the heap we will start with the smallest numbers and size will grow
+                while (subHeap.size() > 1 && size <= maxSize)
                 {
-                    Queue<T> subHeap = subHeaps.get(index.getAndIncrement());
-                    long size = 0;
-                    // Multiply numbers as long as there are at least two and they are small enough
-                    // Note that with the heap we will start with the smallest numbers and size will grow
-                    while (subHeap.size() > 1 && size <= maxSize)
-                    {
-                        kernel.run(subHeap);
-                        size = subHeap.peek().size();
-                    }
-                    synchronized (heap)
-                    {
-                        // Synchronize the adds; nothing must be reading the heap at the same time
-                        heap.addAll(subHeap);
-                    }
+                    kernel.run(subHeap);
+                    size = subHeap.peek().size();
+                }
+                synchronized (heap)
+                {
+                    // Synchronize the adds; nothing must be reading the heap at the same time
+                    heap.addAll(subHeap);
                 }
             };
 

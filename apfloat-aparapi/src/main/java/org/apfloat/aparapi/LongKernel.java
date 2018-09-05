@@ -50,7 +50,7 @@ import org.apfloat.spi.ArrayAccess;
  * </ul>
  *
  * @since 1.8.3
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -66,14 +66,7 @@ class LongKernel
         return LongKernel.kernel.get();
     }
 
-    private static ThreadLocal<LongKernel> kernel = new ThreadLocal<LongKernel>()
-    {
-        @Override
-        public LongKernel initialValue()
-        {
-            return new LongKernel();
-        }
-    };
+    private static ThreadLocal<LongKernel> kernel = ThreadLocal.withInitial(LongKernel::new);
 
     // Methods for calculating the column transforms in parallel
     public static final int TRANSFORM_ROWS = 1;

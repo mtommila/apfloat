@@ -66,6 +66,7 @@ public abstract class AbstractConvolutionBuilder
     {
     }
 
+    @Override
     public ConvolutionStrategy createConvolution(int radix, long size1, long size2, long resultSize)
     {
         long minSize = Math.min(size1, size2),

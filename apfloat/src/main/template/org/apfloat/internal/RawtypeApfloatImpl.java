@@ -877,6 +877,7 @@ public class RawtypeApfloatImpl
         return count;
     }
 
+    @Override
     public ApfloatImpl addOrSubtract(ApfloatImpl x, boolean subtract)
         throws ApfloatRuntimeException
     {
@@ -1169,6 +1170,7 @@ public class RawtypeApfloatImpl
         return new RawtypeApfloatImpl(sign, precision, exponent, dataStorage, this.radix);
     }
 
+    @Override
     public ApfloatImpl multiply(ApfloatImpl x)
         throws ApfloatRuntimeException
     {
@@ -1247,12 +1249,14 @@ public class RawtypeApfloatImpl
         return new RawtypeApfloatImpl(sign, precision, exponent, dataStorage, this.radix);
     }
 
+    @Override
     public boolean isShort()
         throws ApfloatRuntimeException
     {
         return (this.sign == 0 || getSize() == 1);
     }
 
+    @Override
     public ApfloatImpl divideShort(ApfloatImpl x)
         throws ApfloatRuntimeException
     {
@@ -1392,6 +1396,7 @@ public class RawtypeApfloatImpl
         return new RawtypeApfloatImpl(sign, precision, exponent, dataStorage, this.radix);
     }
 
+    @Override
     public ApfloatImpl absFloor()
         throws ApfloatRuntimeException
     {
@@ -1415,6 +1420,7 @@ public class RawtypeApfloatImpl
         return apfloatImpl;
     }
 
+    @Override
     public ApfloatImpl absCeil()
         throws ApfloatRuntimeException
     {
@@ -1485,6 +1491,7 @@ public class RawtypeApfloatImpl
         return apfloatImpl;
     }
 
+    @Override
     public ApfloatImpl frac()
         throws ApfloatRuntimeException
     {
@@ -1536,16 +1543,19 @@ public class RawtypeApfloatImpl
         return new RawtypeApfloatImpl(0, Apfloat.INFINITE, 0, null, this.radix);
     }
 
+    @Override
     public int radix()
     {
         return this.radix;
     }
 
+    @Override
     public long precision()
     {
         return this.precision;
     }
 
+    @Override
     public long size()
         throws ApfloatRuntimeException
     {
@@ -1598,6 +1608,7 @@ public class RawtypeApfloatImpl
         return this.leastZeros;
     }
 
+    @Override
     public ApfloatImpl precision(long precision)
     {
         if (this.sign == 0 || precision == this.precision)
@@ -1610,6 +1621,7 @@ public class RawtypeApfloatImpl
         }
     }
 
+    @Override
     public long scale()
         throws ApfloatRuntimeException
     {
@@ -1618,17 +1630,20 @@ public class RawtypeApfloatImpl
         return (this.exponent - 1) * BASE_DIGITS[this.radix] + getInitialDigits();
     }
 
+    @Override
     public int signum()
     {
         return this.sign;
     }
 
+    @Override
     public ApfloatImpl negate()
         throws ApfloatRuntimeException
     {
         return new RawtypeApfloatImpl(-this.sign, this.precision, this.exponent, this.dataStorage, this.radix);
     }
 
+    @Override
     public double doubleValue()
     {
         if (this.sign == 0)
@@ -1662,6 +1677,7 @@ public class RawtypeApfloatImpl
         }
     }
 
+    @Override
     public long longValue()
     {
         if (this.sign == 0 || this.exponent <= 0)
@@ -1711,7 +1727,7 @@ public class RawtypeApfloatImpl
         }
     }
 
-    // If this ApfloatImpl is equal to 1
+    @Override
     public boolean isOne()
         throws ApfloatRuntimeException
     {
@@ -1725,6 +1741,7 @@ public class RawtypeApfloatImpl
         return (this.isOne == 1);
     }
 
+    @Override
     public long equalDigits(ApfloatImpl x)
         throws ApfloatRuntimeException
     {
@@ -1874,6 +1891,7 @@ public class RawtypeApfloatImpl
         return result;
     }
 
+    @Override
     public int compareTo(ApfloatImpl x)
         throws ApfloatRuntimeException
     {
@@ -2135,6 +2153,7 @@ public class RawtypeApfloatImpl
         return this.hashCode;
     }
 
+    @Override
     public String toString(boolean pretty)
         throws ApfloatRuntimeException
     {
@@ -2199,6 +2218,7 @@ public class RawtypeApfloatImpl
         }
     }
 
+    @Override
     public void writeTo(Writer out, boolean pretty)
         throws IOException, ApfloatRuntimeException
     {

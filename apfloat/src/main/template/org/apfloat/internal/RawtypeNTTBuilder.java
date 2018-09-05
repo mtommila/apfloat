@@ -47,16 +47,19 @@ public class RawtypeNTTBuilder
     {
     }
 
+    @Override
     public NTTStepStrategy createNTTSteps()
     {
         return new RawtypeNTTStepStrategy();
     }
 
+    @Override
     public NTTConvolutionStepStrategy createNTTConvolutionSteps()
     {
         return new RawtypeNTTConvolutionStepStrategy();
     }
 
+    @Override
     public Factor3NTTStepStrategy createFactor3NTTSteps()
     {
         return new RawtypeFactor3NTTStepStrategy();

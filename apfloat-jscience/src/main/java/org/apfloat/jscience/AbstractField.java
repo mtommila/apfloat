@@ -63,6 +63,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @return <code>this + that</code>
      */
 
+    @Override
     public abstract T plus(T that);
 
     /**
@@ -71,6 +72,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @return <code>-this</code>
      */
 
+    @Override
     public abstract T opposite();
 
     /**
@@ -81,6 +83,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @return <code>this * that</code>
      */
 
+    @Override
     public abstract T times(T that);
 
 
@@ -92,6 +95,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      * @exception java.lang.ArithmeticException If the divisor is zero.
      */
 
+    @Override
     public abstract T inverse()
         throws ArithmeticException;
 

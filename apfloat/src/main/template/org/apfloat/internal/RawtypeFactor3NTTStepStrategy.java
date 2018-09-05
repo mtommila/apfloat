@@ -57,6 +57,7 @@ public class RawtypeFactor3NTTStepStrategy
             this.isInverse = isInverse;
         }
 
+        @Override
         public void run()
         {
             rawtype tmp1 = modPow(this.w, (rawtype) this.startColumn),
@@ -132,6 +133,7 @@ public class RawtypeFactor3NTTStepStrategy
     {
     }
 
+    @Override
     public void transformColumns(DataStorage dataStorage0, DataStorage dataStorage1, DataStorage dataStorage2, long startColumn, long columns, long power2length, long length, boolean isInverse, int modulus)
         throws ApfloatRuntimeException
     {
@@ -153,6 +155,7 @@ public class RawtypeFactor3NTTStepStrategy
         }
     }
 
+    @Override
     public long getMaxTransformLength()
     {
         return MAX_TRANSFORM_LENGTH;

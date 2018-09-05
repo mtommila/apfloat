@@ -41,6 +41,7 @@ public class RawtypeMatrixBuilder
     {
     }
 
+    @Override
     public MatrixStrategy createMatrix()
     {
         return RawtypeMatrixBuilder.matrixStrategy;

@@ -28,8 +28,6 @@ import java.awt.CheckboxGroup;
 import java.awt.TextField;
 import java.awt.TextArea;
 import java.awt.Button;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.StringReader;
@@ -41,13 +39,15 @@ import java.util.ArrayList;
 /**
  * Graphical AWT elements for the calculator.
  *
- * @version 1.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
 public class CalculatorAWT
     extends Panel
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Construct a panel with graphical elements.
      */
@@ -108,33 +108,18 @@ public class CalculatorAWT
         add(this.clearButton, constraints);
 
         // Clear output area and command history
-        this.clearButton.addActionListener(new ActionListener()
+        this.clearButton.addActionListener((actionEvent) ->
         {
-            public void actionPerformed(ActionEvent actionEvent)
-            {
-                CalculatorAWT.this.outputArea.setText(null);
-                CalculatorAWT.this.history.clear();
-                CalculatorAWT.this.historyPosition = 0;
-            }
+            CalculatorAWT.this.outputArea.setText(null);
+            CalculatorAWT.this.history.clear();
+            CalculatorAWT.this.historyPosition = 0;
         });
 
         // Calculate current input button
-        this.calculateButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent actionEvent)
-            {
-                processInput();
-            }
-        });
+        this.calculateButton.addActionListener((actionEvent) -> processInput());
 
         // Calculate current input by hitting enter in the input field
-        this.inputField.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent actionEvent)
-            {
-                processInput();
-            }
-        });
+        this.inputField.addActionListener((actionEvent) -> processInput());
 
         // Command history handler for up and down arrow keys
         this.inputField.addKeyListener(new KeyAdapter()

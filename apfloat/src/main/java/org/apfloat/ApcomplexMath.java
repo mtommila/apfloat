@@ -30,7 +30,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApfloatMath
  *
- * @version 1.8.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -1536,26 +1536,15 @@ public class ApcomplexMath
         z = tmp;
 
         // Create a heap, ordered by size
-        Queue<Apcomplex> heap = new PriorityQueue<Apcomplex>(z.length, new Comparator<Apcomplex>()
-        {
-            public int compare(Apcomplex z, Apcomplex w)
-            {
-                long zSize = z.size(),
-                     wSize = w.size();
-                return (zSize < wSize ? -1 : (zSize > wSize ? 1 : 0));
-            }
-        });
+        Queue<Apcomplex> heap = new PriorityQueue<Apcomplex>(z.length, Comparator.comparing(Apcomplex::size));
 
         // Perform the multiplications in parallel
-        ParallelHelper.ProductKernel<Apcomplex> kernel = new ParallelHelper.ProductKernel<Apcomplex>()
+        ParallelHelper.ProductKernel<Apcomplex> kernel = (h) ->
         {
-            public void run(Queue<Apcomplex> heap)
-            {
-                Apcomplex a = heap.remove();
-                Apcomplex b = heap.remove();
-                Apcomplex c = a.multiply(b);
-                heap.add(c);
-            }
+            Apcomplex a = h.remove();
+            Apcomplex b = h.remove();
+            Apcomplex c = a.multiply(b);
+            h.add(c);
         };
         ParallelHelper.parallelProduct(z, heap, kernel);
 

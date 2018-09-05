@@ -33,7 +33,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -636,6 +636,8 @@ public class ApcomplexTest
     public static void testFormatTo()
         throws IOException
     {
+        System.setProperty("java.locale.providers", "COMPAT,SPI"); // Required since Java 10 to have all locale providers available
+
         Locale locale = null;
         assertEquals("null %s", "(1.23456789e5, 1.23456e2)", String.format(locale, "%s", new Apcomplex("(123456.789,123.456)")));
         assertEquals("null %S", "(1.23456789E5, 1.23456E2)", String.format(locale, "%S", new Apcomplex("(123456.789,123.456)")));

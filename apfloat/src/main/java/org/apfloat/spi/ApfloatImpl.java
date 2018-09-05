@@ -257,6 +257,7 @@ public interface ApfloatImpl
      * @return The hash code for this <code>ApfloatImpl</code>.
      */
 
+    @Override
     public int hashCode();
 
     /**

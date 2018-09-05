@@ -27,13 +27,15 @@ import java.awt.event.WindowEvent;
 /**
  * AWT client application for the calculator.
  *
- * @version 1.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
 public class CalculatorGUI
     extends Frame
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Default constructor.
      */

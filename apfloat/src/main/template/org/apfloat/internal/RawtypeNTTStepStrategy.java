@@ -51,6 +51,7 @@ public class RawtypeNTTStepStrategy
             this.permutationTable = permutationTable;
         }
 
+        @Override
         public void run()
         {
             int maxI = this.arrayAccess.getLength();
@@ -92,6 +93,7 @@ public class RawtypeNTTStepStrategy
             this.scaleFactor = scaleFactor;
         }
 
+        @Override
         public void run()
         {
             rawtype[] data = this.arrayAccess.getRawtypeData();
@@ -132,6 +134,7 @@ public class RawtypeNTTStepStrategy
     {
     }
 
+    @Override
     public void multiplyElements(ArrayAccess arrayAccess, int startRow, int startColumn, int rows, int columns, long length, long totalTransformLength, boolean isInverse, int modulus)
         throws ApfloatRuntimeException
     {
@@ -140,6 +143,7 @@ public class RawtypeNTTStepStrategy
         ParallelRunner.runParallel(parallelRunnable);
     }
 
+    @Override
     public void transformRows(ArrayAccess arrayAccess, int length, int count, boolean isInverse, boolean permute, int modulus)
         throws ApfloatRuntimeException
     {
@@ -148,6 +152,7 @@ public class RawtypeNTTStepStrategy
         ParallelRunner.runParallel(parallelRunnable);
     }
 
+    @Override
     public long getMaxTransformLength()
     {
         return MAX_TRANSFORM_LENGTH;

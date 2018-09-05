@@ -44,6 +44,7 @@ public class LongAparapiMatrixStrategy
     {
     }
 
+    @Override
     public void transpose(ArrayAccess arrayAccess, int n1, int n2)
         throws ApfloatRuntimeException
     {
@@ -83,6 +84,7 @@ public class LongAparapiMatrixStrategy
         }
     }
 
+    @Override
     public void transposeSquare(ArrayAccess arrayAccess, int n1, int n2)
         throws ApfloatRuntimeException
     {
@@ -95,6 +97,7 @@ public class LongAparapiMatrixStrategy
         kernel.execute(range);
     }
 
+    @Override
     public void permuteToHalfWidth(ArrayAccess arrayAccess, int n1, int n2)
         throws ApfloatRuntimeException
     {
@@ -157,6 +160,7 @@ public class LongAparapiMatrixStrategy
         kernel.execute(range);
     }
 
+    @Override
     public void permuteToDoubleWidth(ArrayAccess arrayAccess, int n1, int n2)
         throws ApfloatRuntimeException
     {

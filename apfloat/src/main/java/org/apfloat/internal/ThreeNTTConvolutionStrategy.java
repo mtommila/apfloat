@@ -62,6 +62,7 @@ public class ThreeNTTConvolutionStrategy
         this.stepStrategy = builderFactory.getNTTBuilder().createNTTConvolutionSteps();
     }
 
+    @Override
     public DataStorage convolute(DataStorage x, DataStorage y, long resultSize)
         throws ApfloatRuntimeException
     {

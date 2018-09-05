@@ -945,7 +945,7 @@ public class ApfloatContext
         {
             if (propertyName.equals(BUILDER_FACTORY))
             {
-                setBuilderFactory((BuilderFactory) Class.forName(propertyValue).newInstance());
+                setBuilderFactory((BuilderFactory) Class.forName(propertyValue).getDeclaredConstructor().newInstance());
             }
             else if (propertyName.equals(DEFAULT_RADIX))
             {
@@ -1213,17 +1213,13 @@ public class ApfloatContext
     public static ExecutorService getDefaultExecutorService()
     {
         // Executor service with all daemon threads, to avoid clean-up
-        ThreadFactory threadFactory = new ThreadFactory()
+        ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
+        ThreadFactory threadFactory = (runnable) ->
         {
-            public Thread newThread(Runnable runnable)
-            {
-                Thread thread = this.defaultThreadFactory.newThread(runnable);
-                thread.setDaemon(true);
+            Thread thread = defaultThreadFactory.newThread(runnable);
+            thread.setDaemon(true);
 
-                return thread;
-            }
-
-            private ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
+            return thread;
         };
 
         int numberOfThreads = Math.max(1, getContext().getNumberOfProcessors() - 1);

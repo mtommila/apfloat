@@ -82,6 +82,7 @@ public class RawtypeDiskDataStorage
                 final rawtype[] array = getRawtypeData();
                 WritableByteChannel out = new WritableByteChannel()
                 {
+                    @Override
                     public int write(ByteBuffer buffer)
                     {
                         RawtypeBuffer src = buffer.asRawtypeBuffer();
@@ -95,8 +96,8 @@ public class RawtypeDiskDataStorage
                         return readLength * sizeof(rawtype);
                     }
 
-                    public void close() {}
-                    public boolean isOpen() { return true; }
+                    @Override public void close() {}
+                    @Override public boolean isOpen() { return true; }
 
                     private int readPosition = 0;
                 };
@@ -114,6 +115,7 @@ public class RawtypeDiskDataStorage
                 final rawtype[] array = getRawtypeData();
                 ReadableByteChannel in = new ReadableByteChannel()
                 {
+                    @Override
                     public int read(ByteBuffer buffer)
                     {
                         RawtypeBuffer dst = buffer.asRawtypeBuffer();
@@ -127,8 +129,8 @@ public class RawtypeDiskDataStorage
                         return writeLength * sizeof(rawtype);
                     }
 
-                    public void close() {}
-                    public boolean isOpen() { return true; }
+                    @Override public void close() {}
+                    @Override public boolean isOpen() { return true; }
 
                     private int writePosition = 0;
                 };

@@ -98,6 +98,7 @@ public class RawtypeMatrixStrategy
      * @param n2 Number of columns in the matrix.
      */
 
+    @Override
     public void transpose(ArrayAccess arrayAccess, int n1, int n2)
         throws ApfloatRuntimeException
     {
@@ -151,6 +152,7 @@ public class RawtypeMatrixStrategy
      * @param n2 Number of columns in the matrix.
      */
 
+    @Override
     public void transposeSquare(ArrayAccess arrayAccess, int n1, int n2)
         throws ApfloatRuntimeException
     {
@@ -199,6 +201,7 @@ public class RawtypeMatrixStrategy
      * @since 1.7.0
      */
 
+    @Override
     public void permuteToDoubleWidth(ArrayAccess arrayAccess, int n1, int n2)
         throws ApfloatRuntimeException
     {
@@ -256,6 +259,7 @@ public class RawtypeMatrixStrategy
      * @since 1.7.0
      */
 
+    @Override
     public void permuteToHalfWidth(ArrayAccess arrayAccess, int n1, int n2)
         throws ApfloatRuntimeException
     {

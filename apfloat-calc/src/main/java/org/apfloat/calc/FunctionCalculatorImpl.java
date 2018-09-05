@@ -28,17 +28,20 @@ import java.util.Map;
  * Calculator implementation with function support.
  * Provides a mapping mechanism for functions.
  *
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
 public abstract class FunctionCalculatorImpl
     extends AbstractCalculatorImpl
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Arbitrary function.
      */
 
+    @FunctionalInterface
     protected static interface Function
         extends Serializable
     {
@@ -60,35 +63,10 @@ public abstract class FunctionCalculatorImpl
      * Function taking a fixed number of arguments.
      */
 
-    protected abstract class FixedFunction
+    protected class FixedFunction
         implements Function
     {
-        /**
-         * Constructor.
-         *
-         * @param name The function's name.
-         * @param arguments The number of arguments that the function takes.
-         */
-
-        protected FixedFunction(String name, int arguments)
-        {
-            this(name, arguments, arguments);
-        }
-
-        /**
-         * Constructor.
-         *
-         * @param name The function's name.
-         * @param minArguments The minimum number of arguments that the function takes.
-         * @param maxArguments The maximum number of arguments that the function takes.
-         */
-
-        protected FixedFunction(String name, int minArguments, int maxArguments)
-        {
-            this.name = name;
-            this.minArguments = minArguments;
-            this.maxArguments = maxArguments;
-        }
+        private static final long serialVersionUID = 1L;
 
         /**
          * Validate the number of arguments.
@@ -111,13 +89,28 @@ public abstract class FunctionCalculatorImpl
             }
         }
 
+        @Override
         public final Number call(List<Number> arguments)
             throws ParseException
         {
-            validate (arguments);
-            return promote(call(getFunctions(arguments), arguments));
+            validate(arguments);
+            return promote(handler.call(getFunctions(arguments), arguments));
         }
 
+        private String name;
+        private int minArguments;
+        private int maxArguments;
+        private FixedFunctionHandler handler;
+    }
+
+    /**
+     * Handler for FixedFunction.
+     */
+
+    @FunctionalInterface
+    protected static interface FixedFunctionHandler
+        extends Serializable
+    {
         /**
          * Call the function.
          *
@@ -127,11 +120,7 @@ public abstract class FunctionCalculatorImpl
          * @return The function's value.
          */
 
-        protected abstract Number call(Functions functions, List<Number> arguments);
-
-        private String name;
-        private int minArguments;
-        private int maxArguments;
+        public Number call(Functions functions, List<Number> arguments);
     }
 
     /**
@@ -206,60 +195,61 @@ public abstract class FunctionCalculatorImpl
     {
         this.functions = new HashMap<String, Function>();
 
-        setFunction("negate", new FixedFunction("negate", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.negate(arguments.get(0)); } });
-        setFunction("add", new FixedFunction("add", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.add(arguments.get(0), arguments.get(1)); } });
-        setFunction("subtract", new FixedFunction("subtract", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.subtract(arguments.get(0), arguments.get(1)); } });
-        setFunction("multiply", new FixedFunction("multiply", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.multiply(arguments.get(0), arguments.get(1)); } });
-        setFunction("divide", new FixedFunction("divide", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.divide(arguments.get(0), arguments.get(1)); } });
-        setFunction("mod", new FixedFunction("mod", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.mod(arguments.get(0), arguments.get(1)); } });
-        setFunction("pow", new FixedFunction("pow", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.pow(arguments.get(0), arguments.get(1)); } });
+        setFunction("negate", fixedFunction("negate", 1, (functions, arguments) -> functions.negate(arguments.get(0))));
+        setFunction("add", fixedFunction("add", 2, (functions, arguments) -> functions.add(arguments.get(0), arguments.get(1))));
+        setFunction("subtract", fixedFunction("subtract", 2, (functions, arguments) -> functions.subtract(arguments.get(0), arguments.get(1))));
+        setFunction("multiply", fixedFunction("multiply", 2, (functions, arguments) -> functions.multiply(arguments.get(0), arguments.get(1))));
+        setFunction("divide", fixedFunction("divide", 2, (functions, arguments) -> functions.divide(arguments.get(0), arguments.get(1))));
+        setFunction("mod", fixedFunction("mod", 2, (functions, arguments) -> functions.mod(arguments.get(0), arguments.get(1))));
+        setFunction("pow", fixedFunction("pow", 2, (functions, arguments) -> functions.pow(arguments.get(0), arguments.get(1))));
 
-        setFunction("abs", new FixedFunction("abs", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.abs(arguments.get(0)); } });
-        setFunction("acos", new FixedFunction("acos", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.acos(arguments.get(0)); } });
-        setFunction("acosh", new FixedFunction("acosh", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.acosh(arguments.get(0)); } });
-        setFunction("asin", new FixedFunction("asin", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.asin(arguments.get(0)); } });
-        setFunction("asinh", new FixedFunction("asinh", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.asinh(arguments.get(0)); } });
-        setFunction("atan", new FixedFunction("atan", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.atan(arguments.get(0)); } });
-        setFunction("atanh", new FixedFunction("atanh", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.atanh(arguments.get(0)); } });
-        setFunction("cbrt", new FixedFunction("cbrt", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.cbrt(arguments.get(0)); } });
-        setFunction("ceil", new FixedFunction("ceil", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.ceil(arguments.get(0)); } });
-        setFunction("cos", new FixedFunction("cos", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.cos(arguments.get(0)); } });
-        setFunction("cosh", new FixedFunction("cosh", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.cosh(arguments.get(0)); } });
-        setFunction("exp", new FixedFunction("exp", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.exp(arguments.get(0)); } });
-        setFunction("factorial", new FixedFunction("factorial", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.factorial(arguments.get(0)); } });
-        setFunction("floor", new FixedFunction("floor", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.floor(arguments.get(0)); } });
-        setFunction("frac", new FixedFunction("frac", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.frac(arguments.get(0)); } });
-        setFunction("log", new FixedFunction("log", 1, 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1))); } });
-        setFunction("pi", new FixedFunction("pi", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.pi(arguments.get(0)); } });
-        setFunction("round", new FixedFunction("round", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.round(arguments.get(0), arguments.get(1)); } });
-        setFunction("sin", new FixedFunction("sin", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.sin(arguments.get(0)); } });
-        setFunction("sinh", new FixedFunction("sinh", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.sinh(arguments.get(0)); } });
-        setFunction("sqrt", new FixedFunction("sqrt", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.sqrt(arguments.get(0)); } });
-        setFunction("tan", new FixedFunction("tan", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.tan(arguments.get(0)); } });
-        setFunction("tanh", new FixedFunction("tanh", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.tanh(arguments.get(0)); } });
-        setFunction("truncate", new FixedFunction("truncate", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.truncate(arguments.get(0)); } });
-        setFunction("toDegrees", new FixedFunction("toDegrees", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.toDegrees(arguments.get(0)); } });
-        setFunction("toRadians", new FixedFunction("toRadians", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.toRadians(arguments.get(0)); } });
+        setFunction("abs", fixedFunction("abs", 1, (functions, arguments) -> functions.abs(arguments.get(0))));
+        setFunction("acos", fixedFunction("acos", 1, (functions, arguments) -> functions.acos(arguments.get(0))));
+        setFunction("acosh", fixedFunction("acosh", 1, (functions, arguments) -> functions.acosh(arguments.get(0))));
+        setFunction("asin", fixedFunction("asin", 1, (functions, arguments) -> functions.asin(arguments.get(0))));
+        setFunction("asinh", fixedFunction("asinh", 1, (functions, arguments) -> functions.asinh(arguments.get(0))));
+        setFunction("atan", fixedFunction("atan", 1, (functions, arguments) -> functions.atan(arguments.get(0))));
+        setFunction("atanh", fixedFunction("atanh", 1, (functions, arguments) -> functions.atanh(arguments.get(0))));
+        setFunction("cbrt", fixedFunction("cbrt", 1, (functions, arguments) -> functions.cbrt(arguments.get(0))));
+        setFunction("ceil", fixedFunction("ceil", 1, (functions, arguments) -> functions.ceil(arguments.get(0))));
+        setFunction("cos", fixedFunction("cos", 1, (functions, arguments) -> functions.cos(arguments.get(0))));
+        setFunction("cosh", fixedFunction("cosh", 1, (functions, arguments) -> functions.cosh(arguments.get(0))));
+        setFunction("exp", fixedFunction("exp", 1, (functions, arguments) -> functions.exp(arguments.get(0))));
+        setFunction("factorial", fixedFunction("factorial", 1, (functions, arguments) -> functions.factorial(arguments.get(0))));
+        setFunction("floor", fixedFunction("floor", 1, (functions, arguments) -> functions.floor(arguments.get(0))));
+        setFunction("frac", fixedFunction("frac", 1, (functions, arguments) -> functions.frac(arguments.get(0))));
+        setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
+        setFunction("pi", fixedFunction("pi", 1, (functions, arguments) -> functions.pi(arguments.get(0))));
+        setFunction("round", fixedFunction("round", 2, (functions, arguments) -> functions.round(arguments.get(0), arguments.get(1))));
+        setFunction("sin", fixedFunction("sin", 1, (functions, arguments) -> functions.sin(arguments.get(0))));
+        setFunction("sinh", fixedFunction("sinh", 1, (functions, arguments) -> functions.sinh(arguments.get(0))));
+        setFunction("sqrt", fixedFunction("sqrt", 1, (functions, arguments) -> functions.sqrt(arguments.get(0))));
+        setFunction("tan", fixedFunction("tan", 1, (functions, arguments) -> functions.tan(arguments.get(0))));
+        setFunction("tanh", fixedFunction("tanh", 1, (functions, arguments) -> functions.tanh(arguments.get(0))));
+        setFunction("truncate", fixedFunction("truncate", 1, (functions, arguments) -> functions.truncate(arguments.get(0))));
+        setFunction("toDegrees", fixedFunction("toDegrees", 1, (functions, arguments) -> functions.toDegrees(arguments.get(0))));
+        setFunction("toRadians", fixedFunction("toRadians", 1, (functions, arguments) -> functions.toRadians(arguments.get(0))));
 
-        setFunction("arg", new FixedFunction("arg", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.arg(arguments.get(0)); } });
-        setFunction("conj", new FixedFunction("conj", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.conj(arguments.get(0)); } });
-        setFunction("imag", new FixedFunction("imag", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.imag(arguments.get(0)); } });
-        setFunction("real", new FixedFunction("real", 1) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.real(arguments.get(0)); } });
+        setFunction("arg", fixedFunction("arg", 1, (functions, arguments) -> functions.arg(arguments.get(0))));
+        setFunction("conj", fixedFunction("conj", 1, (functions, arguments) -> functions.conj(arguments.get(0))));
+        setFunction("imag", fixedFunction("imag", 1, (functions, arguments) -> functions.imag(arguments.get(0))));
+        setFunction("real", fixedFunction("real", 1, (functions, arguments) -> functions.real(arguments.get(0))));
 
-        setFunction("agm", new FixedFunction("agm", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.agm(arguments.get(0), arguments.get(1)); } });
-        setFunction("w", new FixedFunction("w", 1, 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return (arguments.size() == 1 ? functions.w(arguments.get(0)) : functions.w(arguments.get(0), arguments.get(1))); } });
-        setFunction("atan2", new FixedFunction("atan2", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.atan2(arguments.get(0), arguments.get(1)); } });
-        setFunction("copySign", new FixedFunction("copySign", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.copySign(arguments.get(0), arguments.get(1)); } });
-        setFunction("fmod", new FixedFunction("fmod", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.fmod(arguments.get(0), arguments.get(1)); } });
-        setFunction("gcd", new FixedFunction("gcd", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.gcd(arguments.get(0), arguments.get(1)); } });
-        setFunction("hypot", new FixedFunction("hypot", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.hypot(arguments.get(0), arguments.get(1)); } });
-        setFunction("inverseRoot", new FixedFunction("inverseRoot", 2, 3) { @Override protected Number call(Functions functions, List<Number> arguments) { return (arguments.size() == 2 ? functions.inverseRoot(arguments.get(0), arguments.get(1)) : functions.inverseRoot(arguments.get(0), arguments.get(1), arguments.get(2))); } });
-        setFunction("lcm", new FixedFunction("lcm", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.lcm(arguments.get(0), arguments.get(1)); } });
-        setFunction("root", new FixedFunction("root", 2, 3) { @Override protected Number call(Functions functions, List<Number> arguments) { return (arguments.size() == 2 ? functions.root(arguments.get(0), arguments.get(1)) : functions.root(arguments.get(0), arguments.get(1), arguments.get(2))); } });
-        setFunction("scale", new FixedFunction("scale", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.scale(arguments.get(0), arguments.get(1)); } });
-        setFunction("n", new FixedFunction("precision", 2) { @Override protected Number call(Functions functions, List<Number> arguments) { return functions.precision(arguments.get(0), arguments.get(1)); } });
+        setFunction("agm", fixedFunction("agm", 2, (functions, arguments) -> functions.agm(arguments.get(0), arguments.get(1))));
+        setFunction("w", fixedFunction("w", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.w(arguments.get(0)) : functions.w(arguments.get(0), arguments.get(1)))));
+        setFunction("atan2", fixedFunction("atan2", 2, (functions, arguments) -> functions.atan2(arguments.get(0), arguments.get(1))));
+        setFunction("copySign", fixedFunction("copySign", 2, (functions, arguments) -> functions.copySign(arguments.get(0), arguments.get(1))));
+        setFunction("fmod", fixedFunction("fmod", 2, (functions, arguments) -> functions.fmod(arguments.get(0), arguments.get(1))));
+        setFunction("gcd", fixedFunction("gcd", 2, (functions, arguments) -> functions.gcd(arguments.get(0), arguments.get(1))));
+        setFunction("hypot", fixedFunction("hypot", 2, (functions, arguments) -> functions.hypot(arguments.get(0), arguments.get(1))));
+        setFunction("inverseRoot", fixedFunction("inverseRoot", 2, 3, (functions, arguments) -> (arguments.size() == 2 ? functions.inverseRoot(arguments.get(0), arguments.get(1)) : functions.inverseRoot(arguments.get(0), arguments.get(1), arguments.get(2)))));
+        setFunction("lcm", fixedFunction("lcm", 2, (functions, arguments) -> functions.lcm(arguments.get(0), arguments.get(1))));
+        setFunction("root", fixedFunction("root", 2, 3, (functions, arguments) -> (arguments.size() == 2 ? functions.root(arguments.get(0), arguments.get(1)) : functions.root(arguments.get(0), arguments.get(1), arguments.get(2)))));
+        setFunction("scale", fixedFunction("scale", 2, (functions, arguments) -> functions.scale(arguments.get(0), arguments.get(1))));
+        setFunction("n", fixedFunction("precision", 2, (functions, arguments) -> functions.precision(arguments.get(0), arguments.get(1))));
     }
 
+    @Override
     public Number function(String name, List<Number> arguments)
         throws ParseException
     {
@@ -280,6 +270,39 @@ public abstract class FunctionCalculatorImpl
             functions = (functions != null && functions.getClass().isAssignableFrom(functions2.getClass()) ? functions : functions2);
         }
         return functions;
+    }
+
+    /**
+     * Factory method.
+     *
+     * @param name The function's name.
+     * @param arguments The number of arguments that the function takes.
+     * @param handler The handler of the function.
+     */
+
+    protected FixedFunction fixedFunction(String name, int arguments, FixedFunctionHandler handler)
+    {
+        return fixedFunction(name, arguments, arguments, handler);
+    }
+
+    /**
+     * Factory method.
+     *
+     * @param name The function's name.
+     * @param minArguments The minimum number of arguments that the function takes.
+     * @param maxArguments The maximum number of arguments that the function takes.
+     * @param handler The handler of the function.
+     */
+
+    protected FixedFunction fixedFunction(String name, int minArguments, int maxArguments, FixedFunctionHandler handler)
+    {
+        FixedFunction fixedFunction = new FixedFunction();
+        fixedFunction.name = name;
+        fixedFunction.minArguments = minArguments;
+        fixedFunction.maxArguments = maxArguments;
+        fixedFunction.handler = handler;
+
+        return fixedFunction;
     }
 
     /**

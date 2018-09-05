@@ -779,6 +779,7 @@ public abstract class DiskDataStorage
 
     private static final ReadableByteChannel ZERO_CHANNEL = new ReadableByteChannel()
     {
+        @Override
         public int read(ByteBuffer buffer)
         {
             int writeLength = buffer.remaining();
@@ -791,8 +792,8 @@ public abstract class DiskDataStorage
             return writeLength;
         }
 
-        public void close() {}
-        public boolean isOpen() { return true; }
+        @Override public void close() {}
+        @Override public boolean isOpen() { return true; }
     };
 
     private static synchronized FileStorage createFileStorage()

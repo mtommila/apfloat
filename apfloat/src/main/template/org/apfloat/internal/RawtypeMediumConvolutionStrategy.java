@@ -51,6 +51,7 @@ public class RawtypeMediumConvolutionStrategy
         super(radix);
     }
 
+    @Override
     public DataStorage convolute(DataStorage x, DataStorage y, long resultSize)
         throws ApfloatRuntimeException
     {

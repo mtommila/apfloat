@@ -55,6 +55,7 @@ public class Factor3NTTStrategy
         this.stepStrategy = ctx.getBuilderFactory().getNTTBuilder().createFactor3NTTSteps();
     }
 
+    @Override
     public void transform(DataStorage dataStorage, int modulus)
         throws ApfloatRuntimeException
     {
@@ -90,6 +91,7 @@ public class Factor3NTTStrategy
         }
     }
 
+    @Override
     public void inverseTransform(DataStorage dataStorage, int modulus, long totalTransformLength)
         throws ApfloatRuntimeException
     {
@@ -125,6 +127,7 @@ public class Factor3NTTStrategy
         }
     }
 
+    @Override
     public long getTransformLength(long size)
     {
         // Calculates the needed transform length, that is

@@ -44,30 +44,35 @@ public class RawtypeAdditionStrategy
         super(radix);
     }
 
+    @Override
     public RawType add(Iterator src1, Iterator src2, RawType carry, Iterator dst, long size)
         throws ApfloatRuntimeException
     {
         return baseAdd(src1, src2, carry, dst, size);
     }
 
+    @Override
     public RawType subtract(Iterator src1, Iterator src2, RawType carry, Iterator dst, long size)
         throws ApfloatRuntimeException
     {
         return baseSubtract(src1, src2, carry, dst, size);
     }
 
+    @Override
     public RawType multiplyAdd(Iterator src1, Iterator src2, RawType src3, RawType carry, Iterator dst, long size)
         throws ApfloatRuntimeException
     {
         return baseMultiplyAdd(src1, src2, src3, carry, dst, size);
     }
 
+    @Override
     public RawType divide(Iterator src1, RawType src2, RawType carry, Iterator dst, long size)
         throws ApfloatRuntimeException
     {
         return baseDivide(src1, src2, carry, dst, size);
     }
 
+    @Override
     public RawType zero()
     {
         return (rawtype) 0;

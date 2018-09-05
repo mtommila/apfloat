@@ -50,6 +50,7 @@ public abstract class AbstractStepFNTStrategy
         this.stepStrategy = ctx.getBuilderFactory().getNTTBuilder().createNTTSteps();
     }
 
+    @Override
     public void transform(DataStorage dataStorage, int modulus)
         throws ApfloatRuntimeException
     {
@@ -81,6 +82,7 @@ public abstract class AbstractStepFNTStrategy
         transform(dataStorage, n1, n2, length, modulus);
     }
 
+    @Override
     public void inverseTransform(DataStorage dataStorage, int modulus, long totalTransformLength)
         throws ApfloatRuntimeException
     {
@@ -112,6 +114,7 @@ public abstract class AbstractStepFNTStrategy
         inverseTransform(dataStorage, n1, n2, length, totalTransformLength, modulus);
     }
 
+    @Override
     public long getTransformLength(long size)
     {
         return Util.round2up(size);
