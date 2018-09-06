@@ -54,7 +54,7 @@ package org.apfloat.internal;
  *
  * There are different algorithms to calculate the approximate division
  * <code>a * b / modulus</code>. This implementation simply converts all
- * the operands to <code>double</code> and performs the mulciplications.
+ * the operands to <code>double</code> and performs the multiplications.
  * This requires that converting between integer types and floating point
  * types is efficient. On some platforms this may not be true; in that
  * case it can be more efficient to perform the multiplications using
