@@ -16,6 +16,8 @@
 
   <properties>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+    <java9.build.sourceDirectory>${project.build.sourceDirectory}9</java9.build.sourceDirectory>
+    <java9.build.outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</java9.build.outputDirectory>
   </properties>
 
   <dependencies>
@@ -231,5 +233,39 @@
       </resource>
     </resources>
   </build>
+
+  <profiles>
+    <profile>
+      <id>java9</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>compile-java9</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <mkdir dir="${java9.build.outputDirectory}" />
+                    <javac srcdir="${java9.build.sourceDirectory}" destdir="${java9.build.outputDirectory}"
+                           classpath="${project.build.outputDirectory}" includeantruntime="false"
+                           source="9" target="9" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
