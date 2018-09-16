@@ -160,6 +160,7 @@ public abstract class FunctionCalculatorImpl
         public Number log(Number x);
         public Number log(Number x, Number y);
         public Number pi(Number x);
+        public Number random(Number x);
         public Number round(Number x, Number y);
         public Number sin(Number x);
         public Number sinh(Number x);
@@ -220,6 +221,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("frac", fixedFunction("frac", 1, (functions, arguments) -> functions.frac(arguments.get(0))));
         setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
         setFunction("pi", fixedFunction("pi", 1, (functions, arguments) -> functions.pi(arguments.get(0))));
+        setFunction("random", fixedFunction("random", 1, (functions, arguments) -> functions.random(arguments.get(0))));
         setFunction("round", fixedFunction("round", 2, (functions, arguments) -> functions.round(arguments.get(0), arguments.get(1))));
         setFunction("sin", fixedFunction("sin", 1, (functions, arguments) -> functions.sin(arguments.get(0))));
         setFunction("sinh", fixedFunction("sinh", 1, (functions, arguments) -> functions.sinh(arguments.get(0))));

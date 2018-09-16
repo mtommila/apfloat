@@ -32,7 +32,7 @@ import org.apfloat.spi.Util;
  * <code>ApfloatMath.acos(Apfloat.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -874,6 +874,38 @@ public class FixedPrecisionApfloatHelper
         throws ApfloatRuntimeException
     {
         return valueOf(ApfloatMath.sum(setPrecision(x)));
+    }
+
+    /**
+     * Return a uniformly distributed random number <code>0 <= x < 1</code>.
+     *
+     * @return A random number.
+     *
+     * @since 1.9.0
+     */
+
+    public Apfloat random()
+        throws ApfloatRuntimeException
+    {
+        return ApfloatMath.random(precision());
+    }
+
+    /**
+     * Return a uniformly distributed random number <code>0 <= x < 1</code>.
+     *
+     * @param radix The radix of the number.
+     *
+     * @return A random number.
+     *
+     * @exception java.lang.NumberFormatException If the radix is invalid.
+     *
+     * @since 1.9.0
+     */
+
+    public Apfloat random(int radix)
+        throws NumberFormatException, ApfloatRuntimeException
+    {
+        return ApfloatMath.random(precision(), radix);
     }
 
     private Apfloat setPrecision(Apfloat x)

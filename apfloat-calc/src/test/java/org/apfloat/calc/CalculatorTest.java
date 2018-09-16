@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -59,6 +59,16 @@ public class CalculatorTest
     {
         String actual = runCalculation(input);
         assertEquals(input, expected + NEWLINE, actual);
+    }
+
+    private static void assertCalculationMatch(String expectedPattern, String input)
+        throws ParseException
+    {
+        String actual = runCalculation(input);
+        if (!actual.matches(expectedPattern + NEWLINE))
+        {
+            assertEquals(input, expectedPattern + NEWLINE, actual);
+        }
     }
 
     private static String runCalculation(String input)
@@ -237,6 +247,7 @@ public class CalculatorTest
         assertCalculation("3", "gcd(15, 12)");
         assertCalculation("60", "lcm(15, 12)");
         assertCalculation("3.14159", "pi(6)");
+        assertCalculationMatch("0|[1-9]e-1", "random(1)");
         assertCalculation("5", "add(2, 3)");
         assertCalculation("-1", "subtract(2, 3)");
         assertCalculation("6", "multiply(2, 3)");
@@ -370,6 +381,10 @@ public class CalculatorTest
         assertCalculationFailure("pi(0.5)");
         assertCalculationFailure("pi()");
         assertCalculationFailure("pi(1, 1)");
+        assertCalculationFailure("random(i)");
+        assertCalculationFailure("random(0.5)");
+        assertCalculationFailure("random()");
+        assertCalculationFailure("random(1, 1)");
         assertCalculationFailure("add(2)");
         assertCalculationFailure("add(2, 2, 2)");
         assertCalculationFailure("subtract(2)");

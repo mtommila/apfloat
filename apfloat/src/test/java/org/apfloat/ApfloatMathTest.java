@@ -24,7 +24,7 @@ import junit.framework.TestSuite;
 import static java.math.RoundingMode.*;
 
 /**
- * @version 1.8.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -86,6 +86,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testToDegrees"));
         suite.addTest(new ApfloatMathTest("testProduct"));
         suite.addTest(new ApfloatMathTest("testSum"));
+        suite.addTest(new ApfloatMathTest("testRandom"));
 
         return suite;
     }
@@ -1616,5 +1617,29 @@ public class ApfloatMathTest
 
         numbers[0] = numbers[0].add(new Apfloat("1e10000000", Apfloat.INFINITE));
         assertEquals("Big number big sum", new Apfloat(5000050000L).add(new Apfloat("1e10000000", Apfloat.INFINITE)), ApfloatMath.sum(numbers));
+    }
+
+    public static void testRandom()
+    {
+        long maxScale = 0;
+        long minScale = Long.MAX_VALUE;
+        for (int i = 0; i < 1000; i++)
+        {
+            Apfloat a = ApfloatMath.random(1000);
+            maxScale = Math.max(maxScale, a.scale());
+            minScale = Math.min(minScale, a.scale());
+        }
+        assertEquals("random max scale", 0, maxScale);
+        assertTrue("random min scale", minScale < 0);
+
+        for (int radix = Character.MIN_RADIX; radix <= Character.MAX_RADIX; radix++)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                Apfloat a = ApfloatMath.random(1, radix);
+                assertEquals("value < 1", -1, a.compareTo(new Apfloat(1, Apfloat.INFINITE, radix)));
+                assertTrue("value >= 0", a.signum() >= 0);
+            }
+        }
     }
 }

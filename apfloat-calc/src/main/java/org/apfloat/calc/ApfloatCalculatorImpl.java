@@ -245,6 +245,17 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number random(Number x)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Random can only be used with a valid integer argument");
+            }
+            long n = x.longValue();
+            return ApfloatMath.random(n);
+        }
+
+        @Override
         public Number round(Number x, Number y)
         {
             throw new IllegalArgumentException("Round can only be used with scalar values");

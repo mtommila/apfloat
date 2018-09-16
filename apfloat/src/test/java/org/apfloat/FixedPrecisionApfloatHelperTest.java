@@ -23,7 +23,7 @@ import java.math.RoundingMode;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -94,6 +94,7 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testToRadians"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testProduct"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testSum"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
 
         return suite;
     }
@@ -870,5 +871,27 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.sum(x);
         assertEquals("value", new Apfloat(1234567900), result);
         assertEquals("precision", 10, result.precision());
+    }
+
+    public static void testRandom()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(1);
+        Apfloat result = helper.random();
+        assertEquals("value", new Apfloat("0.5"), result, new Apfloat("0.5"));
+        assertEquals("precision", 1, result.precision());
+
+        result = helper.random(16);
+        assertEquals("value 16", new Apfloat("0.8", Apfloat.DEFAULT, 16), result, new Apfloat("0.8", 1, 16));
+        assertEquals("precision 16", 1, result.precision());
+
+        try
+        {
+            helper.random(1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
     }
 }

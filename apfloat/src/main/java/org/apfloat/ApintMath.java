@@ -18,10 +18,15 @@
  */
 package org.apfloat;
 
+import java.io.IOException;
+import java.io.PushbackReader;
+import java.io.Reader;
+import java.util.Random;
+
 /**
  * Various mathematical functions for arbitrary precision integers.
  *
- * @version 1.6
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -674,4 +679,95 @@ public class ApintMath
     {
         return new Apint(ApfloatMath.sum(x));
     }
+
+    /**
+     * Generates a random number. Uses the default radix.
+     * Returned values are chosen pseudorandomly with (approximately)
+     * uniform distribution from the range <code>0 <= x < radix<sup>digits</sup></code>.
+     * The generated random numbers may have leading zeros and may thus not
+     * always have exactly the requested number of digis.
+     *
+     * @param digits Maximum number of digits in the number.
+     *
+     * @return A random number, uniformly distributed between <code>0 <= x < radix<sup>digits</sup></code>.
+     *
+     * @exception java.lang.NumberFormatException If the default radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
+     *
+     * @since 1.9.0
+     */
+
+    public static Apint random(long digits)
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return random(digits, radix);
+    }
+
+    /**
+     * Generates a random number.
+     * Returned values are chosen pseudorandomly with (approximately)
+     * uniform distribution from the range <code>0 <= x < radix<sup>digits</sup></code>.
+     * The generated random numbers may have leading zeros and may thus not
+     * always have exactly the requested number of digis.
+     *
+     * @param digits Maximum number of digits in the number.
+     * @param radix The radix in which the number should be generated.
+     *
+     * @return A random number, uniformly distributed between <code>0 <= x < radix<sup>digits</sup></code>, in base <code>radix</code>.
+     *
+     * @exception java.lang.NumberFormatException If the radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
+     *
+     * @since 1.9.0
+     */
+
+    public static Apint random(long digits, int radix)
+    {
+        if (digits <= 0)
+        {
+            throw new IllegalArgumentException(digits + " is not positive");
+        }
+        else if (digits == Apfloat.INFINITE)
+        {
+            throw new InfiniteExpansionException("Cannot generate an infinite number of random digits");
+        }
+        PushbackReader reader = new PushbackReader(new Reader()
+        {
+            @Override
+            public int read(char[] buffer, int offset, int length)
+            {
+                if (this.remaining == 0)
+                {
+                    return -1;
+                }
+                length = (int) Math.min(length, this.remaining);
+                for (int i = 0; i < length; i++)
+                {
+                    buffer[i + offset] = Character.forDigit(RANDOM.nextInt(radix), radix);
+                }
+                this.remaining -= length;
+                return length;
+            }
+
+            @Override
+            public void close()
+            {
+            }
+
+            private long remaining = digits;
+        });
+        try
+        {
+            return new Apint(reader, radix);
+        }
+        catch (IOException ioe)
+        {
+            throw new ApfloatRuntimeException("Error generating random number");
+        }
+        
+    }
+
+    private static final Random RANDOM = new Random();
 }

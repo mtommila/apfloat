@@ -18,10 +18,13 @@
  */
 package org.apfloat;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -56,6 +59,7 @@ public class ApintMathTest
         suite.addTest(new ApintMathTest("testFactorial"));
         suite.addTest(new ApintMathTest("testProduct"));
         suite.addTest(new ApintMathTest("testSum"));
+        suite.addTest(new ApintMathTest("testRandom"));
 
         return suite;
     }
@@ -513,5 +517,32 @@ public class ApintMathTest
         assertEquals("Array sum 2 [1]", new Apint("1000000000000"), x[1]);
 
         assertEquals("Empty sum", new Apint("0"), ApintMath.sum());
+    }
+
+    public static void testRandom()
+    {
+        long maxScale = 0;
+        long minScale = Long.MAX_VALUE;
+        for (int i = 0; i < 1000; i++)
+        {
+            Apint a = ApintMath.random(1000);
+            maxScale = Math.max(maxScale, a.scale());
+            minScale = Math.min(minScale, a.scale());
+        }
+        assertEquals("random max scale", 1000, maxScale);
+        assertTrue("random min scale", minScale < 1000);
+
+        for (int radix = Character.MIN_RADIX; radix <= Character.MAX_RADIX; radix++)
+        {
+            Map<Apint, Integer> counts = new HashMap<>();
+            for (int i = 0; i < 10 * radix; i++)
+            {
+                Apint a = ApintMath.random(1, radix);
+                counts.put(a, counts.getOrDefault(a, 0) + 1);
+                assertEquals("value less than radix", -1, a.compareTo(new Apint(radix, radix)));
+                assertTrue("value >= 0", a.signum() >= 0);
+            }
+            assertEquals("All values occurred", radix, counts.size());
+        }
     }
 }
