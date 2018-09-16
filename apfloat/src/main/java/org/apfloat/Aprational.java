@@ -36,7 +36,7 @@ import static org.apfloat.spi.RadixConstants.*;
  * @see Apint
  * @see AprationalMath
  *
- * @version 1.8.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -222,6 +222,79 @@ public class Aprational
     {
         this.numerator = new Apint(value, radix);
         this.denominator = ONES[radix];
+    }
+
+    /**
+     * Constructs an aprational from a <code>double</code>.
+     * The exact value represented by the <code>double</code> is used.
+     * The default radix is used.<p>
+     *
+     * Note that <code>double</code>s are presented as an integer multiplied by
+     * a power of two (positive or negative). Many numbers can't be represented
+     * exactly this way, e.g. <code>new Aprational(0.1)</code> won't result
+     * in <code>1/10</code> but in <code>3602879701896397/36028797018963968</code>.
+     *
+     * @param value The numerator of the number.
+     */
+
+    public Aprational(double value)
+        throws ApfloatRuntimeException
+    {
+        this(value, ApfloatContext.getContext().getDefaultRadix());
+    }
+
+    /**
+     * Constructs an aprational from a <code>double</code> using the specified radix.
+     * The exact value represented by the <code>double</code> is used.<p>
+     *
+     * Note that <code>double</code>s are presented as an integer multiplied by
+     * a power of two (positive or negative). Many numbers can't be represented
+     * exactly this way, e.g. <code>new Aprational(0.1)</code> won't result
+     * in <code>1/10</code> but in <code>3602879701896397/36028797018963968</code>.
+     *
+     * @param value The numerator of the number.
+     * @param radix The radix of the number.
+     */
+
+    public Aprational(double value, int radix)
+        throws ApfloatRuntimeException
+    {
+        if (Double.isInfinite(value) || Double.isNaN(value))
+        {
+            throw new NumberFormatException(value + " is not a valid number");
+        }
+        long bits = Double.doubleToLongBits(value),
+             sign = ((bits >> 63) == 0 ? 1 : -1),
+             exponent = (bits >> 52) & 0x7FFL,
+             significand = (exponent == 0 ? (bits & ((1L << 52) - 1)) << 1 : (bits & ((1L << 52) - 1)) | (1L << 52));
+        exponent -= 1075;
+        // At this point, value == sign * significand * 2^exponent
+
+        if (significand == 0) // Zero
+        {
+            this.numerator = new Apint(0, radix);
+            this.denominator = ONES[radix];
+            return;
+        }
+        // Normalize so that the significand does not have a factor of two
+        while ((significand & 1) == 0) // i.e. the significand is even
+        {
+            significand >>= 1;
+            exponent++;
+        }
+        this.numerator = new Apint(sign * significand, radix);
+        Apint powerOfTwo = ApintMath.pow(new Apint(2, radix), Math.abs(exponent));
+        if (exponent >= 0)
+        {
+            this.numerator = this.numerator.multiply(powerOfTwo);
+            this.denominator = ONES[radix];
+            // No need to reduce as the value is an integer
+        }
+        else
+        {
+            this.denominator = powerOfTwo;
+            // No need to reduce as the denominator is a power of two and the numerator does not have a factor of two
+        }
     }
 
     /**

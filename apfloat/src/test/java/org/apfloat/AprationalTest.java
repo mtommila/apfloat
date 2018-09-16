@@ -241,6 +241,34 @@ public class AprationalTest
         assertEquals("11 String", "b", a.toString());
     }
 
+    public static void testDoubleConstructor()
+    {
+        Aprational a = new Aprational(0.1);
+        assertEquals("0.1 radix", 10, a.radix());
+        assertEquals("0.1 String", "3602879701896397/36028797018963968", a.toString());
+        a = new Aprational(1.0, 12);
+        assertEquals("1 radix", 12, a.radix());
+        assertEquals("1 String", "1", a.toString());
+        a = new Aprational(0.0, 5);
+        assertEquals("0 radix", 5, a.radix());
+        assertEquals("0 String", "0", a.toString());
+        a = new Aprational(1.0 / 256.0);
+        assertEquals("1/256 radix", 10, a.radix());
+        assertEquals("1/256 precision 6 String", "0.00390625", a.precision(6).toString(true));
+        a = new Aprational(-1.0 / 16.0, 35);
+        assertEquals("-1/16 radix", 35, a.radix());
+        assertEquals("-1/16 String", "-1/g", a.toString());
+        a = new Aprational(32.0, 33);
+        assertEquals("32 radix", 33, a.radix());
+        assertEquals("32 String", "w", a.toString());
+        a = new Aprational(Double.MAX_VALUE);
+        assertEquals("max value radix", 10, a.radix());
+        assertEquals("max value String", "179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368", a.toString());
+        a = new Aprational(Double.MIN_VALUE);
+        assertEquals("min value radix", 10, a.radix());
+        assertEquals("min value", AprationalMath.pow(new Aprational("2"), -1074), a);
+    }
+
     public static void testRationalMethods()
     {
         Aprational a = new Aprational("5/8");
