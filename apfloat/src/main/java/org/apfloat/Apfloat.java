@@ -1029,6 +1029,19 @@ public class Apfloat
         return impl.longValue();
     }
 
+    @Override
+    public long longValueExact()
+        throws ArithmeticException
+    {
+        long value = longValue();
+        if (!new Apint(value, radix()).equals(truncate()))
+        {
+            throw new ArithmeticException("Out of range");
+        }
+
+        return value;
+    }
+
     /**
      * Computes number of equal digits.<p>
      *

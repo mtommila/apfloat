@@ -82,6 +82,7 @@ public class ApfloatTest
         suite.addTest(new ApfloatTest("testAbs"));
         suite.addTest(new ApfloatTest("testCompareToHalf"));
         suite.addTest(new ApfloatTest("testNumberValues"));
+        suite.addTest(new ApfloatTest("testNumberValuesExact"));
         suite.addTest(new ApfloatTest("testEqualDigits"));
         suite.addTest(new ApfloatTest("testCompareTo"));
         suite.addTest(new ApfloatTest("testEquals"));
@@ -835,6 +836,95 @@ public class ApfloatTest
         assertEquals("1e1000 doubleValue", Double.POSITIVE_INFINITY, a.doubleValue(), 0.0);
         a = new Apfloat("-1e1000");
         assertEquals("-1e1000 doubleValue", Double.NEGATIVE_INFINITY, a.doubleValue(), 0.0);
+    }
+
+    public static void testNumberValuesExact()
+    {
+        Apfloat a = new Apfloat(5);
+        assertEquals("5 longValueExact", 5, a.longValueExact());
+        assertEquals("5 intValueExact", 5, a.intValueExact());
+        assertEquals("5 shortValueExact", 5, a.shortValueExact());
+        assertEquals("5 byteValueExact", 5, a.byteValueExact());
+        assertEquals("MAX_VALUE longValueExact", Long.MAX_VALUE, new Apfloat(Long.MAX_VALUE).longValueExact());
+        assertEquals("MIN_VALUE longValueExact", Long.MIN_VALUE, new Apfloat(Long.MIN_VALUE).longValueExact());
+        assertEquals("MAX_VALUE intValueExact", Integer.MAX_VALUE, new Apfloat(Integer.MAX_VALUE).intValueExact());
+        assertEquals("MIN_VALUE intValueExact", Integer.MIN_VALUE, new Apfloat(Integer.MIN_VALUE).intValueExact());
+        assertEquals("MAX_VALUE shortValueExact", Short.MAX_VALUE, new Apfloat(Short.MAX_VALUE).shortValueExact());
+        assertEquals("MIN_VALUE shortValueExact", Short.MIN_VALUE, new Apfloat(Short.MIN_VALUE).shortValueExact());
+        assertEquals("MAX_VALUE byteValueExact", Byte.MAX_VALUE, new Apfloat(Byte.MAX_VALUE).byteValueExact());
+        assertEquals("MIN_VALUE byteValueExact", Byte.MIN_VALUE, new Apfloat(Byte.MIN_VALUE).byteValueExact());
+        try
+        {
+            new Apfloat(Long.MAX_VALUE).add(new Apfloat(1)).longValueExact();
+            fail("Value out of range accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            new Apfloat(Long.MIN_VALUE).subtract(new Apfloat(1)).longValueExact();
+            fail("Value out of range accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            new Apfloat(Integer.MAX_VALUE + 1L).intValueExact();
+            fail("Value out of range accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            new Apfloat(Integer.MIN_VALUE - 1L).intValueExact();
+            fail("Value out of range accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            new Apfloat(Short.MAX_VALUE + 1L).shortValueExact();
+            fail("Value out of range accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            new Apfloat(Short.MIN_VALUE- 1L).shortValueExact();
+            fail("Value out of range accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            new Apfloat(Byte.MAX_VALUE + 1L).byteValueExact();
+            fail("Value out of range accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            new Apfloat(Byte.MIN_VALUE - 1L).byteValueExact();
+            fail("Value out of range accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
     }
 
     public static void testEqualDigits()

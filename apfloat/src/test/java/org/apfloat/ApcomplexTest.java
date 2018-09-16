@@ -68,6 +68,7 @@ public class ApcomplexTest
         suite.addTest(new ApcomplexTest("testMultiply"));
         suite.addTest(new ApcomplexTest("testDivide"));
         suite.addTest(new ApcomplexTest("testNumberValues"));
+        suite.addTest(new ApcomplexTest("testNumberValuesExact"));
         suite.addTest(new ApcomplexTest("testEqualDigits"));
         suite.addTest(new ApcomplexTest("testEquals"));
         suite.addTest(new ApcomplexTest("testHashCode"));
@@ -478,6 +479,27 @@ public class ApcomplexTest
         assertEquals("5 byteValue", 5, a.byteValue());
         assertEquals("5 doubleValue", 5.0, a.doubleValue(), 0.0);
         assertEquals("5 floatValue", 5.0f, a.floatValue(), 0.0f);
+    }
+
+    public static void testNumberValuesExact()
+    {
+        Apcomplex a = new Apcomplex("(5,6)");
+        assertEquals("5 longValueExact", 5, a.longValueExact());
+        assertEquals("5 intValueExact", 5, a.intValueExact());
+        assertEquals("5 shortValueExact", 5, a.shortValueExact());
+        assertEquals("5 byteValueExact", 5, a.byteValueExact());
+
+        a = new Apcomplex("5.5");
+        assertEquals("5.5 longValueExact", 5, a.longValueExact());
+        assertEquals("5.5 intValueExact", 5, a.intValueExact());
+        assertEquals("5.5 shortValueExact", 5, a.shortValueExact());
+        assertEquals("5.5 byteValueExact", 5, a.byteValueExact());
+
+        a = new Apcomplex("-5.5");
+        assertEquals("-5.5 longValueExact", -5, a.longValueExact());
+        assertEquals("-5.5 intValueExact", -5, a.intValueExact());
+        assertEquals("-5.5 shortValueExact", -5, a.shortValueExact());
+        assertEquals("-5.5 byteValueExact", -5, a.byteValueExact());
     }
 
     public static void testEqualDigits()
