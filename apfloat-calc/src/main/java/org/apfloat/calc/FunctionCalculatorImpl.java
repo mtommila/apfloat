@@ -157,6 +157,7 @@ public abstract class FunctionCalculatorImpl
         public Number factorial(Number x);
         public Number floor(Number x);
         public Number frac(Number x);
+        public Number gamma(Number x);
         public Number log(Number x);
         public Number log(Number x, Number y);
         public Number pi(Number x);
@@ -219,6 +220,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("factorial", fixedFunction("factorial", 1, (functions, arguments) -> functions.factorial(arguments.get(0))));
         setFunction("floor", fixedFunction("floor", 1, (functions, arguments) -> functions.floor(arguments.get(0))));
         setFunction("frac", fixedFunction("frac", 1, (functions, arguments) -> functions.frac(arguments.get(0))));
+        setFunction("gamma", fixedFunction("gamma", 1, (functions, arguments) -> functions.gamma(arguments.get(0))));
         setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
         setFunction("pi", fixedFunction("pi", 1, (functions, arguments) -> functions.pi(arguments.get(0))));
         setFunction("random", fixedFunction("random", 1, (functions, arguments) -> functions.random(arguments.get(0))));

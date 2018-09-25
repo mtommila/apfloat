@@ -30,7 +30,7 @@ import org.apfloat.spi.Util;
  * <code>ApcomplexMath.acos(Apcomplex.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -713,6 +713,24 @@ public class FixedPrecisionApcomplexHelper
     }
 
     /**
+     * Gamma function.
+     *
+     * @param z The operand(s).
+     *
+     * @return <code>&Gamma;(z)</code>.
+     *
+     * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.9.0
+     */
+
+    public Apcomplex gamma(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.gamma(setGammaPrecision(z)));
+    }
+
+    /**
      * Returns the precision, which is used for the results.
      *
      * @return The precision of the results.
@@ -782,6 +800,11 @@ public class FixedPrecisionApcomplexHelper
         return x.precision(precision);
     }
 
+    Apfloat setGammaPrecision(Apfloat x)
+    {
+        return setTrigonometricPrecision(x);
+    }
+
     private Apcomplex setPrecision(Apcomplex z)
         throws ApfloatRuntimeException
     {
@@ -812,6 +835,12 @@ public class FixedPrecisionApcomplexHelper
     private Apcomplex setLogarithmicPrecision(Apcomplex z)
     {
         long precision = ApfloatHelper.extendPrecision(precision(), abs(z).equalDigits(new Apfloat(1, Apfloat.INFINITE, z.radix())));
+        return z.precision(precision);
+    }
+
+    private Apcomplex setGammaPrecision(Apcomplex z)
+    {
+        long precision = ApfloatHelper.extendPrecision(precision(), Math.max(0, z.scale()));
         return z.precision(precision);
     }
 

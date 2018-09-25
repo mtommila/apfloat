@@ -877,6 +877,24 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
+     * Gamma function.
+     *
+     * @param x The operand(s).
+     *
+     * @return <code>&Gamma;(x)</code>.
+     *
+     * @throws ArithmeticException If <code>x</code> is a nonpositive integer.
+     *
+     * @since 1.9.0
+     */
+
+    public Apfloat gamma(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.gamma(setGammaPrecision(x)));
+    }
+
+    /**
      * Return a uniformly distributed random number <code>0 <= x < 1</code>.
      *
      * @return A random number.

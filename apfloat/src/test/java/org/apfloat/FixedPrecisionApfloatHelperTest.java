@@ -94,6 +94,7 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testToRadians"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testProduct"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testSum"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testGamma"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
 
         return suite;
@@ -871,6 +872,15 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.sum(x);
         assertEquals("value", new Apfloat(1234567900), result);
         assertEquals("precision", 10, result.precision());
+    }
+
+    public static void testGamma()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(27);
+        Apfloat x = new Apfloat("1000000000000.1");
+        Apfloat result = helper.gamma(x);
+        assertEquals("value", new Apfloat("2.22465301759833318396785103e11565705518092"), result, new Apfloat("5e11565705518066"));
+        assertEquals("precision", 27, result.precision());
     }
 
     public static void testRandom()

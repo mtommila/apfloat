@@ -21,7 +21,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -70,6 +70,7 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testTan"));
         suite.addTest(new ApcomplexMathTest("testProduct"));
         suite.addTest(new ApcomplexMathTest("testSum"));
+        suite.addTest(new ApcomplexMathTest("testGamma"));
 
         return suite;
     }
@@ -1362,5 +1363,128 @@ public class ApcomplexMathTest
         assertEquals("Array sum 2 [1]", new Apcomplex("1000000000000"), x[1]);
 
         assertEquals("Empty sum", new Apcomplex("0"), ApcomplexMath.sum());
+    }
+
+    public static void testGamma()
+    {
+        Apcomplex a = ApcomplexMath.gamma(new Apcomplex("0.50000000"));
+        assertEquals("0.5 precision", 8, a.precision());
+        assertEquals("0.5 value", new Apfloat("1.7724539"), a, new Apfloat("5e-7"));
+        a = ApcomplexMath.gamma(new Apcomplex("-0.50000000"));
+        assertEquals("-0.5 precision", 8, a.precision());
+        assertEquals("-0.5 value", new Apfloat("-3.5449077"), a, new Apfloat("5e-7"));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat(1, 8, 5)));
+        assertEquals("1 precision", 8, a.precision());
+        assertEquals("1 radix", 5, a.radix());
+        assertEquals("1 value", new Apfloat("1"), a);
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat(2, 100, 15)));
+        assertEquals("2 precision", 100, a.precision());
+        assertEquals("2 radix", 15, a.radix());
+        assertEquals("2 value", new Apfloat("1"), a);
+        a = ApcomplexMath.gamma(new Apcomplex("3.0000"));
+        assertEquals("3 precision", 5, a.precision());
+        assertEquals("3 value", new Apfloat("2"), a);
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat("1.6", 50, 12)));
+        assertEquals("1.5 precision", 50, a.precision());
+        assertEquals("1.5 radix", 12, a.radix());
+        assertEquals("1.5 value", new Apfloat("0.a77497505445a57663a7a6a27293557aa7636b52055b106267", 50, 12), a, new Apfloat("5e-50", 1, 12));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat("1.6", 50, 12), new Apfloat("1.6", 50, 12)));
+        assertEquals("(1.5,1.5) precision", 50, a.precision());
+        assertEquals("(1.5,1.5) radix", 12, a.radix());
+        assertEquals("(1.5,1.5) value", new Apcomplex(new Apfloat("0.421432a040a1238266b59319481b82250a972699b1218016a4", 50, 12), new Apfloat("0.184386517914307662b897756b0100538485b04495282b25ba", 50, 12)), a, new Apfloat("5e-50", 1, 12));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat("1.6", 50, 12), new Apfloat("-1.6", 50, 12)));
+        assertEquals("(1.5,-1.5) precision", 50, a.precision());
+        assertEquals("(1.5,-1.5) radix", 12, a.radix());
+        assertEquals("(1.5,-1.5) value", new Apcomplex(new Apfloat("0.421432a040a1238266b59319481b82250a972699b1218016a4", 50, 12), new Apfloat("-0.184386517914307662b897756b0100538485b04495282b25ba", 50, 12)), a, new Apfloat("5e-50", 1, 12));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat("10.1", 50), new Apfloat(1, 50)));
+        assertEquals("10.1+I precision", 49, a.precision());
+        assertEquals("10.1+I radix", 10, a.radix());
+        assertEquals("10.1+I value", new Apcomplex("(-275889.24637304345640288294183505994521208628420155,332093.85747733234553448206237389863106703170190430)"), a, new Apfloat("5e-44"));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat("100.1", 50), new Apfloat(1, 50)));
+        assertEquals("100.1+I precision", 47, a.precision(), 1); //FIXME
+        assertEquals("100.1+I radix", 10, a.radix());
+        assertEquals("100.1+I value", new Apcomplex("(-1.6325249252175791061043773321806465941281038201e155,-1.46196463909803799277895455102943868342521844260e156)"), a, new Apfloat("5e109"));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat(1, 200), new Apfloat("1000000000000.1", 200)));
+        assertEquals("1000000000000.1+I precision", 186, a.precision());
+        assertEquals("1000000000000.1+I radix", 10, a.radix());
+        assertEquals("1000000000000.1+I value", new Apcomplex("(2.2799397381057012808806414716554222166361918093242073118331397578121585980690443002813637584289628198999964037945275096726070876981676095000509004082444136731667291762706895607184590520e-682188176916,2.56143734228029034694359025317416641643312626363528304218252981145494697876711767159132470544194941716039395729054771162631751713400996765379046059018461097663341902573535496875851156846e-682188176915)"), a, new Apfloat("5e-682188177101"));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat(1, 40), new Apfloat("1000000000000.1", 40)));
+        assertEquals("1000000000000.1+I precision", 26, a.precision());
+        assertEquals("1000000000000.1+I radix", 10, a.radix());
+        assertEquals("1000000000000.1+I value", new Apcomplex("(2.2799397381057012808806415e-682188176916,2.56143734228029034694359025e-682188176915)"), a, new Apfloat("5e-682188176941"));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat(1, 133, 2), new Apfloat("1.110100011010100101001010001000000000000000110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011e39", 133, 2)));
+        assertEquals("1000000000000.1+I radix 2 precision", 87, a.precision());
+        assertEquals("1000000000000.1+I radix 2 radix", 2, a.radix());
+        assertEquals("1000000000000.1+I radix 2 value", new Apcomplex(new Apfloat("1.111010101000100100110111110011011000101001000110001000101011000111010000100110001001e-2266180070897", Apfloat.DEFAULT, 2), new Apfloat("1.0101100001110000001011000010100111110010000010101111100000100011110010100011010001110010e-2266180070893", Apfloat.DEFAULT, 2)), a, new Apfloat("1e-2266180070981", 1, 2));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat(1, 25, 36), new Apfloat("cre66i9s.3lllllllllllllllm", 25, 36)));
+        assertEquals("100000000000.1+I radix 36 precision", 17, a.precision());
+        assertEquals("100000000000.1+I radix 36 radix", 36, a.radix());
+        assertEquals("100000000000.1+I radix 36 value", ApcomplexMath.scale(new Apcomplex(new Apfloat("0.4w3ncj1ol4pgrcbkl", Apfloat.DEFAULT, 36),new Apfloat("1.iyfv83hi4ul6s26oy", Apfloat.DEFAULT, 36)), -438339061062L), a, ApfloatMath.scale(new Apfloat("h", 1, 36), -438339061078L));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat(100, 30), new Apfloat(374, 30)));
+        assertEquals("(100,374) precision", 30, a.precision());
+        assertEquals("(100,374) radix", 10, a.radix());
+        assertEquals("(100,374) value", new Apcomplex("(47.4294943677064514689542753377,-32.7488916473624576880974867017)"), a, new Apfloat("5e-28"));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat(1000000000, 30), new Apfloat(14913639641L, 30)));
+        assertEquals("(1000000000,14913639641) precision", 30, a.precision());
+        assertEquals("(1000000000,14913639641) radix", 10, a.radix());
+        assertEquals("(1000000000,14913639641) value", new Apcomplex("(-2.99966240181596582389952917253,-0.39936803730444026987241513690)"), a, new Apfloat("5e-29"));
+        a = ApcomplexMath.gamma(new Apcomplex(new Apfloat("4825490186121.8", 30), new Apfloat(99000000000000L, 30)));
+        assertEquals("(4825490186121.8,99000000000000) precision", 30, a.precision());
+        assertEquals("(4825490186121.8,99000000000000) radix", 10, a.radix());
+        assertEquals("(4825490186121.8,99000000000000) value", new Apcomplex("(-6.62771164327451839566254131658,5.32978019529137704595692626876)"), a, new Apfloat("5e-29"));
+        try
+        {
+            ApcomplexMath.gamma(new Apcomplex("0"));
+            fail("Gamma of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.gamma(new Apcomplex("-1"));
+            fail("Gamma of -1");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.gamma(new Apcomplex("(1e2,1)"));
+            fail("Gamma loss of precision");
+        }
+        catch (LossOfPrecisionException lope)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.gamma(new Apcomplex("(0,1e2)"));
+            fail("Gamma loss of precision");
+        }
+        catch (LossOfPrecisionException lope)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.gamma(new Apcomplex("1e100"));
+            fail("Gamma overflow");
+        }
+        catch (ApfloatRuntimeException are)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.gamma(new Apcomplex(new Apint(1), new Apfloat("4.5", Apfloat.INFINITE)));
+            fail("Gamma infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 }

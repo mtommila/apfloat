@@ -86,6 +86,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testToDegrees"));
         suite.addTest(new ApfloatMathTest("testProduct"));
         suite.addTest(new ApfloatMathTest("testSum"));
+        suite.addTest(new ApfloatMathTest("testGamma"));
         suite.addTest(new ApfloatMathTest("testRandom"));
 
         return suite;
@@ -1617,6 +1618,94 @@ public class ApfloatMathTest
 
         numbers[0] = numbers[0].add(new Apfloat("1e10000000", Apfloat.INFINITE));
         assertEquals("Big number big sum", new Apfloat(5000050000L).add(new Apfloat("1e10000000", Apfloat.INFINITE)), ApfloatMath.sum(numbers));
+    }
+
+    public static void testGamma()
+    {
+        Apfloat a = ApfloatMath.gamma(new Apfloat("0.50000000"));
+        assertEquals("0.5 precision", 8, a.precision());
+        assertEquals("0.5 value", new Apfloat("1.7724539"), a, new Apfloat("5e-7"));
+        a = ApfloatMath.gamma(new Apfloat("-0.50000000"));
+        assertEquals("-0.5 precision", 8, a.precision());
+        assertEquals("-0.5 value", new Apfloat("-3.5449077"), a, new Apfloat("5e-7"));
+        a = ApfloatMath.gamma(new Apfloat(1, 8, 5));
+        assertEquals("1 precision", 8, a.precision());
+        assertEquals("1 radix", 5, a.radix());
+        assertEquals("1 value", new Apfloat("1"), a);
+        a = ApfloatMath.gamma(new Apfloat(2, 100, 15));
+        assertEquals("2 precision", 100, a.precision());
+        assertEquals("2 radix", 15, a.radix());
+        assertEquals("2 value", new Apfloat("1"), a);
+        a = ApfloatMath.gamma(new Apfloat("3.0000"));
+        assertEquals("3 precision", 5, a.precision());
+        assertEquals("3 value", new Apfloat("2"), a);
+        a = ApfloatMath.gamma(new Apfloat(4));
+        assertEquals("4 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("4 value", new Apfloat(6), a);
+        a = ApfloatMath.gamma(new Apfloat("1.6", 50, 12));
+        assertEquals("1.5 precision", 50, a.precision());
+        assertEquals("1.5 radix", 12, a.radix());
+        assertEquals("1.5 value", new Apfloat("0.a77497505445a57663a7a6a27293557aa7636b52055b106267", 50, 12), a, new Apfloat("6e-50", 1, 12));
+        a = ApfloatMath.gamma(new Apfloat("100.1", 200));
+        assertEquals("100.1 precision", 198, a.precision());
+        assertEquals("100.1 radix", 10, a.radix());
+        assertEquals("100.1 value", new Apfloat("1.47845449465151367987473964370058459815616330531263071222863411464877072133812707322505189203455965790627278052589675722784367103797434916544534856714784021130076746063941341581673323445817944799010e156"), a, new Apfloat("5e-41"));
+        a = ApfloatMath.gamma(new Apfloat("1000000000000.1", 200));
+        assertEquals("1000000000000.1 precision", 187, a.precision());
+        assertEquals("1000000000000.1 radix", 10, a.radix());
+        assertEquals("1000000000000.1 value", new Apfloat("2.224653017598333183967851025493808141494831993379408189875623062445371016679508334427856798243992091090588534116479723793172610167211719300756575577203942719906409747242019348186775610123e11565705518092"), a, new Apfloat("5e11565705517906"));
+        a = ApfloatMath.gamma(new Apfloat("1000000000000.1", 40));
+        assertEquals("1000000000000.1 precision", 27, a.precision());
+        assertEquals("1000000000000.1 radix", 10, a.radix());
+        assertEquals("1000000000000.1 value", new Apfloat("2.22465301759833318396785103e11565705518092"), a, new Apfloat("5e11565705518066"));
+        a = ApfloatMath.gamma(new Apfloat("1.110100011010100101001010001000000000000000110011001100110011001100110011001100110011001100110011001100110011001100110011001100110011e39", 133, 2));
+        assertEquals("1000000000000.1 radix 2 precision", 88, a.precision());
+        assertEquals("1000000000000.1 radix 2 radix", 2, a.radix());
+        assertEquals("1000000000000.1 radix 2 value", new Apfloat("1.101100110001111000000001111011100111100110011010110000111001101101000111111101101001101e38420442097744", Apfloat.DEFAULT, 2), a, new Apfloat("1e38420442097657", 1, 2));
+        a = ApfloatMath.gamma(new Apfloat("cre66i9s.3lllllllllllllllm", 25, 36));
+        assertEquals("1000000000000.1 radix 36 precision", 17, a.precision());
+        assertEquals("1000000000000.1 radix 36 radix", 36, a.radix());
+        assertEquals("1000000000000.1 radix 36 value", ApfloatMath.scale(new Apfloat("3.nbkxpiq7zeevaryz", Apfloat.DEFAULT, 36), 7431527940352L), a, ApfloatMath.scale(new Apfloat("h", 1, 36), 7431527940336L));
+        a = ApfloatMath.gamma(new Apfloat("100000000000000000.1", 100));
+        assertEquals("100000000000000000.1 precision", 82, a.precision());
+        assertEquals("100000000000000000.1 radix", 10, a.radix());
+        assertEquals("100000000000000000.1 value", new Apfloat("6.823026252477337409854801263715027688793307758143854258250527972341074891269582940e1656570551809674810"), a, new Apfloat("5e1656570551809674729"));
+        try
+        {
+            ApfloatMath.gamma(new Apfloat("0"));
+            fail("Gamma of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.gamma(new Apfloat("-1"));
+            fail("Gamma of -1");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.gamma(new Apfloat("1e100", 100));
+            fail("Gamma overflow");
+        }
+        catch (OverflowException are)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.gamma(new Apfloat("4.5", Apfloat.INFINITE));
+            fail("Gamma infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testRandom()

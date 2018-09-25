@@ -222,6 +222,12 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number gamma(Number x)
+        {
+            return ApcomplexMath.gamma((Apcomplex) x);
+        }
+
+        @Override
         public Number log(Number x)
         {
             return ApcomplexMath.log((Apcomplex) x);

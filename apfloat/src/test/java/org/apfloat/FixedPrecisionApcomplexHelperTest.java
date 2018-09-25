@@ -21,7 +21,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -81,6 +81,7 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testW"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testProduct"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testSum"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testGamma"));
 
         return suite;
     }
@@ -562,5 +563,14 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.sum(z);
         assertEquals("value", new Apcomplex("(12345.6789,10000000001)"), result);
         assertEquals("precision", 20, result.precision());
+    }
+
+    public static void testGamma()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(26);
+        Apcomplex z = new Apcomplex("(1,1000000000000.1)");
+        Apcomplex result = helper.gamma(z);
+        assertEquals("value", new Apcomplex("(2.2799397381057012808806415e-682188176916,2.56143734228029034694359025e-682188176915)"), result, new Apfloat("5e-682188176941"));
+        assertEquals("precision", 26, result.precision());
     }
 }

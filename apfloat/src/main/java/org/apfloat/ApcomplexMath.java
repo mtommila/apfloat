@@ -1585,6 +1585,113 @@ public class ApcomplexMath
         return new Apcomplex(ApfloatMath.sum(x), ApfloatMath.sum(y));
     }
 
+    /**
+     * Gamma function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the gamma function.
+     *
+     * @param z The argument.
+     *
+     * @return <code>&Gamma;(z)</code>
+     *
+     * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.9.0
+     */
+
+    public static Apcomplex gamma(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        // Implementation note: the ck are actually constant (wrt. to precision and radix) so we could cache them,
+        // however since this is a slow algorithm, the factors ck would take up quite a lot of space, and would not
+        // improve the asymptotic complexity, so it's not really worth it - this function is anyway only useful for
+        // a few thousand digits of precision, no matter of what optimization we might try.
+        if (z.equals(Apfloat.ONE))
+        {
+            return z;
+        }
+        long precision = z.precision();
+        int radix = z.radix();
+        if (z.imag().signum() == 0)
+        {
+            if (z.real().signum() == 0)
+            {
+                throw new ArithmeticException("Gamma of zero");
+            }
+            if (z.real().frac().signum() == 0) // Is integer
+            {
+                if (z.real().signum() < 0)
+                {
+                    throw new ArithmeticException("Gamma of negative integer");
+                }
+                long n;
+                try
+                {
+                    n = z.real().longValueExact();
+                }
+                catch (ArithmeticException ae)
+                {
+                    throw new OverflowException("Overflow");
+                }
+                return ApfloatMath.factorial(n - 1, precision, radix);
+            }
+        }
+        if (precision == Apfloat.INFINITE)
+        {
+            throw new InfiniteExpansionException("Cannot calculate gamma function to infinite precision");
+        }
+        if (z.real().signum() < 0)
+        {
+            z = z.negate();
+            Apfloat pi = ApfloatMath.pi(precision, radix);
+            return pi.negate().divide(z.multiply(sin(pi.multiply(z))).multiply(gamma(z)));
+        }
+        Apint one = new Apint(1, radix);
+        long a1 = (long) (precision / Math.log(2 * Math.PI) * Math.log(radix));
+        long workingPrecision = ApfloatHelper.extendPrecision(precision, (long) (precision * 0.5) + Apfloat.EXTRA_PRECISION); // increase intermediate precision - ck are large and alternating in sign, lots of precision loss
+        z = z.precision(workingPrecision).subtract(one);
+        Apint a = new Apint(a1 + 1, radix);
+        Apint two = new Apint(2, radix);
+        Apfloat c0 = ApfloatMath.sqrt(ApfloatMath.pi(workingPrecision, radix).multiply(two));
+        Apcomplex sum = c0;
+        Apfloat e = ApfloatMath.exp(one.precision(workingPrecision));
+        Apfloat divisor = ApfloatMath.exp(new Apfloat(-a1, workingPrecision, radix));
+        for (long k = 1; k <= a1; k++)
+        {
+            Apint kk = new Apint(k, radix);
+            Apfloat ak = a.subtract(kk).precision(workingPrecision);
+            Apfloat ck = ApfloatMath.inverseRoot(ak, 2).multiply(ApfloatMath.pow(ak, k)).divide(divisor);
+            sum = sum.add(ck.divide(z.add(kk)));
+            if (k < a1)
+            {
+                divisor = divisor.multiply(e).multiply(kk).negate();
+            }
+        }
+        Aprational half = new Aprational(one, two);
+        Apcomplex result = ApcomplexMath.pow(z.add(a), z.add(half)).multiply(ApcomplexMath.exp(z.negate().subtract(a))).multiply(sum);
+        double normalizedScale = result.scale() * Math.log(radix);
+        if (normalizedScale > 0 && z.real().scale() > 0)
+        {
+            precision = precision - (long) (1.01 * Math.log(normalizedScale) / Math.log(radix)); // Very large results have a reduced precision
+            if (precision <= 0)
+            {
+                throw new LossOfPrecisionException("Complete loss of accurate digits");
+            }
+        }
+        else if (normalizedScale < 0)
+        {
+            precision = precision - (long) (1.148 * Math.log(-normalizedScale) / Math.log(radix)); // Very small results also have a reduced precision
+            if (precision <= 0)
+            {
+                throw new LossOfPrecisionException("Complete loss of accurate digits");
+            }
+        }
+        return result.precision(precision);
+    }
+
     // Extend the precision on last iteration
     private static Apcomplex lastIterationExtendPrecision(int iterations, int precisingIteration, Apcomplex z)
     {
