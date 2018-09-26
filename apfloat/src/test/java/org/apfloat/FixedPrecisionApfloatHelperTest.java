@@ -885,14 +885,14 @@ public class FixedPrecisionApfloatHelperTest
 
     public static void testRandom()
     {
-        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(1);
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
         Apfloat result = helper.random();
         assertEquals("value", new Apfloat("0.5"), result, new Apfloat("0.5"));
-        assertEquals("precision", 1, result.precision());
+        assertEquals("precision", 100, result.precision());
 
         result = helper.random(16);
         assertEquals("value 16", new Apfloat("0.8", Apfloat.DEFAULT, 16), result, new Apfloat("0.8", 1, 16));
-        assertEquals("precision 16", 1, result.precision());
+        assertEquals("precision 16", 100, result.precision());
 
         try
         {
