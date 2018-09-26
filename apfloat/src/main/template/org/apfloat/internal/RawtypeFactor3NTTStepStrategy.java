@@ -31,7 +31,7 @@ import static org.apfloat.internal.RawtypeModConstants.*;
  * All access to this class must be externally synchronized.
  *
  * @since 1.7.0
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -178,16 +178,16 @@ public class RawtypeFactor3NTTStepStrategy
      * @return A suitable object for performing the 3-point transforms in parallel.
      */
 
-    protected ParallelRunnable createColumnTransformParallelRunnable(final DataStorage dataStorage0, final DataStorage dataStorage1, final DataStorage dataStorage2, final long startColumn, final long columns, long power2length, long length, final boolean isInverse, int modulus)
+    protected ParallelRunnable createColumnTransformParallelRunnable(DataStorage dataStorage0, DataStorage dataStorage1, DataStorage dataStorage2, long startColumn, long columns, long power2length, long length, boolean isInverse, int modulus)
     {
         setModulus(MODULUS[modulus]);                                             // Modulus
-        final rawtype w = (isInverse ?
-                           getInverseNthRoot(PRIMITIVE_ROOT[modulus], length) :
-                           getForwardNthRoot(PRIMITIVE_ROOT[modulus], length)),   // Forward/inverse n:th root
-                      w3 = modPow(w, (rawtype) power2length),                     // Forward/inverse 3rd root
-                      ww = modMultiply(w, w),
-                      w1 = negate(modDivide((rawtype) 3, (rawtype) 2)),
-                      w2 = modAdd(w3, modDivide((rawtype) 1, (rawtype) 2));
+        rawtype w = (isInverse ?
+                     getInverseNthRoot(PRIMITIVE_ROOT[modulus], length) :
+                     getForwardNthRoot(PRIMITIVE_ROOT[modulus], length)),   // Forward/inverse n:th root
+                w3 = modPow(w, (rawtype) power2length),                     // Forward/inverse 3rd root
+                ww = modMultiply(w, w),
+                w1 = negate(modDivide((rawtype) 3, (rawtype) 2)),
+                w2 = modAdd(w3, modDivide((rawtype) 1, (rawtype) 2));
 
         ParallelRunnable parallelRunnable = new ParallelRunnable(columns)
         {

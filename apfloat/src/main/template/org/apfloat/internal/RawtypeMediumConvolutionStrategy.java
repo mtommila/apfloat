@@ -28,7 +28,7 @@ import org.apfloat.spi.DataStorage;
  * Medium-length convolution strategy.
  * Performs a simple O(n<sup>2</sup>) multiplication when the size of one operand is relatively short.
  *
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -77,7 +77,7 @@ public class RawtypeMediumConvolutionStrategy
             throw new ApfloatInternalException("Too long shorter number, size = " + shortSize);
         }
 
-        final int bufferSize = (int) shortSize;
+        int bufferSize = (int) shortSize;
 
         ApfloatContext ctx = ApfloatContext.getContext();
         DataStorageBuilder dataStorageBuilder = ctx.getBuilderFactory().getDataStorageBuilder();

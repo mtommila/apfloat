@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.6
- * @version 1.6
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -67,7 +67,7 @@ public class MessagePasserTest
 
     public static void testPassMessageParallel()
     {
-        final MessagePasser<Integer, String> messagePasser = new MessagePasser<Integer, String>();
+        MessagePasser<Integer, String> messagePasser = new MessagePasser<Integer, String>();
         Thread thread = new Thread()
         {
             @Override

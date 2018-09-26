@@ -97,11 +97,11 @@ public class ParallelRunnerTest
             ctx.setExecutorService(ApfloatContext.getDefaultExecutorService());
 
             final int LENGTH = 1000000;
-            final int[] values = new int[LENGTH];
+            int[] values = new int[LENGTH];
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
                 @Override
-                public Runnable getRunnable(final int start, final int length)
+                public Runnable getRunnable(int start, int length)
                 {
                     return () ->
                     {
@@ -132,11 +132,11 @@ public class ParallelRunnerTest
 
             final long LENGTH = 1000000000000L;
             final int SQRT_LENGTH = 1000000;
-            final Map<Long, Long> starts = new ConcurrentHashMap<Long, Long>();
+            Map<Long, Long> starts = new ConcurrentHashMap<Long, Long>();
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
                 @Override
-                public Runnable getRunnable(final long start, final long length)
+                public Runnable getRunnable(long start, long length)
                 {
                     return () ->
                     {
@@ -172,11 +172,11 @@ public class ParallelRunnerTest
             ctx.setExecutorService(ApfloatContext.getDefaultExecutorService());
 
             final int LENGTH = 1000000;
-            final int[] values = new int[LENGTH];
+            int[] values = new int[LENGTH];
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
                 @Override
-                public Runnable getRunnable(final int start, final int length)
+                public Runnable getRunnable(int start, int length)
                 {
                     return () ->
                     {
@@ -188,11 +188,11 @@ public class ParallelRunnerTest
                 }
             };
 
-            final int[] values2 = new int[LENGTH];
+            int[] values2 = new int[LENGTH];
             ParallelRunnable parallelRunnable2 = new ParallelRunnable(LENGTH)
             {
                 @Override
-                public Runnable getRunnable(final int start, final int length)
+                public Runnable getRunnable(int start, int length)
                 {
                     return () ->
                     {
@@ -229,12 +229,12 @@ public class ParallelRunnerTest
             ctx.setExecutorService(ApfloatContext.getDefaultExecutorService());
 
             final int LENGTH = 10000;
-            final Map<String, String> threadNames = new ConcurrentHashMap<String, String>();
-            final AtomicBoolean half = new AtomicBoolean();
+            Map<String, String> threadNames = new ConcurrentHashMap<String, String>();
+            AtomicBoolean half = new AtomicBoolean();
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
                 @Override
-                public Runnable getRunnable(final int start, final int length)
+                public Runnable getRunnable(int start, int length)
                 {
                     return () ->
                     {

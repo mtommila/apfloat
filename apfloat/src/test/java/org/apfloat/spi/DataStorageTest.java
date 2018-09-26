@@ -25,7 +25,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.8.1
- * @version 1.8.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -154,7 +154,7 @@ public class DataStorageTest
 
     public static void testGetArray()
     {
-        final ArrayAccess arrayAccess = new DummyArrayAccess();
+        ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage(10)
         {
             @Override
@@ -212,7 +212,7 @@ public class DataStorageTest
 
     public static void testGetArrayBig()
     {
-        final ArrayAccess arrayAccess = new DummyArrayAccess();
+        ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage(Long.MAX_VALUE)
         {
             @Override
@@ -240,7 +240,7 @@ public class DataStorageTest
 
     public static void testGetArrayBlockSmall()
     {
-        final ArrayAccess arrayAccess = new DummyArrayAccess();
+        ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage(100)
         {
             @Override
@@ -319,7 +319,7 @@ public class DataStorageTest
 
     public static void testGetArrayBlockBig()
     {
-        final ArrayAccess arrayAccess = new DummyArrayAccess();
+        ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage((long) Integer.MAX_VALUE * Integer.MAX_VALUE)
         {
             @Override
@@ -367,7 +367,7 @@ public class DataStorageTest
 
     public static void testGetTransposedArrayBlockSmall()
     {
-        final ArrayAccess arrayAccess = new DummyArrayAccess();
+        ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage(100)
         {
             @Override
@@ -446,7 +446,7 @@ public class DataStorageTest
 
     public static void testGetTransposedArrayBlockBig()
     {
-        final ArrayAccess arrayAccess = new DummyArrayAccess();
+        ArrayAccess arrayAccess = new DummyArrayAccess();
         DataStorage dataStorage = new DummyDataStorage((long) Integer.MAX_VALUE * Integer.MAX_VALUE)
         {
             @Override

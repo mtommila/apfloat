@@ -34,7 +34,7 @@ import static org.apfloat.internal.RawtypeModConstants.*;
  * All access to this class must be externally synchronized.
  *
  * @since 1.7.0
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -165,9 +165,9 @@ public class RawtypeNTTConvolutionStepStrategy
      * @return An object suitable for multiplying the elements in parallel.
      */
 
-    protected ParallelRunnable createMultiplyInPlaceParallelRunnable(final DataStorage sourceAndDestination, final DataStorage source, int modulus)
+    protected ParallelRunnable createMultiplyInPlaceParallelRunnable(DataStorage sourceAndDestination, DataStorage source, int modulus)
     {
-        final long size = sourceAndDestination.getSize();
+        long size = sourceAndDestination.getSize();
 
         setModulus(MODULUS[modulus]);
 
@@ -191,9 +191,9 @@ public class RawtypeNTTConvolutionStepStrategy
      * @return An object suitable for squaring the elements in parallel.
      */
 
-    protected ParallelRunnable createSquareInPlaceParallelRunnable(final DataStorage sourceAndDestination, int modulus)
+    protected ParallelRunnable createSquareInPlaceParallelRunnable(DataStorage sourceAndDestination, int modulus)
     {
-        final long size = sourceAndDestination.getSize();
+        long size = sourceAndDestination.getSize();
 
         setModulus(MODULUS[modulus]);
 

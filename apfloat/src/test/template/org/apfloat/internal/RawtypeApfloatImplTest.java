@@ -1004,7 +1004,7 @@ public class RawtypeApfloatImplTest
         return new PushbackReader(new StringReader(value));
     }
 
-    private static PushbackReader getReader(final char character, final long size)
+    private static PushbackReader getReader(char character, long size)
     {
         return new PushbackReader(new Reader()
         {

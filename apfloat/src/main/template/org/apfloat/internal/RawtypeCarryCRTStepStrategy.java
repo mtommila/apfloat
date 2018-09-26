@@ -33,7 +33,7 @@ import static org.apfloat.internal.RawtypeModConstants.*;
  * All access to this class must be externally synchronized.
  *
  * @since 1.7.0
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -177,7 +177,7 @@ public class RawtypeCarryCRTStepStrategy
     }
 
     // Wrap an array in a simple reverse-order iterator, padded with zeros
-    private static DataStorage.Iterator arrayIterator(final rawtype[] data)
+    private static DataStorage.Iterator arrayIterator(rawtype[] data)
     {
         return new DataStorage.Iterator()
         {
@@ -214,7 +214,7 @@ public class RawtypeCarryCRTStepStrategy
     }
 
     // Composite iterator, made by concatenating two iterators
-    private static DataStorage.Iterator compositeIterator(final DataStorage.Iterator iterator1, final long size, final DataStorage.Iterator iterator2)
+    private static DataStorage.Iterator compositeIterator(DataStorage.Iterator iterator1, long size, DataStorage.Iterator iterator2)
     {
         return new DataStorage.Iterator()
         {

@@ -1904,7 +1904,7 @@ public class ApfloatMath
         x = tmp;
 
         // Create a heap, ordered by size
-        final Queue<Apfloat> heap = new PriorityQueue<Apfloat>(x.length, Comparator.comparing(Apfloat::size));
+        Queue<Apfloat> heap = new PriorityQueue<Apfloat>(x.length, Comparator.comparing(Apfloat::size));
 
         // Perform the multiplications in parallel
         ParallelHelper.ProductKernel<Apfloat> kernel = (h) ->
@@ -1994,7 +1994,7 @@ public class ApfloatMath
             long maxSize = (long) (ctx.getMemoryThreshold() * 5.0 / Math.log((double) ctx.getDefaultRadix()));
 
             // Create a queue of small numbers where the parallel algorithm can add and remove elements
-            final Queue<Apfloat> queue = new ConcurrentLinkedQueue<Apfloat>();
+            Queue<Apfloat> queue = new ConcurrentLinkedQueue<Apfloat>();
 
             // The large numbers go to the list where they will be added using a single thread algorithm
             list = new ArrayList<Apfloat>();

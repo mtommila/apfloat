@@ -43,7 +43,7 @@ import org.apfloat.spi.DataStorage;
  * @see CarryCRTStepStrategy
  *
  * @since 1.7.0
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -139,7 +139,7 @@ public class StepCarryCRTStrategy
      */
 
     @Override
-    public DataStorage carryCRT(final DataStorage resultMod0, final DataStorage resultMod1, final DataStorage resultMod2, final long resultSize)
+    public DataStorage carryCRT(DataStorage resultMod0, DataStorage resultMod1, DataStorage resultMod2, long resultSize)
         throws ApfloatRuntimeException
     {
         ApfloatContext ctx = ApfloatContext.getContext();
@@ -157,7 +157,7 @@ public class StepCarryCRTStrategy
         ApfloatContext ctx = ApfloatContext.getContext();
         BuilderFactory builderFactory = ctx.getBuilderFactory();
         DataStorageBuilder dataStorageBuilder = builderFactory.getDataStorageBuilder();
-        final DataStorage dataStorage = dataStorageBuilder.createDataStorage(resultSize * builderFactory.getElementSize());
+        DataStorage dataStorage = dataStorageBuilder.createDataStorage(resultSize * builderFactory.getElementSize());
         dataStorage.setSize(resultSize);
 
         ParallelRunnable parallelRunnable = createCarryCRTParallelRunnable(elementArrayType, resultMod0, resultMod1, resultMod2, dataStorage, size, resultSize);
@@ -193,13 +193,13 @@ public class StepCarryCRTStrategy
      * @return An suitable object for performing the carry-CRT in parallel.
      */
 
-    protected <T> ParallelRunnable createCarryCRTParallelRunnable(Class<T> elementArrayType, final DataStorage resultMod0, final DataStorage resultMod1, final DataStorage resultMod2, final DataStorage dataStorage, final long size, final long resultSize)
+    protected <T> ParallelRunnable createCarryCRTParallelRunnable(Class<T> elementArrayType, DataStorage resultMod0, DataStorage resultMod1, DataStorage resultMod2, DataStorage dataStorage, long size, long resultSize)
     {
         ApfloatContext ctx = ApfloatContext.getContext();
         BuilderFactory builderFactory = ctx.getBuilderFactory();
 
-        final MessagePasser<Long, T> messagePasser = new MessagePasser<Long, T>();
-        final CarryCRTStepStrategy<T> stepStrategy = builderFactory.getCarryCRTBuilder(elementArrayType).createCarryCRTSteps(this.radix);
+        MessagePasser<Long, T> messagePasser = new MessagePasser<Long, T>();
+        CarryCRTStepStrategy<T> stepStrategy = builderFactory.getCarryCRTBuilder(elementArrayType).createCarryCRTSteps(this.radix);
 
         ParallelRunnable parallelRunnable = new ParallelRunnable(size)
         {

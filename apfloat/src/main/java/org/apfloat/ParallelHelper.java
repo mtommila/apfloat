@@ -58,18 +58,18 @@ class ParallelHelper
      */
 
     // Thanks to Peter Luschny and Spiro Trikaliotis for the improved algorithm!
-    public static <T extends Apcomplex> void parallelProduct(T[] x, final Queue<T> heap, final ProductKernel<T> kernel)
+    public static <T extends Apcomplex> void parallelProduct(T[] x, Queue<T> heap, ProductKernel<T> kernel)
     {
         // If there are lots of numbers then use a fully parallel algorithm, for small products the overhead is not worth it
         ApfloatContext ctx = ApfloatContext.getContext();
-        final int numberOfProcessors = ctx.getNumberOfProcessors();
+        int numberOfProcessors = ctx.getNumberOfProcessors();
         if (x.length >= 1000 && numberOfProcessors > 1)
         {
             // First multiply small numbers in parallel;
             // number size would be so small that they would not be multiplied using a parallel algorithm (roughly dependent on cache L1 size)
-            final long maxSize = (long) (ctx.getCacheL1Size() * 2.5 / Math.log((double) ctx.getDefaultRadix()));
+            long maxSize = (long) (ctx.getCacheL1Size() * 2.5 / Math.log((double) ctx.getDefaultRadix()));
             // There is no efficient "ConcurrentPriorityQueue" data structure, so we just split the data
-            final List<Queue<T>> subHeaps = new ArrayList<Queue<T>>();
+            List<Queue<T>> subHeaps = new ArrayList<Queue<T>>();
             for (int i = 0; i < numberOfProcessors; i++)
             {
                 subHeaps.add(new PriorityQueue<T>(heap));
@@ -81,7 +81,7 @@ class ParallelHelper
                 (a.size() <= maxSize ? subHeaps.get(i++) : heap).add(a);
                 i = (i == numberOfProcessors ? 0 : i);
             }
-            final AtomicInteger index = new AtomicInteger();
+            AtomicInteger index = new AtomicInteger();
             Runnable runnable = () ->
             {
                 Queue<T> subHeap = subHeaps.get(index.getAndIncrement());

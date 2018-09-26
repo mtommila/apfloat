@@ -79,7 +79,7 @@ public class RawtypeDiskDataStorage
 
             if ((mode & READ) != 0)
             {
-                final rawtype[] array = getRawtypeData();
+                rawtype[] array = getRawtypeData();
                 WritableByteChannel out = new WritableByteChannel()
                 {
                     @Override
@@ -112,7 +112,7 @@ public class RawtypeDiskDataStorage
         {
             if ((this.mode & WRITE) != 0 && getData() != null)
             {
-                final rawtype[] array = getRawtypeData();
+                rawtype[] array = getRawtypeData();
                 ReadableByteChannel in = new ReadableByteChannel()
                 {
                     @Override

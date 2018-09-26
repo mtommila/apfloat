@@ -30,7 +30,7 @@ import static org.apfloat.internal.RawtypeModConstants.*;
  * All access to this class must be externally synchronized.
  *
  * @since 1.7.0
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -174,16 +174,16 @@ public class RawtypeNTTStepStrategy
      * @return An object suitable for multiplying the elements of the matrix in parallel.
      */
 
-    protected ParallelRunnable createMultiplyElementsParallelRunnable(final ArrayAccess arrayAccess, final int startRow, final int startColumn, final int rows, final int columns, long length, long totalTransformLength, boolean isInverse, int modulus)
+    protected ParallelRunnable createMultiplyElementsParallelRunnable(ArrayAccess arrayAccess, int startRow, int startColumn, int rows, int columns, long length, long totalTransformLength, boolean isInverse, int modulus)
         throws ApfloatRuntimeException
     {
         setModulus(MODULUS[modulus]);
-        final rawtype w = (isInverse ?
-                           getInverseNthRoot(PRIMITIVE_ROOT[modulus], length) :
-                           getForwardNthRoot(PRIMITIVE_ROOT[modulus], length));
-        final rawtype scaleFactor = (isInverse ?
-                                     modDivide((rawtype) 1, (rawtype) totalTransformLength) :
-                                     (rawtype) 1);
+        rawtype w = (isInverse ?
+                     getInverseNthRoot(PRIMITIVE_ROOT[modulus], length) :
+                     getForwardNthRoot(PRIMITIVE_ROOT[modulus], length)),
+                scaleFactor = (isInverse ?
+                               modDivide((rawtype) 1, (rawtype) totalTransformLength) :
+                               (rawtype) 1);
 
         ParallelRunnable parallelRunnable = new ParallelRunnable(rows)
         {
@@ -211,14 +211,14 @@ public class RawtypeNTTStepStrategy
      * @return An object suitable for transforming the rows of the matrix in parallel.
      */
 
-    protected ParallelRunnable createTransformRowsParallelRunnable(final ArrayAccess arrayAccess, final int length, final int count, final boolean isInverse, boolean permute, int modulus)
+    protected ParallelRunnable createTransformRowsParallelRunnable(ArrayAccess arrayAccess, int length, int count, boolean isInverse, boolean permute, int modulus)
         throws ApfloatRuntimeException
     {
         setModulus(MODULUS[modulus]);
-        final rawtype[] wTable = (isInverse ?
-                                  RawtypeWTables.getInverseWTable(modulus, length) :
-                                  RawtypeWTables.getWTable(modulus, length));
-        final int[] permutationTable = (permute ? Scramble.createScrambleTable(length) : null);
+        rawtype[] wTable = (isInverse ?
+                            RawtypeWTables.getInverseWTable(modulus, length) :
+                            RawtypeWTables.getWTable(modulus, length));
+        int[] permutationTable = (permute ? Scramble.createScrambleTable(length) : null);
 
         ParallelRunnable parallelRunnable = new ParallelRunnable(count)
         {

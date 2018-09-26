@@ -608,8 +608,8 @@ class ApfloatHelper
             throw new IllegalArgumentException("Maximum array size exceeded");
         }
 
-        final byte[] bytes = new byte[(int) byteCount];
-        final boolean startHi = ((scale & 1) == 0);
+        byte[] bytes = new byte[(int) byteCount];
+        boolean startHi = ((scale & 1) == 0);
 
         try
         {
@@ -672,7 +672,7 @@ class ApfloatHelper
         throws IOException
     {
         byte[] bytes = x.abs().toByteArray();
-        final int startB = (x.signum() < 0 ? '-' : -1);     // Start the stream with minus sign in case of negative number
+        int startB = (x.signum() < 0 ? '-' : -1);     // Start the stream with minus sign in case of negative number
         InputStream in = new ByteArrayInputStream(bytes)
         {
             @Override

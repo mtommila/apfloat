@@ -53,7 +53,7 @@ import static org.apfloat.internal.RawtypeRadixConstants.*;
  * This implementation doesn't necessarily store any extra digits for added
  * precision, so the last digit of any operation may be inaccurate.
  *
- * @version 1.8.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -1934,10 +1934,10 @@ public class RawtypeApfloatImpl
     // Returns an iterator for this number's data storage from start to end,
     // least significant word is correctly truncated with getLeastSignificantWord(),
     // after that the iterator returns zeros only
-    private DataStorage.Iterator getZeroPaddedIterator(final long start, final long end)
+    private DataStorage.Iterator getZeroPaddedIterator(long start, long end)
         throws ApfloatRuntimeException
     {
-        final DataStorage.Iterator iterator = this.dataStorage.iterator(DataStorage.READ, start, end);
+        DataStorage.Iterator iterator = this.dataStorage.iterator(DataStorage.READ, start, end);
 
         return new DataStorage.Iterator()
         {
