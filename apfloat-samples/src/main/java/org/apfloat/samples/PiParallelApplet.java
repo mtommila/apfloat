@@ -23,7 +23,7 @@ import java.awt.Container;
 /**
  * Applet for calculating pi using multiple threads in parallel.
  *
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -43,4 +43,6 @@ public class PiParallelApplet
     {
         return new PiParallelAWT(this);
     }
+
+    private static final long serialVersionUID = 1L;
 }

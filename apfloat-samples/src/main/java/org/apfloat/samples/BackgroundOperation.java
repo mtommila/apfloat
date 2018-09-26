@@ -30,7 +30,7 @@ import org.apfloat.ApfloatContext;
  * The operation is executed using the ExecutorService retrieved from
  * {@link ApfloatContext#getExecutorService()}.
  *
- * @version 1.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -43,17 +43,11 @@ public class BackgroundOperation<T>
      * @param operation The operation to execute.
      */
 
-    public BackgroundOperation(final Operation<T> operation)
+    public BackgroundOperation(Operation<T> operation)
     {
         ApfloatContext ctx = ApfloatContext.getContext();
         ExecutorService executorService = ctx.getExecutorService();
-        Callable<T> callable = new Callable<T>()
-        {
-            public T call()
-            {
-                return operation.execute();
-            }
-        };
+        Callable<T> callable = () -> operation.execute();
 
         this.future = executorService.submit(callable);
     }

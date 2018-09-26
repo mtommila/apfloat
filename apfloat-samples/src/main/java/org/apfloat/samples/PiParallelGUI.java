@@ -23,7 +23,7 @@ import java.awt.Container;
 /**
  * AWT client application for calculating pi using multiple threads in parallel.
  *
- * @version 1.0.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -54,4 +54,6 @@ public class PiParallelGUI
     {
         new PiParallelGUI();
     }
+
+    private static final long serialVersionUID = 1L;
 }

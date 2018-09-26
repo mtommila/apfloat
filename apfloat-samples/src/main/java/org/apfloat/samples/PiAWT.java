@@ -53,8 +53,6 @@ import org.apfloat.spi.BuilderFactory;
 public class PiAWT
     extends Panel
 {
-    private static final long serialVersionUID = 1L;
-
     /**
      * Interface to indicate an error status in the application.
      */
@@ -432,6 +430,8 @@ public class PiAWT
         BuilderFactory builderFactory = ctx.getBuilderFactory();
         builderFactory.gc();                    // Garbage collection may not have run perfectly by this point
     }
+
+    private static final long serialVersionUID = 1L;
 
     private StatusIndicator statusIndicator;
 

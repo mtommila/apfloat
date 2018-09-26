@@ -35,7 +35,7 @@ import org.apfloat.ApfloatRuntimeException;
  * execute just one thread and divide its time to multiple
  * simulated threads.
  *
- * @version 1.8.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -63,7 +63,7 @@ public class PiParallel
         }
 
         @Override
-        public void r(final long n1, final long n2, final ApfloatHolder T, final ApfloatHolder Q, final ApfloatHolder P, final BinarySplittingProgressIndicator progressIndicator)
+        public void r(long n1, long n2, ApfloatHolder T, ApfloatHolder Q, ApfloatHolder P, BinarySplittingProgressIndicator progressIndicator)
             throws ApfloatRuntimeException
         {
             checkAlive();
@@ -90,9 +90,9 @@ public class PiParallel
             {
                 // Multiple threads available
 
-                final ApfloatHolder LT = new ApfloatHolder(),
-                                    LQ = new ApfloatHolder(),
-                                    LP = new ApfloatHolder();
+                ApfloatHolder LT = new ApfloatHolder(),
+                              LQ = new ApfloatHolder(),
+                              LP = new ApfloatHolder();
 
                 if (split(n1, n2, numberOfProcessors))
                 {
@@ -101,26 +101,20 @@ public class PiParallel
                     int numberOfProcessors1 = numberOfProcessors / 2,
                         numberOfProcessors2 = numberOfProcessors - numberOfProcessors1;
 
-                    final long nMiddle = n1 + (n2 - n1) * numberOfProcessors1 / numberOfProcessors;
+                    long nMiddle = n1 + (n2 - n1) * numberOfProcessors1 / numberOfProcessors;
 
                     if (DEBUG) Pi.err.println("PiParallel.r(" + n1 + ", " + n2 + ") splitting " + numberOfProcessors + " threads to r(" + n1 + ", " + nMiddle + ") " + numberOfProcessors1 + " threads, r(" + nMiddle + ", " + n2 + ") " + numberOfProcessors2 + " threads");
 
                     // Call recursively this r() method to further split the term calculation
-                    Operation<Object> operation1 = new Operation<Object>()
+                    Operation<Object> operation1 = () ->
                     {
-                        public Object execute()
-                        {
-                            r(n1, nMiddle, LT, LQ, LP, progressIndicator);
-                            return null;
-                        }
+                        r(n1, nMiddle, LT, LQ, LP, progressIndicator);
+                        return null;
                     };
-                    Operation<Object> operation2 = new Operation<Object>()
+                    Operation<Object> operation2 = () ->
                     {
-                        public Object execute()
-                        {
-                            r(nMiddle, n2, T, Q, P, progressIndicator);
-                            return null;
-                        }
+                        r(nMiddle, n2, T, Q, P, progressIndicator);
+                        return null;
                     };
 
                     BackgroundOperation<?> operation = new BackgroundOperation<Object>(new ThreadLimitedOperation<Object>(operation1, numberOfProcessors1));
@@ -163,6 +157,8 @@ public class PiParallel
 
             return termsPerThread < threshold;
         }
+
+        private static final long serialVersionUID = 1L;
     }
 
     /**
@@ -212,6 +208,8 @@ public class PiParallel
 
             return super.execute();
         }
+
+        private static final long serialVersionUID = 1L;
     }
 
     /**
@@ -261,6 +259,8 @@ public class PiParallel
 
             return super.execute();
         }
+
+        private static final long serialVersionUID = 1L;
     }
 
     /**
@@ -290,6 +290,7 @@ public class PiParallel
          * @return Result of the operation.
          */
 
+        @Override
         public T execute()
         {
             checkAlive();
@@ -312,6 +313,8 @@ public class PiParallel
 
             return result;
         }
+
+        private static final long serialVersionUID = 1L;
 
         private Operation<T> operation;
         private int numberOfProcessors;

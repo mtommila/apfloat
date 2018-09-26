@@ -43,7 +43,7 @@ import java.util.concurrent.Executors;
  * occurs during the operation execution, nothing is returned and
  * the socket connection is closed.
  *
- * @version 1.4
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -57,6 +57,7 @@ public class OperationServer
             this.channel = channel;
         }
 
+        @Override
         public void run()
         {
             try

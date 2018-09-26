@@ -111,6 +111,8 @@ public class Pi
          */
 
         protected int radix;
+
+        private static final long serialVersionUID = 1L;
     }
 
     /**
@@ -139,6 +141,7 @@ public class Pi
             this.SIX = new Apfloat(6, precision, radix);
         }
 
+        @Override
         public Apfloat a(long n)
             throws ApfloatRuntimeException
         {
@@ -150,6 +153,7 @@ public class Pi
             return v;
         }
 
+        @Override
         public Apfloat p(long n)
             throws ApfloatRuntimeException
         {
@@ -170,6 +174,7 @@ public class Pi
             return v;
         }
 
+        @Override
         public Apfloat q(long n)
             throws ApfloatRuntimeException
         {
@@ -188,6 +193,8 @@ public class Pi
 
             return v;
         }
+
+        private static final long serialVersionUID = 1L;
 
         private final Apfloat A;
         private final Apfloat B;
@@ -224,6 +231,7 @@ public class Pi
             this.FOUR = new Apfloat(4, precision, radix);
         }
 
+        @Override
         public Apfloat a(long n)
             throws ApfloatRuntimeException
         {
@@ -233,6 +241,7 @@ public class Pi
             return v;
         }
 
+        @Override
         public Apfloat p(long n)
             throws ApfloatRuntimeException
         {
@@ -253,6 +262,7 @@ public class Pi
             return v;
         }
 
+        @Override
         public Apfloat q(long n)
             throws ApfloatRuntimeException
         {
@@ -271,6 +281,8 @@ public class Pi
 
             return v;
         }
+
+        private static final long serialVersionUID = 1L;
 
         private final Apfloat A;
         private final Apfloat B;
@@ -365,6 +377,8 @@ public class Pi
             return this.series.q(n);
         }
 
+        private static final long serialVersionUID = 1L;
+
         private BinarySplittingSeries series;
     }
 
@@ -408,6 +422,7 @@ public class Pi
          * Calculate pi using the Chudnovskys' binary splitting algorithm.
          */
 
+        @Override
         public Apfloat execute()
         {
             Pi.err.println("Using the Chudnovsky brothers' binary splitting algorithm");
@@ -439,6 +454,8 @@ public class Pi
 
             return pi;
         }
+
+        private static final long serialVersionUID = 1L;
 
         private BinarySplittingPiCalculator calculator;
         private long precision;
@@ -485,6 +502,7 @@ public class Pi
          * Calculate pi using the Ramanujan binary splitting algorithm.
          */
 
+        @Override
         public Apfloat execute()
         {
             Pi.err.println("Using the Ramanujan binary splitting algorithm");
@@ -516,6 +534,8 @@ public class Pi
 
             return pi;
         }
+
+        private static final long serialVersionUID = 1L;
 
         private BinarySplittingPiCalculator calculator;
         private long precision;
@@ -606,6 +626,8 @@ public class Pi
             return recursiveLength;
         }
 
+        private static final long serialVersionUID = 1L;
+
         private static final long PROGRESS_RECURSION_THRESHOLD = 32;
 
         private long totalElements;
@@ -636,6 +658,7 @@ public class Pi
          * Calculate pi using the Gauss-Legendre iteration.
          */
 
+        @Override
         public Apfloat execute()
         {
             Pi.err.println("Using the Gauss-Legendre iteration");
@@ -705,6 +728,8 @@ public class Pi
             return (long) ((Math.pow(2.0, (double) k) * Math.sqrt((double) r) * Math.PI - Math.log(16.0 * Math.sqrt((double) r)) - k * Math.log(2.0)) / Math.log((double) radix));
         }
 
+        private static final long serialVersionUID = 1L;
+
         private long precision;
         private int radix;
     }
@@ -733,6 +758,7 @@ public class Pi
          * Calculate pi using the Borweins' quartic iteration.
          */
 
+        @Override
         public Apfloat execute()
         {
             Pi.err.println("Using the Borweins' quartic iteration");
@@ -804,6 +830,8 @@ public class Pi
         {
             return (long) ((Math.pow(4.0, (double) k) * Math.sqrt((double) r) * Math.PI - Math.log(16.0 * Math.sqrt((double) r)) - k * Math.log(4.0)) / Math.log((double) radix));
         }
+
+        private static final long serialVersionUID = 1L;
 
         private long precision;
         private int radix;

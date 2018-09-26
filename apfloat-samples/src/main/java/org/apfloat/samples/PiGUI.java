@@ -28,7 +28,7 @@ import java.awt.event.WindowEvent;
 /**
  * AWT client application for calculating pi using four different algorithms.
  *
- * @version 1.5
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -66,6 +66,7 @@ public class PiGUI
         setVisible(true);
     }
 
+    @Override
     public void showStatus(String status)
     {
         this.statusLabel.setText(status);
@@ -92,6 +93,8 @@ public class PiGUI
     {
         new PiGUI();
     }
+
+    private static final long serialVersionUID = 1L;
 
     private Label statusLabel;
 }

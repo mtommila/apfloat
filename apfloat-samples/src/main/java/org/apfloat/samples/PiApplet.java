@@ -29,7 +29,7 @@ import org.apfloat.spi.FilenameGenerator;
 /**
  * Applet for calculating pi using four different algorithms.
  *
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -106,7 +106,7 @@ public class PiApplet
     public String getAppletInfo()
     {
         Object builderFactory = ApfloatContext.getContext().getBuilderFactory();
-        Package specificationPackage = Package.getPackage("org.apfloat"),
+        Package specificationPackage = getClass().getClassLoader().getDefinedPackage("org.apfloat"),
                 implementationPackage = builderFactory.getClass().getPackage();
 
         String lineSeparator = System.getProperty("line.separator");
@@ -121,4 +121,6 @@ public class PiApplet
                "Java version: "           + System.getProperty("java.version") + lineSeparator +
                "Java Virtual Machine: "   + System.getProperty("java.vm.name");
     }
+
+    private static final long serialVersionUID = 1L;
 }

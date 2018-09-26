@@ -29,7 +29,7 @@ import java.io.IOException;
 /**
  * Class to call an {@link OperationServer} to execute {@link Operation}s remotely.
  *
- * @version 1.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -61,6 +61,7 @@ public class RemoteOperationExecutor
      * @exception RuntimeException In case of network error or if the return value class is unknown.
      */
 
+    @Override
     public <T> T execute(Operation<T> operation)
     {
         SocketChannel channel = null;
@@ -112,17 +113,13 @@ public class RemoteOperationExecutor
      * @return A {@link BackgroundOperation} for retrieving the result of the operation later.
      */
 
-    public <T> BackgroundOperation<T> executeBackground(final Operation<T> operation)
+    @Override
+    public <T> BackgroundOperation<T> executeBackground(Operation<T> operation)
     {
-        return new BackgroundOperation<T>(new Operation<T>()
-        {
-            public T execute()
-            {
-                return RemoteOperationExecutor.this.execute(operation);
-            }
-        });
+        return new BackgroundOperation<T>(() -> RemoteOperationExecutor.this.execute(operation));
     }
 
+    @Override
     public int getWeight()
     {
         return 1;

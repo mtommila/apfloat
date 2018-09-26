@@ -22,7 +22,7 @@ package org.apfloat.samples;
  * Class to execute {@link Operation}s locally.
  * The execution is done in the current JVM.
  *
- * @version 1.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -46,6 +46,7 @@ public class LocalOperationExecutor
      * @return The result of the operation.
      */
 
+    @Override
     public <T> T execute(Operation<T> operation)
     {
         return operation.execute();
@@ -60,11 +61,13 @@ public class LocalOperationExecutor
      * @return A {@link BackgroundOperation} for retrieving the result of the operation later.
      */
 
+    @Override
     public <T> BackgroundOperation<T> executeBackground(Operation<T> operation)
     {
         return new BackgroundOperation<T>(operation);
     }
 
+    @Override
     public int getWeight()
     {
         return 1;

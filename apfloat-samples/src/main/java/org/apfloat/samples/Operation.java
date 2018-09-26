@@ -23,10 +23,11 @@ import java.io.Serializable;
 /**
  * Interface for implementing arbitrary operations to be executed.
  *
- * @version 1.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
+@FunctionalInterface
 public interface Operation<T>
     extends Serializable
 {

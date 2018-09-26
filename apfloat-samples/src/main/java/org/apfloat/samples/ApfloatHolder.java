@@ -26,7 +26,7 @@ import org.apfloat.Apfloat;
  * Simple JavaBean to hold one {@link org.apfloat.Apfloat}.
  * This class can also be thought of as a pointer to an {@link Apfloat}.
  *
- * @version 1.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -74,6 +74,8 @@ public class ApfloatHolder
     {
         this.apfloat = apfloat;
     }
+
+    private static final long serialVersionUID = 1L;
 
     private Apfloat apfloat;
 }

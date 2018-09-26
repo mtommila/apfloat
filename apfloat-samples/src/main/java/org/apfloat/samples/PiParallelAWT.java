@@ -30,7 +30,7 @@ import org.apfloat.ApfloatRuntimeException;
 /**
  * Graphical AWT elements for calculating pi using multiple threads in parallel.
  *
- * @version 1.8.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -108,6 +108,8 @@ public class PiParallelAWT
         }
         return operation;
     }
+
+    private static final long serialVersionUID = 1L;
 
     private Label threadsLabel;
     private TextField threadsField;
