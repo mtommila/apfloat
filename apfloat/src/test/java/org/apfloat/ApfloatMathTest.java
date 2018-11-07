@@ -88,6 +88,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testSum"));
         suite.addTest(new ApfloatMathTest("testGamma"));
         suite.addTest(new ApfloatMathTest("testRandom"));
+        suite.addTest(new ApfloatMathTest("testRandomGaussian"));
 
         return suite;
     }
@@ -1728,6 +1729,33 @@ public class ApfloatMathTest
                 Apfloat a = ApfloatMath.random(1, radix);
                 assertEquals("value < 1", -1, a.compareTo(new Apfloat(1, Apfloat.INFINITE, radix)));
                 assertTrue("value >= 0", a.signum() >= 0);
+            }
+        }
+    }
+
+    public static void testRandomGaussian()
+    {
+        Apfloat sum = Apfloat.ZERO,
+                squareSum = Apfloat.ZERO;
+        final int N = 1000;
+        for (int i = 0; i < N; i++)
+        {
+            Apfloat a = ApfloatMath.randomGaussian(N);
+            sum = sum.add(a);
+            squareSum = squareSum.add(a.multiply(a));
+        }
+        Apfloat n = new Apfloat(N),
+                mean = sum.divide(n),
+                standardDeviation = ApfloatMath.sqrt(squareSum.divide(n).subtract(mean));
+        assertEquals("random mean", Apfloat.ZERO, mean, new Apfloat(0.15));
+        assertEquals("random standard deviation", Apfloat.ONE, standardDeviation, new Apfloat(0.2));
+
+        for (int radix = Character.MIN_RADIX; radix <= Character.MAX_RADIX; radix++)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                Apfloat a = ApfloatMath.randomGaussian(1, radix);
+                assertEquals("abs value <= 5", Apfloat.ZERO, a, new Apfloat(5, Apfloat.INFINITE, radix));
             }
         }
     }

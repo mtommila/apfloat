@@ -96,6 +96,7 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testSum"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGamma"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
 
         return suite;
     }
@@ -897,6 +898,29 @@ public class FixedPrecisionApfloatHelperTest
         try
         {
             helper.random(1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
+    }
+
+    public static void testRandomGaussian()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
+        Apfloat result = helper.randomGaussian();
+        assertEquals("value", new Apfloat("0"), result, new Apfloat("5"));
+        assertEquals("precision", 100, result.precision());
+
+        result = helper.randomGaussian(16);
+        assertEquals("value 16", new Apfloat("0", Apfloat.DEFAULT, 16), result, new Apfloat("5", 1, 16));
+        assertEquals("radix 16", 16, result.radix());
+        assertEquals("precision 16", 100, result.precision());
+
+        try
+        {
+            helper.randomGaussian(1);
             fail("Radix 1 accepted");
         }
         catch (NumberFormatException nfe)

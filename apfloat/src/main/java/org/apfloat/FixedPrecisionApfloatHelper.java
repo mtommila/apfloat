@@ -926,6 +926,38 @@ public class FixedPrecisionApfloatHelper
         return ApfloatMath.random(precision(), radix);
     }
 
+    /**
+     * Return a normally distributed random number with mean 0 and standard deviation 1.
+     *
+     * @return A random number.
+     *
+     * @since 1.9.0
+     */
+
+    public Apfloat randomGaussian()
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.randomGaussian(precision()));
+    }
+
+    /**
+     * Return a normally distributed random number with mean 0 and standard deviation 1.
+     *
+     * @param radix The radix of the number.
+     *
+     * @return A random number.
+     *
+     * @exception java.lang.NumberFormatException If the radix is invalid.
+     *
+     * @since 1.9.0
+     */
+
+    public Apfloat randomGaussian(int radix)
+        throws NumberFormatException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.randomGaussian(precision(), radix));
+    }
+
     private Apfloat setPrecision(Apfloat x)
         throws ApfloatRuntimeException
     {

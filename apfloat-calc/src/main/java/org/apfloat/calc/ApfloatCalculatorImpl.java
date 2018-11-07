@@ -262,6 +262,17 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number randomGaussian(Number x)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Random Gaussian can only be used with a valid integer argument");
+            }
+            long n = x.longValue();
+            return ApfloatMath.randomGaussian(n);
+        }
+
+        @Override
         public Number round(Number x, Number y)
         {
             throw new IllegalArgumentException("Round can only be used with scalar values");

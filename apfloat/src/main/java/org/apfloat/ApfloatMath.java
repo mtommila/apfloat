@@ -856,7 +856,7 @@ public class ApfloatMath
         }
 
         // Get synchronization lock - getting the lock is also synchronized
-        Integer radixKey = getRadixPiKey(radix);
+        Integer radixKey = getRadixKey(ApfloatMath.radixPiKeys, radix);
 
         Apfloat pi;
 
@@ -878,20 +878,6 @@ public class ApfloatMath
         }
 
         return pi;
-    }
-
-    // Get shared radix key for synchronizing getting and calculating the pi related constants
-    private static Integer getRadixPiKey(int radix)
-    {
-        @SuppressWarnings("deprecation")
-        Integer value = new Integer(radix); // Use new Integer since we synchronize on it; Integer.valueOf() could be shared instance
-        Integer radixKey = ApfloatMath.radixPiKeys.putIfAbsent(value, value);
-        if (radixKey == null)
-        {
-            radixKey = value;
-        }
-
-        return radixKey;
     }
 
     /**
@@ -1245,20 +1231,6 @@ public class ApfloatMath
         return log.precision(targetPrecision);
     }
 
-    // Get shared radix key for synchronizing getting and calculating the logarithm related constants
-    private static Integer getRadixLogKey(int radix)
-    {
-        @SuppressWarnings("deprecation")
-        Integer value = new Integer(radix); // Use new Integer since we synchronize on it; Integer.valueOf() could be shared instance
-        Integer radixKey = ApfloatMath.radixLogKeys.putIfAbsent(value, value);
-        if (radixKey == null)
-        {
-            radixKey = value;
-        }
-
-        return radixKey;
-    }
-
     /**
      * Gets or calculates logarithm of a radix to required precision.
      * The calculated value is stored in a cache for later usage.
@@ -1281,7 +1253,7 @@ public class ApfloatMath
         throws ApfloatRuntimeException
     {
         // Get synchronization lock - getting the lock is also synchronized
-        Integer radixKey = getRadixLogKey(radix);
+        Integer radixKey = getRadixKey(ApfloatMath.radixLogKeys, radix);
 
         Apfloat logRadix;
 
@@ -2122,11 +2094,95 @@ public class ApfloatMath
         return scale(random, -digits);
     }
 
+    /**
+     * Generates a random, Gaussian ("normally") distributed
+     * number value with mean 0 and standard deviation 1.
+     * Uses the default radix.
+     *
+     * @param digits Maximum number of digits in the number.
+     *
+     * @return A random number, Gaussian ("normally") distributed with mean 0 and standard deviation 1.
+     *
+     * @exception java.lang.NumberFormatException If the default radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
+     *
+     * @since 1.9.0
+     */
+
+    public static Apfloat randomGaussian(long digits)
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return randomGaussian(digits, radix);
+    }
+
+    /**
+     * Generates a random, Gaussian ("normally") distributed
+     * number value with mean 0 and standard deviation 1.
+     * Uses the default radix.
+     *
+     * @param digits Maximum number of digits in the number.
+     * @param radix The radix in which the number should be generated.
+     *
+     * @return A random number, Gaussian ("normally") distributed with mean 0 and standard deviation 1.
+     *
+     * @exception java.lang.NumberFormatException If the radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
+     *
+     * @since 1.9.0
+     */
+
+    public static Apfloat randomGaussian(long digits, int radix)
+    {
+        // Get synchronization lock - getting the lock is also synchronized
+        Integer radixKey = getRadixKey(ApfloatMath.radixGaussianKeys, radix);
+
+        synchronized (radixKey)
+        {
+            Apfloat nextGaussian = ApfloatMath.nextGaussian.remove(radixKey);
+            if (nextGaussian != null)
+            {
+                return nextGaussian;
+            }
+            else
+            {
+                Apint one = new Apint(1, radix),
+                      two = new Apint(2, radix);
+                Apfloat v1, v2, s;
+                do
+                {
+                    v1 = two.multiply(random(digits, radix)).subtract(one).precision(digits);
+                    v2 = two.multiply(random(digits, radix)).subtract(one).precision(digits);
+                    s = multiplyAdd(v1, v1, v2, v2);
+                } while (s.compareTo(one) >= 1 || s.signum() == 0);
+                Apfloat multiplier = sqrt(two.negate().multiply(log(s)).divide(s));
+                nextGaussian = v2.multiply(multiplier);
+                ApfloatMath.nextGaussian.put(radixKey, nextGaussian);
+                return v1.multiply(multiplier);
+            }
+        }
+    }
+
     // Extend the precision on last iteration
     private static Apfloat lastIterationExtendPrecision(int iterations, int precisingIteration, Apfloat x)
         throws ApfloatRuntimeException
     {
         return (iterations == 0 && precisingIteration != 0 ? ApfloatHelper.extendPrecision(x) : x);
+    }
+
+    // Get shared radix key for synchronizing getting and calculating something per radix
+    private static Integer getRadixKey(Map<Integer, Integer> radixKeys, int radix)
+    {
+        @SuppressWarnings("deprecation")
+        Integer value = new Integer(radix); // Use new Integer since we synchronize on it; Integer.valueOf() could be shared instance
+        Integer radixKey = radixKeys.putIfAbsent(value, value);
+        if (radixKey == null)
+        {
+            radixKey = value;
+        }
+
+        return radixKey;
     }
 
     static Apfloat factorial(long n, long precision)
@@ -2207,6 +2263,7 @@ public class ApfloatMath
         ApfloatMath.radixPiInverseRoot = SHUTDOWN_MAP;
         ApfloatMath.radixLog = SHUTDOWN_MAP;
         ApfloatMath.radixLogPi = SHUTDOWN_MAP;
+        ApfloatMath.nextGaussian = SHUTDOWN_MAP;
     }
 
     // Map that always throws ApfloatRuntimeException, to be used after clean-up has been initiated
@@ -2230,4 +2287,10 @@ public class ApfloatMath
     // Shared cached values related to logarithm for different radixes
     private static Map<Integer, Apfloat> radixLog = new ConcurrentHashMap<Integer, Apfloat>();
     private static Map<Integer, Apfloat> radixLogPi = new ConcurrentHashMap<Integer, Apfloat>();
+
+    // Synchronization keys for random Gaussian calculation
+    private static ConcurrentMap<Integer, Integer> radixGaussianKeys = new ConcurrentHashMap<>();
+
+    // Used by randomGaussian
+    private static Map<Integer, Apfloat> nextGaussian = new ConcurrentHashMap<>();
 }
