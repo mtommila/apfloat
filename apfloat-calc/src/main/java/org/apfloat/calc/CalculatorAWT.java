@@ -55,7 +55,7 @@ public class CalculatorAWT
     public CalculatorAWT()
     {
         this.calculatorImpl = new ApfloatCalculatorImpl();
-        this.history = new ArrayList<String>();
+        this.history = new ArrayList<>();
         this.historyPosition = 0;
         initGUI();
         this.out = new PrintWriter(new FlushStringWriter(this.outputArea), true);

@@ -1536,7 +1536,7 @@ public class ApcomplexMath
         z = tmp;
 
         // Create a heap, ordered by size
-        Queue<Apcomplex> heap = new PriorityQueue<Apcomplex>(z.length, Comparator.comparing(Apcomplex::size));
+        Queue<Apcomplex> heap = new PriorityQueue<>(z.length, Comparator.comparing(Apcomplex::size));
 
         // Perform the multiplications in parallel
         ParallelHelper.ProductKernel<Apcomplex> kernel = (h) ->

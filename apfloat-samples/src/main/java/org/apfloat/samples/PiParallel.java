@@ -117,8 +117,8 @@ public class PiParallel
                         return null;
                     };
 
-                    BackgroundOperation<?> operation = new BackgroundOperation<Object>(new ThreadLimitedOperation<Object>(operation1, numberOfProcessors1));
-                    new ThreadLimitedOperation<Object>(operation2, numberOfProcessors2).execute();
+                    BackgroundOperation<?> operation = new BackgroundOperation<>(new ThreadLimitedOperation<>(operation1, numberOfProcessors1));
+                    new ThreadLimitedOperation<>(operation2, numberOfProcessors2).execute();
                     operation.getResult();                          // Waits for operation to complete
                 }
                 else

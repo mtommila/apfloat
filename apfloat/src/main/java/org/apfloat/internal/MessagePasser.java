@@ -32,7 +32,7 @@ import org.apfloat.ApfloatRuntimeException;
  * @param <V> The message type for this message passer.
  *
  * @since 1.6
- * @version 1.6
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -46,7 +46,7 @@ public class MessagePasser<K, V>
 
     public MessagePasser()
     {
-        this.messages = new HashMap<K, V>();
+        this.messages = new HashMap<>();
     }
 
     /**

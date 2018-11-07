@@ -144,7 +144,7 @@ public class PiAWT
         add(this.implementationLabel, constraints);
 
         this.implementationChoice = new Choice();
-        this.builderFactories = new ArrayList<BuilderFactory>();
+        this.builderFactories = new ArrayList<>();
         String defaultBuilderFactoryClassName = ApfloatContext.getContext().getBuilderFactory().getClass().getName();
         Iterator<BuilderFactory> providers = ServiceLoader.load(org.apfloat.spi.BuilderFactory.class).iterator();
         if (!providers.hasNext())

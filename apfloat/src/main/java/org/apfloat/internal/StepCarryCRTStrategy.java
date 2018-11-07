@@ -198,7 +198,7 @@ public class StepCarryCRTStrategy
         ApfloatContext ctx = ApfloatContext.getContext();
         BuilderFactory builderFactory = ctx.getBuilderFactory();
 
-        MessagePasser<Long, T> messagePasser = new MessagePasser<Long, T>();
+        MessagePasser<Long, T> messagePasser = new MessagePasser<>();
         CarryCRTStepStrategy<T> stepStrategy = builderFactory.getCarryCRTBuilder(elementArrayType).createCarryCRTSteps(this.radix);
 
         ParallelRunnable parallelRunnable = new ParallelRunnable(size)
@@ -206,7 +206,7 @@ public class StepCarryCRTStrategy
             @Override
             public Runnable getRunnable(long offset, long length)
             {
-                return new CarryCRTRunnable<T>(resultMod0, resultMod1, resultMod2, dataStorage, size, resultSize, offset, length, messagePasser, stepStrategy);
+                return new CarryCRTRunnable<>(resultMod0, resultMod1, resultMod2, dataStorage, size, resultSize, offset, length, messagePasser, stepStrategy);
             }
         };
         return parallelRunnable;

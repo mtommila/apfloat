@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * expunge entries for stale values.
  *
  * @since 1.6
- * @version 1.6
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -41,7 +41,7 @@ class ConcurrentSoftHashMap<K, V>
 
     public ConcurrentSoftHashMap()
     {
-        this.map = new ConcurrentHashMap<K, SoftReference<V>>();
+        this.map = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -82,7 +82,7 @@ class ConcurrentSoftHashMap<K, V>
 
     private SoftReference<V> wrap(V value)
     {
-        return new SoftReference<V>(value);
+        return new SoftReference<>(value);
     }
 
     private V unwrap(SoftReference<V> value)

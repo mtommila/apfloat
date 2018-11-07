@@ -27,7 +27,7 @@ import static org.apfloat.spi.RadixConstants.*;
 /**
  * Helper class for radix conversion.
  *
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -38,7 +38,7 @@ class RadixConversionHelper
         public RadixPowerList(int fromRadix, int toRadix, long precision)
             throws ApfloatRuntimeException
         {
-            this.list = new ArrayList<Apfloat>();
+            this.list = new ArrayList<>();
             this.list.add(new Apfloat(fromRadix, ApfloatHelper.extendPrecision(precision), toRadix));
         }
 

@@ -132,7 +132,7 @@ public class ParallelRunnerTest
 
             final long LENGTH = 1000000000000L;
             final int SQRT_LENGTH = 1000000;
-            Map<Long, Long> starts = new ConcurrentHashMap<Long, Long>();
+            Map<Long, Long> starts = new ConcurrentHashMap<>();
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
                 @Override
@@ -229,7 +229,7 @@ public class ParallelRunnerTest
             ctx.setExecutorService(ApfloatContext.getDefaultExecutorService());
 
             final int LENGTH = 10000;
-            Map<String, String> threadNames = new ConcurrentHashMap<String, String>();
+            Map<String, String> threadNames = new ConcurrentHashMap<>();
             AtomicBoolean half = new AtomicBoolean();
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {

@@ -116,7 +116,7 @@ public class RemoteOperationExecutor
     @Override
     public <T> BackgroundOperation<T> executeBackground(Operation<T> operation)
     {
-        return new BackgroundOperation<T>(() -> RemoteOperationExecutor.this.execute(operation));
+        return new BackgroundOperation<>(() -> RemoteOperationExecutor.this.execute(operation));
     }
 
     @Override

@@ -196,7 +196,7 @@ public abstract class FunctionCalculatorImpl
 
     protected FunctionCalculatorImpl()
     {
-        this.functions = new HashMap<String, Function>();
+        this.functions = new HashMap<>();
 
         setFunction("negate", fixedFunction("negate", 1, (functions, arguments) -> functions.negate(arguments.get(0))));
         setFunction("add", fixedFunction("add", 2, (functions, arguments) -> functions.add(arguments.get(0), arguments.get(1))));

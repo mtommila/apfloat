@@ -1223,7 +1223,7 @@ public class ApfloatContext
         };
 
         int numberOfThreads = Math.max(1, getContext().getNumberOfProcessors() - 1);
-        ThreadPoolExecutor executorService = new ThreadPoolExecutor(numberOfThreads, numberOfThreads, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), threadFactory);
+        ThreadPoolExecutor executorService = new ThreadPoolExecutor(numberOfThreads, numberOfThreads, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), threadFactory);
         executorService.allowCoreThreadTimeOut(true);
 
         return executorService;
@@ -1272,7 +1272,7 @@ public class ApfloatContext
         {
             ApfloatContext ctx = (ApfloatContext) super.clone();    // Copy all attributes by reference
             ctx.properties = (Properties) ctx.properties.clone();   // Create shallow copies
-            ctx.attributes = new ConcurrentHashMap<String, Object>(ctx.attributes);
+            ctx.attributes = new ConcurrentHashMap<>(ctx.attributes);
 
             return ctx;
         }
@@ -1284,7 +1284,7 @@ public class ApfloatContext
     }
 
     private static ApfloatContext globalContext;
-    private static Map<Thread, ApfloatContext> threadContexts = new ConcurrentWeakHashMap<Thread, ApfloatContext>(); // Use a weak hash map to automatically remove completed threads; concurrent to avoid blocking threads
+    private static Map<Thread, ApfloatContext> threadContexts = new ConcurrentWeakHashMap<>(); // Use a weak hash map to automatically remove completed threads; concurrent to avoid blocking threads
     private static Properties defaultProperties;
     private static ExecutorService defaultExecutorService;
 
@@ -1303,7 +1303,7 @@ public class ApfloatContext
     private volatile Properties properties;
     private volatile Object sharedMemoryLock = new Object();
     private volatile ExecutorService executorService = ApfloatContext.defaultExecutorService;
-    private volatile ConcurrentHashMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();
+    private volatile ConcurrentHashMap<String, Object> attributes = new ConcurrentHashMap<>();
 
     static
     {

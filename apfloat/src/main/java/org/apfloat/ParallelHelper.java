@@ -69,10 +69,10 @@ class ParallelHelper
             // number size would be so small that they would not be multiplied using a parallel algorithm (roughly dependent on cache L1 size)
             long maxSize = (long) (ctx.getCacheL1Size() * 2.5 / Math.log((double) ctx.getDefaultRadix()));
             // There is no efficient "ConcurrentPriorityQueue" data structure, so we just split the data
-            List<Queue<T>> subHeaps = new ArrayList<Queue<T>>();
+            List<Queue<T>> subHeaps = new ArrayList<>();
             for (int i = 0; i < numberOfProcessors; i++)
             {
-                subHeaps.add(new PriorityQueue<T>(heap));
+                subHeaps.add(new PriorityQueue<>(heap));
             }
             int i = 0;
             for (T a : x)

@@ -128,7 +128,7 @@ public class ParallelThreeNTTConvolutionStrategy
         }
     }
 
-    private static Map<Object, Lock> locks = new WeakHashMap<Object, Lock>();
+    private static Map<Object, Lock> locks = new WeakHashMap<>();
 
     private Object key;
 }

@@ -52,7 +52,7 @@ public class MessagePasserTest
 
     public static void testPassMessage()
     {
-        MessagePasser<Integer, String> messagePasser = new MessagePasser<Integer, String>();
+        MessagePasser<Integer, String> messagePasser = new MessagePasser<>();
 
         assertNull("No message yet", messagePasser.getMessage(1));
 
@@ -67,7 +67,7 @@ public class MessagePasserTest
 
     public static void testPassMessageParallel()
     {
-        MessagePasser<Integer, String> messagePasser = new MessagePasser<Integer, String>();
+        MessagePasser<Integer, String> messagePasser = new MessagePasser<>();
         Thread thread = new Thread()
         {
             @Override

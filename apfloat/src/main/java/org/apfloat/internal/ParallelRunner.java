@@ -38,7 +38,7 @@ import org.apfloat.ApfloatRuntimeException;
  * number of processors.
  *
  * @since 1.1
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -114,5 +114,5 @@ public class ParallelRunner
     }
 
     // Implemented as a List because the assumption is that the number of concurrent tasks is very small
-    private static Queue<ParallelRunnable> tasks = new ConcurrentLinkedQueue<ParallelRunnable>();
+    private static Queue<ParallelRunnable> tasks = new ConcurrentLinkedQueue<>();
 }

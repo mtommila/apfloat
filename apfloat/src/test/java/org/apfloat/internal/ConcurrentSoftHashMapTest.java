@@ -56,7 +56,7 @@ public class ConcurrentSoftHashMapTest
 
     public static void testSoft()
     {
-        ConcurrentMap<Integer, byte[]> map = new ConcurrentSoftHashMap<Integer, byte[]>();
+        ConcurrentMap<Integer, byte[]> map = new ConcurrentSoftHashMap<>();
 
         final int SIZE = 1000000;
 
@@ -69,7 +69,7 @@ public class ConcurrentSoftHashMapTest
         // Force out of memory
         try
         {
-            List<byte[]> dummy = new ArrayList<byte[]>();
+            List<byte[]> dummy = new ArrayList<>();
             for (int i = 2; i < 1000000000 && map.get(1) != null; i++)
             {
                 dummy.add(new byte[SIZE]);
@@ -127,7 +127,7 @@ public class ConcurrentSoftHashMapTest
 
     public static void testPutIfAbsent()
     {
-        ConcurrentMap<Integer, Integer> map = new ConcurrentSoftHashMap<Integer, Integer>();
+        ConcurrentMap<Integer, Integer> map = new ConcurrentSoftHashMap<>();
         Integer key1 = 1;
         Integer value1 = 2;
         Integer value2 = 3;

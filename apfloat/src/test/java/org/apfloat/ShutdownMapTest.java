@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.6.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -52,7 +52,7 @@ public class ShutdownMapTest
 
     public static void testMap()
     {
-        Map<Integer, Apfloat> map = new ShutdownMap<Integer, Apfloat>();
+        Map<Integer, Apfloat> map = new ShutdownMap<>();
 
         try
         {

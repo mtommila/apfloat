@@ -31,7 +31,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.8.0
- * @version 1.8.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -77,7 +77,7 @@ public class FixedPrecisionApfloatFieldTest
         assertEquals("Text", new Text("1e2"), a.toText());
         assertTrue("isLargerThan", b.isLargerThan(a));
         assertEquals("compareTo", -1, a.compareTo(b));
-        HashSet<FixedPrecisionApfloatField> set = new HashSet<FixedPrecisionApfloatField>();
+        HashSet<FixedPrecisionApfloatField> set = new HashSet<>();
         set.add(b);
         set.add(c);
         assertEquals("hashCode", 1, set.size());

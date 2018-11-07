@@ -29,7 +29,7 @@ import static org.apfloat.internal.RawtypeModConstants.*;
  * Helper class for generating and caching tables of powers of the n:th root of unity.
  *
  * @since 1.7.0
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -100,5 +100,5 @@ public class RawtypeWTables
     }
 
     // With inverses, three moduli and lengths being powers of two, the theoretical maximum map size is 2 * 3 * 30 = 180 entries
-    private static ConcurrentMap<List<Integer>, rawtype[]> cache = new ConcurrentSoftHashMap<List<Integer>, rawtype[]>();
+    private static ConcurrentMap<List<Integer>, rawtype[]> cache = new ConcurrentSoftHashMap<>();
 }

@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -52,7 +52,7 @@ public class ConcurrentWeakHashMapTest
 
     public static void testWeak() throws Exception
     {
-        Map<Thread, String> map = new ConcurrentWeakHashMap<Thread, String>();
+        Map<Thread, String> map = new ConcurrentWeakHashMap<>();
         Thread thread = new Thread();
 
         assertTrue("Initially empty", map.isEmpty());

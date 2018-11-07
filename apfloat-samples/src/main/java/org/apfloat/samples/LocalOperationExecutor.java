@@ -64,7 +64,7 @@ public class LocalOperationExecutor
     @Override
     public <T> BackgroundOperation<T> executeBackground(Operation<T> operation)
     {
-        return new BackgroundOperation<T>(operation);
+        return new BackgroundOperation<>(operation);
     }
 
     @Override

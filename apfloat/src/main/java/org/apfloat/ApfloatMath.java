@@ -1876,7 +1876,7 @@ public class ApfloatMath
         x = tmp;
 
         // Create a heap, ordered by size
-        Queue<Apfloat> heap = new PriorityQueue<Apfloat>(x.length, Comparator.comparing(Apfloat::size));
+        Queue<Apfloat> heap = new PriorityQueue<>(x.length, Comparator.comparing(Apfloat::size));
 
         // Perform the multiplications in parallel
         ParallelHelper.ProductKernel<Apfloat> kernel = (h) ->
@@ -1966,10 +1966,10 @@ public class ApfloatMath
             long maxSize = (long) (ctx.getMemoryThreshold() * 5.0 / Math.log((double) ctx.getDefaultRadix()));
 
             // Create a queue of small numbers where the parallel algorithm can add and remove elements
-            Queue<Apfloat> queue = new ConcurrentLinkedQueue<Apfloat>();
+            Queue<Apfloat> queue = new ConcurrentLinkedQueue<>();
 
             // The large numbers go to the list where they will be added using a single thread algorithm
-            list = new ArrayList<Apfloat>();
+            list = new ArrayList<>();
 
             // Put all the numbers to either the parallel queue or single thread list
             for (Apfloat a : x)
@@ -2267,26 +2267,26 @@ public class ApfloatMath
     }
 
     // Map that always throws ApfloatRuntimeException, to be used after clean-up has been initiated
-    private static final Map<Integer, Apfloat> SHUTDOWN_MAP = new ShutdownMap<Integer, Apfloat>();
+    private static final Map<Integer, Apfloat> SHUTDOWN_MAP = new ShutdownMap<>();
 
     // Synchronization keys for pi calculation
-    private static ConcurrentMap<Integer, Integer> radixPiKeys = new ConcurrentHashMap<Integer, Integer>();
+    private static ConcurrentMap<Integer, Integer> radixPiKeys = new ConcurrentHashMap<>();
 
     // Shared cached values related to pi for different radixes
-    private static Map<Integer, Apfloat> radixPi = new ConcurrentSoftHashMap<Integer, Apfloat>();
-    private static Map<Integer, PiCalculator> radixPiCalculator = new Hashtable<Integer, PiCalculator>();
-    private static Map<Integer, Apfloat> radixPiT = new ConcurrentSoftHashMap<Integer, Apfloat>();
-    private static Map<Integer, Apfloat> radixPiQ = new ConcurrentSoftHashMap<Integer, Apfloat>();
-    private static Map<Integer, Apfloat> radixPiP = new ConcurrentSoftHashMap<Integer, Apfloat>();
-    private static Map<Integer, Apfloat> radixPiInverseRoot = new ConcurrentSoftHashMap<Integer, Apfloat>();
-    private static Map<Integer, Long> radixPiTerms = new Hashtable<Integer, Long>();
+    private static Map<Integer, Apfloat> radixPi = new ConcurrentSoftHashMap<>();
+    private static Map<Integer, PiCalculator> radixPiCalculator = new Hashtable<>();
+    private static Map<Integer, Apfloat> radixPiT = new ConcurrentSoftHashMap<>();
+    private static Map<Integer, Apfloat> radixPiQ = new ConcurrentSoftHashMap<>();
+    private static Map<Integer, Apfloat> radixPiP = new ConcurrentSoftHashMap<>();
+    private static Map<Integer, Apfloat> radixPiInverseRoot = new ConcurrentSoftHashMap<>();
+    private static Map<Integer, Long> radixPiTerms = new Hashtable<>();
 
     // Synchronization keys for logarithm calculation
-    private static ConcurrentMap<Integer, Integer> radixLogKeys = new ConcurrentHashMap<Integer, Integer>();
+    private static ConcurrentMap<Integer, Integer> radixLogKeys = new ConcurrentHashMap<>();
 
     // Shared cached values related to logarithm for different radixes
-    private static Map<Integer, Apfloat> radixLog = new ConcurrentHashMap<Integer, Apfloat>();
-    private static Map<Integer, Apfloat> radixLogPi = new ConcurrentHashMap<Integer, Apfloat>();
+    private static Map<Integer, Apfloat> radixLog = new ConcurrentHashMap<>();
+    private static Map<Integer, Apfloat> radixLogPi = new ConcurrentHashMap<>();
 
     // Synchronization keys for random Gaussian calculation
     private static ConcurrentMap<Integer, Integer> radixGaussianKeys = new ConcurrentHashMap<>();

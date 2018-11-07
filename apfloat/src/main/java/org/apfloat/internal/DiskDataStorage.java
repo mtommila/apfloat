@@ -46,7 +46,7 @@ import org.apfloat.spi.MatrixStrategy;
  * Abstract base class for disk-based data storage, containing the common
  * functionality independent of the element type.
  *
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -877,7 +877,7 @@ public abstract class DiskDataStorage
         if (buffer == null)
         {
             buffer = ByteBuffer.allocateDirect(blockSize);
-            reference = new SoftReference<ByteBuffer>(buffer);
+            reference = new SoftReference<>(buffer);
             DiskDataStorage.threadLocal.set(reference);
         }
 
@@ -888,9 +888,9 @@ public abstract class DiskDataStorage
 
     private static final long TIMEOUT = 1000;   // Reference queue waiting timeout when forcing deleting garbage collected files
 
-    private static ReferenceQueue<FileStorage> referenceQueue = new ReferenceQueue<FileStorage>();
-    private static Set<FileStorageReference> references = new HashSet<FileStorageReference>();
-    private static ThreadLocal<SoftReference<ByteBuffer>> threadLocal = new ThreadLocal<SoftReference<ByteBuffer>>();
+    private static ReferenceQueue<FileStorage> referenceQueue = new ReferenceQueue<>();
+    private static Set<FileStorageReference> references = new HashSet<>();
+    private static ThreadLocal<SoftReference<ByteBuffer>> threadLocal = new ThreadLocal<>();
     private static boolean cleanUp = false;
 
     private FileStorage fileStorage;

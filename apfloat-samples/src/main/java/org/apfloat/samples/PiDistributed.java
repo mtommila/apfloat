@@ -178,7 +178,7 @@ public class PiDistributed
                 BackgroundOperation<Object> operation;
 
                 // Call recursively this r() method to further split the term calculation
-                operation = new BackgroundOperation<Object>(() ->
+                operation = new BackgroundOperation<>(() ->
                 {
                     r(n1, nMiddle, LT, LQ, LP, null, nodes1);
                     return null;
@@ -303,7 +303,7 @@ public class PiDistributed
             }
 
             Node[] nodes = null;
-            List<Node> list = new ArrayList<Node>();
+            List<Node> list = new ArrayList<>();
             long totalWeight = 0;
             int weightedNodes = 0;
 
@@ -439,8 +439,8 @@ public class PiDistributed
             {
                 // Split RemoteOperationExecutors to executors that don't use all threads available on the server
 
-                SortedSet<Node> allNodes = new TreeSet<Node>(),
-                                splittableNodes = new TreeSet<Node>();
+                SortedSet<Node> allNodes = new TreeSet<>(),
+                                splittableNodes = new TreeSet<>();
                 for (Node node : nodes)
                 {
                     (node.getNumberOfProcessors() > 1 ? splittableNodes : allNodes).add(node);
@@ -480,8 +480,8 @@ public class PiDistributed
         // Split nodes to two sets that have roughly the same total weights
         private Object[] splitNodes(Node[] nodes)
         {
-            List<Node> list1 = new LinkedList<Node>(),
-                       list2 = new LinkedList<Node>();
+            List<Node> list1 = new LinkedList<>(),
+                       list2 = new LinkedList<>();
             long weight1 = 0,
                  weight2 = 0;
 
@@ -726,13 +726,13 @@ public class PiDistributed
         @Override
         public <T> T execute(Operation<T> operation)
         {
-            return super.execute(new ThreadLimitedOperation<T>(operation, this.numberOfProcessors));
+            return super.execute(new ThreadLimitedOperation<>(operation, this.numberOfProcessors));
         }
 
         @Override
         public <T> BackgroundOperation<T> executeBackground(Operation<T> operation)
         {
-            return super.executeBackground(new ThreadLimitedOperation<T>(operation, this.numberOfProcessors));
+            return super.executeBackground(new ThreadLimitedOperation<>(operation, this.numberOfProcessors));
         }
 
         /**

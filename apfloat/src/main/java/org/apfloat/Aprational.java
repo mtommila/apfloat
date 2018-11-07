@@ -1044,7 +1044,7 @@ public class Aprational
 
     private void setApprox(Apfloat approx)
     {
-        this.approx = new SoftReference<Apfloat>(approx);
+        this.approx = new SoftReference<>(approx);
     }
 
     private Apfloat getInverseDen()
@@ -1054,7 +1054,7 @@ public class Aprational
 
     private void setInverseDen(Apfloat inverseDen)
     {
-        this.inverseDen = new SoftReference<Apfloat>(inverseDen);
+        this.inverseDen = new SoftReference<>(inverseDen);
     }
 
     private static final long serialVersionUID = -224128535732558313L;

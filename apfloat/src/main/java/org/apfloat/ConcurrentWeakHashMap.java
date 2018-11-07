@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * providing weak keys and non-blocking access.
  *
  * @since 1.5
- * @version 1.8.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -77,8 +77,8 @@ class ConcurrentWeakHashMap<K, V>
 
     public ConcurrentWeakHashMap()
     {
-        this.map = new ConcurrentHashMap<Key, V>();
-        this.queue = new ReferenceQueue<Object>();
+        this.map = new ConcurrentHashMap<>();
+        this.queue = new ReferenceQueue<>();
     }
 
     @Override

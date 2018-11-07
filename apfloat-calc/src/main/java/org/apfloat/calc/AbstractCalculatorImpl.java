@@ -45,7 +45,7 @@ public abstract class AbstractCalculatorImpl
 
     protected AbstractCalculatorImpl()
     {
-        this.variables = new HashMap<String, Number>();
+        this.variables = new HashMap<>();
         this.pretty = false;
     }
 
@@ -135,14 +135,14 @@ public abstract class AbstractCalculatorImpl
 
     private static List<Number> toList(Number x)
     {
-        List<Number> list = new ArrayList<Number>();
+        List<Number> list = new ArrayList<>();
         list.add(x);
         return list;
     }
 
     private static List<Number> toList(Number x, Number y)
     {
-        List<Number> list = new ArrayList<Number>();
+        List<Number> list = new ArrayList<>();
         list.add(x);
         list.add(y);
         return list;

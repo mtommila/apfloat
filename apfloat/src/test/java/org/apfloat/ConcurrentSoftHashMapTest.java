@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.6
- * @version 1.7
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -55,7 +55,7 @@ public class ConcurrentSoftHashMapTest
 
     public static void testSoft()
     {
-        Map<Integer, byte[]> map = new ConcurrentSoftHashMap<Integer, byte[]>();
+        Map<Integer, byte[]> map = new ConcurrentSoftHashMap<>();
 
         final int SIZE = 1000000;
 
@@ -68,7 +68,7 @@ public class ConcurrentSoftHashMapTest
         // Force out of memory
         try
         {
-            List<byte[]> dummy = new ArrayList<byte[]>();
+            List<byte[]> dummy = new ArrayList<>();
             for (int i = 2; i < 1000000000 && map.get(1) != null; i++)
             {
                 dummy.add(new byte[SIZE]);

@@ -31,7 +31,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.8.0
- * @version 1.8.2
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -79,7 +79,7 @@ public class ModuloApintFieldTest
         assertEquals("Text", new Text("100"), a.toText());
         assertTrue("isLargerThan", b.isLargerThan(a));
         assertEquals("compareTo", -1, a.compareTo(b));
-        HashSet<ModuloApintField> set = new HashSet<ModuloApintField>();
+        HashSet<ModuloApintField> set = new HashSet<>();
         set.add(b);
         set.add(c);
         assertEquals("hashCode", 1, set.size());

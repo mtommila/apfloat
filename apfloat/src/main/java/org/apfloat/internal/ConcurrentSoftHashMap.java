@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <code>putIfAbsent()</code>.<p>
  *
  * @since 1.7.0
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -47,7 +47,7 @@ class ConcurrentSoftHashMap<K, V>
 
     public ConcurrentSoftHashMap()
     {
-        this.map = new ConcurrentHashMap<K, SoftReference<V>>();
+        this.map = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -112,7 +112,7 @@ class ConcurrentSoftHashMap<K, V>
 
     private SoftReference<V> wrap(V value)
     {
-        return new SoftReference<V>(value);
+        return new SoftReference<>(value);
     }
 
     private V unwrap(SoftReference<V> value)
