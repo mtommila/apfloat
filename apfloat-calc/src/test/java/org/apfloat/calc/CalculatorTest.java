@@ -132,6 +132,12 @@ public class CalculatorTest
         assertCalculation("7.7e1", "99.1-22.1");
         assertCalculation("i", "2i-i");
         assertCalculation("5" + NEWLINE + "11", "x = 5; x + 6");
+        assertCalculation("5" + NEWLINE + "11" + NEWLINE + "11", "x = 5; x += 6; x");
+        assertCalculation("5" + NEWLINE + "-1" + NEWLINE + "-1", "x = 5; x -= 6; x");
+        assertCalculation("5" + NEWLINE + "30" + NEWLINE + "30", "x = 5; x *= 6; x");
+        assertCalculation("30" + NEWLINE + "5" + NEWLINE + "5", "x = 30; x /= 6; x");
+        assertCalculation("31" + NEWLINE + "1" + NEWLINE + "1", "x = 31; x %= 6; x");
+        assertCalculation("5" + NEWLINE + "125" + NEWLINE + "125", "x = 5; x ^= 3; x");
         assertCalculation("2", "5 % 3");
         assertCalculation("2.1", "5.1 % 3");
         assertCalculation("2", "5 + -3");
@@ -161,6 +167,12 @@ public class CalculatorTest
         assertCalculationFailure("2^^2");
         assertCalculationFailure("2a2");
         assertCalculationFailure("x=");
+        assertCalculationFailure("x+=");
+        assertCalculationFailure("x-=");
+        assertCalculationFailure("x*=");
+        assertCalculationFailure("x/=");
+        assertCalculationFailure("x%=");
+        assertCalculationFailure("x^=");
         assertCalculationFailure("*5");
         assertCalculationFailure("/");
         assertCalculationFailure("6%");

@@ -106,8 +106,16 @@ Number assignmentExpression():
 }
 {
     v = variable()
-    "=" a = additiveExpression()                { this.calculatorImpl.setVariable(v, a); }
-                                                { return a; }
+    (
+        "=" a = additiveExpression()            { this.calculatorImpl.setVariable(v, a); }
+      | "+=" a = additiveExpression()           { this.calculatorImpl.setVariable(v, this.calculatorImpl.add(this.calculatorImpl.getVariable(v), a)); }
+      | "-=" a = additiveExpression()           { this.calculatorImpl.setVariable(v, this.calculatorImpl.subtract(this.calculatorImpl.getVariable(v), a)); }
+      | "*=" a = additiveExpression()           { this.calculatorImpl.setVariable(v, this.calculatorImpl.multiply(this.calculatorImpl.getVariable(v), a)); }
+      | "/=" a = additiveExpression()           { this.calculatorImpl.setVariable(v, this.calculatorImpl.divide(this.calculatorImpl.getVariable(v), a)); }
+      | "%=" a = additiveExpression()           { this.calculatorImpl.setVariable(v, this.calculatorImpl.mod(this.calculatorImpl.getVariable(v), a)); }
+      | "^=" a = additiveExpression()           { this.calculatorImpl.setVariable(v, this.calculatorImpl.pow(this.calculatorImpl.getVariable(v), a)); }
+    )
+                                                { return this.calculatorImpl.getVariable(v); }
 }
 
 Number additiveExpression():
