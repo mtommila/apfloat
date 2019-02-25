@@ -240,6 +240,18 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number max(Number x, Number y)
+        {
+            throw new IllegalArgumentException("Max can only be used with scalar values");
+        }
+
+        @Override
+        public Number min(Number x, Number y)
+        {
+            throw new IllegalArgumentException("Min can only be used with scalar values");
+        }
+
+        @Override
         public Number pi(Number x)
         {
             if (!isLong(x))
@@ -505,6 +517,18 @@ public class ApfloatCalculatorImpl
         public Number frac(Number x)
         {
             return ((Apfloat) x).frac();
+        }
+
+        @Override
+        public Number max(Number x, Number y)
+        {
+            return ApfloatMath.max((Apfloat) x, (Apfloat) y);
+        }
+
+        @Override
+        public Number min(Number x, Number y)
+        {
+            return ApfloatMath.min((Apfloat) x, (Apfloat) y);
         }
 
         @Override

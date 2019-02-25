@@ -769,5 +769,37 @@ public class ApintMath
         
     }
 
+    /**
+     * Returns the greater of the two values.
+     *
+     * @param x An argument.
+     * @param y Another argument.
+     *
+     * @return The greater of the two values.
+     *
+     * @since 1.9.0
+     */
+
+    public static Apint max(Apint x, Apint y)
+    {
+        return (x.compareTo(y) > 0 ? x : y);
+    }
+
+    /**
+     * Returns the smaller of the two values.
+     *
+     * @param x An argument.
+     * @param y Another argument.
+     *
+     * @return The smaller of the two values.
+     *
+     * @since 1.9.0
+     */
+
+    public static Apint min(Apint x, Apint y)
+    {
+        return (x.compareTo(y) < 0 ? x : y);
+    }
+
     private static final Random RANDOM = new Random();
 }

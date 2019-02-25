@@ -89,6 +89,8 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testGamma"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
+        suite.addTest(new ApfloatMathTest("testMax"));
+        suite.addTest(new ApfloatMathTest("testMin"));
 
         return suite;
     }
@@ -1758,5 +1760,19 @@ public class ApfloatMathTest
                 assertEquals("abs value <= 5", Apfloat.ZERO, a, new Apfloat(5, Apfloat.INFINITE, radix));
             }
         }
+    }
+
+    public static void testMax()
+    {
+        assertEquals("max of 1 and 1", new Apfloat(1), ApfloatMath.max(new Apfloat(1), new Apfloat(1)));
+        assertEquals("max of 1 and 2", new Apfloat(2), ApfloatMath.max(new Apfloat(1), new Apfloat(2)));
+        assertEquals("max of 2 and 1", new Apfloat(2), ApfloatMath.max(new Apfloat(2), new Apfloat(1)));
+    }
+
+    public static void testMin()
+    {
+        assertEquals("min of 1 and 1", new Apfloat(1), ApfloatMath.min(new Apfloat(1), new Apfloat(1)));
+        assertEquals("min of 1 and 2", new Apfloat(1), ApfloatMath.min(new Apfloat(1), new Apfloat(2)));
+        assertEquals("min of 2 and 1", new Apfloat(1), ApfloatMath.min(new Apfloat(2), new Apfloat(1)));
     }
 }

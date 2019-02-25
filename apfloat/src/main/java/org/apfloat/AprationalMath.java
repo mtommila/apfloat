@@ -278,6 +278,38 @@ public class AprationalMath
         return recursiveSum(x, 0, x.length - 1);
     }
 
+    /**
+     * Returns the greater of the two values.
+     *
+     * @param x An argument.
+     * @param y Another argument.
+     *
+     * @return The greater of the two values.
+     *
+     * @since 1.9.0
+     */
+
+    public static Aprational max(Aprational x, Aprational y)
+    {
+        return (x.compareTo(y) > 0 ? x : y);
+    }
+
+    /**
+     * Returns the smaller of the two values.
+     *
+     * @param x An argument.
+     * @param y Another argument.
+     *
+     * @return The smaller of the two values.
+     *
+     * @since 1.9.0
+     */
+
+    public static Aprational min(Aprational x, Aprational y)
+    {
+        return (x.compareTo(y) < 0 ? x : y);
+    }
+
     private static Aprational recursiveSum(Aprational[] x, int n, int m)
         throws ApfloatRuntimeException
     {

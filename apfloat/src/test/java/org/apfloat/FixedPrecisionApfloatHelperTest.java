@@ -97,6 +97,8 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGamma"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testMax"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testMin"));
 
         return suite;
     }
@@ -927,5 +929,29 @@ public class FixedPrecisionApfloatHelperTest
         {
             // OK; invalid radix
         }
+    }
+
+    public static void testMax()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
+        Apfloat result = helper.max(new Apfloat(1), new Apfloat(2));
+        assertEquals("1,2 value", new Apfloat("2"), result);
+        assertEquals("1,2 precision", 100, result.precision());
+
+        result = helper.max(new Apfloat(2), new Apfloat(1));
+        assertEquals("2,1 value", new Apfloat("2"), result);
+        assertEquals("2,1 precision", 100, result.precision());
+    }
+
+    public static void testMin()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
+        Apfloat result = helper.min(new Apfloat(1), new Apfloat(2));
+        assertEquals("1,2 value", new Apfloat("1"), result);
+        assertEquals("1,2 precision", 100, result.precision());
+
+        result = helper.min(new Apfloat(2), new Apfloat(1));
+        assertEquals("2,1 value", new Apfloat("1"), result);
+        assertEquals("2,1 precision", 100, result.precision());
     }
 }

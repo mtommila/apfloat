@@ -60,6 +60,8 @@ public class ApintMathTest
         suite.addTest(new ApintMathTest("testProduct"));
         suite.addTest(new ApintMathTest("testSum"));
         suite.addTest(new ApintMathTest("testRandom"));
+        suite.addTest(new ApintMathTest("testMax"));
+        suite.addTest(new ApintMathTest("testMin"));
 
         return suite;
     }
@@ -544,5 +546,19 @@ public class ApintMathTest
             }
             assertEquals("All values occurred", radix, counts.size());
         }
+    }
+
+    public static void testMax()
+    {
+        assertEquals("max of 1 and 1", new Apint(1), ApintMath.max(new Apint(1), new Apint(1)));
+        assertEquals("max of 1 and 2", new Apint(2), ApintMath.max(new Apint(1), new Apint(2)));
+        assertEquals("max of 2 and 1", new Apint(2), ApintMath.max(new Apint(2), new Apint(1)));
+    }
+
+    public static void testMin()
+    {
+        assertEquals("min of 1 and 1", new Apint(1), ApintMath.min(new Apint(1), new Apint(1)));
+        assertEquals("min of 1 and 2", new Apint(1), ApintMath.min(new Apint(1), new Apint(2)));
+        assertEquals("min of 2 and 1", new Apint(1), ApintMath.min(new Apint(2), new Apint(1)));
     }
 }

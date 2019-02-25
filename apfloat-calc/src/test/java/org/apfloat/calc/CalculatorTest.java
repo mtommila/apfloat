@@ -250,6 +250,12 @@ public class CalculatorTest
         assertCalculation("1.58", "log(3.00, 2.00)");
         assertCalculation("1.584", "log(3.000, 2)");
         assertCalculation("1.5849", "log(3, 2.0000)");
+        assertCalculation("1.2", "max(1.1, 1.2)");
+        assertCalculation("1/3", "max(1/3, 1/4)");
+        assertCalculation("2", "max(1, 2)");
+        assertCalculation("1.1", "min(1.1, 1.2)");
+        assertCalculation("1/4", "min(1/3, 1/4)");
+        assertCalculation("1", "min(1, 2)");
         assertCalculation("1.57", "arg(1.00i)");
         assertCalculation("2-i", "conj(2+i)");
         assertCalculation("1", "imag(2+i)");
@@ -373,6 +379,12 @@ public class CalculatorTest
         assertCalculationFailure("exp(1, 1)");
         assertCalculationFailure("log()");
         assertCalculationFailure("log(1, 1, 1)");
+        assertCalculationFailure("max()");
+        assertCalculationFailure("max(1)");
+        assertCalculationFailure("max(1, 1, 1)");
+        assertCalculationFailure("min()");
+        assertCalculationFailure("min(1)");
+        assertCalculationFailure("min(1, 1, 1)");
         assertCalculationFailure("arg()");
         assertCalculationFailure("arg(1, 1)");
         assertCalculationFailure("conj()");

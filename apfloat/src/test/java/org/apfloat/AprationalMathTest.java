@@ -23,7 +23,7 @@ import java.math.RoundingMode;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -52,6 +52,8 @@ public class AprationalMathTest
         suite.addTest(new AprationalMathTest("testNegate"));
         suite.addTest(new AprationalMathTest("testProduct"));
         suite.addTest(new AprationalMathTest("testSum"));
+        suite.addTest(new AprationalMathTest("testMax"));
+        suite.addTest(new AprationalMathTest("testMin"));
 
         return suite;
     }
@@ -200,5 +202,19 @@ public class AprationalMathTest
         assertEquals("Array sum 2 [1]", new Aprational("1000000000000"), x[1]);
 
         assertEquals("Empty sum", new Aprational("0"), AprationalMath.sum());
+    }
+
+    public static void testMax()
+    {
+        assertEquals("max of 1/2 and 1/2", new Aprational("1/2"), AprationalMath.max(new Aprational("1/2"), new Aprational("1/2")));
+        assertEquals("max of 1/2 and 2/3", new Aprational("2/3"), AprationalMath.max(new Aprational("1/2"), new Aprational("2/3")));
+        assertEquals("max of 2/3 and 1/2", new Aprational("2/3"), AprationalMath.max(new Aprational("2/3"), new Aprational("1/2")));
+    }
+
+    public static void testMin()
+    {
+        assertEquals("min of 1/2 and 1/2", new Aprational("1/2"), AprationalMath.min(new Aprational("1/2"), new Aprational("1/2")));
+        assertEquals("min of 1/2 and 2/3", new Aprational("1/2"), AprationalMath.min(new Aprational("1/2"), new Aprational("2/3")));
+        assertEquals("min of 2/3 and 1/2", new Aprational("1/2"), AprationalMath.min(new Aprational("2/3"), new Aprational("1/2")));
     }
 }

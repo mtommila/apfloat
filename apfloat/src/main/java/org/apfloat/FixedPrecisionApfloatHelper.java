@@ -958,6 +958,36 @@ public class FixedPrecisionApfloatHelper
         return valueOf(ApfloatMath.randomGaussian(precision(), radix));
     }
 
+    /**
+     * Maximum value.
+     *
+     * @param x The first operand.
+     * @param y The second operand.
+     *
+     * @return The maximum of <code>x</code> and <code>y</code>.
+     */
+
+    public Apfloat max(Apfloat x, Apfloat y)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.max(setPrecision(x), setPrecision(y)));
+    }
+
+    /**
+     * Minimum value.
+     *
+     * @param x The first operand.
+     * @param y The second operand.
+     *
+     * @return The minimum of <code>x</code> and <code>y</code>.
+     */
+
+    public Apfloat min(Apfloat x, Apfloat y)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.min(setPrecision(x), setPrecision(y)));
+    }
+
     private Apfloat setPrecision(Apfloat x)
         throws ApfloatRuntimeException
     {

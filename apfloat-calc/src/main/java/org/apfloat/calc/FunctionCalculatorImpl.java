@@ -160,6 +160,8 @@ public abstract class FunctionCalculatorImpl
         public Number gamma(Number x);
         public Number log(Number x);
         public Number log(Number x, Number y);
+        public Number max(Number x, Number y);
+        public Number min(Number x, Number y);
         public Number pi(Number x);
         public Number random(Number x);
         public Number randomGaussian(Number x);
@@ -223,6 +225,8 @@ public abstract class FunctionCalculatorImpl
         setFunction("frac", fixedFunction("frac", 1, (functions, arguments) -> functions.frac(arguments.get(0))));
         setFunction("gamma", fixedFunction("gamma", 1, (functions, arguments) -> functions.gamma(arguments.get(0))));
         setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
+        setFunction("max", fixedFunction("max", 2, (functions, arguments) -> functions.max(arguments.get(0), arguments.get(1))));
+        setFunction("min", fixedFunction("min", 2, (functions, arguments) -> functions.min(arguments.get(0), arguments.get(1))));
         setFunction("pi", fixedFunction("pi", 1, (functions, arguments) -> functions.pi(arguments.get(0))));
         setFunction("random", fixedFunction("random", 1, (functions, arguments) -> functions.random(arguments.get(0))));
         setFunction("randomGaussian", fixedFunction("randomGaussian", 1, (functions, arguments) -> functions.randomGaussian(arguments.get(0))));
