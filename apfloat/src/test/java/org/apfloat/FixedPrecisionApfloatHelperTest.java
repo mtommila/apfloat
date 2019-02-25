@@ -889,13 +889,16 @@ public class FixedPrecisionApfloatHelperTest
     public static void testRandom()
     {
         FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
-        Apfloat result = helper.random();
-        assertEquals("value", new Apfloat("0.5"), result, new Apfloat("0.5"));
-        assertEquals("precision", 100, result.precision());
+        for (int i = 0; i < 100; i++)
+        {
+            Apfloat result = helper.random();
+            assertEquals("value", new Apfloat("0.5"), result, new Apfloat("0.5"));
+            assertEquals("precision", 100, result.precision());
 
-        result = helper.random(16);
-        assertEquals("value 16", new Apfloat("0.8", Apfloat.DEFAULT, 16), result, new Apfloat("0.8", 1, 16));
-        assertEquals("precision 16", 100, result.precision());
+            result = helper.random(16);
+            assertEquals("value 16", new Apfloat("0.8", Apfloat.DEFAULT, 16), result, new Apfloat("0.8", 1, 16));
+            assertEquals("precision 16", 100, result.precision());
+        }
 
         try
         {
@@ -911,14 +914,17 @@ public class FixedPrecisionApfloatHelperTest
     public static void testRandomGaussian()
     {
         FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
-        Apfloat result = helper.randomGaussian();
-        assertEquals("value", new Apfloat("0"), result, new Apfloat("5"));
-        assertEquals("precision", 100, result.precision());
+        for (int i = 0; i < 100; i++)
+        {
+            Apfloat result = helper.randomGaussian();
+            assertEquals("value", new Apfloat("0"), result, new Apfloat("5"));
+            assertEquals("precision", 100, result.precision());
 
-        result = helper.randomGaussian(16);
-        assertEquals("value 16", new Apfloat("0", Apfloat.DEFAULT, 16), result, new Apfloat("5", 1, 16));
-        assertEquals("radix 16", 16, result.radix());
-        assertEquals("precision 16", 100, result.precision());
+            result = helper.randomGaussian(16);
+            assertEquals("value 16", new Apfloat("0", Apfloat.DEFAULT, 16), result, new Apfloat("5", 1, 16));
+            assertEquals("radix 16", 16, result.radix());
+            assertEquals("precision 16", 100, result.precision());
+        }
 
         try
         {

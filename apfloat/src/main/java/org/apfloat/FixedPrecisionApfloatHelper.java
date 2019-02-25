@@ -905,7 +905,7 @@ public class FixedPrecisionApfloatHelper
     public Apfloat random()
         throws ApfloatRuntimeException
     {
-        return ApfloatMath.random(precision());
+        return valueOf(ApfloatMath.random(precision()));
     }
 
     /**
@@ -923,7 +923,7 @@ public class FixedPrecisionApfloatHelper
     public Apfloat random(int radix)
         throws NumberFormatException, ApfloatRuntimeException
     {
-        return ApfloatMath.random(precision(), radix);
+        return valueOf(ApfloatMath.random(precision(), radix));
     }
 
     /**
