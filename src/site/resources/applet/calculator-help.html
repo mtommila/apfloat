@@ -6,6 +6,9 @@
 
 <title>Calculator help</title>
 
+<meta name="viewport" content="width=device-width" />
+<meta name="description" content="Arbitrary precision calculator help" />
+
 <link rel="stylesheet" href="../apfloat.css" type="text/css" />
 
 </head>
@@ -20,7 +23,9 @@
 
 <div>
 
+<a id="basic">
 <h2>Basic usage</h2>
+</a>
 
 <p>
 Input commands to the input field at the bottom. Execute the command by
@@ -35,7 +40,9 @@ the up and down arrow keys.
 
 <p>You can clear the output window and command history by clicking the Clear button.</p>
 
+<a id="operators">
 <h2>Operators</h2>
+</a>
 
 <p>The calculator understands basic operations, which are:</p>
 
@@ -54,7 +61,9 @@ the up and down arrow keys.
 
 <p>calculates 1 + 2 * 3<sup>4</sup>, which is 163.</p>
 
+<a id="variables">
 <h2>Variables</h2>
+</a>
 
 <p>You can assign values to variables and use variables in expressions, for example:</p>
 
@@ -63,7 +72,9 @@ the up and down arrow keys.
 <code>x + 6</code>
 </p>
 
+<a id="format">
 <h2>Output format</h2>
+</a>
 
 <p>
 You can change the output format of floating-point values with the
@@ -80,7 +91,9 @@ Note that the calculator supports extremely large exponents for floating-point
 values. Displaying such numbers in the fixed-point format may be impractical.
 </p>
 
+<a id="functions">
 <h2>Functions</h2>
+</a>
 
 <p>The calculator supports many functions.</p>
 
@@ -98,7 +111,11 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>hypot(x, y)</code></td><td>Equivalent to <code>sqrt(x<sup>2</sup> + y<sup>2</sup>)</code>. Both <code>x</code> and <code>y</code> must be real.</td></tr>
 <tr><td><code>inverseRoot(x, y)</code></td><td>Equivalent to <code>x<sup>-1/y</sup></code>. Parameter <code>y</code> must be an integer.</td></tr>
 <tr><td><code>inverseRoot(x, y, z)</code></td><td>Inverse <code>y</code>:th root of <code>x</code>, <code>z</code>:th branch. Parameters <code>y</code> and <code>z</code> must be integers.</td></tr>
+<tr><td><code>max(x, y)</code></td><td>Maximum of <code>x</code> and <code>y</code>. Both <code>x</code> and <code>y</code> must be real.</td></tr>
+<tr><td><code>min(x, y)</code></td><td>Minimum of <code>x</code> and <code>y</code>. Both <code>x</code> and <code>y</code> must be real.</td></tr>
 <tr><td><code>n(x, y)</code></td><td>The value of <code>x</code> to the precision of <code>y</code> digits. Parameter <code>y</code> must be an integer.</td></tr>
+<tr><td><code>random(x)</code></td><td>Pseudorandom number with <code>x</code> digits and a uniform distribution from the range <code>[0, 1)</code>. Parameter <code>x</code> must be an integer.</td></tr>
+<tr><td><code>randomGaussian(x)</code></td><td>Pseudorandom number with <code>x</code> digits and a normal distribution with mean 0 and standard deviation 1. Parameter <code>x</code> must be an integer.</td></tr>
 <tr><td><code>root(x, y)</code></td><td>Equivalent to <code>x<sup>1/y</sup></code>. Parameter <code>y</code> must be an integer.</td></tr>
 <tr><td><code>root(x, y, z)</code></td><td><code>y</code>:th root of <code>x</code>, <code>z</code>:th branch. Parameters <code>y</code> and <code>z</code> must be integers.</td></tr>
 <tr><td><code>round(x, y)</code><td>Round <code>x</code> to <code>y</code> digits of precision. Parameter <code>x</code> must be real and <code>y</code> must be an integer. Any exactly half-way values are rounded up.</tr>
@@ -143,6 +160,7 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 
 <table>
 <tr><td><code>agm(x, y)</code></td><td>Arithmetic-geometric mean of <code>x</code> and <code>y</code>.</td></tr>
+<tr><td><code>gamma(x)</code></td><td>Gamma function, i.e. <code>&Gamma;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>w(x)</code></td><td>Lambert W function, i.e. solution to the equation <code>W e<sup>W</sup> = x</code>.</td></tr>
 <tr><td><code>w(x, k)</code></td><td>Lambert W function, branch <code>k</code>. Parameter <code>k</code> must be an integer.</td></tr>
 <tr><td><code>gcd(x, y)</code></td><td>Greatest common divisor of <code>x</code> and <code>y</code>. Both <code>x</code> and <code>y</code> must be integers.</td></tr>
@@ -169,7 +187,9 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <code>exp(sqrt(n(163, digits)) * pi(digits))</code>
 </p>
 
+<a id="types">
 <h2>Number types</h2>
+</a>
 
 <p>
 The calculator supports complex and rational numbers in addition to integers and
@@ -189,7 +209,9 @@ as an integer. Integers have infinite precision (see below). For example, inputt
 
 <p><code>2.00 / 3.00</code></p>
 
+<a id="precision">
 <h2>Precision</h2>
+</a>
 
 <p>
 The calculator can perform calculations to arbitrary precision (actually the precision
@@ -246,7 +268,7 @@ the calculation the calculator may appear unresponsive. For example, calculating
 
 <p>Bug reports, questions and comments should be sent to <a href="mailto:Mikko.Tommila@apfloat.org">the author</a>.</p>
 
-<p>Last updated: November 24th, 2013</p>
+<p>Last updated: February 25th, 2019</p>
 
 </div>
 
