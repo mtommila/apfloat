@@ -21,6 +21,8 @@ package org.apfloat.internal;
 import static org.apfloat.internal.LongModConstants.*;
 import static org.apfloat.internal.LongRadixConstants.*;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.math.BigInteger;
 
 /**
@@ -44,7 +46,8 @@ public class LongCRTMath
     {
         super(radix);
         this.base = BASE[radix];
-        this.inverseBase = INVERSE_BASE[radix];
+        this.inverseBase = 1.0 / BASE[radix];
+        this.inverseBaseLong = INVERSE_BASE[radix];
     }
 
     /**
@@ -171,9 +174,9 @@ public class LongCRTMath
     public final long divide(long[] srcDst)
     {
         long tmp = srcDst[0] << 64 - MAX_POWER_OF_TWO_BITS | srcDst[1] >> MAX_POWER_OF_TWO_BITS,
-             result = Math.multiplyHigh(tmp, this.inverseBase),
+             result = Math.multiplyHigh(tmp, this.inverseBaseLong),
              carry = (srcDst[0] << MAX_POWER_OF_TWO_BITS | srcDst[1]) - result * this.base;     // = tmp % this.base
-        tmp = Math.multiplyHigh(carry, this.inverseBase) >> 64 - 2* (64 - MAX_POWER_OF_TWO_BITS);
+        tmp = Math.multiplyHigh(carry, this.inverseBaseLong) >> 64 - 2* (64 - MAX_POWER_OF_TWO_BITS);
         result += tmp;
         carry -= tmp * this.base;
 
@@ -184,9 +187,9 @@ public class LongCRTMath
         srcDst[1] = result;
 
         tmp = carry << 64 - MAX_POWER_OF_TWO_BITS | srcDst[2] >> MAX_POWER_OF_TWO_BITS;
-        result = Math.multiplyHigh(tmp, this.inverseBase) + (tmp < 0 ? this.inverseBase : 0);   // Signed multiplication to unsigned
+        result = Math.multiplyHigh(tmp, this.inverseBaseLong) + (tmp < 0 ? this.inverseBaseLong : 0);   // Signed multiplication to unsigned
         carry = (carry << MAX_POWER_OF_TWO_BITS | srcDst[2]) - result * this.base;              // = tmp % this.base
-        tmp = Math.multiplyHigh(carry, this.inverseBase) >> 64 - 2* (64 - MAX_POWER_OF_TWO_BITS);
+        tmp = Math.multiplyHigh(carry, this.inverseBaseLong) >> 64 - 2* (64 - MAX_POWER_OF_TWO_BITS);
         result += tmp;
         carry -= tmp * this.base;
 
@@ -196,6 +199,13 @@ public class LongCRTMath
         srcDst[2] = result;
 
         return carry;
+    }
+
+    private void readObject(ObjectInputStream in)
+        throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        this.inverseBaseLong = INVERSE_BASE[radix()];
     }
 
     private static final long serialVersionUID = 7400961005627736773L;
@@ -213,5 +223,7 @@ public class LongCRTMath
     }
 
     private long base;
-    private long inverseBase;
+    @SuppressWarnings("unused") // Kept only for serialization compatibility
+    private double inverseBase;
+    private transient long inverseBaseLong;
 }

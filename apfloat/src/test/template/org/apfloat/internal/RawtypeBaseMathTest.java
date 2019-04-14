@@ -18,13 +18,23 @@
  */
 package org.apfloat.internal;
 
+import static org.junit.Assert.assertArrayEquals;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
+import java.lang.reflect.Method;
+
 import org.apfloat.*;
 import org.apfloat.spi.*;
 
 import junit.framework.TestSuite;
 
 /**
- * @version 1.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -50,6 +60,7 @@ public class RawtypeBaseMathTest
         suite.addTest(new RawtypeBaseMathTest("testSubtract"));
         suite.addTest(new RawtypeBaseMathTest("testMultiplyAdd"));
         suite.addTest(new RawtypeBaseMathTest("testDivide"));
+        suite.addTest(new RawtypeBaseMathTest("testSerialization"));
 
         return suite;
     }
@@ -327,6 +338,54 @@ public class RawtypeBaseMathTest
                 assertEquals("radix " + radix + " src1 carry", 1, (long) carry);
                 check("src1", radix, new rawtype[] { b1 / (rawtype) 2, b1 / (rawtype) 2, b1 / (rawtype) 2, b1 / (rawtype) 2 }, dst);
             }
+        }
+    }
+
+    public void testSerialization()
+        throws Exception
+    {
+        if (RawType.TYPE.getName().equals("long"))
+        {
+            String className = RawtypeBaseMath.class.getName();
+            Java9ClassLoader classLoader = new Java9ClassLoader(getClass().getClassLoader());
+            Class<?> baseMathClass = classLoader.loadJava9Class(className);
+            Object baseMath = baseMathClass.getConstructor(Integer.TYPE).newInstance(10);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            try (ObjectOutputStream out = new ObjectOutputStream(buffer))
+            {
+                out.writeObject(baseMath);
+            }
+            byte[] java9Data = buffer.toByteArray();
+            buffer = new ByteArrayOutputStream();
+            try (ObjectOutputStream out = new ObjectOutputStream(buffer))
+            {
+                out.writeObject(new RawtypeBaseMath(10));
+            }
+            byte[] java8Data = buffer.toByteArray();
+            assertArrayEquals("Serialized data", java8Data, java9Data);
+
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(java8Data))
+            {
+                @Override
+                public Class<?> resolveClass(ObjectStreamClass desc)
+                    throws IOException, ClassNotFoundException
+                {
+                    String name = desc.getName();
+                    return classLoader.loadClass(name);
+                }
+            };
+            baseMath = in.readObject();
+            Method method = baseMath.getClass().getMethod("baseMultiplyAdd", DataStorage.Iterator.class, DataStorage.Iterator.class, Long.TYPE, Long.TYPE, DataStorage.Iterator.class, Long.TYPE);
+            DataStorage src1 = createDataStorage(new rawtype[] { (rawtype) 10 }),
+                        src2 = createDataStorage(new rawtype[] { (rawtype) 20 }),
+                        dst = createDataStorage(new rawtype[1]);
+            rawtype src3 = (rawtype) 30,
+                    carry = (rawtype) 0;
+            carry = (RawType) method.invoke(baseMath, src1.iterator(DataStorage.READ, 0, 1), src2.iterator(DataStorage.READ, 0, 1), src3, carry, dst.iterator(DataStorage.WRITE, 0, 1), 1L);
+            ArrayAccess arrayAccess = dst.getArray(DataStorage.READ, 0, 1);
+            assertEquals("Deserialized java 9 classloader", classLoader, baseMath.getClass().getClassLoader());
+            assertEquals("Deserialized java 9 carry", (rawtype) 0, carry);
+            assertEquals("Deserialized java 9 result", (rawtype) 320, arrayAccess.getRawtypeData()[arrayAccess.getOffset()]);
         }
     }
 }

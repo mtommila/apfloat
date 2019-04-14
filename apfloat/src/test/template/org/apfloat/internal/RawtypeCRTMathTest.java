@@ -18,10 +18,20 @@
  */
 package org.apfloat.internal;
 
+import static org.junit.Assert.assertArrayEquals;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
+import java.lang.reflect.Method;
+
 import junit.framework.TestSuite;
 
 /**
- * @version 1.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -48,6 +58,7 @@ public class RawtypeCRTMathTest
         suite.addTest(new RawtypeCRTMathTest("testAdd"));
         suite.addTest(new RawtypeCRTMathTest("testSubtract"));
         suite.addTest(new RawtypeCRTMathTest("testDivide"));
+        suite.addTest(new RawtypeCRTMathTest("testSerialization"));
 
         return suite;
     }
@@ -149,5 +160,51 @@ public class RawtypeCRTMathTest
         assertEquals("normal[0]", 0, (long) srcDst[0]);
         assertEquals("normal[1]", 2, (long) srcDst[1]);
         assertEquals("normal[2]", 0, (long) srcDst[2]);
+    }
+
+    public void testSerialization()
+        throws Exception
+    {
+        if (RawType.TYPE.getName().equals("long"))
+        {
+            String className = RawtypeCRTMath.class.getName();
+            Java9ClassLoader classLoader = new Java9ClassLoader(getClass().getClassLoader());
+            classLoader.loadJava9Class(RawtypeBaseMath.class.getName()); // Load base class Java 9 specific version also
+            Class<?> crtMathClass = classLoader.loadJava9Class(className);
+            Object crtMath = crtMathClass.getConstructor(Integer.TYPE).newInstance(2);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            try (ObjectOutputStream out = new ObjectOutputStream(buffer))
+            {
+                out.writeObject(crtMath);
+            }
+            byte[] java9Data = buffer.toByteArray();
+            buffer = new ByteArrayOutputStream();
+            try (ObjectOutputStream out = new ObjectOutputStream(buffer))
+            {
+                out.writeObject(new RawtypeCRTMath(2));
+            }
+            byte[] java8Data = buffer.toByteArray();
+            assertArrayEquals("Serialized data", java8Data, java9Data);
+
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(java8Data))
+            {
+                @Override
+                public Class<?> resolveClass(ObjectStreamClass desc)
+                    throws IOException, ClassNotFoundException
+                {
+                    String name = desc.getName();
+                    return classLoader.loadClass(name);
+                }
+            };
+            crtMath = in.readObject();
+            Method method = crtMath.getClass().getMethod("divide", rawtype[].class);
+            rawtype[] srcDst =  { (rawtype) 1, (rawtype) 0, (rawtype) 1 };
+            rawtype remainder = (RawType) method.invoke(crtMath, srcDst);
+            assertEquals("Deserialized java 9 classloader", classLoader, crtMath.getClass().getClassLoader());
+            assertEquals("Deserialized java 9 remainder", (rawtype) 1, remainder);
+            assertEquals("Deserialized java 9 result [0]", (rawtype) 0, srcDst[0]);
+            assertEquals("Deserialized java 9 result [1]", (rawtype) 2, srcDst[1]);
+            assertEquals("Deserialized java 9 result [2]", (rawtype) 0, srcDst[2]);
+        }
     }
 }

@@ -255,6 +255,11 @@ public class LongBaseMath
         return carry;
     }
 
+    int radix()
+    {
+        return this.radix;
+    }
+
     private void readObject(ObjectInputStream in)
         throws IOException, ClassNotFoundException
     {
