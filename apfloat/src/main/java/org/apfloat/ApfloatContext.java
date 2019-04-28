@@ -28,11 +28,7 @@ import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 
 import org.apfloat.spi.BuilderFactory;
@@ -1225,7 +1221,7 @@ public class ApfloatContext
     /**
      * Returns a new instance of a default ExecutorService.<p>
      *
-     * The default executor service is a thread-limited pool
+     * The default executor service is a {@link ForkJoinPool}
      * where the number of threads is one less than the number
      * of processors set with {@link #setNumberOfProcessors(int)}.
      *
@@ -1236,21 +1232,8 @@ public class ApfloatContext
 
     public static ExecutorService getDefaultExecutorService()
     {
-        // Executor service with all daemon threads, to avoid clean-up
-        ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
-        ThreadFactory threadFactory = (runnable) ->
-        {
-            Thread thread = defaultThreadFactory.newThread(runnable);
-            thread.setDaemon(true);
-
-            return thread;
-        };
-
         int numberOfThreads = Math.max(1, getContext().getNumberOfProcessors() - 1);
-        ThreadPoolExecutor executorService = new ThreadPoolExecutor(numberOfThreads, numberOfThreads, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), threadFactory);
-        executorService.allowCoreThreadTimeOut(true);
-
-        return executorService;
+        return new ForkJoinPool(numberOfThreads);
     }
 
     /**
