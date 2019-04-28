@@ -74,6 +74,8 @@ public class BackgroundOperation<T>
 
     public T getResult()
     {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        ctx.wait(this.future);
         try
         {
             return this.future.get();

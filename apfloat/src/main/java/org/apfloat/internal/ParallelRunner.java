@@ -61,25 +61,10 @@ public class ParallelRunner
     public static void runParallel(ParallelRunnable parallelRunnable)
         throws ApfloatRuntimeException
     {
-        ApfloatContext ctx = ApfloatContext.getContext();
-        int numberOfProcessors = ctx.getNumberOfProcessors();
-
         ParallelRunner.tasks.add(parallelRunnable);
         try
         {
-            if (numberOfProcessors > 1)
-            {
-                ExecutorService executorService = ctx.getExecutorService();
-
-                for (int i = 0; i < numberOfProcessors - 1; i++)
-                {
-                    // Process the task also in other threads
-                    executorService.execute(parallelRunnable);
-                }
-            }
-
-            // Also process the task in the current thread, until it is finished
-            parallelRunnable.run();
+            runTasks(parallelRunnable);
         }
         finally
         {
@@ -96,21 +81,45 @@ public class ParallelRunner
 
     public static void wait(Future<?> future)
     {
-        while (!future.isDone())
-        {
-            // Try and get any running task
-            ParallelRunnable parallelRunnable = ParallelRunner.tasks.peek();
-            if (parallelRunnable != null)
+        Runnable stealer = () -> {
+            while (!future.isDone())
             {
-                // Steal a minimal amount of work while we wait
-                parallelRunnable.runBatch();
+                // Try and get any running task
+                ParallelRunnable parallelRunnable = ParallelRunner.tasks.peek();
+                if (parallelRunnable != null)
+                {
+                    // Steal a minimal amount of work while we wait
+                    parallelRunnable.runBatch();
+                }
+                else
+                {
+                    // Actually idle - give up the rest of the CPU time slice
+                    Thread.yield();
+                }
             }
-            else
+        };
+
+        runTasks(stealer);
+    }
+
+    private static void runTasks(Runnable runnable)
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int numberOfProcessors = ctx.getNumberOfProcessors();
+
+        if (numberOfProcessors > 1)
+        {
+            ExecutorService executorService = ctx.getExecutorService();
+
+            for (int i = 0; i < numberOfProcessors - 1; i++)
             {
-                // Actually idle - give up the rest of the CPU time slice
-                Thread.yield();
+                // Process the task also in other threads
+                executorService.execute(runnable);
             }
         }
+
+        // Also process the task in the current thread, until it is finished
+        runnable.run();
     }
 
     // Implemented as a List because the assumption is that the number of concurrent tasks is very small

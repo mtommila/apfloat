@@ -106,20 +106,23 @@ public class PiParallel
                     if (DEBUG) Pi.err.println("PiParallel.r(" + n1 + ", " + n2 + ") splitting " + numberOfProcessors + " threads to r(" + n1 + ", " + nMiddle + ") " + numberOfProcessors1 + " threads, r(" + nMiddle + ", " + n2 + ") " + numberOfProcessors2 + " threads");
 
                     // Call recursively this r() method to further split the term calculation
-                    Operation<Object> operation1 = () ->
+                    Operation<?> operation1 = () ->
                     {
                         r(n1, nMiddle, LT, LQ, LP, progressIndicator);
                         return null;
                     };
-                    Operation<Object> operation2 = () ->
+                    Operation<?> operation2 = () ->
                     {
                         r(nMiddle, n2, T, Q, P, progressIndicator);
                         return null;
                     };
 
-                    BackgroundOperation<?> operation = new BackgroundOperation<>(new ThreadLimitedOperation<>(operation1, numberOfProcessors1));
-                    new ThreadLimitedOperation<>(operation2, numberOfProcessors2).execute();
-                    operation.getResult();                          // Waits for operation to complete
+                    BackgroundOperation<?> backgroundOperation = new BackgroundOperation<>(new ThreadLimitedOperation<>(operation1, numberOfProcessors1));
+                    Operation<?> directOperation = () -> {
+                        operation2.execute();
+                        return backgroundOperation.getResult();     // Waits for the background operation to complete, must be run within the thread-limited context
+                    };
+                    new ThreadLimitedOperation<>(directOperation, numberOfProcessors2).execute();
                 }
                 else
                 {

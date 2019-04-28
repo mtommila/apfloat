@@ -222,15 +222,16 @@ public class ParallelRunnerTest
 
     public static void testWait()
     {
-        for (int threads = 2; threads <= 32; threads++)
+        for (int threads = 2; threads <= 32; threads += 2)
         {
             ApfloatContext ctx = ApfloatContext.getContext();
             ctx.setNumberOfProcessors(threads);
             ctx.setExecutorService(ApfloatContext.getDefaultExecutorService());
+            ctx.setNumberOfProcessors(threads / 2); // Both ParallelRunner and stealer thread use half of the available processors
 
             final int LENGTH = 10000;
             Map<String, String> threadNames = new ConcurrentHashMap<>();
-            AtomicBoolean half = new AtomicBoolean();
+            AtomicBoolean done = new AtomicBoolean();
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
                 @Override
@@ -239,13 +240,12 @@ public class ParallelRunnerTest
                     return () ->
                     {
                         threadNames.put(Thread.currentThread().getName(), "");
-                        half.set(start + length >= LENGTH / 2);
                         sleepUninterrupted(20);
                     };
                 }
             };
 
-            // In some other thread, steal some work for half the time (make sure the wait ends before the task is done)
+            // In some other thread, steal some work for the entire execution time (do not let the ExecutorService use this thread for anything else)
             Runnable otherTask = () ->
             {
                 sleepUninterrupted(10);
@@ -254,15 +254,15 @@ public class ParallelRunnerTest
                     @Override
                     public boolean isDone()
                     {
-                        return half.get();
+                        return done.get();
                     }
                 };
-                ParallelRunner.wait(dummyFuture);
+                ctx.wait(dummyFuture);
             };
 
             ctx.getExecutorService().execute(otherTask);
             ParallelRunner.runParallel(parallelRunnable);
-            sleepUninterrupted(20);
+            done.set(true);
 
             assertEquals(threads + " threads (" + threadNames + ")", threads, threadNames.size());
         }

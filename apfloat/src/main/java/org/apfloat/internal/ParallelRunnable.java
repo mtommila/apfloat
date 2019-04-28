@@ -31,7 +31,7 @@ import org.apfloat.spi.Util;
  * only returns when all batches are completed.
  *
  * @since 1.1
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -68,7 +68,7 @@ public abstract class ParallelRunnable
         // Wait until all batches are completed (the above only says all batches were started)
         // Note that accessing this atomic variable also ensures that memory writes in other
         // threads have happened-before we get here and see that the task is completed
-        while (this.completed.get() < this.length)
+        while (isWorkToBeCompleted())
         {
             Thread.yield();     // Do not waste time
         }
@@ -89,7 +89,7 @@ public abstract class ParallelRunnable
     public final boolean runBatch()
     {
         boolean isRun = false;
-        if (this.started.get() < this.length)
+        if (isWorkToBeStarted())
         {
             long batchSize = Math.max(MINIMUM_BATCH_SIZE, getPreferredBatchSize());
             long startValue = this.started.getAndAdd(batchSize);
@@ -104,6 +104,32 @@ public abstract class ParallelRunnable
             }
         }
         return isRun;
+    }
+
+    /**
+     * Returns if there is still enough work left to start a new batch.
+     *
+     * @return If a new batch could be started to still perform some work.
+     *
+     * @since 1.9.0
+     */
+
+    public boolean isWorkToBeStarted()
+    {
+        return this.started.get() < this.length;
+    }
+
+    /**
+     * Returns if there is some work that may be currently processed but not yet finished.
+     *
+     * @return If there is still some work left that is not completed yet.
+     *
+     * @since 1.9.0
+     */
+
+    public boolean isWorkToBeCompleted()
+    {
+        return this.completed.get() < this.length;
     }
 
     /**

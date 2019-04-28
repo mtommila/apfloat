@@ -18,13 +18,16 @@
  */
 package org.apfloat.internal;
 
+import java.util.concurrent.Future;
+
+import org.apfloat.*;
 import org.apfloat.spi.*;
 
 import junit.framework.TestSuite;
 
 /**
  * @since 1.7.0
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -53,6 +56,7 @@ public class RawtypeParallelThreeNTTConvolutionStrategyTest
         suite.addTest(new RawtypeParallelThreeNTTConvolutionStrategyTest("testTruncatedBig"));
         suite.addTest(new RawtypeParallelThreeNTTConvolutionStrategyTest("testAutoBig"));
         suite.addTest(new RawtypeParallelThreeNTTConvolutionStrategyTest("testAutoBigParallel"));
+        suite.addTest(new RawtypeParallelThreeNTTConvolutionStrategyTest("testSharedMemoryLock"));
 
         return suite;
     }
@@ -61,5 +65,18 @@ public class RawtypeParallelThreeNTTConvolutionStrategyTest
     protected ConvolutionStrategy createConvolutionStrategy(int radix, NTTStrategy transform)
     {
         return new ParallelThreeNTTConvolutionStrategy(radix, transform);
+    }
+
+    public void testSharedMemoryLock() throws Exception
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        long sharedMemoryTreshold = ctx.getSharedMemoryTreshold();
+        ctx.setSharedMemoryTreshold(16384);
+
+        Future<?> future = ctx.getExecutorService().submit(this::testFullHugeParallel);
+        testFullHugeParallel();
+        future.get();
+
+        ctx.setSharedMemoryTreshold(sharedMemoryTreshold);
     }
 }

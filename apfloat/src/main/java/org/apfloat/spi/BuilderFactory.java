@@ -28,7 +28,7 @@ import org.apfloat.ApfloatRuntimeException;
  * that the <code>ApfloatImpl</code> implementation itself acts as the director,
  * calling the different builders directly.
  *
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -107,6 +107,16 @@ public interface BuilderFactory
 
     public <T> CarryCRTBuilder<T> getCarryCRTBuilder(Class<T> elementArrayType)
         throws IllegalArgumentException;
+
+    /**
+     * Returns an <code>ExecutionBuilder</code> object.
+     *
+     * @return An <code>ExecutionBuilder</code> object.
+     *
+     * @since 1.9.0
+     */
+
+    public ExecutionBuilder getExecutionBuilder();
 
     /**
      * Returns the element type of the data objects created.

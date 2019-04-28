@@ -33,6 +33,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Future;
 
 import org.apfloat.spi.BuilderFactory;
 import org.apfloat.spi.FilenameGenerator;
@@ -118,6 +119,12 @@ import org.apfloat.spi.Util;
  * set that context to the thread using {@link #setThreadContext(ApfloatContext,Thread)}.
  * Note that if you do not create a clone of the context, the same context will still
  * be used, since it's passed by reference.<p>
+ *
+ * To optimize thread usage while waiting for another thread in a multithreaded
+ * application it's recommended to use {@link #wait(Future)} instead of just
+ * e.g. {@link Future#get()}. This allows threads that the library uses to
+ * perform useful work (instead of just being idle) while waiting for the
+ * <code>Future</code> to complete.<p>
  *
  * Typically you may need to set the following properties for each thread:
  * <ul>
@@ -1103,6 +1110,23 @@ public class ApfloatContext
     public void setExecutorService(ExecutorService executorService)
     {
         this.executorService = executorService;
+    }
+
+    /**
+     * While waiting for a <code>Future</code> to be completed, do some useful
+     * work instead of just being idle.<p>
+     *
+     * This method is intended to coordinate with the executor service from
+     * {@link #getExecutorService()} to keep all threads busy at all times.
+     *
+     * @param future The Future to wait for.
+     *
+     * @since 1.9.0
+     */
+
+    public void wait(Future<?> future)
+    {
+        getBuilderFactory().getExecutionBuilder().createExecution().wait(future);
     }
 
     /**

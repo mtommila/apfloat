@@ -56,18 +56,25 @@ public class ParallelThreeNTTConvolutionStrategy
         public LockFuture(Lock lock)
         {
             super(VOID_CALLABLE);
+            this.thread = Thread.currentThread();   // Store the calling thread as the lock (and unlock) is thread-specific
             this.lock = lock;
         }
 
         @Override
-        public boolean isDone()
+        public synchronized boolean isDone()
         {
-            return this.lock.tryLock();
+            if (!this.done && Thread.currentThread().equals(this.thread))   // Only the thread making the wait(Future) call should lock the lock, as it will unlock it also
+            {
+                this.done = this.lock.tryLock();
+            }
+            return this.done;
         }
 
         private static final Callable<Void> VOID_CALLABLE = () -> null;
 
+        private Thread thread;
         private Lock lock;
+        private boolean done;
     }
 
     /**
@@ -103,14 +110,9 @@ public class ParallelThreeNTTConvolutionStrategy
                     Lock lock;
                     synchronized (ParallelThreeNTTConvolutionStrategy.locks)
                     {
-                        lock = ParallelThreeNTTConvolutionStrategy.locks.get(this.key);
-                        if (lock == null)
-                        {
-                            lock = new ReentrantLock();
-                            ParallelThreeNTTConvolutionStrategy.locks.put(this.key, lock);
-                        }
+                        lock = ParallelThreeNTTConvolutionStrategy.locks.computeIfAbsent(this.key, k -> new ReentrantLock());
                     }
-                    ParallelRunner.wait(new LockFuture(lock));
+                    ctx.wait(new LockFuture(lock));
                 }
             }
         }

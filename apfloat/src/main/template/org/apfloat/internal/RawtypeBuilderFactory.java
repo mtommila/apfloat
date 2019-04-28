@@ -28,12 +28,13 @@ import org.apfloat.spi.ConvolutionBuilder;
 import org.apfloat.spi.NTTBuilder;
 import org.apfloat.spi.MatrixBuilder;
 import org.apfloat.spi.CarryCRTBuilder;
+import org.apfloat.spi.ExecutionBuilder;
 
 /**
  * Factory class for getting instances of the various builder classes needed
  * to build an <code>ApfloatImpl</code> with the <code>rawtype</code> data element type.
  *
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -105,6 +106,12 @@ public class RawtypeBuilderFactory
     }
 
     @Override
+    public ExecutionBuilder getExecutionBuilder()
+    {
+        return RawtypeBuilderFactory.executionBuilder;
+    }
+
+    @Override
     public Class<?> getElementType()
     {
         return RawType.TYPE;
@@ -146,4 +153,5 @@ public class RawtypeBuilderFactory
     private static NTTBuilder nttBuilder = new RawtypeNTTBuilder();
     private static MatrixBuilder matrixBuilder = new RawtypeMatrixBuilder();
     private static CarryCRTBuilder<rawtype[]> carryCRTBuilder = new RawtypeCarryCRTBuilder();
+    private static ExecutionBuilder executionBuilder = new ParallelExecutionBuilder();
 }
