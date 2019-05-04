@@ -28,17 +28,55 @@ import java.io.InputStream;
  * @author Mikko Tommila
  */
 
-class Java9ClassLoader extends ClassLoader
+public class Java9ClassLoader extends ClassLoader
 {
     public Java9ClassLoader(ClassLoader parent)
     {
         super(parent);
     }
 
+    /**
+     * Force load a Java 8 class from the normal (non-multi-version) location.
+     * Loads the class again even if it has been already loaded by this or a
+     * parent class loader.
+     *
+     * @param name Name of the class.
+     *
+     * @return The class.
+     *
+     * @throws IOException In case of error reading the class bytes.
+     * @throws ClassNotFoundException In case the class file is not found.
+     */
+
+    public Class<?> loadJava8Class(String name)
+        throws IOException, ClassNotFoundException
+    {
+        return loadClassWithPrefix("", name);
+    }
+
+    /**
+     * Force load a Java 9 class from the Java 9 multi-version location.
+     * Loads the class again even if it has been already loaded by this or a
+     * parent class loader.
+     *
+     * @param name Name of the class.
+     *
+     * @return The class.
+     *
+     * @throws IOException In case of error reading the class bytes.
+     * @throws ClassNotFoundException In case the class file is not found.
+     */
+
     public Class<?> loadJava9Class(String name)
         throws IOException, ClassNotFoundException
     {
-        String path = "META-INF/versions/9/" + name.replace('.', '/') + ".class";
+        return loadClassWithPrefix("META-INF/versions/9/", name);
+    }
+
+    private Class<?> loadClassWithPrefix(String prefix, String name)
+        throws IOException, ClassNotFoundException
+    {
+        String path = prefix + name.replace('.', '/') + ".class";
         byte[] bytes;
         try (InputStream in = getResourceAsStream(path))
         {

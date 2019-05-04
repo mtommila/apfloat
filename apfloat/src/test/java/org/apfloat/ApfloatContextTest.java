@@ -21,13 +21,16 @@ package org.apfloat;
 import java.util.Properties;
 import java.util.Enumeration;
 import java.util.concurrent.Executors;
+
+import org.apfloat.internal.Java9ClassLoader;
+
 import java.util.concurrent.ExecutorService;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -55,6 +58,7 @@ public class ApfloatContextTest
         suite.addTest(new ApfloatContextTest("testClone"));
         suite.addTest(new ApfloatContextTest("testException"));
         suite.addTest(new ApfloatContextTest("testThreadContexts"));
+        suite.addTest(new ApfloatContextTest("testSystemOverride"));
 
         return suite;
     }
@@ -242,5 +246,29 @@ public class ApfloatContextTest
 
         ApfloatContext.clearThreadContexts();
         assertNull("Thread context is removed", ApfloatContext.getThreadContext(thread));
+    }
+
+    public void testSystemOverride()
+        throws Exception
+    {
+        System.setProperty("apfloat.cacheBurst", "512");
+        System.setProperty("apfloat.cleanupAtExit", "false");   // To avoid access error at test exit
+
+        Java9ClassLoader classLoader = new Java9ClassLoader(getClass().getClassLoader());
+        classLoader.loadJava8Class(ConcurrentWeakHashMap.class.getName());  // Depending on this package-private class
+        classLoader.loadJava8Class(ApfloatContext.class.getName() + "$CleanupThread");  // Depending on this private class
+        Class<?> apfloatContextClass = classLoader.loadJava8Class(ApfloatContext.class.getName());
+        Object apfloatContext = apfloatContextClass.getMethod("getContext").invoke(null);
+        Object cacheBurst = apfloatContextClass.getMethod("getCacheBurst").invoke(apfloatContext);
+
+        assertEquals("Global context cacheBurst", 512, cacheBurst);
+
+        apfloatContext = apfloatContextClass.getConstructor(Properties.class).newInstance(new Properties());
+        cacheBurst = apfloatContextClass.getMethod("getCacheBurst").invoke(apfloatContext);
+
+        assertEquals("New context cacheBurst", 512, cacheBurst);
+
+        System.clearProperty("apfloat.cacheBurst");
+        System.clearProperty("apfloat.cleanupAtExit");
     }
 }

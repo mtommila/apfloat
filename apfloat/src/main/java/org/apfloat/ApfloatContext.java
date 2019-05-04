@@ -82,6 +82,10 @@ import org.apfloat.spi.Util;
  * </ul>
  * <p>
  *
+ * It is also possible to override the settings in <code>apfloat.properties</code>
+ * with system properties. They can be defined with the property names listed above,
+ * prefixed with <code>"apfloat."</code>.<p>
+ *
  * An example <code>apfloat.properties</code> file could contain the following:
  *
  * <pre>
@@ -100,6 +104,9 @@ import org.apfloat.spi.Util;
  * fileSuffix=.ap
  * cleanupAtExit=true
  * </pre>
+ *
+ * A system property could be used to override any of the above, e.g. by setting
+ * on the command line <code>"-Dapfloat.defaultRadix=11"</code>.<p>
  *
  * The total memory size and the number of processors are detected automatically,
  * as reported by the Java runtime, if they are not specified in the configuration
@@ -1248,10 +1255,8 @@ public class ApfloatContext
     public void setProperties(Properties properties)
         throws ApfloatConfigurationException
     {
-        Enumeration<?> keys = properties.propertyNames();
-        while (keys.hasMoreElements())
+        for (String key : properties.stringPropertyNames())
         {
-            String key = (String) keys.nextElement();
             setProperty(key, properties.getProperty(key));
         }
     }
@@ -1288,6 +1293,17 @@ public class ApfloatContext
             // Should not occur
             throw new InternalError();
         }
+    }
+
+    private static Properties loadSystemOverrides(Properties properties)
+    {
+        for (String propertyName : properties.stringPropertyNames())
+        {
+            String propertyValue = properties.getProperty(propertyName);
+            propertyValue = System.getProperty("apfloat." + propertyName, propertyValue);
+            properties.put(propertyName, propertyValue);
+        };
+        return properties;
     }
 
     private static ApfloatContext globalContext;
@@ -1349,9 +1365,10 @@ public class ApfloatContext
         ApfloatContext.defaultProperties.setProperty(FILE_INITIAL_VALUE, "0");
         ApfloatContext.defaultProperties.setProperty(FILE_SUFFIX, ".ap");
         ApfloatContext.defaultProperties.setProperty(CLEANUP_AT_EXIT, "true");
+        loadSystemOverrides(ApfloatContext.defaultProperties);
 
-        // Set combination of default properties and properties specified in the resource bundle
-        ApfloatContext.globalContext = new ApfloatContext(loadProperties());
+        // Set combination of default properties and properties specified in the resource bundle, with system property overrides
+        ApfloatContext.globalContext = new ApfloatContext(loadSystemOverrides(loadProperties()));
 
         // ExecutorService depends on the properties so set it last
         ApfloatContext.defaultExecutorService = getDefaultExecutorService();
