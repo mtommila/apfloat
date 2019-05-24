@@ -27,7 +27,7 @@ import org.apfloat.internal.*;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -57,6 +57,9 @@ public class IntAparapiFactor3NTTStrategyTest
 
     public static void testForward()
     {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        ctx.setMemoryThreshold(Long.MAX_VALUE);
+
         for (int modulus = 0; modulus < 3; modulus++)
         {
             int size = 3 * 2048;
@@ -132,6 +135,7 @@ public class IntAparapiFactor3NTTStrategyTest
         ApfloatContext ctx = ApfloatContext.getContext();
         int numberOfProcessors = ctx.getNumberOfProcessors();
         ctx.setNumberOfProcessors(1);
+        ctx.setMemoryThreshold(Long.MAX_VALUE);
 
         runRoundTrip2();
 
