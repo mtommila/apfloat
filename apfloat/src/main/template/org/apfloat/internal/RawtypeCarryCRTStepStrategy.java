@@ -68,74 +68,74 @@ public class RawtypeCarryCRTStepStrategy
 
         DataStorage.Iterator src0 = resultMod0.iterator(DataStorage.READ, subStart, subEnd),
                              src1 = resultMod1.iterator(DataStorage.READ, subStart, subEnd),
-                             src2 = resultMod2.iterator(DataStorage.READ, subStart, subEnd),
-                             dst = dataStorage.iterator(DataStorage.WRITE, subResultStart, subResultEnd);
-
-        rawtype[] carryResult = new rawtype[3],
-                  sum = new rawtype[3],
-                  tmp = new rawtype[3];
-
-        // Preliminary carry-CRT calculation (happens in parallel in multiple blocks)
-        for (long i = 0; i < length; i++)
+                             src2 = resultMod2.iterator(DataStorage.READ, subStart, subEnd);
+        try (DataStorage.Iterator dst = dataStorage.iterator(DataStorage.WRITE, subResultStart, subResultEnd))
         {
-            rawtype y0 = MATH_MOD_0.modMultiply(T0, src0.getRawtype()),
-                    y1 = MATH_MOD_1.modMultiply(T1, src1.getRawtype()),
-                    y2 = MATH_MOD_2.modMultiply(T2, src2.getRawtype());
+            rawtype[] carryResult = new rawtype[3],
+                      sum = new rawtype[3],
+                      tmp = new rawtype[3];
 
-            multiply(M12, y0, sum);
-            multiply(M02, y1, tmp);
-
-            if (add(tmp, sum) != 0 ||
-                compare(sum, M012) >= 0)
+            // Preliminary carry-CRT calculation (happens in parallel in multiple blocks)
+            for (long i = 0; i < length; i++)
             {
-                subtract(M012, sum);
+                rawtype y0 = MATH_MOD_0.modMultiply(T0, src0.getRawtype()),
+                        y1 = MATH_MOD_1.modMultiply(T1, src1.getRawtype()),
+                        y2 = MATH_MOD_2.modMultiply(T2, src2.getRawtype());
+
+                multiply(M12, y0, sum);
+                multiply(M02, y1, tmp);
+
+                if (add(tmp, sum) != 0 ||
+                    compare(sum, M012) >= 0)
+                {
+                    subtract(M012, sum);
+                }
+
+                multiply(M01, y2, tmp);
+
+                if (add(tmp, sum) != 0 ||
+                    compare(sum, M012) >= 0)
+                {
+                    subtract(M012, sum);
+                }
+
+                add(sum, carryResult);
+
+                rawtype result = divide(carryResult);
+
+                // In the first block, ignore the first element (it's zero in full precision calculations)
+                // and possibly one or two more in limited precision calculations
+                if (i >= skipSize)
+                {
+                    dst.setRawtype(result);
+                    dst.next();
+                }
+
+                src0.next();
+                src1.next();
+                src2.next();
             }
 
-            multiply(M01, y2, tmp);
+            // Calculate the last words (in base math)
+            rawtype result0 = divide(carryResult);
+            rawtype result1 = carryResult[2];
 
-            if (add(tmp, sum) != 0 ||
-                compare(sum, M012) >= 0)
+            assert (carryResult[0] == 0);
+            assert (carryResult[1] == 0);
+
+            // Last block has one extra element (corresponding to the one skipped in the first block)
+            if (subResultSize == length - skipSize + 1)
             {
-                subtract(M012, sum);
+                dst.setRawtype(result0);
+
+                result0 = result1;
+                assert (result1 == 0);
             }
 
-            add(sum, carryResult);
+            rawtype[] results = { result1, result0 };
 
-            rawtype result = divide(carryResult);
-
-            // In the first block, ignore the first element (it's zero in full precision calculations)
-            // and possibly one or two more in limited precision calculations
-            if (i >= skipSize)
-            {
-                dst.setRawtype(result);
-                dst.next();
-            }
-
-            src0.next();
-            src1.next();
-            src2.next();
+            return results;
         }
-
-        // Calculate the last words (in base math)
-        rawtype result0 = divide(carryResult);
-        rawtype result1 = carryResult[2];
-
-        assert (carryResult[0] == 0);
-        assert (carryResult[1] == 0);
-
-        // Last block has one extra element (corresponding to the one skipped in the first block)
-        if (subResultSize == length - skipSize + 1)
-        {
-            dst.setRawtype(result0);
-            dst.close();
-
-            result0 = result1;
-            assert (result1 == 0);
-        }
-
-        rawtype[] results = { result1, result0 };
-
-        return results;
     }
 
     @Override
@@ -153,14 +153,14 @@ public class RawtypeCarryCRTStepStrategy
         // Get iterators for the previous block carries, and dst, padded with this block's carries
         // Note that size could be 1 but carries size is 2
         DataStorage.Iterator src = arrayIterator(previousResults);
-        DataStorage.Iterator dst = compositeIterator(dataStorage.iterator(DataStorage.READ_WRITE, subResultStart, subResultEnd), subResultSize, arrayIterator(results));
+        try (DataStorage.Iterator dst = compositeIterator(dataStorage.iterator(DataStorage.READ_WRITE, subResultStart, subResultEnd), subResultSize, arrayIterator(results)))
+        {
+            // Propagate base addition through dst, and this block's carries
+            rawtype carry = baseAdd(dst, src, 0, dst, previousResults.length);
+            carry = baseCarry(dst, carry, subResultSize);
 
-        // Propagate base addition through dst, and this block's carries
-        rawtype carry = baseAdd(dst, src, 0, dst, previousResults.length);
-        carry = baseCarry(dst, carry, subResultSize);
-        dst.close();                                                    // Iterator likely was not iterated to end
-
-        assert (carry == 0);
+            assert (carry == 0);
+        }                                                           // Iterator likely was not iterated to end
 
         return results;
     }

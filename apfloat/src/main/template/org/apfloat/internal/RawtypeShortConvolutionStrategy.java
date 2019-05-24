@@ -29,7 +29,7 @@ import org.apfloat.spi.ArrayAccess;
  * Short convolution strategy.
  * Performs a simple multiplication when the size of one operand is 1.
  *
- * @version 1.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -73,21 +73,23 @@ public class RawtypeShortConvolutionStrategy
 
         long size = longStorage.getSize() + 1;
 
-        ArrayAccess arrayAccess = shortStorage.getArray(DataStorage.READ, 0, 1);
-        rawtype factor = arrayAccess.getRawtypeData()[arrayAccess.getOffset()];
-        arrayAccess.close();
+        rawtype factor;
+        try (ArrayAccess arrayAccess = shortStorage.getArray(DataStorage.READ, 0, 1))
+        {
+            factor = arrayAccess.getRawtypeData()[arrayAccess.getOffset()];
+        }
 
         ApfloatContext ctx = ApfloatContext.getContext();
         DataStorageBuilder dataStorageBuilder = ctx.getBuilderFactory().getDataStorageBuilder();
         resultStorage = dataStorageBuilder.createDataStorage(size * sizeof(rawtype));
         resultStorage.setSize(size);
 
-        DataStorage.Iterator src = longStorage.iterator(DataStorage.READ, size - 1, 0),
-                             dst = resultStorage.iterator(DataStorage.WRITE, size, 0);
-
-        rawtype carry = baseMultiplyAdd(src, null, factor, 0, dst, size - 1);
-        dst.setRawtype(carry);
-        dst.close();
+        DataStorage.Iterator src = longStorage.iterator(DataStorage.READ, size - 1, 0);
+        try (DataStorage.Iterator dst = resultStorage.iterator(DataStorage.WRITE, size, 0))
+        {
+            rawtype carry = baseMultiplyAdd(src, null, factor, 0, dst, size - 1);
+            dst.setRawtype(carry);
+        }
 
         return resultStorage;
     }

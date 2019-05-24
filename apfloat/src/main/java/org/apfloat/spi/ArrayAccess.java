@@ -38,12 +38,12 @@ import org.apfloat.ApfloatRuntimeException;
  * of course the mandatory bounds check of Java, which can throw an
  * <code>ArrayIndexOutOfBoundsException</code>.
  *
- * @version 1.6.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
 public abstract class ArrayAccess
-    implements Serializable
+    implements Serializable, AutoCloseable
 {
     /**
      * Create an array access.<p>
@@ -178,6 +178,7 @@ public abstract class ArrayAccess
      * but only when the "base" <code>ArrayAccess</code> is closed.
      */
 
+    @Override
     public abstract void close()
         throws ApfloatRuntimeException;
 

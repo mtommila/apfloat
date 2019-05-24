@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.7.0
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -66,22 +66,24 @@ public class RawtypeCarryCRTStrategyTest
         DataStorage dataStorage = dataStorageBuilder.createDataStorage(size * sizeof(rawtype));
         dataStorage.setSize(size);
 
-        ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.WRITE, 0, size);
-        System.arraycopy(data, 0, arrayAccess.getData(), arrayAccess.getOffset(), size);
-        arrayAccess.close();
+        try (ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.WRITE, 0, size))
+        {
+            System.arraycopy(data, 0, arrayAccess.getData(), arrayAccess.getOffset(), size);
+        }
 
         return dataStorage;
     }
 
     private static void check(String message, int radix, rawtype[] expected, DataStorage actual)
     {
-        ArrayAccess arrayAccess = actual.getArray(DataStorage.READ, 0, expected.length);
-        assertEquals("radix " + radix + " " + message + " length", expected.length, arrayAccess.getLength());
-        for (int i = 0; i < arrayAccess.getLength(); i++)
+        try (ArrayAccess arrayAccess = actual.getArray(DataStorage.READ, 0, expected.length))
         {
-            assertEquals("radix " + radix + " " + message + " [" + i + "]", (long) expected[i], (long) arrayAccess.getRawtypeData()[arrayAccess.getOffset() + i]);
+            assertEquals("radix " + radix + " " + message + " length", expected.length, arrayAccess.getLength());
+            for (int i = 0; i < arrayAccess.getLength(); i++)
+            {
+                assertEquals("radix " + radix + " " + message + " [" + i + "]", (long) expected[i], (long) arrayAccess.getRawtypeData()[arrayAccess.getOffset() + i]);
+            }
         }
-        arrayAccess.close();
     }
 
     public static void testFullLength()

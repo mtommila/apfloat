@@ -414,9 +414,10 @@ public class RawtypeApfloatImpl
         this.dataStorage = createDataStorage(size);
         this.dataStorage.setSize(size);
 
-        ArrayAccess arrayAccess = this.dataStorage.getArray(DataStorage.WRITE, 0, size);
-        System.arraycopy(data, MAX_LONG_SIZE - (int) this.exponent, arrayAccess.getData(), arrayAccess.getOffset(), size);
-        arrayAccess.close();
+        try (ArrayAccess arrayAccess = this.dataStorage.getArray(DataStorage.WRITE, 0, size))
+        {
+            System.arraycopy(data, MAX_LONG_SIZE - (int) this.exponent, arrayAccess.getData(), arrayAccess.getOffset(), size);
+        }
 
         this.dataStorage.setReadOnly();
     }
@@ -522,9 +523,10 @@ public class RawtypeApfloatImpl
         this.dataStorage = createDataStorage(size);
         this.dataStorage.setSize(size);
 
-        ArrayAccess arrayAccess = this.dataStorage.getArray(DataStorage.WRITE, 0, size);
-        System.arraycopy(data, 0, arrayAccess.getData(), arrayAccess.getOffset(), size);
-        arrayAccess.close();
+        try (ArrayAccess arrayAccess = this.dataStorage.getArray(DataStorage.WRITE, 0, size))
+        {
+            System.arraycopy(data, 0, arrayAccess.getData(), arrayAccess.getOffset(), size);
+        }
 
         this.dataStorage.setReadOnly();
     }
@@ -837,18 +839,18 @@ public class RawtypeApfloatImpl
     {
         long count = 0;
 
-        DataStorage.Iterator iterator = dataStorage.iterator(DataStorage.READ, index, 0);
-
-        while (iterator.hasNext())
+        try (DataStorage.Iterator iterator = dataStorage.iterator(DataStorage.READ, index, 0))
         {
-            if (iterator.getRawtype() != 0)
+            while (iterator.hasNext())
             {
-                iterator.close();
-                break;
-            }
+                if (iterator.getRawtype() != 0)
+                {
+                    break;
+                }
 
-            iterator.next();
-            count++;
+                iterator.next();
+                count++;
+            }
         }
 
         return count;
@@ -860,18 +862,18 @@ public class RawtypeApfloatImpl
     {
         long count = 0;
 
-        DataStorage.Iterator iterator = dataStorage.iterator(DataStorage.READ, index, dataStorage.getSize());
-
-        while (iterator.hasNext())
+        try (DataStorage.Iterator iterator = dataStorage.iterator(DataStorage.READ, index, dataStorage.getSize()))
         {
-            if (iterator.getRawtype() != 0)
+            while (iterator.hasNext())
             {
-                iterator.close();
-                break;
-            }
+                if (iterator.getRawtype() != 0)
+                {
+                    break;
+                }
 
-            iterator.next();
-            count++;
+                iterator.next();
+                count++;
+            }
         }
 
         return count;
@@ -928,14 +930,16 @@ public class RawtypeApfloatImpl
                 dataStorage = createDataStorage(size);
                 dataStorage.setSize(size);
 
+                rawtype carry;
+
                 DataStorage.Iterator src1 = this.dataStorage.iterator(DataStorage.READ, size - 1, 0),
-                                     src2 = this.dataStorage.iterator(DataStorage.READ, size - 1, 0),   // Sub-optimal: could be the same
-                                     dst = dataStorage.iterator(DataStorage.WRITE, size, 0);
+                                     src2 = this.dataStorage.iterator(DataStorage.READ, size - 1, 0);   // Sub-optimal: could be the same
+                try (DataStorage.Iterator dst = dataStorage.iterator(DataStorage.WRITE, size, 0))
+                {
+                    carry = additionStrategy.add(src1, src2, (rawtype) 0, dst, size - 1);
 
-                rawtype carry = additionStrategy.add(src1, src2, (rawtype) 0, dst, size - 1);
-
-                dst.setRawtype(carry);
-                dst.close();
+                    dst.setRawtype(carry);
+                }
 
                 size -= getTrailingZeros(dataStorage, size);
 
@@ -1034,91 +1038,91 @@ public class RawtypeApfloatImpl
             dataStorage = createDataStorage(dstSize);
             dataStorage.setSize(dstSize);
 
-            DataStorage.Iterator src1 = big.dataStorage.iterator(DataStorage.READ, bigSize, 0),
-                                 src2 = small.dataStorage.iterator(DataStorage.READ, smallSize, 0),
-                                 dst = dataStorage.iterator(DataStorage.WRITE, dstSize, 0);
-
             rawtype carry = 0;
 
-            // big:       XXXXXXXX               XXXX
-            // small:         XXXXXXXX        or         XXXX
-            // This part:         XXXX                   XXXX
-            if (size > bigSize)
+            DataStorage.Iterator src1 = big.dataStorage.iterator(DataStorage.READ, bigSize, 0),
+                                 src2 = small.dataStorage.iterator(DataStorage.READ, smallSize, 0);
+            try (DataStorage.Iterator dst = dataStorage.iterator(DataStorage.WRITE, dstSize, 0))
             {
-                long blockSize = Math.min(size - bigSize, smallSize);
-                if (reallySubtract)
+                // big:       XXXXXXXX               XXXX
+                // small:         XXXXXXXX        or         XXXX
+                // This part:         XXXX                   XXXX
+                if (size > bigSize)
                 {
-                    carry = additionStrategy.subtract(null, src2, carry, dst, blockSize);
+                    long blockSize = Math.min(size - bigSize, smallSize);
+                    if (reallySubtract)
+                    {
+                        carry = additionStrategy.subtract(null, src2, carry, dst, blockSize);
+                    }
+                    else
+                    {
+                        carry = additionStrategy.add(null, src2, carry, dst, blockSize);
+                    }
                 }
-                else
+                // big:        XXXXXXXXXXXX
+                // small:          XXXX
+                // This part:          XXXX
+                else if (size > exponentDifference + smallSize)
                 {
-                    carry = additionStrategy.add(null, src2, carry, dst, blockSize);
+                    long blockSize = size - exponentDifference - smallSize;
+                    if (reallySubtract)
+                    {
+                        carry = additionStrategy.subtract(src1, null, carry, dst, blockSize);
+                    }
+                    else
+                    {
+                        carry = additionStrategy.add(src1, null, carry, dst, blockSize);
+                    }
                 }
-            }
-            // big:        XXXXXXXXXXXX
-            // small:          XXXX
-            // This part:          XXXX
-            else if (size > exponentDifference + smallSize)
-            {
-                long blockSize = size - exponentDifference - smallSize;
-                if (reallySubtract)
+                // big:        XXXX
+                // small:              XXXX
+                // This part:      XXXX
+                if (exponentDifference > bigSize)
                 {
-                    carry = additionStrategy.subtract(src1, null, carry, dst, blockSize);
+                    long blockSize = exponentDifference - bigSize;
+                    if (reallySubtract)
+                    {
+                        carry = additionStrategy.subtract(null, null, carry, dst, blockSize);
+                    }
+                    else
+                    {
+                        carry = additionStrategy.add(null, null, carry, dst, blockSize);
+                    }
                 }
-                else
+                // big:        XXXXXXXX               XXXXXXXXXXXX
+                // small:          XXXXXXXX        or     XXXX
+                // This part:      XXXX                   XXXX
+                else if (bigSize > exponentDifference)
                 {
-                    carry = additionStrategy.add(src1, null, carry, dst, blockSize);
+                    long blockSize = Math.min(bigSize - exponentDifference, smallSize);
+                    if (reallySubtract)
+                    {
+                        carry = additionStrategy.subtract(src1, src2, carry, dst, blockSize);
+                    }
+                    else
+                    {
+                        carry = additionStrategy.add(src1, src2, carry, dst, blockSize);
+                    }
                 }
-            }
-            // big:        XXXX
-            // small:              XXXX
-            // This part:      XXXX
-            if (exponentDifference > bigSize)
-            {
-                long blockSize = exponentDifference - bigSize;
-                if (reallySubtract)
+                // big:        XXXXXXXX               XXXXXXXXXXXX           XXXX
+                // small:          XXXXXXXX        or     XXXX            or         XXXX
+                // This part:  XXXX                   XXXX                   XXXX
+                if (exponentDifference > 0)
                 {
-                    carry = additionStrategy.subtract(null, null, carry, dst, blockSize);
+                    long blockSize = Math.min(bigSize, exponentDifference);
+                    if (reallySubtract)
+                    {
+                        carry = additionStrategy.subtract(src1, null, carry, dst, blockSize);
+                    }
+                    else
+                    {
+                        carry = additionStrategy.add(src1, null, carry, dst, blockSize);
+                    }
                 }
-                else
-                {
-                    carry = additionStrategy.add(null, null, carry, dst, blockSize);
-                }
-            }
-            // big:        XXXXXXXX               XXXXXXXXXXXX
-            // small:          XXXXXXXX        or     XXXX
-            // This part:      XXXX                   XXXX
-            else if (bigSize > exponentDifference)
-            {
-                long blockSize = Math.min(bigSize - exponentDifference, smallSize);
-                if (reallySubtract)
-                {
-                    carry = additionStrategy.subtract(src1, src2, carry, dst, blockSize);
-                }
-                else
-                {
-                    carry = additionStrategy.add(src1, src2, carry, dst, blockSize);
-                }
-            }
-            // big:        XXXXXXXX               XXXXXXXXXXXX           XXXX
-            // small:          XXXXXXXX        or     XXXX            or         XXXX
-            // This part:  XXXX                   XXXX                   XXXX
-            if (exponentDifference > 0)
-            {
-                long blockSize = Math.min(bigSize, exponentDifference);
-                if (reallySubtract)
-                {
-                    carry = additionStrategy.subtract(src1, null, carry, dst, blockSize);
-                }
-                else
-                {
-                    carry = additionStrategy.add(src1, null, carry, dst, blockSize);
-                }
-            }
 
-            // Set most significant word
-            dst.setRawtype(carry);
-            dst.close();
+                // Set most significant word
+                dst.setRawtype(carry);
+            }
 
             long leadingZeros;
 
@@ -1431,7 +1435,6 @@ public class RawtypeApfloatImpl
 
         long exponent;
         DataStorage dataStorage;
-        DataStorage.Iterator iterator = null;
 
         if (this.exponent <= 0)
         {
@@ -1439,14 +1442,15 @@ public class RawtypeApfloatImpl
             int size = 1;
             dataStorage = createDataStorage(size);
             dataStorage.setSize(size);
-            ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.WRITE, 0, size);
-            arrayAccess.getRawtypeData()[arrayAccess.getOffset()] = (rawtype) 1;
-            arrayAccess.close();
+            try (ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.WRITE, 0, size))
+            {
+                arrayAccess.getRawtypeData()[arrayAccess.getOffset()] = (rawtype) 1;
+            }
 
             exponent = 1;
         }
         else if (getSize() <= this.exponent ||          // Check if the fractional part is nonzero
-                 findMismatch(iterator = getZeroPaddedIterator(this.exponent, getSize()), ZERO_ITERATOR, getSize() - this.exponent) < 0)
+                 findMismatch(getZeroPaddedIterator(this.exponent, getSize()), ZERO_ITERATOR, getSize() - this.exponent) < 0)
         {
             // Fractional part is zero; the result is the number itself (to infinite precision)
             long size = Math.min(this.dataStorage.getSize(), this.exponent);
@@ -1466,22 +1470,18 @@ public class RawtypeApfloatImpl
             long size = this.exponent;                  // Size of integer part
             dataStorage = createDataStorage(size + 1);     // Reserve room for carry overflow
             dataStorage.setSize(size + 1);
-            DataStorage.Iterator src = this.dataStorage.iterator(DataStorage.READ, size, 0),
-                                 dst = dataStorage.iterator(DataStorage.WRITE, size + 1, 0);
-            rawtype carry = additionStrategy.add(src, null, (rawtype) 1, dst, size);     // Add carry
-            dst.setRawtype(carry);                      // Set leading rawtype as overflow carry
-            src.close();
-            dst.close();
+            rawtype carry;
+            try (DataStorage.Iterator src = this.dataStorage.iterator(DataStorage.READ, size, 0);
+                DataStorage.Iterator dst = dataStorage.iterator(DataStorage.WRITE, size + 1, 0))
+            {
+                carry = additionStrategy.add(src, null, (rawtype) 1, dst, size);     // Add carry
+                dst.setRawtype(carry);                  // Set leading rawtype as overflow carry
+            }
             int carrySize = (int) carry;                // For adjusting size, if carry did overflow or not
             size -= getTrailingZeros(dataStorage, size + 1);
             dataStorage = dataStorage.subsequence(1 - carrySize, size + carrySize);
 
             exponent = this.exponent + carrySize;
-        }
-
-        if (iterator != null)
-        {
-            iterator.close();
         }
 
         dataStorage.setReadOnly();
@@ -1697,22 +1697,22 @@ public class RawtypeApfloatImpl
         // Number of words in integer part of the number
         int size = (int) Math.min(this.exponent, getSize());
 
-        DataStorage.Iterator iterator = this.dataStorage.iterator(DataStorage.READ, 0, size);
-
-        for (int i = 0; i < (int) this.exponent; i++)
+        try (DataStorage.Iterator iterator = this.dataStorage.iterator(DataStorage.READ, 0, size))
         {
-            if (value < maxPrevious)
+            for (int i = 0; i < (int) this.exponent; i++)
             {
-                // Overflow
-                value = 0;
-                iterator.close();
-                break;
-            }
-            value *= longBase;
-            if (i < size)
-            {
-                value -= (long) iterator.getRawtype();      // Calculate value negated to handle 0x8000000000000000
-                iterator.next();
+                if (value < maxPrevious)
+                {
+                    // Overflow
+                    value = 0;
+                    break;
+                }
+                value *= longBase;
+                if (i < size)
+                {
+                    value -= (long) iterator.getRawtype();      // Calculate value negated to handle 0x8000000000000000
+                    iterator.next();
+                }
             }
         }
 
@@ -1778,115 +1778,107 @@ public class RawtypeApfloatImpl
         // Need to compare mantissas
         long thisSize = getSize(),
              thatSize = that.getSize(),
-             size = Math.max(thisSize, thatSize);
-        DataStorage.Iterator thisIterator = getZeroPaddedIterator(0, thisSize),
-                             thatIterator = that.getZeroPaddedIterator(0, thatSize);
-
-        long index,
-             result = Math.min(this.precision, that.precision);         // If mantissas are identical
-        int lastMatchingDigits = -1;                                    // Will be used for deferred comparison hanging in last word, e.g. this = 1.000000000, that = 0.999999999
-        rawtype carry,
-                base = BASE[this.radix];
-
-        if (this.exponent > that.exponent)
+             size = Math.max(thisSize, thatSize),
+             result = Math.min(this.precision, that.precision);             // If mantissas are identical
+        try (DataStorage.Iterator thisIterator = getZeroPaddedIterator(0, thisSize);
+             DataStorage.Iterator thatIterator = that.getZeroPaddedIterator(0, thatSize))
         {
-            // Possible case this = 1.0000000, that = 0.9999999
-            rawtype value = thisIterator.getRawtype();                  // Check first word
+            long index;
+            int lastMatchingDigits = -1;                                    // Will be used for deferred comparison hanging in last word, e.g. this = 1.000000000, that = 0.999999999
+            rawtype carry,
+                    base = BASE[this.radix];
 
-            if (value != (rawtype) 1)
+            if (this.exponent > that.exponent)
             {
-                // No match
-                thisIterator.close();
-                thatIterator.close();
+                // Possible case this = 1.0000000, that = 0.9999999
+                rawtype value = thisIterator.getRawtype();                  // Check first word
 
-                return 0;
+                if (value != (rawtype) 1)
+                {
+                    // No match
+                    return 0;
+                }
+
+                carry = base;
+                thisIterator.next();
             }
-
-            carry = base;
-            thisIterator.next();
-        }
-        else if (this.exponent < that.exponent)
-        {
-            // Possible case this = 0.9999999, that = 1.0000000
-            rawtype value = thatIterator.getRawtype();                  // Check first word
-
-            if (value != (rawtype) 1)
+            else if (this.exponent < that.exponent)
             {
-                // No match
-                thisIterator.close();
-                thatIterator.close();
+                // Possible case this = 0.9999999, that = 1.0000000
+                rawtype value = thatIterator.getRawtype();                  // Check first word
 
-                return 0;
+                if (value != (rawtype) 1)
+                {
+                    // No match
+                    return 0;
+                }
+
+                carry = -base;
+                thatIterator.next();
             }
-
-            carry = -base;
-            thatIterator.next();
-        }
-        else
-        {
-            // Trivial case, e.g. this = 111234, that = 111567
-            carry = 0;
-        }
-
-        // Calculate this - that, stopping at first difference
-        for (index = 0; index < size; index++)
-        {
-            rawtype value = thisIterator.getRawtype() - thatIterator.getRawtype() + carry;
-
-            if (value == 0)
+            else
             {
-                // Trivial case; words are equal
+                // Trivial case, e.g. this = 111234, that = 111567
                 carry = 0;
             }
-            else if (Math.abs(value) > (rawtype) 1)
+
+            // Calculate this - that, stopping at first difference
+            for (index = 0; index < size; index++)
             {
-                // Mismatch found
-                if (Math.abs(value) >= base)
+                rawtype value = thisIterator.getRawtype() - thatIterator.getRawtype() + carry;
+
+                if (value == 0)
                 {
-                    // Deferred comparison, e.g. this = 1.0000000002, that = 0.9999999991
-                    lastMatchingDigits = -1;
+                    // Trivial case; words are equal
+                    carry = 0;
                 }
-                else
+                else if (Math.abs(value) > (rawtype) 1)
                 {
-                    // Any trivial cases and e.g. this = 1.0000000001, that = 0.9999999992
-                    lastMatchingDigits = BASE_DIGITS[this.radix] - getDigits(Math.abs(value));
+                    // Mismatch found
+                    if (Math.abs(value) >= base)
+                    {
+                        // Deferred comparison, e.g. this = 1.0000000002, that = 0.9999999991
+                        lastMatchingDigits = -1;
+                    }
+                    else
+                    {
+                        // Any trivial cases and e.g. this = 1.0000000001, that = 0.9999999992
+                        lastMatchingDigits = BASE_DIGITS[this.radix] - getDigits(Math.abs(value));
+                    }
+
+                    break;
+                }
+                else if (value == (rawtype) 1)
+                {
+                    // Case this = 1.0000000..., that = 0.9999999...
+                    carry = base;
+                }
+                else if (value == (rawtype) -1)
+                {
+                    // Case this = 0.9999999..., that = 1.0000000...
+                    carry = -base;
                 }
 
-                break;
+                thisIterator.next();
+                thatIterator.next();
             }
-            else if (value == (rawtype) 1)
+
+            if (index < size || carry != 0)                 // Mismatch found
             {
-                // Case this = 1.0000000..., that = 0.9999999...
-                carry = base;
+                long initialMatchingDigits = (this.exponent == that.exponent ?
+                                              Math.min(getInitialDigits(), that.getInitialDigits()) :       // Normal case, e.g. this = 10, that = 5
+                                              BASE_DIGITS[this.radix]);                                     // Special case, e.g. this = 1.0, that = 0.9
+
+                // Note that this works even if index == 0
+                long middleMatchingDigits = (index - 1) * BASE_DIGITS[this.radix];                          // This is correct even if exponents are different
+
+                // Limit by available precision
+                result = Math.min(result, initialMatchingDigits + middleMatchingDigits + lastMatchingDigits);
+
+                // Handle some cases e.g. 0.15 vs. 0.04
+                result = Math.max(result, 0);
             }
-            else if (value == (rawtype) -1)
-            {
-                // Case this = 0.9999999..., that = 1.0000000...
-                carry = -base;
-            }
-
-            thisIterator.next();
-            thatIterator.next();
         }
-
-        if (index < size || carry != 0)                 // Mismatch found
-        {
-            long initialMatchingDigits = (this.exponent == that.exponent ?
-                                          Math.min(getInitialDigits(), that.getInitialDigits()) :       // Normal case, e.g. this = 10, that = 5
-                                          BASE_DIGITS[this.radix]);                                     // Special case, e.g. this = 1.0, that = 0.9
-
-            // Note that this works even if index == 0
-            long middleMatchingDigits = (index - 1) * BASE_DIGITS[this.radix];                          // This is correct even if exponents are different
-
-            // Limit by available precision
-            result = Math.min(result, initialMatchingDigits + middleMatchingDigits + lastMatchingDigits);
-
-            // Handle some cases e.g. 0.15 vs. 0.04
-            result = Math.max(result, 0);
-        }
-
-        thisIterator.close();
-        thatIterator.close();
 
         return result;
     }
@@ -1991,32 +1983,31 @@ public class RawtypeApfloatImpl
     private int compareMantissaTo(RawtypeApfloatImpl that)
         throws ApfloatRuntimeException
     {
+        int result = 0;
+
         long thisSize = getSize(),
              thatSize = that.getSize(),
              size = Math.max(thisSize, thatSize);
-        DataStorage.Iterator thisIterator = getZeroPaddedIterator(0, thisSize),
-                             thatIterator = that.getZeroPaddedIterator(0, thatSize);
-        int result = 0;
-
-        long index = findMismatch(thisIterator, thatIterator, size);
-
-        if (index >= 0)                 // Mismatch found
+        try (DataStorage.Iterator thisIterator = getZeroPaddedIterator(0, thisSize);
+             DataStorage.Iterator thatIterator = that.getZeroPaddedIterator(0, thatSize))
         {
-            rawtype thisValue = thisIterator.getRawtype(),
-                    thatValue = thatIterator.getRawtype();
+            long index = findMismatch(thisIterator, thatIterator, size);
 
-            if (thisValue < thatValue)
+            if (index >= 0)                 // Mismatch found
             {
-                result = -1;
-            }
-            else if (thisValue > thatValue)
-            {
-                result = 1;
+                rawtype thisValue = thisIterator.getRawtype(),
+                        thatValue = thatIterator.getRawtype();
+
+                if (thisValue < thatValue)
+                {
+                    result = -1;
+                }
+                else if (thisValue > thatValue)
+                {
+                    result = 1;
+                }
             }
         }
-
-        thisIterator.close();
-        thatIterator.close();
 
         return result;
     }
@@ -2368,9 +2359,10 @@ public class RawtypeApfloatImpl
     {
         rawtype msw;
 
-        ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ, 0, 1);
-        msw = arrayAccess.getRawtypeData()[arrayAccess.getOffset()];
-        arrayAccess.close();
+        try (ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ, 0, 1))
+        {
+            msw = arrayAccess.getRawtypeData()[arrayAccess.getOffset()];
+        }
 
         return msw;
     }
@@ -2434,9 +2426,12 @@ public class RawtypeApfloatImpl
 
     private rawtype getWord(long index)
     {
-        ArrayAccess arrayAccess = this.dataStorage.getArray(DataStorage.READ, index, 1);
-        rawtype word = arrayAccess.getRawtypeData()[arrayAccess.getOffset()];
-        arrayAccess.close();
+        rawtype word;
+
+        try (ArrayAccess arrayAccess = this.dataStorage.getArray(DataStorage.READ, index, 1))
+        {
+            word = arrayAccess.getRawtypeData()[arrayAccess.getOffset()];
+        }
 
         return word;
     }

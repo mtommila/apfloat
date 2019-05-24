@@ -22,7 +22,7 @@ import org.apfloat.*;
 import org.apfloat.spi.*;
 
 /**
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -42,12 +42,13 @@ public abstract class RawtypeNTTStrategyTestCase
         DataStorage dataStorage = dataStorageBuilder.createDataStorage(size * sizeof(rawtype));
         dataStorage.setSize(size);
 
-        ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.WRITE, 0, size);
-        for (int i = 0; i < size; i++)
+        try (ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.WRITE, 0, size))
         {
-            arrayAccess.getRawtypeData()[arrayAccess.getOffset() + i] = (rawtype) (i + 1);
+            for (int i = 0; i < size; i++)
+            {
+                arrayAccess.getRawtypeData()[arrayAccess.getOffset() + i] = (rawtype) (i + 1);
+            }
         }
-        arrayAccess.close();
 
         return dataStorage;
     }
@@ -56,9 +57,10 @@ public abstract class RawtypeNTTStrategyTestCase
     {
         int size = (int) dataStorage.getSize();
         rawtype[] data = new rawtype[size];
-        ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ, 0, size);
-        System.arraycopy(arrayAccess.getRawtypeData(), arrayAccess.getOffset(), data, 0, size);
-        arrayAccess.close();
+        try (ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ, 0, size))
+        {
+            System.arraycopy(arrayAccess.getRawtypeData(), arrayAccess.getOffset(), data, 0, size);
+        }
 
         return data;
     }

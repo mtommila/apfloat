@@ -376,11 +376,11 @@ public abstract class DiskDataStorage
                 {
                     int length = (int) Math.min(bufferSize, readSize);
 
-                    ArrayAccess readArrayAccess = dataStorage.getArray(READ, position, length);
-                    ArrayAccess writeArrayAccess = getArray(WRITE, position, length);
-                    System.arraycopy(readArrayAccess.getData(), readArrayAccess.getOffset(), writeArrayAccess.getData(), writeArrayAccess.getOffset(), length);
-                    writeArrayAccess.close();
-                    readArrayAccess.close();
+                    try (ArrayAccess readArrayAccess = dataStorage.getArray(READ, position, length);
+                         ArrayAccess writeArrayAccess = getArray(WRITE, position, length))
+                    {
+                        System.arraycopy(readArrayAccess.getData(), readArrayAccess.getOffset(), writeArrayAccess.getData(), writeArrayAccess.getOffset(), length);
+                    }
 
                     readSize -= length;
                     position += length;
@@ -638,17 +638,19 @@ public abstract class DiskDataStorage
     private void readToArray(long readPosition, ArrayAccess arrayAccess, int writePosition, int length)
         throws ApfloatRuntimeException
     {
-        ArrayAccess readArrayAccess = getArray(READ, readPosition, length);
-        System.arraycopy(readArrayAccess.getData(), readArrayAccess.getOffset(), arrayAccess.getData(), arrayAccess.getOffset() + writePosition, length);
-        readArrayAccess.close();
+        try (ArrayAccess readArrayAccess = getArray(READ, readPosition, length))
+        {
+            System.arraycopy(readArrayAccess.getData(), readArrayAccess.getOffset(), arrayAccess.getData(), arrayAccess.getOffset() + writePosition, length);
+        }
     }
 
     private void writeFromArray(ArrayAccess arrayAccess, int readPosition, long writePosition, int length)
         throws ApfloatRuntimeException
     {
-        ArrayAccess writeArrayAccess = getArray(WRITE, writePosition, length);
-        System.arraycopy(arrayAccess.getData(), arrayAccess.getOffset() + readPosition, writeArrayAccess.getData(), writeArrayAccess.getOffset(), length);
-        writeArrayAccess.close();
+        try (ArrayAccess writeArrayAccess = getArray(WRITE, writePosition, length))
+        {
+            System.arraycopy(arrayAccess.getData(), arrayAccess.getOffset() + readPosition, writeArrayAccess.getData(), writeArrayAccess.getOffset(), length);
+        }
     }
 
     /**

@@ -31,7 +31,7 @@ import static org.apfloat.internal.RawtypeModConstants.*;
  *
  * All access to this class must be externally synchronized.
  *
- * @version 1.7.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -65,11 +65,10 @@ public class RawtypeTableFNTStrategy
         setModulus(MODULUS[modulus]);                                       // Modulus
         rawtype[] wTable = RawtypeWTables.getWTable(modulus, (int) length);
 
-        ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length);
-
-        tableFNT(arrayAccess, wTable, null);
-
-        arrayAccess.close();
+        try (ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length))
+        {
+            tableFNT(arrayAccess, wTable, null);
+        }
     }
 
     @Override
@@ -90,13 +89,12 @@ public class RawtypeTableFNTStrategy
         setModulus(MODULUS[modulus]);                                       // Modulus
         rawtype[] wTable = RawtypeWTables.getInverseWTable(modulus, (int) length);
 
-        ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length);
+        try (ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length))
+        {
+            inverseTableFNT(arrayAccess, wTable, null);
 
-        inverseTableFNT(arrayAccess, wTable, null);
-
-        divideElements(arrayAccess, (rawtype) totalTransformLength);
-
-        arrayAccess.close();
+            divideElements(arrayAccess, (rawtype) totalTransformLength);
+        }
     }
 
     @Override

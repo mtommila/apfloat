@@ -64,13 +64,10 @@ public class RemoteOperationExecutor
     @Override
     public <T> T execute(Operation<T> operation)
     {
-        SocketChannel channel = null;
         T result;
 
-        try
+        try (SocketChannel channel = SocketChannel.open(new InetSocketAddress(this.host, this.port)))
         {
-            channel = SocketChannel.open(new InetSocketAddress(this.host, this.port));
-
             ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(Channels.newOutputStream(channel), BUFFER_SIZE));
             out.writeObject(operation);
             out.flush();
@@ -87,18 +84,6 @@ public class RemoteOperationExecutor
         catch (ClassNotFoundException cnfe)
         {
             throw new RuntimeException(cnfe);
-        }
-        finally
-        {
-            try
-            {
-                channel.socket().shutdownOutput();
-                channel.close();
-            }
-            catch (Exception e)
-            {
-                // Ignore
-            }
         }
 
         return result;

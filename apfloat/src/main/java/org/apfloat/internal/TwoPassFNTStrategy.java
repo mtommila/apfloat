@@ -72,7 +72,7 @@ import org.apfloat.spi.Util;
  * @see DataStorage#getTransposedArray(int,int,int,int)
  *
  * @since 1.7.0
- * @version 1.8.1
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -106,12 +106,11 @@ public class TwoPassFNTStrategy
         for (int i = 0; i < n2; i += b)
         {
             // Read the data in n1 x b blocks, transposed
-            ArrayAccess arrayAccess = getColumns(dataStorage, i, b, n1);
-
-            // Do b transforms of size n1
-            transformColumns(arrayAccess, n1, b, false, modulus);
-
-            arrayAccess.close();
+            try (ArrayAccess arrayAccess = getColumns(dataStorage, i, b, n1))
+            {
+                // Do b transforms of size n1
+                transformColumns(arrayAccess, n1, b, false, modulus);
+            }
         }
 
         b = maxBlockSize / n2;
@@ -119,15 +118,14 @@ public class TwoPassFNTStrategy
         for (int i = 0; i < n1; i += b)
         {
             // Read the data in b x n2 blocks
-            ArrayAccess arrayAccess = getRows(dataStorage, i, b, n2);
+            try (ArrayAccess arrayAccess = getRows(dataStorage, i, b, n2))
+            {
+                // Multiply each matrix element by w^(i*j)
+                multiplyElements(arrayAccess, i, 0, b, n2, length, 1, false, modulus);
 
-            // Multiply each matrix element by w^(i*j)
-            multiplyElements(arrayAccess, i, 0, b, n2, length, 1, false, modulus);
-
-            // Do b transforms of size n2
-            transformRows(arrayAccess, n2, b, false, modulus);
-
-            arrayAccess.close();
+                // Do b transforms of size n2
+                transformRows(arrayAccess, n2, b, false, modulus);
+            }
         }
     }
 
@@ -150,15 +148,14 @@ public class TwoPassFNTStrategy
         for (int i = 0; i < n1; i += b)
         {
             // Read the data in b x n2 blocks
-            ArrayAccess arrayAccess = getRows(dataStorage, i, b, n2);
+            try (ArrayAccess arrayAccess = getRows(dataStorage, i, b, n2))
+            {
+                // Do b transforms of size n2
+                transformRows(arrayAccess, n2, b, true, modulus);
 
-            // Do b transforms of size n2
-            transformRows(arrayAccess, n2, b, true, modulus);
-
-            // Multiply each matrix element by w^(i*j) / n
-            multiplyElements(arrayAccess, i, 0, b, n2, length, totalTransformLength, true, modulus);
-
-            arrayAccess.close();
+                // Multiply each matrix element by w^(i*j) / n
+                multiplyElements(arrayAccess, i, 0, b, n2, length, totalTransformLength, true, modulus);
+            }
         }
 
         b = maxBlockSize / n1;
@@ -166,12 +163,11 @@ public class TwoPassFNTStrategy
         for (int i = 0; i < n2; i += b)
         {
             // Read the data in n1 x b blocks, transposed
-            ArrayAccess arrayAccess = getColumns(dataStorage, i, b, n1);
-
-            // Do b transforms of size n1
-            transformColumns(arrayAccess, n1, b, true, modulus);
-
-            arrayAccess.close();
+            try (ArrayAccess arrayAccess = getColumns(dataStorage, i, b, n1))
+            {
+                // Do b transforms of size n1
+                transformColumns(arrayAccess, n1, b, true, modulus);
+            }
         }
     }
 

@@ -52,7 +52,7 @@ import org.apfloat.spi.MatrixStrategy;
  * All access to this class must be externally synchronized.
  *
  * @since 1.7.0
- * @version 1.8.3
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -80,31 +80,30 @@ public class SixStepFNTStrategy
 
         assert (n2 >= n1);
 
-        ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length);
+        try (ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length))
+        {
+            preTransform(arrayAccess);
 
-        preTransform(arrayAccess);
+            // Step 1: Transpose the data
+            transposeInitial(arrayAccess, n1, n2, false);
 
-        // Step 1: Transpose the data
-        transposeInitial(arrayAccess, n1, n2, false);
+            // Step 2: Do n2 transforms of length n1
+            transformFirst(arrayAccess, n1, n2, false, modulus);
 
-        // Step 2: Do n2 transforms of length n1
-        transformFirst(arrayAccess, n1, n2, false, modulus);
+            // Step 3: Transpose the data
+            transposeMiddle(arrayAccess, n2, n1, false);
 
-        // Step 3: Transpose the data
-        transposeMiddle(arrayAccess, n2, n1, false);
+            // Step 4: Multiply each matrix element by w^(i*j)
+            multiplyElements(arrayAccess, n1, n2, length, 1, false, modulus);
 
-        // Step 4: Multiply each matrix element by w^(i*j)
-        multiplyElements(arrayAccess, n1, n2, length, 1, false, modulus);
+            // Step 5: Do n1 transforms of length n2
+            transformSecond(arrayAccess, n2, n1, false, modulus);
 
-        // Step 5: Do n1 transforms of length n2
-        transformSecond(arrayAccess, n2, n1, false, modulus);
+            // Step 6: Transpose the data - omitted as unnecessary
+            transposeFinal(arrayAccess, n1, n2, false);
 
-        // Step 6: Transpose the data - omitted as unnecessary
-        transposeFinal(arrayAccess, n1, n2, false);
-
-        postTransform(arrayAccess);
-
-        arrayAccess.close();
+            postTransform(arrayAccess);
+        }
     }
 
     @Override
@@ -118,31 +117,30 @@ public class SixStepFNTStrategy
 
         assert (n2 >= n1);
 
-        ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length);
+        try (ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length))
+        {
+            preTransform(arrayAccess);
 
-        preTransform(arrayAccess);
+            // Step 1: Transpose the data - omitted as unnecessary
+            transposeFinal(arrayAccess, n2, n1, true);
 
-        // Step 1: Transpose the data - omitted as unnecessary
-        transposeFinal(arrayAccess, n2, n1, true);
+            // Step 2: Do n1 transforms of length n2
+            transformSecond(arrayAccess, n2, n1, true, modulus);
 
-        // Step 2: Do n1 transforms of length n2
-        transformSecond(arrayAccess, n2, n1, true, modulus);
+            // Step 3: Multiply each matrix element by w^(i*j) / totalTransformLength
+            multiplyElements(arrayAccess, n1, n2, length, totalTransformLength, true, modulus);
 
-        // Step 3: Multiply each matrix element by w^(i*j) / totalTransformLength
-        multiplyElements(arrayAccess, n1, n2, length, totalTransformLength, true, modulus);
+            // Step 4: Transpose the data
+            transposeMiddle(arrayAccess, n1, n2, true);
 
-        // Step 4: Transpose the data
-        transposeMiddle(arrayAccess, n1, n2, true);
+            // Step 5: Do n2 transforms of length n1
+            transformFirst(arrayAccess, n1, n2, true, modulus);
 
-        // Step 5: Do n2 transforms of length n1
-        transformFirst(arrayAccess, n1, n2, true, modulus);
+            // Step 6: Transpose the data
+            transposeInitial(arrayAccess, n2, n1, true);
 
-        // Step 6: Transpose the data
-        transposeInitial(arrayAccess, n2, n1, true);
-
-        postTransform(arrayAccess);
-
-        arrayAccess.close();
+            postTransform(arrayAccess);
+        }
     }
 
     /**

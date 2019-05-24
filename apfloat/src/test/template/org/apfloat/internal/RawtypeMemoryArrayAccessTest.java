@@ -23,7 +23,7 @@ import org.apfloat.spi.*;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -53,25 +53,27 @@ public class RawtypeMemoryArrayAccessTest
     public static void testGet()
     {
         rawtype[] data = { (rawtype) 1, (rawtype) 2, (rawtype) 3, (rawtype) 4 };
-        ArrayAccess arrayAccess = new RawtypeMemoryArrayAccess(data, 0, 4);
-
-        assertTrue("class", arrayAccess.getData() instanceof rawtype[]);
-        assertEquals("[0]", 1, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset()]);
-        assertEquals("[1]", 2, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset() + 1]);
-        assertEquals("[2]", 3, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset() + 2]);
-        assertEquals("[3]", 4, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset() + 3]);
-        assertEquals("length", 4, arrayAccess.getLength());
+        try (ArrayAccess arrayAccess = new RawtypeMemoryArrayAccess(data, 0, 4))
+        {
+            assertTrue("class", arrayAccess.getData() instanceof rawtype[]);
+            assertEquals("[0]", 1, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset()]);
+            assertEquals("[1]", 2, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset() + 1]);
+            assertEquals("[2]", 3, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset() + 2]);
+            assertEquals("[3]", 4, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset() + 3]);
+            assertEquals("length", 4, arrayAccess.getLength());
+        }
     }
 
     public static void testSubsequence()
     {
         rawtype[] data = { (rawtype) 1, (rawtype) 2, (rawtype) 3, (rawtype) 4 };
-        ArrayAccess arrayAccess = new RawtypeMemoryArrayAccess(data, 0, 4);
-        arrayAccess = arrayAccess.subsequence(1, 2);
-
-        assertTrue("class", arrayAccess.getData() instanceof rawtype[]);
-        assertEquals("[0]", 2, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset()]);
-        assertEquals("[1]", 3, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset() + 1]);
-        assertEquals("length", 2, arrayAccess.getLength());
+        try (ArrayAccess baseArrayAccess = new RawtypeMemoryArrayAccess(data, 0, 4);
+             ArrayAccess arrayAccess = baseArrayAccess.subsequence(1, 2))
+        {
+            assertTrue("class", arrayAccess.getData() instanceof rawtype[]);
+            assertEquals("[0]", 2, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset()]);
+            assertEquals("[1]", 3, (int) arrayAccess.getRawtypeData()[arrayAccess.getOffset() + 1]);
+            assertEquals("length", 2, arrayAccess.getLength());
+        }
     }
 }

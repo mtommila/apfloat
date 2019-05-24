@@ -18,7 +18,6 @@
  */
 package org.apfloat;
 
-import java.io.Closeable;
 import java.io.Flushable;
 import java.io.Writer;
 import java.io.FilterWriter;
@@ -99,9 +98,20 @@ class FormattingHelper
         public void close()
             throws IOException
         {
-            if (this.out instanceof Closeable)
+            if (this.out instanceof AutoCloseable)
             {
-                ((Closeable) this.out).close();
+                try
+                {
+                    ((AutoCloseable) this.out).close();
+                }
+                catch (IOException ioe)
+                {
+                    throw ioe;
+                }
+                catch (Exception e)
+                {
+                    throw new IOException(e);
+                }
             }
         }
 

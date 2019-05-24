@@ -60,7 +60,7 @@ public class OperationServer
         @Override
         public void run()
         {
-            try
+            try (SocketChannel channel = this.channel)
             {
                 info("Request processing started");
 
@@ -82,18 +82,6 @@ public class OperationServer
             {
                 // Avoid exiting the thread
                 warning("Request processing failed", e);
-            }
-            finally
-            {
-                try
-                {
-                    this.channel.socket().shutdownOutput();
-                    this.channel.close();
-                }
-                catch (Exception e)
-                {
-                    // Ignore
-                }
             }
         }
 

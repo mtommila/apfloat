@@ -27,7 +27,7 @@ import org.apfloat.spi.ArrayAccess;
  * Memory based data storage implementation for the <code>rawtype</code>
  * element type.
  *
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -100,9 +100,10 @@ public class RawtypeMemoryDataStorage
         {
             int length = (int) Math.min(bufferSize, readSize);
 
-            ArrayAccess arrayAccess = dataStorage.getArray(READ, position, length);
-            System.arraycopy(arrayAccess.getRawtypeData(), arrayAccess.getOffset(), this.data, position, length);
-            arrayAccess.close();
+            try (ArrayAccess arrayAccess = dataStorage.getArray(READ, position, length))
+            {
+                System.arraycopy(arrayAccess.getRawtypeData(), arrayAccess.getOffset(), this.data, position, length);
+            }
 
             readSize -= length;
             position += length;

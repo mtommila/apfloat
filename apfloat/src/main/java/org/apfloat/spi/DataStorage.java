@@ -68,7 +68,7 @@ public abstract class DataStorage
      */
 
     public static abstract class Iterator
-        implements Serializable
+        implements Serializable, AutoCloseable
     {
         /**
          * Default constructor. Can be used e.g. for simple anonymous subclasses.
@@ -303,6 +303,7 @@ public abstract class DataStorage
          * iterator is not iterated to the end.
          */
 
+        @Override
         public void close()
             throws ApfloatRuntimeException
         {
