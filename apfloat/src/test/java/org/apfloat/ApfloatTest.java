@@ -68,6 +68,7 @@ public class ApfloatTest
         suite.addTest(new ApfloatTest("testPrecision"));
         suite.addTest(new ApfloatTest("testScale"));
         suite.addTest(new ApfloatTest("testSize"));
+        suite.addTest(new ApfloatTest("testIsInteger"));
         suite.addTest(new ApfloatTest("testNegate"));
         suite.addTest(new ApfloatTest("testAdd"));
         suite.addTest(new ApfloatTest("testSubtract"));
@@ -637,6 +638,22 @@ public class ApfloatTest
         a = new Apfloat("11000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000001");
         a = a.precision(1);
         assertEquals("11000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000001 prec 1 size", 1, a.size());
+    }
+
+    public static void testIsInteger()
+    {
+        Apfloat a = new Apfloat("1.5");
+        assertFalse("1.5", a.isInteger());
+        a = new Apfloat("-0.1");
+        assertFalse("-0.1", a.isInteger());
+        a = new Apfloat("1");
+        assertTrue("1", a.isInteger());
+        a = new Apfloat("0");
+        assertTrue("0", a.isInteger());
+        a = new Apfloat(-1);
+        assertTrue("-1", a.isInteger());
+        a = new Apfloat("1e1000000");
+        assertTrue("1e1000000", a.isInteger());
     }
 
     public static void testNegate()

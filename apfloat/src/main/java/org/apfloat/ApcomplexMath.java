@@ -1621,7 +1621,7 @@ public class ApcomplexMath
             {
                 throw new ArithmeticException("Gamma of zero");
             }
-            if (z.real().frac().signum() == 0) // Is integer
+            if (z.real().isInteger())
             {
                 if (z.real().signum() < 0)
                 {

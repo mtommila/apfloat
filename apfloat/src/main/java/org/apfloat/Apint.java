@@ -39,7 +39,7 @@ import org.apfloat.spi.ApfloatImpl;
  *
  * @see ApintMath
  *
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -280,6 +280,13 @@ public class Apint
         throws ApfloatRuntimeException
     {
         return this.value.isShort();
+    }
+
+    @Override
+    public boolean isInteger()
+        throws ApfloatRuntimeException
+    {
+        return true;
     }
 
     /**

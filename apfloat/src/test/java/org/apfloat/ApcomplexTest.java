@@ -62,6 +62,7 @@ public class ApcomplexTest
         suite.addTest(new ApcomplexTest("testPrecision"));
         suite.addTest(new ApcomplexTest("testScale"));
         suite.addTest(new ApcomplexTest("testSize"));
+        suite.addTest(new ApcomplexTest("testIsInteger"));
         suite.addTest(new ApcomplexTest("testNegate"));
         suite.addTest(new ApcomplexTest("testAdd"));
         suite.addTest(new ApcomplexTest("testSubtract"));
@@ -387,6 +388,16 @@ public class ApcomplexTest
         assertEquals("(10, 0) size", 1, a.size());
         a = new Apcomplex("0");
         assertEquals("0 size", 0, a.size());
+    }
+
+    public static void testIsInteger()
+    {
+        Apcomplex a = new Apcomplex("(1, 1)");
+        assertFalse("(1, 1)", a.isInteger());
+        a = new Apcomplex("(1.5, 0)");
+        assertFalse("(1.5, 0)", a.isInteger());
+        a = new Apcomplex("(1, 0)");
+        assertTrue("(1, 0)", a.isInteger());
     }
 
     public static void testAdd()

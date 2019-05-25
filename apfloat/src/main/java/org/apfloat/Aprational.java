@@ -478,6 +478,13 @@ public class Aprational
         return numerator().isShort() && denominator().equals(ONE);
     }
 
+    @Override
+    public boolean isInteger()
+        throws ApfloatRuntimeException
+    {
+        return denominator().equals(ONE);
+    }
+
     /**
      * Negative value.
      *

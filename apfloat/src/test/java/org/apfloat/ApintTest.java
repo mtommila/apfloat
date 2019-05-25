@@ -63,6 +63,7 @@ public class ApintTest
         suite.addTest(new ApintTest("testPrecision"));
         suite.addTest(new ApintTest("testScale"));
         suite.addTest(new ApintTest("testSize"));
+        suite.addTest(new ApintTest("testIsInteger"));
         suite.addTest(new ApintTest("testNegate"));
         suite.addTest(new ApintTest("testAdd"));
         suite.addTest(new ApintTest("testSubtract"));
@@ -228,6 +229,16 @@ public class ApintTest
         assertEquals("100000000000000000000000100 size", 25, a.size());
         a = new Apint(0);
         assertEquals("0 size", 0, a.size());
+    }
+
+    public static void testIsInteger()
+    {
+        Apint a = new Apint(0);
+        assertTrue("0", a.isInteger());
+        a = new Apint(1);
+        assertTrue("1", a.isInteger());
+        a = new Apint(-1);
+        assertTrue("-1", a.isInteger());
     }
 
     public static void testNegate()

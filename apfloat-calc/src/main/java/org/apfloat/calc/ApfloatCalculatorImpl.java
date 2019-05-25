@@ -787,7 +787,7 @@ public class ApfloatCalculatorImpl
             // Complex to float
             x = ((Apcomplex) x).real();
         }
-        if (x instanceof Apfloat && !(x instanceof Aprational) && ((Apfloat) x).precision() == Apfloat.INFINITE && ((Apfloat) x).frac().signum() == 0)
+        if (x instanceof Apfloat && !(x instanceof Aprational) && ((Apfloat) x).precision() == Apfloat.INFINITE && ((Apfloat) x).isInteger())
         {
             // Float to integer
             x = ((Apfloat) x).truncate();

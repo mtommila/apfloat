@@ -38,7 +38,7 @@ import static java.util.FormattableFlags.*;
  * @see Apfloat
  * @see ApcomplexMath
  *
- * @version 1.8.0
+ * @version 1.9.0
  * @author Mikko Tommila
  */
 
@@ -371,6 +371,22 @@ public class Apcomplex
         throws ApfloatRuntimeException
     {
         return Math.max(real().size(), imag().size());
+    }
+
+    /**
+     * Returns if this number has an integer value. Note that this does not
+     * necessarily mean that this object is an instance of {@link Apint}.
+     * Neither does it mean that the precision is infinite.
+     *
+     * @return If this number's value is an integer.
+     *
+     * @since 1.9.0
+     */
+
+    public boolean isInteger()
+        throws ApfloatRuntimeException
+    {
+        return imag().signum() == 0 && real().isInteger();
     }
 
     /**

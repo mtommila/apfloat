@@ -64,6 +64,7 @@ public class AprationalTest
         suite.addTest(new AprationalTest("testPrecision"));
         suite.addTest(new AprationalTest("testScale"));
         suite.addTest(new AprationalTest("testSize"));
+        suite.addTest(new AprationalTest("testIsInteger"));
         suite.addTest(new AprationalTest("testNegate"));
         suite.addTest(new AprationalTest("testAdd"));
         suite.addTest(new AprationalTest("testSubtract"));
@@ -387,6 +388,20 @@ public class AprationalTest
         assertEquals("-101...102/101...101 size", Aprational.INFINITE, a.size());
         a = new Aprational("0");
         assertEquals("0 size", 0, a.size());
+    }
+
+    public static void testIsInteger()
+    {
+        Aprational a = new Aprational("1/2");
+        assertFalse("1/2", a.isInteger());
+        a = new Aprational("0");
+        assertTrue("0", a.isInteger());
+        a = new Aprational("0/2");
+        assertTrue("0/2", a.isInteger());
+        a = new Aprational("1");
+        assertTrue("1", a.isInteger());
+        a = new Aprational("-1/1");
+        assertTrue("-1/1", a.isInteger());
     }
 
     public static void testNegate()
