@@ -80,13 +80,9 @@ public class BackgroundOperation<T>
         {
             return this.future.get();
         }
-        catch (InterruptedException ie)
+        catch (InterruptedException | ExecutionException e)
         {
-            throw new RuntimeException(ie);
-        }
-        catch (ExecutionException ee)
-        {
-            throw new RuntimeException(ee);
+            throw new RuntimeException(e);
         }
     }
 

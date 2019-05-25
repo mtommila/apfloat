@@ -77,13 +77,9 @@ public class RemoteOperationExecutor
             T obj = (T) in.readObject();
             result = obj;
         }
-        catch (IOException ioe)
+        catch (IOException | ClassNotFoundException e)
         {
-            throw new RuntimeException(ioe);
-        }
-        catch (ClassNotFoundException cnfe)
-        {
-            throw new RuntimeException(cnfe);
+            throw new RuntimeException(e);
         }
 
         return result;
