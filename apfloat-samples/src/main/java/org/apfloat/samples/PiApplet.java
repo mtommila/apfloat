@@ -1,6 +1,6 @@
 /*
  * Apfloat arbitrary precision arithmetic library
- * Copyright (C) 2002-2017  Mikko Tommila
+ * Copyright (C) 2002-2019  Mikko Tommila
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -111,7 +111,7 @@ public class PiApplet
 
         String lineSeparator = System.getProperty("line.separator");
         return "Pi calculation applet" + lineSeparator +
-               "Written by Mikko Tommila 2002 - 2017" + lineSeparator +
+               "Written by Mikko Tommila 2002 - 2019" + lineSeparator +
                "Specification-Title: "    + specificationPackage.getSpecificationTitle() + lineSeparator +
                "Specification-Version: "  + specificationPackage.getSpecificationVersion() + lineSeparator +
                "Specification-Vendor: "   + specificationPackage.getSpecificationVendor() + lineSeparator +
