@@ -633,7 +633,7 @@ public class Apcomplex
     public byte byteValueExact()
         throws ArithmeticException
     {
-        long value = longValue();
+        long value = longValueExact();
         if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE)
         {
             throw new ArithmeticException("Out of range");
@@ -657,7 +657,7 @@ public class Apcomplex
     public short shortValueExact()
         throws ArithmeticException
     {
-        long value = longValue();
+        long value = longValueExact();
         if (value > Short.MAX_VALUE || value < Short.MIN_VALUE)
         {
             throw new ArithmeticException("Out of range");
@@ -681,7 +681,7 @@ public class Apcomplex
     public int intValueExact()
         throws ArithmeticException
     {
-        long value = longValue();
+        long value = longValueExact();
         if (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE)
         {
             throw new ArithmeticException("Out of range");
@@ -705,6 +705,10 @@ public class Apcomplex
     public long longValueExact()
         throws ArithmeticException
     {
+        if (imag().signum() != 0)
+        {
+            throw new ArithmeticException("Out of range");
+        }
         return real().longValueExact();
     }
 

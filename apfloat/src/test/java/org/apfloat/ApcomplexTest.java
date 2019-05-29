@@ -494,13 +494,7 @@ public class ApcomplexTest
 
     public static void testNumberValuesExact()
     {
-        Apcomplex a = new Apcomplex("(5,6)");
-        assertEquals("5 longValueExact", 5, a.longValueExact());
-        assertEquals("5 intValueExact", 5, a.intValueExact());
-        assertEquals("5 shortValueExact", 5, a.shortValueExact());
-        assertEquals("5 byteValueExact", 5, a.byteValueExact());
-
-        a = new Apcomplex("5.5");
+        Apcomplex a = new Apcomplex("5.5");
         assertEquals("5.5 longValueExact", 5, a.longValueExact());
         assertEquals("5.5 intValueExact", 5, a.intValueExact());
         assertEquals("5.5 shortValueExact", 5, a.shortValueExact());
@@ -511,6 +505,46 @@ public class ApcomplexTest
         assertEquals("-5.5 intValueExact", -5, a.intValueExact());
         assertEquals("-5.5 shortValueExact", -5, a.shortValueExact());
         assertEquals("-5.5 byteValueExact", -5, a.byteValueExact());
+
+        try
+        {
+            new Apcomplex("(5,6)").longValueExact();
+            fail("Nonreal number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            new Apcomplex("(5,6)").intValueExact();
+            fail("Nonreal number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            new Apcomplex("(5,6)").shortValueExact();
+            fail("Nonreal number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            new Apcomplex("(5,6)").byteValueExact();
+            fail("Nonreal number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
     }
 
     public static void testEqualDigits()

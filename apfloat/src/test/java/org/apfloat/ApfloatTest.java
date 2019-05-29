@@ -862,6 +862,11 @@ public class ApfloatTest
         assertEquals("5 intValueExact", 5, a.intValueExact());
         assertEquals("5 shortValueExact", 5, a.shortValueExact());
         assertEquals("5 byteValueExact", 5, a.byteValueExact());
+        a = new Apfloat("5.5");
+        assertEquals("5.5 longValueExact", 5, a.longValueExact());
+        assertEquals("5.5 intValueExact", 5, a.intValueExact());
+        assertEquals("5.5 shortValueExact", 5, a.shortValueExact());
+        assertEquals("5.5 byteValueExact", 5, a.byteValueExact());
         assertEquals("MAX_VALUE longValueExact", Long.MAX_VALUE, new Apfloat(Long.MAX_VALUE).longValueExact());
         assertEquals("MIN_VALUE longValueExact", Long.MIN_VALUE, new Apfloat(Long.MIN_VALUE).longValueExact());
         assertEquals("MAX_VALUE intValueExact", Integer.MAX_VALUE, new Apfloat(Integer.MAX_VALUE).intValueExact());
