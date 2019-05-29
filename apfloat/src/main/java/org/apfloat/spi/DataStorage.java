@@ -866,7 +866,8 @@ public abstract class DataStorage
      * The matrix size is n<sub>1</sub> x n<sub>2</sub>.
      * The following picture illustrates the block being accessed (in gray):
      *
-     * <table style="border-collapse:collapse; text-align:center" summary="Matrix">
+     * <table style="border-collapse:collapse; text-align:center">
+     *   <caption>Matrix</caption>
      *   <tr style="height:300px">
      *     <td style="width:200px; border:1px solid black">
      *       <code>&larr; startColumn &rarr;</code>
@@ -945,7 +946,8 @@ public abstract class DataStorage
      * The matrix size is n<sub>1</sub> x n<sub>2</sub>. The accessed block is illustrated in gray
      * in the following picture. The argument <code>columns</code> is the value <code>b</code>:
      *
-     * <table style="border-collapse:collapse; text-align:center" summary="Matrix">
+     * <table style="border-collapse:collapse; text-align:center">
+     *   <caption>Matrix</caption>
      *   <tr>
      *     <td style="width:200px; height:300px; border:1px solid black" rowspan="5">
      *       <code>&larr; startColumn &rarr;</code>
@@ -989,7 +991,8 @@ public abstract class DataStorage
      * The data is read from an n<sub>1</sub> x b area of the matrix, in blocks
      * of b elements, to a b x n<sub>1</sub> memory array as follows:
      *
-     * <table style="border-collapse:collapse; text-align:center" summary="Read matrix section">
+     * <table style="border-collapse:collapse; text-align:center">
+     *   <caption>Read matrix section</caption>
      *   <tr style="background:lightgray">
      *     <td style="width:100px; height:25px; border:1px solid black">
      *       <code>A</code>
@@ -1025,7 +1028,8 @@ public abstract class DataStorage
      * Each b x b block is transposed, to form the final b x n<sub>1</sub> array
      * in memory, where the columns are located linearly:
      *
-     * <table style="border-collapse:collapse; text-align:center" summary="Transposed matrix section">
+     * <table style="border-collapse:collapse; text-align:center">
+     *   <caption>Transposed matrix section</caption>
      *   <tr style="height:100px; background:lightgray">
      *     <td style="width:25px; border:1px solid black">
      *       <code>A</code>

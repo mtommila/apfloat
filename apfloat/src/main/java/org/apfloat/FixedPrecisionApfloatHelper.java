@@ -895,7 +895,7 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
-     * Return a uniformly distributed random number <code>0 <= x < 1</code>.
+     * Return a uniformly distributed random number <code>0 &le; x &lt; 1</code>.
      *
      * @return A random number.
      *
@@ -909,7 +909,7 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
-     * Return a uniformly distributed random number <code>0 <= x < 1</code>.
+     * Return a uniformly distributed random number <code>0 &le; x &lt; 1</code>.
      *
      * @param radix The radix of the number.
      *

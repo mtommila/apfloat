@@ -25,21 +25,11 @@ implementations of the apfloat SPI, each based on a different primitive
 element type:
 
 <ul>
-  <li>{@link org.apfloat.internal.IntBuilderFactory}, based on element type
-      <code>int</code>: This is the default implementation used by apfloat.
-      It works well for 32-bit platforms that perform integer operations fast
-      (including integer multiplication), and can multiply <code>double</code>s
-      and convert between <code>double</code> and <code>int</code> with adequate
-      performance. This applies to most workstations today (Intel x86 processors
-      and compatibles, in particular processors with SSE2 support, and most RISC
-      architectures). You can do calculations up to roughly 226 million digits
-      (in radix 10) with this implementation, which should be enough for most
-      purposes.</li>
   <li>{@link org.apfloat.internal.LongBuilderFactory}, based on element type
-      <code>long</code>: This implementation uses the 64-bit <code>long</code>
-      integer as the elementary type for all data storage and manipulation. It
-      usually is faster than the <code>int</code> version on 64-bit architectures
-      if you have a JVM that actually uses the 64-bit features of the processor.
+      <code>long</code>: This is the default implementation used by apfloat.
+      It uses the 64-bit <code>long</code> integer as the elementary type for
+      all data storage and manipulation. It usually is faster than the
+      <code>int</code> version on 64-bit JVMs, which is mostly the case today.
       In some places it uses also <code>double</code> arithmetic, so the processor
       should be able to perform double-precision floating point operations as well
       as convert between <code>double</code> and <code>long</code>, for decent
@@ -50,6 +40,16 @@ element type:
       even if roughly twice as much data is processed per element. The upside
       is that this implementation can do much bigger calculations: up to about
       3.5&nbsp;*&nbsp;10<sup>15</sup> digits in radix 10.</li>
+  <li>{@link org.apfloat.internal.IntBuilderFactory}, based on element type
+      <code>int</code>: 
+      It works well for 32-bit platforms that perform integer operations fast
+      (including integer multiplication), and can multiply <code>double</code>s
+      and convert between <code>double</code> and <code>int</code> with adequate
+      performance. This applies to most workstations today (Intel x86 processors
+      and compatibles, in particular processors with SSE2 support, and most RISC
+      architectures). You can do calculations up to roughly 226 million digits
+      (in radix 10) with this implementation, which should be enough for most
+      purposes.</li>
   <li>{@link org.apfloat.internal.DoubleBuilderFactory}, based on element type
       <code>double</code>: This implementation exists generally only as a
       curiosity. It will typically perform worse than the <code>long</code>
@@ -67,13 +67,14 @@ element type:
       less than that of the <code>int</code> version. Unless you have a
       computer that performs floating-point arithmetic extraordinarily well
       compared to integer arithmetic, it's always advisable to use the
-      <code>int</code> version instead.</li>
+      <code>long</code> or <code>int</code> version instead.</li>
 </ul>
 
 For example, the relative performance of the above implementations on some
 CPUs is as follows (bigger percentage means better performance):
 
-<table border="1" summary="Implementations">
+<table border="1">
+<caption>Relative performance of implementations</caption>
 <tr><th>Type</th><th>Pentium 4</th><th>Athlon XP</th><th>Athlon 64 (32-bit)</th><th>Athlon 64 (64-bit)</th><th>UltraSPARC II</th></tr>
 <tr><td>Int</td><td>100%</td><td>100%</td><td>100%</td><td>100%</td><td>100%</td></tr>
 <tr><td>Long</td><td>40%</td><td>76%</td><td>59%</td><td>95%</td><td>132%</td></tr>

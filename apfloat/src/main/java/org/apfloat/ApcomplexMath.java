@@ -1590,7 +1590,7 @@ public class ApcomplexMath
      *
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
-     * impractically slow beyond a precision of few thousand digits. At the time of
+     * impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the gamma function.
      *
      * @param z The argument.

@@ -376,7 +376,9 @@ public class Apcomplex
     /**
      * Returns if this number has an integer value. Note that this does not
      * necessarily mean that this object is an instance of {@link Apint}.
-     * Neither does it mean that the precision is infinite.
+     * Neither does it mean that the precision is infinite.<p>
+     *
+     * A complex number needs to have a zero imaginary part to be an integer.
      *
      * @return If this number's value is an integer.
      *

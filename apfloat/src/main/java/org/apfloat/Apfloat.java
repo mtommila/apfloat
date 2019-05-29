@@ -43,7 +43,10 @@ import org.apfloat.spi.ApfloatImpl;
  * you construct an apfloat like <code>new Apfloat(0.3f, 1000)</code>, the
  * resulting number won't be accurate to 1000 digits, but only to roughly 7
  * digits (in radix 10). In fact, the resulting number will be something like
- * <code>0.30000001192092896</code>...
+ * <code>0.30000001192092896</code>...<p>
+ *
+ * If you want an <i>exact</i> representation of a floating-point primitive
+ * (which is a rational number), you can use {@link Aprational#Aprational(double)}.
  *
  * @see ApfloatMath
  *
@@ -637,6 +640,16 @@ public class Apfloat
     {
         return this.impl.signum();
     }
+
+    /**
+     * Returns if this number has an integer value. Note that this does not
+     * necessarily mean that this object is an instance of {@link Apint}.
+     * Neither does it mean that the precision is infinite.
+     *
+     * @return If this number's value is an integer.
+     *
+     * @since 1.9.0
+     */
 
     @Override
     public boolean isInteger()

@@ -168,7 +168,8 @@ public class RawtypeMatrixStrategy
      * and n<sub>1</sub> &gt;= 2.<p>
      *
      * E.g. if the matrix layout is originally as follows:
-     * <table style="width:100px; border-collapse:collapse; border:1px solid black" border="1" summary="Matrix before">
+     * <table style="width:100px; border-collapse:collapse; border:1px solid black" border="1">
+     *   <caption>Matrix before</caption>
      *   <tr>
      *     <td>0</td><td>1</td><td>2</td><td>3</td>
      *   </tr>
@@ -185,7 +186,8 @@ public class RawtypeMatrixStrategy
      * <p>
      *
      * Then after this method it is as follows:
-     * <table style="width:200px; border-collapse:collapse; border:1px solid black" border="1" summary="Matrix after">
+     * <table style="width:200px; border-collapse:collapse; border:1px solid black" border="1">
+     *   <caption>Matrix after</caption>
      *   <tr>
      *     <td>0</td><td>1</td><td>2</td><td>3</td><td>8</td><td>9</td><td>10</td><td>11</td>
      *   </tr>
@@ -226,7 +228,8 @@ public class RawtypeMatrixStrategy
      * Both n<sub>1</sub> and n<sub>2</sub> must be powers of two.
      *
      * E.g. if the matrix layout is originally as follows:
-     * <table style="width:200px; border-collapse:collapse; border:1px solid black" border="1" summary="Matrix before">
+     * <table style="width:200px; border-collapse:collapse; border:1px solid black" border="1">
+     *   <caption>Matrix before</caption>
      *   <tr>
      *     <td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td>
      *   </tr>
@@ -237,7 +240,8 @@ public class RawtypeMatrixStrategy
      * <p>
      *
      * Then after this method it is as follows:
-     * <table style="width:100px; border-collapse:collapse; border:1px solid black" border="1" summary="Matrix after">
+     * <table style="width:100px; border-collapse:collapse; border:1px solid black" border="1">
+     *   <caption>Matrix after</caption>
      *   <tr>
      *     <td>0</td><td>1</td><td>2</td><td>3</td>
      *   </tr>

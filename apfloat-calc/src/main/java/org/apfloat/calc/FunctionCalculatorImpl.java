@@ -288,6 +288,8 @@ public abstract class FunctionCalculatorImpl
      * @param name The function's name.
      * @param arguments The number of arguments that the function takes.
      * @param handler The handler of the function.
+     *
+     * @return The function.
      */
 
     protected FixedFunction fixedFunction(String name, int arguments, FixedFunctionHandler handler)
@@ -302,6 +304,8 @@ public abstract class FunctionCalculatorImpl
      * @param minArguments The minimum number of arguments that the function takes.
      * @param maxArguments The maximum number of arguments that the function takes.
      * @param handler The handler of the function.
+     *
+     * @return The function.
      */
 
     protected FixedFunction fixedFunction(String name, int minArguments, int maxArguments, FixedFunctionHandler handler)

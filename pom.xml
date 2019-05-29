@@ -145,7 +145,7 @@
             <sourceFileExcludes>
               <exclude>apfloat.java</exclude>
             </sourceFileExcludes>
-            <source>1.9</source>
+            <source>1.8</source>
           </configuration>
         </plugin>
         <plugin>

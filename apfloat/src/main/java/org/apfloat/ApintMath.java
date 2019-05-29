@@ -683,13 +683,13 @@ public class ApintMath
     /**
      * Generates a random number. Uses the default radix.
      * Returned values are chosen pseudorandomly with (approximately)
-     * uniform distribution from the range <code>0 <= x < radix<sup>digits</sup></code>.
+     * uniform distribution from the range <code>0 &le; x &lt; radix<sup>digits</sup></code>.
      * The generated random numbers may have leading zeros and may thus not
      * always have exactly the requested number of digis.
      *
      * @param digits Maximum number of digits in the number.
      *
-     * @return A random number, uniformly distributed between <code>0 <= x < radix<sup>digits</sup></code>.
+     * @return A random number, uniformly distributed between <code>0 &le; x &lt; radix<sup>digits</sup></code>.
      *
      * @exception java.lang.NumberFormatException If the default radix is not valid.
      * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
@@ -708,14 +708,14 @@ public class ApintMath
     /**
      * Generates a random number.
      * Returned values are chosen pseudorandomly with (approximately)
-     * uniform distribution from the range <code>0 <= x < radix<sup>digits</sup></code>.
+     * uniform distribution from the range <code>0 &le; x &lt; radix<sup>digits</sup></code>.
      * The generated random numbers may have leading zeros and may thus not
      * always have exactly the requested number of digis.
      *
      * @param digits Maximum number of digits in the number.
      * @param radix The radix in which the number should be generated.
      *
-     * @return A random number, uniformly distributed between <code>0 <= x < radix<sup>digits</sup></code>, in base <code>radix</code>.
+     * @return A random number, uniformly distributed between <code>0 &le; x &lt; radix<sup>digits</sup></code>, in base <code>radix</code>.
      *
      * @exception java.lang.NumberFormatException If the radix is not valid.
      * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.

@@ -2020,7 +2020,7 @@ public class ApfloatMath
      *
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
-     * impractically slow beyond a precision of few thousand digits. At the time of
+     * impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the gamma function.
      *
      * @param x The argument.
@@ -2040,7 +2040,7 @@ public class ApfloatMath
     /**
      * Generates a random number. Uses the default radix.
      * Returned values are chosen pseudorandomly with (approximately)
-     * uniform distribution from the range <code>0 <= x < 1</code>.
+     * uniform distribution from the range <code>0 &le; x &lt; 1</code>.
      * The generated random numbers may have leading zeros and may thus not
      * always have exactly the requested number of significant digits.
      * The precision of the numbers is the requested number of digits minus
@@ -2048,7 +2048,7 @@ public class ApfloatMath
      *
      * @param digits Maximum number of digits in the number.
      *
-     * @return A random number, uniformly distributed between <code>0 <= x < 1</code>.
+     * @return A random number, uniformly distributed between <code>0 &le; x &lt; 1</code>.
      *
      * @exception java.lang.NumberFormatException If the default radix is not valid.
      * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
@@ -2067,7 +2067,7 @@ public class ApfloatMath
     /**
      * Generates a random number.
      * Returned values are chosen pseudorandomly with (approximately)
-     * uniform distribution from the range <code>0 <= x < 1</code>.
+     * uniform distribution from the range <code>0 &le; x &lt; 1</code>.
      * The generated random numbers may have leading zeros and may thus not
      * always have exactly the requested number of significant digits.
      * The precision of the numbers is the requested number of digits minus
@@ -2076,7 +2076,7 @@ public class ApfloatMath
      * @param digits Maximum number of digits in the number.
      * @param radix The radix in which the number should be generated.
      *
-     * @return A random number, uniformly distributed between <code>0 <= x < 1</code>, in base <code>radix</code>.
+     * @return A random number, uniformly distributed between <code>0 &le; x &lt; 1</code>, in base <code>radix</code>.
      *
      * @exception java.lang.NumberFormatException If the radix is not valid.
      * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.

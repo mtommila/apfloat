@@ -71,7 +71,8 @@ public interface MatrixStrategy
      * and n<sub>1</sub> &gt;= 2.<p>
      *
      * E.g. if the matrix layout is originally as follows:
-     * <table style="width:100px; border-collapse:collapse; border:1px solid black" border="1" summary="Matrix before">
+     * <table style="width:100px; border-collapse:collapse; border:1px solid black" border="1">
+     *   <caption>Matrix before</caption>
      *   <tr>
      *     <td>0</td><td>1</td><td>2</td><td>3</td>
      *   </tr>
@@ -88,7 +89,8 @@ public interface MatrixStrategy
      * <p>
      *
      * Then after this method it is as follows:
-     * <table style="width:200px; border-collapse:collapse; border:1px solid black" border="1" summary="Matrix after">
+     * <table style="width:200px; border-collapse:collapse; border:1px solid black" border="1">
+     *   <caption>Matrix after</caption>
      *   <tr>
      *     <td>0</td><td>1</td><td>2</td><td>3</td><td style="background:lightgray">8</td><td style="background:lightgray">9</td><td style="background:lightgray">10</td><td style="background:lightgray">11</td>
      *   </tr>
@@ -115,7 +117,8 @@ public interface MatrixStrategy
      * Both n<sub>1</sub> and n<sub>2</sub> must be powers of two.
      *
      * E.g. if the matrix layout is originally as follows:
-     * <table style="width:200px; border-collapse:collapse; border:1px solid black" border="1" summary="Matrix before">
+     * <table style="width:200px; border-collapse:collapse; border:1px solid black" border="1">
+     *   <caption>Matrix before</caption>
      *   <tr>
      *     <td>0</td><td>1</td><td>2</td><td>3</td><td style="background:lightgray">4</td><td style="background:lightgray">5</td><td style="background:lightgray">6</td><td style="background:lightgray">7</td>
      *   </tr>
@@ -126,7 +129,8 @@ public interface MatrixStrategy
      * <p>
      *
      * Then after this method it is as follows:
-     * <table style="width:100px; border-collapse:collapse; border:1px solid black" border="1" summary="Matrix after">
+     * <table style="width:100px; border-collapse:collapse; border:1px solid black" border="1">
+     *   <caption>Matrix after</caption>
      *   <tr>
      *     <td>0</td><td>1</td><td>2</td><td>3</td>
      *   </tr>
