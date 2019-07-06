@@ -1240,7 +1240,17 @@ public class ApfloatContext
     public static ExecutorService getDefaultExecutorService()
     {
         int numberOfThreads = Math.max(1, getContext().getNumberOfProcessors() - 1);
-        return new ForkJoinPool(numberOfThreads);
+        ForkJoinPool forkJoinPool;
+        try
+        {
+            forkJoinPool = new ForkJoinPool(numberOfThreads);
+        }
+        catch (SecurityException se)
+        {
+            // If we don't have permission to create a new ForkJoinPool (e.g. in an applet) then use the common pool
+            forkJoinPool = ForkJoinPool.commonPool();
+        }
+        return forkJoinPool;
     }
 
     /**
