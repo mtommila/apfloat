@@ -24,7 +24,7 @@ import junit.framework.TestSuite;
 import static java.math.RoundingMode.*;
 
 /**
- * @version 1.9.0
+ * @version 1.9.1
  * @author Mikko Tommila
  */
 
@@ -1760,6 +1760,15 @@ public class ApfloatMathTest
                 assertEquals("abs value <= 5", Apfloat.ZERO, a, new Apfloat(5, Apfloat.INFINITE, radix));
             }
         }
+
+        Apfloat a = ApfloatMath.randomGaussian(100);
+        assertEquals("precision 1", 100, a.precision(), 7);
+        a = ApfloatMath.randomGaussian(10);
+        assertEquals("precision 2", 10, a.precision(), 7);
+        a = ApfloatMath.randomGaussian(100);
+        assertEquals("precision 3", 100, a.precision(), 7);
+        a = ApfloatMath.randomGaussian(200);
+        assertEquals("precision 4", 200, a.precision(), 7);
     }
 
     public static void testMax()

@@ -42,7 +42,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApintMath
  *
- * @version 1.9.0
+ * @version 1.9.1
  * @author Mikko Tommila
  */
 
@@ -2141,7 +2141,8 @@ public class ApfloatMath
         synchronized (radixKey)
         {
             Apfloat nextGaussian = ApfloatMath.nextGaussian.remove(radixKey);
-            if (nextGaussian != null)
+            Long nextGaussianPrecision = ApfloatMath.nextGaussianPrecision.remove(radixKey);
+            if (nextGaussian != null && nextGaussianPrecision == digits)
             {
                 return nextGaussian;
             }
@@ -2159,6 +2160,7 @@ public class ApfloatMath
                 Apfloat multiplier = sqrt(two.negate().multiply(log(s)).divide(s));
                 nextGaussian = v2.multiply(multiplier);
                 ApfloatMath.nextGaussian.put(radixKey, nextGaussian);
+                ApfloatMath.nextGaussianPrecision.put(radixKey, digits);
                 return v1.multiply(multiplier);
             }
         }
@@ -2325,4 +2327,5 @@ public class ApfloatMath
 
     // Used by randomGaussian
     private static Map<Integer, Apfloat> nextGaussian = new ConcurrentHashMap<>();
+    private static Map<Integer, Long> nextGaussianPrecision = new ConcurrentHashMap<>();
 }
