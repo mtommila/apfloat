@@ -46,7 +46,7 @@ import org.apfloat.spi.BuilderFactory;
 /**
  * Graphical AWT elements for calculating pi using four different algorithms.
  *
- * @version 1.9.0
+ * @version 1.9.1
  * @author Mikko Tommila
  */
 
@@ -287,7 +287,7 @@ public class PiAWT
             StringBuffer buffer = getBuffer();
             String text = buffer.toString();
 
-            String lineSeparator = System.getProperty("line.separator");
+            String lineSeparator = System.lineSeparator();
             boolean endsWithLineSeparator = text.endsWith(lineSeparator),
                     endsWithCarriageReturn = text.endsWith("\r");
 

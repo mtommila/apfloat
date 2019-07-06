@@ -28,7 +28,7 @@ import org.apfloat.spi.FilenameGenerator;
 /**
  * Calculator applet.
  *
- * @version 1.9.0
+ * @version 1.9.1
  * @author Mikko Tommila
  */
 
@@ -95,7 +95,7 @@ public class CalculatorApplet
     @Override
     public String getAppletInfo()
     {
-        String lineSeparator = System.getProperty("line.separator");
+        String lineSeparator = System.lineSeparator();
         return "Calculator applet" + lineSeparator +
                "Written by Mikko Tommila 2011 - 2019" + lineSeparator +
                "Java version: "         + System.getProperty("java.version") + lineSeparator +
