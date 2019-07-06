@@ -187,7 +187,7 @@ import org.apfloat.spi.Util;
  * If these features are added to the Java platform in the future, they
  * may be added to the <code>ApfloatContext</code> API as well.
  *
- * @version 1.9.0
+ * @version 1.9.1
  * @author Mikko Tommila
  */
 
@@ -1300,8 +1300,15 @@ public class ApfloatContext
         for (String propertyName : properties.stringPropertyNames())
         {
             String propertyValue = properties.getProperty(propertyName);
-            propertyValue = System.getProperty("apfloat." + propertyName, propertyValue);
-            properties.put(propertyName, propertyValue);
+            try
+            {
+                propertyValue = System.getProperty("apfloat." + propertyName, propertyValue);
+            }
+            catch (SecurityException se)
+            {
+                // Ignore, not allowed to read the property
+            }
+            properties.setProperty(propertyName, propertyValue);
         };
         return properties;
     }
