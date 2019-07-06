@@ -29,6 +29,11 @@
       <optional>true</optional>
     </dependency>
     <dependency>
+      <groupId>org.apfloat</groupId>
+      <artifactId>apfloat-calc</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -72,6 +77,7 @@
                 <excludes>
                   <exclude>org.apfloat:apfloat</exclude>
                   <exclude>org.apfloat:apfloat-aparapi</exclude>
+                  <exclude>org.apfloat:apfloat-calc</exclude>
                   <exclude>com.aparapi:aparapi</exclude>
                   <exclude>com.aparapi:aparapi-jni</exclude>
                 </excludes>

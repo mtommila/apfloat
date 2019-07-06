@@ -87,6 +87,11 @@
         <artifactId>apfloat-aparapi</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apfloat</groupId>
+        <artifactId>apfloat-calc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
