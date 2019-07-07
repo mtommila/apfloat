@@ -30,7 +30,7 @@ import org.apfloat.spi.Util;
  * These settings are intended for applets that are not allowed to create
  * disk files.
  *
- * @version 1.9.0
+ * @version 1.9.1
  * @author Mikko Tommila
  */
 
@@ -63,8 +63,8 @@ public class apfloat
 
         long maxMemoryBlockSize = Util.round23down(totalMemory / 5 * 4);
         int numberOfProcessors = Runtime.getRuntime().availableProcessors();
-        long memoryThreshold = maxMemoryBlockSize;
-        int blockSize = Util.round2down((int) Math.min(memoryThreshold, Integer.MAX_VALUE));
+        long memoryThreshold = Long.MAX_VALUE;
+        int blockSize = Util.round2down((int) Math.min(Math.max(maxMemoryBlockSize >> 10, 65536), Integer.MAX_VALUE));
 
         Object[][] contents =
         {

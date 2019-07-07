@@ -53,7 +53,7 @@ import static org.apfloat.internal.RawtypeRadixConstants.*;
  * This implementation doesn't necessarily store any extra digits for added
  * precision, so the last digit of any operation may be inaccurate.
  *
- * @version 1.9.0
+ * @version 1.9.1
  * @author Mikko Tommila
  */
 
@@ -589,9 +589,8 @@ public class RawtypeApfloatImpl
         // Default sign if not specified
         this.sign = 1;
 
-        // Allocate a maximum memory block, since we don't know how much data to expect
-        ApfloatContext ctx = ApfloatContext.getContext();
-        long initialSize = ctx.getMemoryThreshold() / sizeof(rawtype),
+        // Allocate a reasonable memory block, since we don't know how much data to expect
+        long initialSize = getBlockSize(),
              previousAllocatedSize = 0,
              allocatedSize = initialSize;
         this.dataStorage = createDataStorage(initialSize);
@@ -669,7 +668,7 @@ public class RawtypeApfloatImpl
                     {
                         if (actualSize == initialSize)
                         {
-                            // Maximum memory block size exceeded; prepare to allocate anything
+                            // Initial memory block size exceeded; prepare to allocate anything
                             DataStorage dataStorage = createDataStorage(Long.MAX_VALUE / sizeof(rawtype));
                             dataStorage.copyFrom(this.dataStorage, actualSize);
                             this.dataStorage = dataStorage;
