@@ -226,9 +226,14 @@ as an integer. Integers have infinite precision (see below). For example, inputt
 
 <p>
 The calculator can perform calculations to arbitrary precision (actually the precision
-is currently limited to about 226 million digits). By default, the precision of a
-floating-point number is the number of significant digits that you specify for it.
-For example:
+is currently limited to about 3.5&times;10<sup>15</sup> digits).
+</p>
+
+<h3>Arbitrary input precision</h3>
+
+<p>
+By default, the precision of a floating-point number is the number of significant digits
+that you specify for it. For example:
 </p>
 
 <p>
@@ -273,13 +278,34 @@ the calculation the calculator may appear unresponsive. For example, calculating
 
 <p>might take an hour or so, depending on your computer's performance.</p>
 
+<h3>Fixed input precision</h3>
+
+<p>
+You can change the input precision of numbers from the above default logic to a fixed number of digits
+by selecting the "Fixed" radio button in the "Input precision" radio button group and setting the desired
+number of digits in the input field.
+</p>
+
+<p>
+This way, if you e.g. set the input precision to 100 digits, even if you input a number like <code>0.5</code>
+it won't have only one digit of precision but always the fixed precision (e.g. 100 digits).
+</p>
+
+<p>
+Note that the fixed precision is set only for the numbers that are <i>input</i>, not for the numbers that are
+<i>output</i>. In practice, often the two precisions are the same, but not always. For example, if you set a
+fixed input precision of 20 digits and calculate <code>log(1.00001)</code>, the result won't have 20 digits
+of precision but only 15 digits of precision. This happens because of how the <code>log()</code> function
+behaves around <code>1</code>.
+</p>
+
 </div>
 
 <div class="footer">
 
 <p>Bug reports, questions and comments should be sent to <a href="mailto:Mikko.Tommila@apfloat.org">the author</a>.</p>
 
-<p>Last updated: July 6th, 2019</p>
+<p>Last updated: July 10th, 2019</p>
 
 </div>
 
