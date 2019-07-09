@@ -39,7 +39,7 @@ import java.util.ArrayList;
 /**
  * Graphical AWT elements for the calculator.
  *
- * @version 1.9.0
+ * @version 1.9.1
  * @author Mikko Tommila
  */
 
@@ -74,7 +74,7 @@ public class CalculatorAWT
 
         // Initial focus will be on the first element, which is added here although it's located at the bottom
         this.inputField = new TextField(null, 60);
-        constraints.gridy = 4;
+        constraints.gridy = 8;
         add(this.inputField, constraints);
 
         this.calculateButton = new Button("Calculate");
@@ -85,7 +85,7 @@ public class CalculatorAWT
         this.outputArea.setEditable(false);
         constraints.gridy = 0;
         constraints.gridwidth = 1;
-        constraints.gridheight = 4;
+        constraints.gridheight = 8;
         add(this.outputArea, constraints);
 
         this.formatLabel = new Label("Format:");
@@ -102,8 +102,25 @@ public class CalculatorAWT
         constraints.gridy = 2;
         add(this.fixed, constraints);
 
-        this.clearButton = new Button("Clear");
+        this.inputTypeLabel = new Label("Input precision:");
         constraints.gridy = 3;
+        add(this.inputTypeLabel, constraints);
+
+        this.inputPrecisionTypes = new CheckboxGroup();
+        this.inputPrecisionArbitrary = new Checkbox("Arbitrary", true, this.inputPrecisionTypes);
+        constraints.gridy = 4;
+        add(this.inputPrecisionArbitrary, constraints);
+
+        this.inputPrecisionFixed = new Checkbox("Fixed", false, this.inputPrecisionTypes);
+        constraints.gridy = 5;
+        add(this.inputPrecisionFixed, constraints);
+
+        this.inputPrecisionField = new TextField(null, 10);
+        constraints.gridy = 6;
+        add(this.inputPrecisionField, constraints);
+
+        this.clearButton = new Button("Clear");
+        constraints.gridy = 7;
         constraints.weighty = 1000;
         add(this.clearButton, constraints);
 
@@ -151,6 +168,24 @@ public class CalculatorAWT
 
     private void processInput()
     {
+        Long inputPrecision;
+        if (this.inputPrecisionArbitrary.getState())
+        {
+            inputPrecision = null;
+        }
+        else
+        {
+            try
+            {
+                inputPrecision = Long.parseLong(this.inputPrecisionField.getText());
+            }
+            catch (NumberFormatException nfe)
+            {
+                this.inputPrecisionField.requestFocus();
+                return;
+            }
+        }
+
         String text = this.inputField.getText();
         this.inputField.setText(null);
         this.out.println(text);
@@ -159,6 +194,7 @@ public class CalculatorAWT
         try
         {
             this.calculatorImpl.setFormat(this.fixed.getState());
+            this.calculatorImpl.setInputPrecision(inputPrecision);
             CalculatorParser calculatorParser = new CalculatorParser(new StringReader(text), this.out, this.calculatorImpl);
             calculatorParser.parseOneLine();
         }
@@ -212,6 +248,11 @@ public class CalculatorAWT
     private CheckboxGroup formats;
     private Checkbox floating;
     private Checkbox fixed;
+    private Label inputTypeLabel;
+    private CheckboxGroup inputPrecisionTypes;
+    private Checkbox inputPrecisionArbitrary;
+    private Checkbox inputPrecisionFixed;
+    private TextField inputPrecisionField;
     private Button clearButton;
     private TextField inputField;
     private Button calculateButton;

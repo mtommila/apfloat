@@ -32,7 +32,7 @@ import org.apfloat.AprationalMath;
 /**
  * Arbitrary precision calculator implementation.
  *
- * @version 1.9.0
+ * @version 1.9.1
  * @author Mikko Tommila
  */
 
@@ -696,7 +696,7 @@ public class ApfloatCalculatorImpl
     @Override
     public Number parseInteger(String value)
     {
-        Number x;
+        Apcomplex x;
         if (value.equalsIgnoreCase("i"))
         {
             x = Apcomplex.I;
@@ -709,13 +709,17 @@ public class ApfloatCalculatorImpl
         {
             x = new Apint(value);
         }
+        if (getInputPrecision() != null)
+        {
+            x = x.precision(getInputPrecision());
+        }
         return x;
     }
 
     @Override
     public Number parseDecimal(String value)
     {
-        Number x;
+        Apcomplex x;
         if (value.endsWith("i") || value.endsWith("I"))
         {
             x = new Apfloat(value.substring(0, value.length() - 1)).multiply(Apcomplex.I);
@@ -723,6 +727,10 @@ public class ApfloatCalculatorImpl
         else
         {
             x = new Apfloat(value);
+        }
+        if (getInputPrecision() != null)
+        {
+            x = x.precision(getInputPrecision());
         }
         return x;
     }

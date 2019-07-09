@@ -24,7 +24,7 @@ import java.util.List;
  * Calculator implementation interface.
  * The calculator parser uses this interface to perform the actual calculations.
  *
- * @version 1.2
+ * @version 1.9.1
  * @author Mikko Tommila
  */
 
@@ -199,6 +199,14 @@ public interface CalculatorImpl
      */
 
     public void setFormat(boolean pretty);
+
+    /**
+     * Set a fixed input precision.
+     *
+     * @param inputPrecision The precision if a fixed precision is used or <code>null</code> for arbitrary precision.
+     */
+
+    public void setInputPrecision(Long inputPrecision);
 
     /**
      * Convert a number to a String. The current formatting option is used.

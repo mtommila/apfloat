@@ -30,7 +30,7 @@ import java.util.Map;
  * Provides a storage for variables, and maps
  * the elementary operators to function calls.
  *
- * @version 1.9.0
+ * @version 1.9.1
  * @author Mikko Tommila
  */
 
@@ -122,6 +122,12 @@ public abstract class AbstractCalculatorImpl
         this.pretty = pretty;
     }
 
+    @Override
+    public void setInputPrecision(Long inputPrecision)
+    {
+        this.inputPrecision = inputPrecision;
+    }
+
     /**
      * Get the formatting option.
      *
@@ -131,6 +137,17 @@ public abstract class AbstractCalculatorImpl
     protected boolean getFormat()
     {
         return this.pretty;
+    }
+
+    /**
+     * Get the input precision.
+     *
+     * @return The input precision if a fixed precision is used or <code>null</code> for arbitrary precision.
+     */
+
+    protected Long getInputPrecision()
+    {
+        return this.inputPrecision;
     }
 
     private static List<Number> toList(Number x)
@@ -150,4 +167,5 @@ public abstract class AbstractCalculatorImpl
 
     private Map<String, Number> variables;
     private boolean pretty;
+    private Long inputPrecision;
 }
