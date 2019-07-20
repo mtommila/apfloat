@@ -199,8 +199,6 @@ public class PiAWT
         {
             if (isInputValid())
             {
-                PiAWT.this.statusArea.getText();    // FIXME: workaround for Java bug 9008097, to be removed
-                PiAWT.this.resultArea.getText();    // FIXME: workaround for Java bug 9008097, to be removed
                 PiAWT.this.statusArea.setText(null);
                 PiAWT.this.resultArea.setText(null);
                 PiAWT.this.goButton.setEnabled(false);
