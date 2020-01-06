@@ -1,6 +1,6 @@
 /*
  * Apfloat arbitrary precision arithmetic library
- * Copyright (C) 2002-2019  Mikko Tommila
+ * Copyright (C) 2002-2020  Mikko Tommila
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -97,7 +97,7 @@ public class CalculatorApplet
     {
         String lineSeparator = System.lineSeparator();
         return "Calculator applet" + lineSeparator +
-               "Written by Mikko Tommila 2011 - 2019" + lineSeparator +
+               "Written by Mikko Tommila 2011 - 2020" + lineSeparator +
                "Java version: "         + System.getProperty("java.version") + lineSeparator +
                "Java Virtual Machine: " + System.getProperty("java.vm.name");
     }
