@@ -28,7 +28,7 @@ import java.util.Map;
  * Calculator implementation with function support.
  * Provides a mapping mechanism for functions.
  *
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -162,6 +162,9 @@ public abstract class FunctionCalculatorImpl
         public Number log(Number x, Number y);
         public Number max(Number x, Number y);
         public Number min(Number x, Number y);
+        public Number nextAfter(Number x, Number y);
+        public Number nextDown(Number x);
+        public Number nextUp(Number x);
         public Number pi(Number x);
         public Number random(Number x);
         public Number randomGaussian(Number x);
@@ -227,6 +230,9 @@ public abstract class FunctionCalculatorImpl
         setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
         setFunction("max", fixedFunction("max", 2, (functions, arguments) -> functions.max(arguments.get(0), arguments.get(1))));
         setFunction("min", fixedFunction("min", 2, (functions, arguments) -> functions.min(arguments.get(0), arguments.get(1))));
+        setFunction("nextAfter", fixedFunction("nextAfter", 2, (functions, arguments) -> functions.nextAfter(arguments.get(0), arguments.get(1))));
+        setFunction("nextDown", fixedFunction("nextDown", 1, (functions, arguments) -> functions.nextDown(arguments.get(0))));
+        setFunction("nextUp", fixedFunction("nextUp", 1, (functions, arguments) -> functions.nextUp(arguments.get(0))));
         setFunction("pi", fixedFunction("pi", 1, (functions, arguments) -> functions.pi(arguments.get(0))));
         setFunction("random", fixedFunction("random", 1, (functions, arguments) -> functions.random(arguments.get(0))));
         setFunction("randomGaussian", fixedFunction("randomGaussian", 1, (functions, arguments) -> functions.randomGaussian(arguments.get(0))));

@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.1
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -256,6 +256,10 @@ public class CalculatorTest
         assertCalculation("1.1", "min(1.1, 1.2)");
         assertCalculation("1/4", "min(1/3, 1/4)");
         assertCalculation("1", "min(1, 2)");
+        assertCalculation("2", "nextAfter(1., 2)");
+        assertCalculation("2", "nextUp(1.)");
+        assertCalculation("1", "nextDown(2.)");
+        assertCalculation("2/3", "nextDown(2/3)");
         assertCalculation("1.57", "arg(1.00i)");
         assertCalculation("2-i", "conj(2+i)");
         assertCalculation("1", "imag(2+i)");
@@ -385,6 +389,15 @@ public class CalculatorTest
         assertCalculationFailure("min()");
         assertCalculationFailure("min(1)");
         assertCalculationFailure("min(1, 1, 1)");
+        assertCalculationFailure("nextAfter(1)");
+        assertCalculationFailure("nextAfter(1, 2, 3)");
+        assertCalculationFailure("nextAfter(1, i)");
+        assertCalculationFailure("nextUp()");
+        assertCalculationFailure("nextUp(1, 1)");
+        assertCalculationFailure("nextUp(i)");
+        assertCalculationFailure("nextDown()");
+        assertCalculationFailure("nextDown(2, 2)");
+        assertCalculationFailure("nextDown(i)");
         assertCalculationFailure("arg()");
         assertCalculationFailure("arg(1, 1)");
         assertCalculationFailure("conj()");

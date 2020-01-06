@@ -23,7 +23,7 @@ import java.math.RoundingMode;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -99,6 +99,9 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testMax"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testMin"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testNextAfter"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testNextDown"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testNextUp"));
 
         return suite;
     }
@@ -959,5 +962,29 @@ public class FixedPrecisionApfloatHelperTest
         result = helper.min(new Apfloat(2), new Apfloat(1));
         assertEquals("2,1 value", new Apfloat("1"), result);
         assertEquals("2,1 precision", 100, result.precision());
+    }
+
+    public static void testNextAfter()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(5);
+        Apfloat result = helper.nextAfter(new Apfloat(1), new Apfloat(2));
+        assertEquals("1,2 value", new Apfloat("1.0001"), result);
+        assertEquals("1,2 precision", 5, result.precision());
+    }
+
+    public static void testNextDown()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(5);
+        Apfloat result = helper.nextDown(new Apfloat(1));
+        assertEquals("1 value", new Apfloat("0.9999"), result);
+        assertEquals("1 precision", 5, result.precision());
+    }
+
+    public static void testNextUp()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(5);
+        Apfloat result = helper.nextUp(new Apfloat(1));
+        assertEquals("1 value", new Apfloat("1.0001"), result);
+        assertEquals("1 precision", 5, result.precision());
     }
 }

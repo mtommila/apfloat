@@ -32,7 +32,7 @@ import org.apfloat.AprationalMath;
 /**
  * Arbitrary precision calculator implementation.
  *
- * @version 1.9.1
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -249,6 +249,24 @@ public class ApfloatCalculatorImpl
         public Number min(Number x, Number y)
         {
             throw new IllegalArgumentException("Min can only be used with scalar values");
+        }
+
+        @Override
+        public Number nextAfter(Number x, Number y)
+        {
+            throw new IllegalArgumentException("Next after can only be used with scalar values");
+        }
+
+        @Override
+        public Number nextDown(Number x)
+        {
+            throw new IllegalArgumentException("Next down can only be used with scalar values");
+        }
+
+        @Override
+        public Number nextUp(Number x)
+        {
+            throw new IllegalArgumentException("Next up can only be used with scalar values");
         }
 
         @Override
@@ -529,6 +547,24 @@ public class ApfloatCalculatorImpl
         public Number min(Number x, Number y)
         {
             return ApfloatMath.min((Apfloat) x, (Apfloat) y);
+        }
+
+        @Override
+        public Number nextAfter(Number x, Number y)
+        {
+            return ApfloatMath.nextAfter((Apfloat) x, (Apfloat) y);
+        }
+
+        @Override
+        public Number nextDown(Number x)
+        {
+            return ApfloatMath.nextDown((Apfloat) x);
+        }
+
+        @Override
+        public Number nextUp(Number x)
+        {
+            return ApfloatMath.nextUp((Apfloat) x);
         }
 
         @Override

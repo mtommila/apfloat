@@ -125,6 +125,9 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>max(x, y)</code></td><td>Maximum of <code>x</code> and <code>y</code>. Both <code>x</code> and <code>y</code> must be real.</td></tr>
 <tr><td><code>min(x, y)</code></td><td>Minimum of <code>x</code> and <code>y</code>. Both <code>x</code> and <code>y</code> must be real.</td></tr>
 <tr><td><code>n(x, y)</code></td><td>The value of <code>x</code> to the precision of <code>y</code> digits. Parameter <code>y</code> must be an integer.</td></tr>
+<tr><td><code>nextAfter(x, y)</code></td><td>The number adjacent to <code>x</code> in the direction of <code>y</code>. Both <code>x</code> and <code>y</code> must be real.</td></tr>
+<tr><td><code>nextDown(x)</code></td><td>The adjacent value closer to negative infinity. Parameter <code>x</code> must be real.</td></tr>
+<tr><td><code>nextUp(x)</code></td><td>The adjacent value closer to positive infinity. Parameter <code>x</code> must be real.</td></tr>
 <tr><td><code>random(x)</code></td><td>Pseudorandom number with <code>x</code> digits and a uniform distribution from the range <code>[0, 1)</code>. Parameter <code>x</code> must be an integer.</td></tr>
 <tr><td><code>randomGaussian(x)</code></td><td>Pseudorandom number with <code>x</code> digits and a normal distribution with mean 0 and standard deviation 1. Parameter <code>x</code> must be an integer.</td></tr>
 <tr><td><code>root(x, y)</code></td><td>Equivalent to <code>x<sup>1/y</sup></code>. Parameter <code>y</code> must be an integer.</td></tr>
@@ -305,7 +308,7 @@ behaves around <code>1</code>.
 
 <p>Bug reports, questions and comments should be sent to <a href="mailto:Mikko.Tommila@apfloat.org">the author</a>.</p>
 
-<p>Last updated: July 10th, 2019</p>
+<p>Last updated: January 6th, 2020</p>
 
 </div>
 

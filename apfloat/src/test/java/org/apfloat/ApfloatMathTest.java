@@ -24,7 +24,7 @@ import junit.framework.TestSuite;
 import static java.math.RoundingMode.*;
 
 /**
- * @version 1.9.1
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -91,6 +91,9 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testMax"));
         suite.addTest(new ApfloatMathTest("testMin"));
+        suite.addTest(new ApfloatMathTest("testNextAfter"));
+        suite.addTest(new ApfloatMathTest("testNextUp"));
+        suite.addTest(new ApfloatMathTest("testNextDown"));
 
         return suite;
     }
@@ -1783,5 +1786,116 @@ public class ApfloatMathTest
         assertEquals("min of 1 and 1", new Apfloat(1), ApfloatMath.min(new Apfloat(1), new Apfloat(1)));
         assertEquals("min of 1 and 2", new Apfloat(1), ApfloatMath.min(new Apfloat(1), new Apfloat(2)));
         assertEquals("min of 2 and 1", new Apfloat(1), ApfloatMath.min(new Apfloat(2), new Apfloat(1)));
+    }
+
+    public static void testNextAfter()
+    {
+        assertEquals("next after 0 and 0", new Apfloat(0), ApfloatMath.nextAfter(new Apfloat(0), new Apfloat(0)));
+        assertEquals("next after 0 and 1", new Apfloat(0), ApfloatMath.nextAfter(new Apfloat(0), new Apfloat(1)));
+        assertEquals("next after 0 and -1", new Apfloat(0), ApfloatMath.nextAfter(new Apfloat(0), new Apfloat(-1)));
+        Apfloat a = ApfloatMath.nextAfter(new Apfloat("1"), new Apfloat(2));
+        assertEquals("next after 1. and 2", new Apfloat(2), a);
+        assertEquals("next after 1. and 2 precision", 1, a.precision());
+        a = ApfloatMath.nextAfter(new Apfloat("1"), new Apfloat(0));
+        assertEquals("next after 1. and 0", new Apfloat(0), a);
+        a = ApfloatMath.nextAfter(new Apfloat("-1"), new Apfloat(-2));
+        assertEquals("next after -1. and -2", new Apfloat(-2), a);
+        assertEquals("next after -1. and -2 precision", 1, a.precision());
+        a = ApfloatMath.nextAfter(new Apfloat("-1"), new Apfloat(-1));
+        assertEquals("next after -1. and -1", new Apfloat(-1), a);
+        assertEquals("next after -1. and -1 precision", 1, a.precision());
+        a = ApfloatMath.nextAfter(new Apfloat(1), new Apfloat(2));
+        assertEquals("next after 1 and 2", new Apfloat(1), a);
+        assertEquals("next after 1 and 2 precision", Apfloat.INFINITE, a.precision());
+    }
+
+    public static void testNextUp()
+    {
+        assertEquals("next up 0", new Apfloat(0), ApfloatMath.nextUp(new Apfloat(0)));
+        Apfloat a = ApfloatMath.nextUp(new Apfloat(1));
+        assertEquals("next up 1", new Apfloat(1), a);
+        assertEquals("next up 1 precision", Apfloat.INFINITE, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("1."));
+        assertEquals("next up 1.", new Apfloat(2), a);
+        assertEquals("next up 1. precision", 1, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("1.0"));
+        assertEquals("next up 1.0", new Apfloat("1.1"), a);
+        assertEquals("next up 1.0 precision", 2, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("0.9"));
+        assertEquals("next up 0.9", new Apfloat("1.0"), a);
+        assertEquals("next up 0.9 precision", 2, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("0.1"));
+        assertEquals("next up 0.1", new Apfloat("0.2"), a);
+        assertEquals("next up 0.1 precision", 1, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("10"));
+        assertEquals("next up 10.", new Apfloat("11"), a);
+        assertEquals("next up 10. precision", 2, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("1e1"));
+        assertEquals("next up 1e1", new Apfloat("2e1"), a);
+        assertEquals("next up 1e1 precision", 1, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("-1e1"));
+        assertEquals("next up -1e1", new Apfloat(0), a);
+        assertEquals("next up -1e1 precision", Apfloat.INFINITE, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("1.a", 2, 11));
+        assertEquals("next up 1.a", new Apfloat("2.0", 2, 11), a);
+        assertEquals("next up 1.a precision", 2, a.precision());
+        assertEquals("next up 1.a radix", 11, a.radix());
+        a = ApfloatMath.nextUp(new Apfloat("1e-9000000000000000000"));
+        assertEquals("next up 1e-9000000000000000000", new Apfloat("2e-9000000000000000000"), a);
+        assertEquals("next up 1e-9000000000000000000 precision", 1, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("1e-9000000000000000000", 9000000000000000000L));
+        assertEquals("next up 1e-9000000000000000000.000...", new Apfloat("1e-9000000000000000000"), a);
+        assertEquals("next up 1e-9000000000000000000.000... precision", 9000000000000000000L, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("1e-4611686018427387904", 4611686018427387904L));
+        assertEquals("next up 1e-4611686018427387904.000...", new Apfloat("1e-4611686018427387904"), a);
+        assertEquals("next up 1e-4611686018427387904.000... precision", 4611686018427387904L, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("1e-4611686018427387905", 4611686018427387904L));
+        assertEquals("next up 1e-4611686018427387905.000...", new Apfloat("1e-4611686018427387905"), a);
+        assertEquals("next up 1e-4611686018427387905.000... precision", 4611686018427387904L, a.precision());
+        a = ApfloatMath.nextUp(new Apfloat("1e-4611686018427387906", 4611686018427387904L));
+        assertEquals("next up 1e-4611686018427387906.000...", new Apfloat("1e-4611686018427387906"), a);
+        assertEquals("next up 1e-4611686018427387906.000... precision", 4611686018427387904L, a.precision());
+    }
+
+    public static void testNextDown()
+    {
+        assertEquals("next down 0", new Apfloat(0), ApfloatMath.nextDown(new Apfloat(0)));
+        Apfloat a = ApfloatMath.nextDown(new Apfloat(1));
+        assertEquals("next down 1", new Apfloat(1), a);
+        assertEquals("next down 1 precision", Apfloat.INFINITE, a.precision());
+        a = ApfloatMath.nextDown(new Apfloat("1"));
+        assertEquals("next down 1.", new Apfloat(0), a);
+        assertEquals("next down 1. precision", Apfloat.INFINITE, a.precision());
+        a = ApfloatMath.nextDown(new Apfloat("1.0"));
+        assertEquals("next down 1.0", new Apfloat("0.9"), a);
+        assertEquals("next down 1.0 precision", 1, a.precision());
+        a = ApfloatMath.nextDown(new Apfloat("1.1"));
+        assertEquals("next down 1.1", new Apfloat("1.0"), a);
+        assertEquals("next down 1.1 precision", 2, a.precision());
+        a = ApfloatMath.nextDown(new Apfloat("0.1"));
+        assertEquals("next down 0.1", new Apfloat(0), a);
+        assertEquals("next down 0.1 precision", Apfloat.INFINITE, a.precision());
+        a = ApfloatMath.nextDown(new Apfloat("0.2"));
+        assertEquals("next down 0.2", new Apfloat("0.1"), a);
+        assertEquals("next down 0.2 precision", 1, a.precision());
+        a = ApfloatMath.nextDown(new Apfloat("10"));
+        assertEquals("next down 10.", new Apfloat("9"), a);
+        assertEquals("next down 10. precision", 1, a.precision());
+        a = ApfloatMath.nextDown(new Apfloat("1e1"));
+        assertEquals("next down 1e1", new Apfloat(0), a);
+        assertEquals("next down 1e1 precision", Apfloat.INFINITE, a.precision());
+        a = ApfloatMath.nextDown(new Apfloat("-1e1"));
+        assertEquals("next down -1e1", new Apfloat("-2e1"), a);
+        assertEquals("next down -1e1 precision", 1, a.precision());
+        a = ApfloatMath.nextDown(new Apfloat("1.a", 2, 11));
+        assertEquals("next down 1.a", new Apfloat("1.9", 2, 11), a);
+        assertEquals("next down 1.a precision", 2, a.precision());
+        assertEquals("next down 1.a radix", 11, a.radix());
+        a = ApfloatMath.nextDown(new Apfloat("1e-9000000000000000000"));
+        assertEquals("next down 1e-9000000000000000000", new Apfloat(0), a);
+        assertEquals("next down 1e-9000000000000000000 precision", Apfloat.INFINITE, a.precision());
+        a = ApfloatMath.nextDown(new Apfloat("1e-9000000000000000000", 9000000000000000000L));
+        assertEquals("next down 1e-9000000000000000000.000", new Apfloat("1e-9000000000000000000"), a);
+        assertEquals("next down 1e-9000000000000000000.000 precision", 9000000000000000000L, a.precision());
     }
 }

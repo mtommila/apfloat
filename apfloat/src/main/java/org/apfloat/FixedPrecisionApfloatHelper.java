@@ -32,7 +32,7 @@ import org.apfloat.spi.Util;
  * <code>ApfloatMath.acos(Apfloat.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -879,7 +879,7 @@ public class FixedPrecisionApfloatHelper
     /**
      * Gamma function.
      *
-     * @param x The operand(s).
+     * @param x The operand.
      *
      * @return <code>&Gamma;(x)</code>.
      *
@@ -965,6 +965,8 @@ public class FixedPrecisionApfloatHelper
      * @param y The second operand.
      *
      * @return The maximum of <code>x</code> and <code>y</code>.
+     *
+     * @since 1.9.0
      */
 
     public Apfloat max(Apfloat x, Apfloat y)
@@ -980,12 +982,63 @@ public class FixedPrecisionApfloatHelper
      * @param y The second operand.
      *
      * @return The minimum of <code>x</code> and <code>y</code>.
+     *
+     * @since 1.9.0
      */
 
     public Apfloat min(Apfloat x, Apfloat y)
         throws ApfloatRuntimeException
     {
         return valueOf(ApfloatMath.min(setPrecision(x), setPrecision(y)));
+    }
+
+    /**
+     * The number adjacent to the first argument in the direction of the second argument.
+     *
+     * @param x The first operand.
+     * @param y The second operand.
+     *
+     * @return The number adjacent to the first argument in the direction of the second argument.
+     *
+     * @since 1.10.0
+     */
+
+    public Apfloat nextAfter(Apfloat x, Apfloat y)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.nextAfter(setPrecision(x), setPrecision(y)));
+    }
+
+    /**
+     * The adjacent value closer to negative infinity.
+     *
+     * @param x The operand.
+     *
+     * @return The adjacent value closer to negative infinity.
+     *
+     * @since 1.10.0
+     */
+
+    public Apfloat nextDown(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.nextDown(setPrecision(x)));
+    }
+
+    /**
+     * The adjacent value closer to positive infinity.
+     *
+     * @param x The operand.
+     *
+     * @return The adjacent value closer to positive infinity.
+     *
+     * @since 1.10.0
+     */
+
+    public Apfloat nextUp(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.nextUp(setPrecision(x)));
     }
 
     private Apfloat setPrecision(Apfloat x)
