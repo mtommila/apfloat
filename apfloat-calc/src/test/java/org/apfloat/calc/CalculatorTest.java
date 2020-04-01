@@ -148,7 +148,7 @@ public class CalculatorTest
         assertCalculation("5e-1", "5e-1");
         assertCalculation("5e-1", "5.e-1");
         assertCalculation("5e1", "5e1");
-        assertCalculation("6.66", "20.0/3.00");
+        assertCalculation("6.67", "20.0/3.00");
         assertCalculation("-1", "I*I");
         assertCalculation("3+2i", "2I+3");
         assertCalculation("3-2i", "i*-2+3");
@@ -199,7 +199,7 @@ public class CalculatorTest
         assertCalculation("9e-1", "frac(2.9)");
         assertCalculation("9/10", "frac(29/10)");
         assertCalculation("6", "gamma(4)");
-        assertCalculation("4.74294943677064514689542753376e1-3.27488916473624576880974867017e1i", "gamma(100.000000000000000000000000000+374.000000000000000000000000000i)");
+        assertCalculation("4.74294943677064514689542753377e1-3.27488916473624576880974867017e1i", "gamma(100.000000000000000000000000000+374.000000000000000000000000000i)");
         assertCalculation("2", "fmod(5, 3)");
         assertCalculation("5", "hypot(3, 4)");
         assertCalculation("5e-1", "hypot(0.3, 0.4)");
@@ -233,7 +233,7 @@ public class CalculatorTest
         assertCalculation("1.79e2", "toDegrees(3.14)");
         assertCalculation("1.57", "toRadians(90.0)");
         assertCalculation("3.14", "acos(-1.00)");
-        assertCalculation("1", "acosh(1.55)");
+        assertCalculation("1.01", "acosh(1.55)");
         assertCalculation("1.57", "asin(1.00)");
         assertCalculation("0", "asinh(0)");
         assertCalculation("7.85e-1", "atan(1.00)");
@@ -242,14 +242,14 @@ public class CalculatorTest
         assertCalculation("1", "cos(0)");
         assertCalculation("1.54", "cosh(1.00)");
         assertCalculation("8.414709848e-1", "sin(1.000000000)");
-        assertCalculation("1.17", "sinh(1.00)");
-        assertCalculation("1.55", "tan(1.00)");
+        assertCalculation("1.18", "sinh(1.00)");
+        assertCalculation("1.56", "tan(1.00)");
         assertCalculation("9.64e-1", "tanh(2.00)");
         assertCalculation("2.718", "exp(1.000)");
         assertCalculation("1.79+3.14i", "log(-6.00)");
         assertCalculation("1.58", "log(3.00, 2.00)");
-        assertCalculation("1.584", "log(3.000, 2)");
-        assertCalculation("1.5849", "log(3, 2.0000)");
+        assertCalculation("1.585", "log(3.000, 2)");
+        assertCalculation("1.585", "log(3, 2.0000)");
         assertCalculation("1.2", "max(1.1, 1.2)");
         assertCalculation("1/3", "max(1/3, 1/4)");
         assertCalculation("2", "max(1, 2)");
@@ -265,9 +265,9 @@ public class CalculatorTest
         assertCalculation("1", "imag(2+i)");
         assertCalculation("2", "real(2+i)");
         assertCalculation("2.47468", "agm(2.000000, 3.000000)");
-        assertCalculation("5.671e-1", "w(1.000)");
+        assertCalculation("5.672e-1", "w(1.000)");
         assertCalculation("-3.181e-1+1.3372i", "w(-1.0000)");
-        assertCalculation("-1.34284+5.24724i", "w(1.00000+i, 1)");
+        assertCalculation("-1.34285+5.24725i", "w(1.00000+i, 1)");
         assertCalculation("3", "gcd(15, 12)");
         assertCalculation("60", "lcm(15, 12)");
         assertCalculation("3.14159", "pi(6)");

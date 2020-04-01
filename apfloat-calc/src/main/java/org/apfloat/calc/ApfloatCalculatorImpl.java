@@ -28,6 +28,7 @@ import org.apfloat.Apint;
 import org.apfloat.ApintMath;
 import org.apfloat.Aprational;
 import org.apfloat.AprationalMath;
+import org.apfloat.spi.Util;
 
 /**
  * Arbitrary precision calculator implementation.
@@ -782,19 +783,21 @@ public class ApfloatCalculatorImpl
         }
         else if (x instanceof Apfloat)
         {
-            text = ((Apfloat) x).toString(pretty);
+            Apfloat a = (Apfloat) x;
+            a = ApfloatMath.round(a.precision(Util.ifFinite(a.precision(), a.precision() + 1)), a.precision(), RoundingMode.HALF_UP);
+            text = a.toString(pretty);
         }
         else
         {
             Apcomplex z = (Apcomplex) x;
-            String imag = (z.imag().equals(Apfloat.ONE) ? "" : (z.imag().negate().equals(Apfloat.ONE) ? "-" : z.imag().toString(pretty)));
+            String imag = (z.imag().equals(Apfloat.ONE) ? "" : (z.imag().negate().equals(Apfloat.ONE) ? "-" : format(z.imag())));
             if (z.real().signum() == 0)
             {
                 text = imag + "i";
             }
             else
             {
-                text = z.real().toString(pretty) + (z.imag().signum() < 0 ? "" : "+") + imag + "i";
+                text = format(z.real()) + (z.imag().signum() < 0 ? "" : "+") + imag + "i";
             }
         }
         return text;
