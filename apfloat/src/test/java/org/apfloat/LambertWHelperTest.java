@@ -22,7 +22,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.8.0
- * @version 1.8.1
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -317,6 +317,10 @@ public class LambertWHelperTest
 
         a = new Apcomplex("(-2,-1e1000000)").precision(50);
         assertEquals("(-2,-1e1000000)", new Apcomplex("(2.3025704434574047047199737372509488036925000475234e6,-1.5707956446026757185680399419191874646943170)"), LambertWHelper.w(a), new Apfloat("5e-43"));
+
+        // Test for issue #10
+        a = new Apcomplex(new Apfloat(1.0), new Apfloat(-6.123233995736766e-17));
+        assertEquals("(1.0, -6.123233995736766e-17)", new Apcomplex("(0.5671432904097839, 0)"), LambertWHelper.w(a), new Apfloat("5e-16"));
 
         try
         {

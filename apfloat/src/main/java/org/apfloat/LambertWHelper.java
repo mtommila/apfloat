@@ -26,7 +26,7 @@ import org.apfloat.spi.Util;
  * Helper class for Lambert W function.
  *
  * @since 1.8.0
- * @version 1.8.1
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -381,6 +381,7 @@ class LambertWHelper {
         throws ArithmeticException, ApfloatRuntimeException
     {
         Apcomplex logz = ApcomplexMath.log(z);
+        logz = ApfloatHelper.ensurePrecision(logz, z.precision());  // Issue #10: precision might be very low if z is close to 1, thanks to Axel Kramer for finding this bug
         if (this.k != 0)
         {
             // log(z) + 2*pi*k*i
