@@ -2224,7 +2224,7 @@ public class ApfloatMath
      * argument. If the precision of the argument is infinite, the
      * argument is returned.
      *
-     * @param start The starting value.
+     * @param x The starting value.
      *
      * @return The adjacent value closer to positive infinity.
      *
@@ -2242,7 +2242,7 @@ public class ApfloatMath
      * argument. If the precision of the argument is infinite, the
      * argument is returned.
      *
-     * @param start The starting value.
+     * @param x The starting value.
      *
      * @return The adjacent value closer to negative infinity.
      *

@@ -92,8 +92,8 @@ sizes, the apfloat relative performance with the same CPUs is as follows:<p>
 (Test was done with apfloat 1.1 using Sun's Java 5.0 server VM calculating
 3<sup>n</sup> and converting the result to decimal.)<p>
 
-This benchmark suggests that for small numbers &#150; less than roughly 200 decimal
-digits in size &#150; the <code>BigInteger</code> / <code>BigDecimal</code> classes
+This benchmark suggests that for small numbers &ndash; less than roughly 200 decimal
+digits in size &ndash; the <code>BigInteger</code> / <code>BigDecimal</code> classes
 are probably faster, even by an order of magnitude. Using apfloats is only beneficial
 for numbers that have at least a couple hundred digits, or of course if some
 mathematical functions are needed that are not available for <code>BigInteger</code>s
@@ -190,7 +190,7 @@ separating the different implementations behind a SPI, and applying all kinds
 of patterns everywhere). Thus, there are no different implementations for e.g.
 using a floating-point FFT instead of a NTT, as the SPI ({@link org.apfloat.spi})
 might suggest. However the default implementation does implement all the
-patterns suggested by the SPI &#150; in fact the SPI was designed for the
+patterns suggested by the SPI &ndash; in fact the SPI was designed for the
 default implementation.<p>
 
 The class diagram for an example apfloat that is stored on disk is shown below.

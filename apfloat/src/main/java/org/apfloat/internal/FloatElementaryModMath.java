@@ -53,7 +53,7 @@ package org.apfloat.internal;
  * maximum of 24 bits.<p>
  *
  * Overflow is not a problem, since a <code>double</code> can hold 53 bits
- * precisely in the mantissa &#150; more than doubly what a <code>float</code>
+ * precisely in the mantissa &ndash; more than doubly what a <code>float</code>
  * can. Note that multiplying by the inverse modulus is also trivial, when
  * the inverse modulus has more than twice accurate bits than what are in
  * each of the multiplicands. Since the modulus is assumed to be prime, there
