@@ -27,7 +27,7 @@ import static org.apfloat.ApintMath.scale;
  * Binary recursive GCD algorithm implementation.
  *
  * @since 1.6
- * @version 1.8.1
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -87,11 +87,11 @@ class GCDHelper
     {
         if (a.signum() == 0)
         {
-            return b;
+            return abs(b);  // Thanks to Marko Gaspersic for finding the bug in issue #11
         }
         if (b.signum() == 0)
         {
-            return a;
+            return abs(a);  // Thanks to Marko Gaspersic for finding the bug in issue #11
         }
 
         // First reduce the numbers so that they have roughly the same size, regardless of algorithm used

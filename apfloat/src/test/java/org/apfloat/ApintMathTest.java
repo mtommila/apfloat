@@ -24,7 +24,7 @@ import java.util.Map;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -336,6 +336,8 @@ public class ApintMathTest
         assertEquals("3 gcd 1", new Apint(1), ApintMath.gcd(new Apint(3), new Apint(1)));
         assertEquals("0 gcd 3", new Apint(3), ApintMath.gcd(new Apint(0), new Apint(3)));
         assertEquals("3 gcd 0", new Apint(3), ApintMath.gcd(new Apint(3), new Apint(0)));
+        assertEquals("0 gcd -3", new Apint(3), ApintMath.gcd(new Apint(0), new Apint(-3)));
+        assertEquals("-3 gcd 0", new Apint(3), ApintMath.gcd(new Apint(-3), new Apint(0)));
         assertEquals("0 gcd 0", new Apint(0), ApintMath.gcd(new Apint(0), new Apint(0)));
         Apint a = new Apfloat("1e100000").truncate().add(new Apint(1));
         assertEquals("1e100000+1 gcd 0", a, ApintMath.gcd(a, new Apint(0)));

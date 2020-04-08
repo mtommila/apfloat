@@ -1473,6 +1473,10 @@ public class ApfloatMathTest
         a = ApfloatMath.toRadians(new Apfloat(90, 50, 16));
         assertEquals("90 precision", 50, a.precision());
         assertEquals("90 value", new Apfloat("1.921fb54442d18469898cc51701b839a252049c1114cf98e80", 50, 16), a, new Apfloat(8, 1, 16).scale(-49));
+
+        a = ApfloatMath.toRadians(new Apfloat(0));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apfloat(0), a);
     }
 
     public static void testToDegrees()
@@ -1484,6 +1488,10 @@ public class ApfloatMathTest
         a = ApfloatMath.toDegrees(ApfloatMath.pi(50, 16).divide(new Apfloat(2, 50, 16)));
         assertEquals("90 precision", 50, a.precision());
         assertEquals("90 value", new Apfloat(90, 50, 16), a, new Apfloat(8, 1, 16).scale(-48));
+
+        a = ApfloatMath.toDegrees(new Apfloat(0));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apfloat(0), a);
     }
 
     public static void testProduct()

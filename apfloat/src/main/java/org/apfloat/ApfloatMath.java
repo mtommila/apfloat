@@ -1809,7 +1809,7 @@ public class ApfloatMath
     public static Apfloat toDegrees(Apfloat x)
         throws ApfloatRuntimeException
     {
-        return x.multiply(new Apfloat(180, Apfloat.INFINITE, x.radix())).divide(pi(x.precision(), x.radix()));
+        return x.signum() == 0 ? x : x.multiply(new Apfloat(180, Apfloat.INFINITE, x.radix())).divide(pi(x.precision(), x.radix()));    // Thanks to Marko Gaspersic for finding the bug in issue #11
     }
 
     /**
@@ -1825,7 +1825,7 @@ public class ApfloatMath
     public static Apfloat toRadians(Apfloat x)
         throws ApfloatRuntimeException
     {
-        return x.divide(new Apfloat(180, Apfloat.INFINITE, x.radix())).multiply(pi(x.precision(), x.radix()));
+        return x.signum() == 0 ? x : x.divide(new Apfloat(180, Apfloat.INFINITE, x.radix())).multiply(pi(x.precision(), x.radix()));    // Thanks to Marko Gaspersic for finding the bug in issue #11
     }
 
     /**
