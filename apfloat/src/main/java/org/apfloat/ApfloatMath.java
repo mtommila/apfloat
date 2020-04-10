@@ -762,8 +762,25 @@ public class ApfloatMath
             return Apfloat.ZERO;
         }
 
+        if (abs(a).equals(abs(b)))                      // Would not converge quadratically
+        {
+            return a.signum() == b.signum() ? a.precision(Math.min(a.precision(), b.precision())) : Apfloat.ZERO;
+        }
+
+        if (a.signum() != b.signum())
+        {
+            throw new ArithmeticException("Non-real result");
+        }
+
+        boolean negate = a.signum() < 0;                // Thanks to Marko Gaspersic for finding several bugs in issue #12
+        if (negate)
+        {
+            a = a.negate();
+            b = b.negate();
+        }
+
         long workingPrecision = Math.min(a.precision(), b.precision()),
-             targetPrecision = Math.max(a.precision(), b.precision());
+             targetPrecision = workingPrecision;
 
         if (workingPrecision == Apfloat.INFINITE)
         {
@@ -808,7 +825,8 @@ public class ApfloatMath
             precision *= 2;
         }
 
-        return a.add(b).divide(two).precision(targetPrecision);
+        Apfloat result = a.add(b).divide(two).precision(targetPrecision);
+        return (negate ? result.negate() : result);
     }
 
     /**

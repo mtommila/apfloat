@@ -21,7 +21,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -504,8 +504,93 @@ public class ApcomplexMathTest
 
         a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 1), new Apfloat(2, 1)),
                               new Apcomplex(new Apfloat(2, 1), new Apfloat(1, 1)));
-        assertEquals("(2,3), (4,5), prec 1, precision", 1, a.precision());
-        assertEquals("(2,3), (4,5), prec 1, value", new Apcomplex("(1,1)"), a, new Apfloat(1));
+        assertEquals("(1,2), (2,1), prec 1, precision", 1, a.precision());
+        assertEquals("(1,2), (2,1), prec 1, value", new Apcomplex("(1,1)"), a, new Apfloat(1));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 20), new Apfloat(2, 20)),
+                              new Apcomplex(new Apfloat(1, 10), new Apfloat(2, 10)));
+        assertEquals("(1,2), (1,2), prec 10-20, precision", 10, a.precision());
+        assertEquals("(1,2), (1,2), prec 10-20, value", new Apcomplex("(1,2)"), a);
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 10), new Apfloat(2, 10)),
+                              new Apcomplex(new Apfloat(3, 20), new Apfloat(4, 20)));
+        assertEquals("(1,2), (3,4), prec 10-20, precision", 10, a.precision());
+        assertEquals("(1,2), (3,4), prec 10-20, value", new Apcomplex("(1.877468123,2.921948542)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(-1, 10), new Apfloat(2, 10)),
+                              new Apcomplex(new Apfloat(3, 10), new Apfloat(4, 10)));
+        assertEquals("(-1,2), (3,4), prec 10, precision", 10, a.precision());
+        assertEquals("(-1,2), (3,4), prec 10, value", new Apcomplex("(0.657368426,3.174083677)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 10), new Apfloat(-2, 10)),
+                              new Apcomplex(new Apfloat(3, 10), new Apfloat(4, 10)));
+        assertEquals("(1,-2), (3,4), prec 10, precision", 10, a.precision());
+        assertEquals("(1,-2), (3,4), prec 10, value", new Apcomplex("(2.676463508,0.428671830)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(-1, 10), new Apfloat(-2, 10)),
+                              new Apcomplex(new Apfloat(3, 10), new Apfloat(4, 10)));
+        assertEquals("(-1,-2), (3,4), prec 10, precision", 10, a.precision());
+        assertEquals("(-1,-2), (3,4), prec 10, value", new Apcomplex("(2.051752596,-0.072458699)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 10), new Apfloat(2, 10)),
+                              new Apcomplex(new Apfloat(-3, 10), new Apfloat(4, 10)));
+        assertEquals("(1,2), (-3,4), prec 10, precision", 10, a.precision());
+        assertEquals("(1,2), (-3,4), prec 10, value", new Apcomplex("(-0.657368426,3.174083677)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(-1, 10), new Apfloat(2, 10)),
+                              new Apcomplex(new Apfloat(-3, 10), new Apfloat(4, 10)));
+        assertEquals("(-1,2), (-3,4), prec 10, precision", 10, a.precision());
+        assertEquals("(-1,2), (-3,4), prec 10, value", new Apcomplex("(-1.877468123,2.921948542)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 10), new Apfloat(-2, 10)),
+                              new Apcomplex(new Apfloat(-3, 10), new Apfloat(4, 10)));
+        assertEquals("(1,-2), (-3,4), prec 10, precision", 10, a.precision());
+        assertEquals("(1,-2), (-3,4), prec 10, value", new Apcomplex("(-2.051752596,-0.072458699)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(-1, 10), new Apfloat(-2, 10)),
+                              new Apcomplex(new Apfloat(-3, 10), new Apfloat(4, 10)));
+        assertEquals("(-1,-2), (-3,4), prec 10, precision", 10, a.precision());
+        assertEquals("(-1,-2), (-3,4), prec 10, value", new Apcomplex("(-2.676463508,0.428671830)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 10), new Apfloat(2, 10)),
+                              new Apcomplex(new Apfloat(3, 10), new Apfloat(-4, 10)));
+        assertEquals("(1,2), (3,-4), prec 10, precision", 10, a.precision());
+        assertEquals("(1,2), (3,-4), prec 10, value", new Apcomplex("(2.676463508,-0.428671830)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(-1, 10), new Apfloat(2, 10)),
+                              new Apcomplex(new Apfloat(3, 10), new Apfloat(-4, 10)));
+        assertEquals("(-1,2), (3,-4), prec 10, precision", 10, a.precision());
+        assertEquals("(-1,2), (3,-4), prec 10, value", new Apcomplex("(2.051752596,0.072458699)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 10), new Apfloat(-2, 10)),
+                              new Apcomplex(new Apfloat(3, 10), new Apfloat(-4, 10)));
+        assertEquals("(1,-2), (3,-4), prec 10, precision", 10, a.precision());
+        assertEquals("(1,-2), (3,-4), prec 10, value", new Apcomplex("(1.877468123,-2.921948542)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(-1, 10), new Apfloat(-2, 10)),
+                              new Apcomplex(new Apfloat(3, 10), new Apfloat(-4, 10)));
+        assertEquals("(-1,-2), (3,-4), prec 10, precision", 10, a.precision());
+        assertEquals("(-1,-2), (3,-4), prec 10, value", new Apcomplex("(0.657368426,-3.174083677)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 10), new Apfloat(2, 10)),
+                              new Apcomplex(new Apfloat(-3, 10), new Apfloat(-4, 10)));
+        assertEquals("(1,2), (-3,-4), prec 10, precision", 10, a.precision());
+        assertEquals("(1,2), (-3,-4), prec 10, value", new Apcomplex("(-2.051752596,0.072458699)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(-1, 10), new Apfloat(2, 10)),
+                              new Apcomplex(new Apfloat(-3, 10), new Apfloat(-4, 10)));
+        assertEquals("(-1,2), (-3,-4), prec 10, precision", 10, a.precision());
+        assertEquals("(-1,2), (-3,-4), prec 10, value", new Apcomplex("(-2.676463508,-0.428671830)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 10), new Apfloat(-2, 10)),
+                              new Apcomplex(new Apfloat(-3, 10), new Apfloat(-4, 10)));
+        assertEquals("(1,-2), (-3,-4), prec 10, precision", 10, a.precision());
+        assertEquals("(1,-2), (-3,-4), prec 10, value", new Apcomplex("(-0.657368426,-3.174083677)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(-1, 10), new Apfloat(-2, 10)),
+                              new Apcomplex(new Apfloat(-3, 10), new Apfloat(-4, 10)));
+        assertEquals("(-1,-2), (-3,-4), prec 10, precision", 10, a.precision());
+        assertEquals("(-1,-2), (-3,-4), prec 10, value", new Apcomplex("(-1.877468123,-2.921948542)"), a, new Apfloat("5e-9"));
 
         a = ApcomplexMath.agm(new Apcomplex(new Apfloat(0)), new Apcomplex(new Apfloat(1)));
         assertEquals("0, 1", new Apfloat(0), a);
@@ -519,10 +604,75 @@ public class ApcomplexMathTest
         a = ApcomplexMath.agm(new Apcomplex("(0,1)"), Apcomplex.ZERO);
         assertEquals("i, 0", new Apfloat(0), a);
 
+        a = ApcomplexMath.agm(new Apfloat(-1.2, 10), new Apfloat(1.2, 10));
+        assertEquals("-1.2, 1.2", new Apcomplex("0"), a);
+
+        a = ApcomplexMath.agm(new Apfloat(1.2, 10), new Apfloat(1.3, 10));
+        assertEquals("1.2, 1.3 precision", 10, a.precision());
+        assertEquals("1.2, 1.3 value", new Apcomplex("1.249499750"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apfloat(-1.2, 10), new Apfloat(-1.3, 10));
+        assertEquals("-1.2, -1.3 precision", 10, a.precision());
+        assertEquals("-1.2, -1.3 value", new Apcomplex("-1.249499750"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apfloat(-1.2, 10), new Apfloat(1.3, 10));
+        assertEquals("-1.2, 1.3 precision", 10, a.precision());
+        assertEquals("-1.2, 1.3 value", new Apcomplex("(0.1302427887,0.3818051176)"), a, new Apfloat("5e-10"));
+
+        a = ApcomplexMath.agm(new Apcomplex(Apfloat.ZERO, new Apfloat(1, 10)),
+                              new Apcomplex(Apfloat.ZERO, new Apfloat(2, 20)));
+        assertEquals("1i, 2i, prec 10-20, precision", 10, a.precision());
+        assertEquals("1i, 2i, prec 10-20, value", new Apcomplex("(0,1.456791031)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(Apfloat.ZERO, new Apfloat(-1, 20)),
+                              new Apcomplex(Apfloat.ZERO, new Apfloat(-2, 10)));
+        assertEquals("-1i, -2i, prec 10-20, precision", 10, a.precision());
+        assertEquals("-1i, -2i, prec 10-20, value", new Apcomplex("(0,-1.456791031)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.agm(new Apcomplex(Apfloat.ZERO, new Apfloat(1, 10)),
+                              new Apcomplex(Apfloat.ZERO, new Apfloat(1, 20)));
+        assertEquals("i, i, prec 10-20, precision", 10, a.precision());
+        assertEquals("i, i, prec 10-20, value", new Apcomplex("(0,1)"), a);
+
+        a = ApcomplexMath.agm(new Apcomplex(Apfloat.ZERO, new Apfloat(1, 20)),
+                              new Apcomplex(Apfloat.ZERO, new Apfloat(1, 10)));
+        assertEquals("i, i, prec 20-10, precision", 10, a.precision());
+        assertEquals("i, i, prec 20-10, value", new Apcomplex("(0,1)"), a);
+
+        a = ApcomplexMath.agm(new Apcomplex(Apfloat.ZERO, new Apfloat("1.000000000e10")),
+                              new Apcomplex(Apfloat.ZERO, new Apfloat("1.000000000e-10")));
+        assertEquals("1e10i, 1e-10i, precision", 10, a.precision());
+        assertEquals("1e10i, 1e-10i, value", new Apcomplex("(0,331126196.7)"), a, new Apfloat("0.5"));
+
+        a = ApcomplexMath.agm(new Apcomplex(Apfloat.ZERO, new Apfloat("1.0000000000000000000e10")),
+                              new Apcomplex(Apfloat.ZERO, new Apfloat("1.000000000e-10")));
+        assertEquals("1e10i, 1e-10i, precision 10-20", 10, a.precision());
+        assertEquals("1e10i, 1e-10i, value, precision 10-20", new Apcomplex("(0,331126196.7)"), a, new Apfloat("0.5"));
+
         a = ApcomplexMath.agm(new Apcomplex(new Apfloat(2, 3000), new Apfloat(3, 3000)),
                               new Apcomplex(new Apfloat(4, 3000), new Apfloat(5, 3000)));
         assertEquals("(2,3), (4,5) precision 3000", 3000, a.precision());
         assertEquals("(2,3), (4,5) value 3000", new Apcomplex("(2.91754426052578626369658307874660682979194828305647617871912508060400134698105951449712298950123128562803369971608115858308936341123999327021346691138617183468446010737173164686210382470722972480385653096197955212595851386829730542017554834566076203624841629838837088111415383201962147391676642929058049817171098768157845839182061367660407624587113859085064455636920311607051981588597485536439305356293985101422595947649995371848599841753952499159126778852783849867972638132163229170462055215173927004466893155827350288414651232923783719736757181961513759146922026017058314213265164777972026914569278829769779023008225176184785498679682429641281302037486486521259687322336298021286618318415793710998463135836032875126545906276937050649443180086254169974282261221943615961474499125922697942531490842409305517925243257370218203245337833554418491842015943129213675762563419679038299132768627013663409472496225092290179397048258626692981873018305739254012305825026785891069123260517749979272211407491610089628959933724343122851980961660974260652181762103017936720767079145977839033281414352440639482552619868342969287513114456467494665868602786146218358077830070649048842337372991463043085279850727992640025660675380800254896810540213312123740821486832723122822609732501981710205986586577716162755069535207170070281037295556916467016669193561963726840316454962656506333047304666768044715822566242597700196677480301214952192861971988192656671744822490672697455664407140156730909231414013792802915135066242203113030716533667093257173402035594912939322282536077875674712764039027921927395197312547828266486016427640712420409764391754400652438995087760043085410360352341590241567046208031995471079328190006083782215711890791023443288680631383270729328245112098679248986918816410547156221869838319395337641455545236996980728609516738564908590670336904562106389447988845227636370340561649189020526564471128076963110284359493508944882615621434470215215697096025821872457004381345157727508034579204708799556234634004705842562329299420551585588232322265609498279231361039397683526002176899737997607538350921282494819816685120478868231090842595792591353576389181664605419273590632452310701393757926374438862479436554656101458985479249471472107699248705141561173712162097645050207626741418394746768164124670747173806773839597678289144754574734901040652010616194325729394023497262795568290483391326776172203388816276143223100903063086097060671378537506215702097576424605396225829921915151624090646742547987876299045332164101681114965791902981323550059875554202160881410486800946958238200767776068800905156439104937878902630802229026038558376052682025048018360113971819953917492535105743883667564195635498783445254231425089663831105369011694312663969400247121569845918627337905950490146786267588981716145101263064118596121741830302772515682282427194397934820742615189129211740981191425117917799767751060222539769267812947175474295243812595876964356919305482207550832587361273920159765406099319385252761850724428775715,3.93911304669283686940834842507119979928487342306442535339638456136702157392669015607231198530090140243949188290043429681557054024497519997714555187094318119446656556235082719330646782894759630438224022549553159147839217538004290128346087094038704007635212437747396661652367449483064282116458523952847341804070956765337261810846795283243730734590753449997447035281029295162928561049306004649118029649069256105503936796313664026977955159526283914846577547135764309851062923566730093681247668624871510666978126929508258099172045717391063101370239395419225705660926248842628084124376628056009064933668417324363913211419327954479103622167143221861590472148278185932670718814750047414193099895865869943477950105875157760091959759003434005966714649800873204258385294726671809906947015516595685711589454524234633598253319737514012268529650713739946676006981825396015444889386661029474872321206464973652372992130362462446398118626962435894308122356649646871349298187623711624971863476352762452221531183277320146100515317455662186611756111268760306975797019057296312184964013993084636666054078035009036249564083908773875800800166359587268483598525125806091226592778234809046332031551598992262638508581536585324305299591750302881483402739828364598398277730258197204969256091757799115119279623658639479367023067719518871651401707913451169051716348607113140192819952450181861796320610091212802617662333291955214929303347143495395840187888757139608191824192807233083558513911809059740349333087862760616275786722727908487366481453538363428895942223277133414813782540149625894704335654023680217631160052319030202630292942814891747431353863732117821363156846713863280617323679888536660636763839907093252497571827138167886149907772607307351368861795816765379220178268412856307579450653416268935107888700416468284108022921355702851498202881502762305540563232079766276637149902654506931054207254907043868092497807310230653405754717803877751418950428686594560372055456167827239476527970744301094268551441890020407558514144268177782841988620322994163840112592854907705270880910991400937352699877335762302999419793473129331441989800560461441763701563331940266726598599293771986578531341036022144096025745155626608882782484494825814636845245413589466189311555767748030432015023292022231992210329782566184971816685421724834819675158353561452463411398141131533561617853176875463475127794571247641075930817108546879442258495905380115608124074575312893808818647331957099686532636924786401829250331323516175691344769031519765960343036596327787933330699717223235941567369627380749831452883229157945444590678814697824995710977262891494397099520222876736838798922496231008700179679987264466109787010313153842130194074782194326215333849204597293821883655534230029263086716683924996834814477422800580002681248614408636157256745534681222987070933199461219239318856812325932811189024056557789637085405421384060709459119263501223615502437218473705700310779175993531915209583296165864005423678994006648697891946757802094451363373198938559)"), a, new Apfloat("5e-2999"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(-2, 30), new Apfloat("1.000000000e-40")),
+                              new Apfloat(1));
+        assertEquals("(-2,1e-40), (1,0) precision", 30, a.precision());
+        assertEquals("(-2,1e-40), (1,0) value", new Apcomplex("(-0.422966208408801687364597406061,0.661266183461804764467239865563)"), a, new Apfloat("5e-30"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(-2, 30), new Apfloat("-1.000000000e-40")),
+                              new Apfloat(1));
+        assertEquals("(-2,-1e-40), (1,0) precision", 30, a.precision());
+        assertEquals("(-2,-1e-40), (1,0) value", new Apcomplex("(-0.422966208408801687364597406061,-0.661266183461804764467239865563)"), a, new Apfloat("5e-30"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(-1, 30), new Apfloat(1, 30)),
+                              new Apcomplex(new Apfloat(-1, 30), new Apfloat(-1, 30)));
+        assertEquals("(-1,1), (-1,-1) precision", 30, a.precision());
+        assertEquals("(-1,1), (-1,-1) value", new Apcomplex("-1.198140234735592207439922492280"), a, new Apfloat("5e-29"));
+
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 30), new Apfloat(1, 30)),
+                              new Apcomplex(new Apfloat(1, 30), new Apfloat(-1, 30)));
+        assertEquals("(1,1), (1,-1) precision", 30, a.precision());
+        assertEquals("(1,1), (1,-1) value", new Apcomplex("1.198140234735592207439922492280"), a, new Apfloat("5e-29"));
 
         try
         {

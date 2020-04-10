@@ -655,8 +655,25 @@ public class ApcomplexMath
             return Apcomplex.ZERO;
         }
 
+        if (a.real().signum() == b.real().signum() &&
+            a.imag().signum() == 0 &&
+            b.imag().signum() == 0)
+        {
+            return ApfloatMath.agm(a.real(), b.real());
+        }
+
+        if (a.equals(b))                                              // Thanks to Marko Gaspersic for finding several bugs in issue #12
+        {
+            return a.precision(Math.min(a.precision(), b.precision()));
+        }
+
+        if (a.equals(b.negate()))                                     // Would not converge quadratically
+        {
+            return Apcomplex.ZERO;
+        }
+
         long workingPrecision = Math.min(a.precision(), b.precision()),
-             targetPrecision = Math.max(a.precision(), b.precision());
+             targetPrecision = workingPrecision;
 
         if (workingPrecision == Apfloat.INFINITE)
         {
@@ -677,7 +694,7 @@ public class ApcomplexMath
         while (precision < CONVERGING && precision < halfWorkingPrecision)
         {
             Apcomplex t = a.add(b).divide(two);
-            b = sqrt(a.multiply(b));
+            b = rightSqrt(a.multiply(b), t);
             a = t;
 
             // Conserve precision in case of accumulating round-off errors
@@ -691,7 +708,7 @@ public class ApcomplexMath
         while (precision <= halfWorkingPrecision)
         {
             Apcomplex t = a.add(b).divide(two);
-            b = sqrt(a.multiply(b));
+            b = rightSqrt(a.multiply(b), t);
             a = t;
 
             // Conserve precision in case of accumulating round-off errors
@@ -702,6 +719,31 @@ public class ApcomplexMath
         }
 
         return ApfloatHelper.setPrecision(a.add(b).divide(two), targetPrecision);
+    }
+
+    private static Apcomplex rightSqrt(Apcomplex z, Apcomplex reference)
+    {
+        // See  D. A. Cox, "The Arithmetic-Geometric Mean of Gauss", L'Enseignement Mathematique, Vol. 30, 1984, pp. 275-330
+        // or for example Tomack Gilmore's paper about it: https://homepage.univie.ac.at/tomack.gilmore/papers/Agm.pdf
+        // 1. norm(a1 - b1) <= norm(a1 + b1)
+        // 2. If norm(a1 - b1) = norm(a1 + b1) then imag(b1 / a1) > 0
+        Apcomplex result = sqrt(z);
+
+        // First compare norms with low precision
+        int doublePrecision = ApfloatHelper.getDoublePrecision(z.radix());
+        Apcomplex approxResult = result.precision(doublePrecision);
+        Apcomplex approxReference = reference.precision(doublePrecision);
+        int comparison = norm(approxReference.subtract(approxResult)).compareTo(norm(approxReference.add(approxResult)));
+        if (comparison == 0)
+        {
+            // Full precision comparison as they are equal to low precision
+            comparison = norm(reference.subtract(result)).compareTo(norm(reference.add(result)));
+        }
+        if (comparison > 0 || comparison == 0 && result.divide(reference).imag().signum() <= 0)
+        {
+            result = result.negate();
+        }
+        return result;
     }
 
     /**
