@@ -38,7 +38,7 @@ import static java.util.FormattableFlags.*;
  * @see Apfloat
  * @see ApcomplexMath
  *
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -801,13 +801,34 @@ public class Apcomplex
         else if (obj instanceof Apcomplex)
         {
             Apcomplex that = (Apcomplex) obj;
-            return real().equals(that.real()) &&
+            return test(that) &&
+                   real().equals(that.real()) &&
                    imag().equals(that.imag());
         }
         else
         {
             return false;
         }
+    }
+
+    /**
+     * Tests two apcomplex numbers for equality.
+     * Returns <code>false</code> if the numbers are definitely known to be not equal.
+     * If <code>true</code> is returned, equality is unknown and should be verified by
+     * calling {@link #equals(Object)}.
+     * This method is usually significantly faster than calling <code>equals(Object)</code>.
+     *
+     * @param z The number to test against.
+     *
+     * @return <code>false</code> if the numbers are definitely not equal, <code>true</code> if unknown.
+     *
+     * @since 1.10.0
+     */
+
+    public boolean test(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return real().test(z.real()) && imag().test(z.imag());
     }
 
     /**

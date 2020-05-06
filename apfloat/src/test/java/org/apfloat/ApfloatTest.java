@@ -35,7 +35,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -87,6 +87,7 @@ public class ApfloatTest
         suite.addTest(new ApfloatTest("testEqualDigits"));
         suite.addTest(new ApfloatTest("testCompareTo"));
         suite.addTest(new ApfloatTest("testEquals"));
+        suite.addTest(new ApfloatTest("testTest"));
         suite.addTest(new ApfloatTest("testHashCode"));
         suite.addTest(new ApfloatTest("testToString"));
         suite.addTest(new ApfloatTest("testWriteTo"));
@@ -1022,6 +1023,46 @@ public class ApfloatTest
         assertEquals("0 == 0 different implementations", true, a.equals(new Apfloat(0)));
         assertEquals("1 == 1 different implementations", true, b.equals(new Apfloat(1)));
         ApfloatContext.removeThreadContext();
+    }
+
+    public static void testTest()
+    {
+        Apfloat a = new Apfloat(0),
+                b = new Apfloat(0);
+        assertTrue("0 test 0", a.test(b));
+        a = new Apfloat(0);
+        b = new Apfloat(1);
+        assertFalse("0 test 1", a.test(b));
+        a = new Apfloat(1);
+        b = new Apfloat(0);
+        assertFalse("1 test 0", a.test(b));
+        a = new Apfloat(1);
+        b = new Apfloat(1);
+        assertTrue("1 test 1", a.test(b));
+        a = new Apfloat(1);
+        b = new Apfloat(-1);
+        assertFalse("1 test -1", a.test(b));
+        a = new Apfloat(-1);
+        b = new Apfloat(1);
+        assertFalse("-1 test 1", a.test(b));
+        a = new Apfloat(1);
+        b = new Apfloat(10);
+        assertFalse("1 test 10", a.test(b));
+        a = new Apfloat(10);
+        b = new Apfloat(1);
+        assertFalse("10 test 1", a.test(b));
+        a = new Apfloat(10);
+        b = new Apfloat(11);
+        assertFalse("10 test 11", a.test(b));
+        a = new Apfloat(11);
+        b = new Apfloat(10);
+        assertFalse("11 test 10", a.test(b));
+        a = new Apfloat(1, 1);
+        b = new Apfloat(1, 2);
+        assertTrue("1 test 1, prec", a.test(b));
+        a = new Apfloat(1, 1, 10);
+        b = new Apfloat(1, 1, 11);
+        assertTrue("1 test 1, radix", a.test(b));
     }
 
     public static void testHashCode()

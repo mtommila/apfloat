@@ -33,7 +33,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -72,6 +72,7 @@ public class ApcomplexTest
         suite.addTest(new ApcomplexTest("testNumberValuesExact"));
         suite.addTest(new ApcomplexTest("testEqualDigits"));
         suite.addTest(new ApcomplexTest("testEquals"));
+        suite.addTest(new ApcomplexTest("testTest"));
         suite.addTest(new ApcomplexTest("testHashCode"));
         suite.addTest(new ApcomplexTest("testToString"));
         suite.addTest(new ApcomplexTest("testWriteTo"));
@@ -648,12 +649,43 @@ public class ApcomplexTest
         a = new Apcomplex("(5,6)");
         b = new Apcomplex("(5,5)");
         assertEquals("(5,6) == (5,5)", false, a.equals(b));
+        a = new Apcomplex("(5,5)");
+        b = new Apcomplex("(6,5)");
+        assertEquals("(5,5) == (6,5)", false, a.equals(b));
+        a = new Apcomplex("(6,5)");
+        b = new Apcomplex("(5,5)");
+        assertEquals("(6,5) == (5,5)", false, a.equals(b));
+        a = new Apcomplex("(5,-5)");
+        b = new Apcomplex("(5,5)");
+        assertEquals("(5,-5) == (5,5)", false, a.equals(b));
+        a = new Apcomplex("(5,5)");
+        b = new Apcomplex("(5,-5)");
+        assertEquals("(5,5) == (5,-5)", false, a.equals(b));
+        a = new Apcomplex("(-5,5)");
+        b = new Apcomplex("(5,5)");
+        assertEquals("(-5,5) == (5,5)", false, a.equals(b));
+        a = new Apcomplex("(5,5)");
+        b = new Apcomplex("(-5,5)");
+        assertEquals("(5,5) == (-5,5)", false, a.equals(b));
         a = new Apcomplex("(6,6)");
         b = new Apcomplex("(6,6)");
         assertEquals("(6,6) == (6,6)", true, a.equals(b));
         assertEquals("a == a", true, a.equals(a));
 
         assertEquals("(6,6) == something else", false, a.equals("bogus"));
+    }
+
+    public static void testTest()
+    {
+        Apcomplex a = new Apcomplex("0"),
+                  b = new Apcomplex("0");
+        assertTrue("0 test 0", a.test(b));
+        a = new Apcomplex("0");
+        b = new Apcomplex("1");
+        assertFalse("0 test 1", a.test(b));
+        a = new Apcomplex("(0,0)");
+        b = new Apcomplex("(0,1)");
+        assertFalse("0 test i", a.test(b));
     }
 
     public static void testHashCode()

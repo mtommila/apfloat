@@ -33,7 +33,7 @@ import java.util.IllegalFormatException;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -82,6 +82,7 @@ public class ApintTest
         suite.addTest(new ApintTest("testToBigInteger"));
         suite.addTest(new ApintTest("testCompareTo"));
         suite.addTest(new ApintTest("testEquals"));
+        suite.addTest(new ApintTest("testTest"));
         suite.addTest(new ApintTest("testHashCode"));
         suite.addTest(new ApintTest("testToString"));
         suite.addTest(new ApintTest("testWriteTo"));
@@ -544,6 +545,44 @@ public class ApintTest
         obj2 = new Apfloat("3");
         assertEquals("obj 3 == float 3", true, obj1.equals(obj2));
         assertEquals("obj float 3 == 3", true, obj2.equals(obj1));
+    }
+
+    public static void testTest()
+    {
+        Apint a = new Apint(0),
+              b = new Apint(0);
+        assertTrue("0 test 0", a.test(b));
+        a = new Apint(0);
+        b = new Apint(1);
+        assertFalse("0 test 1", a.test(b));
+        a = new Apint(-1);
+        b = new Apint(1);
+        assertFalse("-1 test 1", a.test(b));
+
+        a = new Apint(2);
+        Aprational r = new Aprational("2");
+        assertTrue("2 test 2, type", a.test(r));
+        assertTrue("2 test 2, type reverse", r.test(a));
+
+        a = new Apint(2);
+        r = new Aprational("2/3");
+        assertTrue("2 test 2/3, type", a.test(r));
+        assertTrue("2/3 test 2, type", r.test(a));
+
+        a = new Apint(2);
+        r = new Aprational("2/13");
+        assertFalse("2 test 2/13, type", a.test(r));
+        assertFalse("2/13 test 2, type", r.test(a));
+
+        a = new Apint(2);
+        Apfloat f = new Apfloat(2);
+        assertTrue("2 test 2, type", a.test(f));
+        assertTrue("2 test 2, type reverse", f.test(a));
+
+        a = new Apint(2);
+        f = new Apfloat(0.6);
+        assertFalse("2 test 0.6, type", a.test(f));
+        assertFalse("0.6 test 2, type", f.test(a));
     }
 
     public static void testHashCode()

@@ -36,7 +36,7 @@ import static org.apfloat.spi.RadixConstants.*;
  * @see Apint
  * @see AprationalMath
  *
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -797,6 +797,39 @@ public class Aprational
         else
         {
             return super.equals(obj);
+        }
+    }
+
+    /**
+     * Tests two aprational numbers for equality.
+     * Returns <code>false</code> if the numbers are definitely known to be not equal.
+     * If <code>true</code> is returned, equality is unknown and should be verified by
+     * calling {@link #equals(Object)}.
+     * This method is usually significantly faster than calling <code>equals(Object)</code>.
+     *
+     * @param x The number to test against.
+     *
+     * @return <code>false</code> if the numbers are definitely not equal, <code>true</code> if unknown.
+     *
+     * @since 1.10.0
+     */
+
+    public boolean test(Aprational x)
+    {
+        return numerator().test(x.numerator()) && denominator().test(x.denominator());
+    }
+
+    @Override
+    public boolean test(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        if (x instanceof Aprational)
+        {
+            return test((Aprational) x);
+        }
+        else
+        {
+            return !isInteger() || numerator().test(x);
         }
     }
 

@@ -33,7 +33,7 @@ import java.util.IllegalFormatException;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -82,6 +82,7 @@ public class AprationalTest
         suite.addTest(new AprationalTest("testEqualDigits"));
         suite.addTest(new AprationalTest("testCompareTo"));
         suite.addTest(new AprationalTest("testEquals"));
+        suite.addTest(new AprationalTest("testTest"));
         suite.addTest(new AprationalTest("testHashCode"));
         suite.addTest(new AprationalTest("testToString"));
         suite.addTest(new AprationalTest("testWriteTo"));
@@ -766,6 +767,38 @@ public class AprationalTest
         obj2 = new Apfloat("0.3333333333");
         assertEquals("obj 1/3 == 0.3333333333", false, obj1.equals(obj2));
         assertEquals("obj 0.3333333333 == 1/3", false, obj2.equals(obj1));
+    }
+
+    public static void testTest()
+    {
+        Aprational a = new Aprational("0"),
+                   b = new Aprational("0");
+        assertTrue("0 test 0", a.test(b));
+        a = new Aprational("0");
+        b = new Aprational("1");
+        assertFalse("0 test 1", a.test(b));
+        a = new Aprational("-1");
+        b = new Aprational("1");
+        assertFalse("-1 test 1", a.test(b));
+        a = new Aprational("1");
+        b = new Aprational("1/10");
+        assertFalse("1 test 1/10", a.test(b));
+        a = new Aprational("2", 10);
+        b = new Aprational("2", 11);
+        assertTrue("2 test 2, radix", a.test(b));
+
+        a = new Aprational("2");
+        Apfloat f = new Apfloat(2);
+        assertTrue("2 test 2, type", a.test(f));
+        assertTrue("2 test 2, type reverse", f.test(a));
+        a = new Aprational("2/3");
+        f = new Apfloat(0.07);
+        assertTrue("2/3 test 0.07, type", a.test(f));
+        assertTrue("0.07 test 2/3, type", f.test(a));
+        a = new Aprational("3");
+        f = new Apfloat(0.07);
+        assertFalse("3 test 0.07, type", a.test(f));
+        assertFalse("0.07 test 3, type", f.test(a));
     }
 
     public static void testHashCode()
