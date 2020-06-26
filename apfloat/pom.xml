@@ -197,6 +197,17 @@
             <exclude>*</exclude>
           </excludes>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-testCompile</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <release>9</release>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -264,7 +275,7 @@
                 <configuration>
                   <target>
                     <mkdir dir="${java9.build.outputDirectory}" />
-                    <javac srcdir="${java9.build.sourceDirectory}" destdir="${java9.build.outputDirectory}" classpath="${project.build.outputDirectory}" includeantruntime="false" source="9" target="9" />
+                    <javac srcdir="${java9.build.sourceDirectory}" destdir="${java9.build.outputDirectory}" classpath="${project.build.outputDirectory}" includeantruntime="false" release="9" />
                   </target>
                 </configuration>
               </execution>
