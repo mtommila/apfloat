@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
-import org.apfloat.internal.RawtypeModMath;
 import static org.apfloat.internal.RawtypeModConstants.*;
 
 /**
