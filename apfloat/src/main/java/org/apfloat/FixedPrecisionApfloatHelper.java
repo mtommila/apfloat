@@ -877,6 +877,36 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
+     * &gamma;, the Euler-Mascheroni constant.
+     *
+     * @return <code>&gamma;</code>.
+     *
+     * @since 1.10.0
+     */
+
+    public Apfloat euler()
+        throws ApfloatRuntimeException
+    {
+        return ApfloatMath.euler(precision());
+    }
+
+    /**
+     * &gamma;, the Euler-Mascheroni constant.
+     *
+     * @param radix The radix of the result.
+     *
+     * @return <code>&gamma;</code>.
+     *
+     * @exception java.lang.NumberFormatException If the radix is invalid.
+     */
+
+    public Apfloat euler(int radix)
+        throws NumberFormatException, ApfloatRuntimeException
+    {
+        return ApfloatMath.euler(precision(), radix);
+    }
+
+    /**
      * Gamma function.
      *
      * @param x The operand.

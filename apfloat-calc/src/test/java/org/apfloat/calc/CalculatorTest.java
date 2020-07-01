@@ -245,6 +245,7 @@ public class CalculatorTest
         assertCalculation("1.18", "sinh(1.00)");
         assertCalculation("1.56", "tan(1.00)");
         assertCalculation("9.64e-1", "tanh(2.00)");
+        assertCalculation("5.772e-1", "euler(4)");
         assertCalculation("2.718", "exp(1.000)");
         assertCalculation("1.79+3.14i", "log(-6.00)");
         assertCalculation("1.58", "log(3.00, 2.00)");
@@ -379,6 +380,10 @@ public class CalculatorTest
         assertCalculationFailure("tan(1, 1)");
         assertCalculationFailure("tanh()");
         assertCalculationFailure("tanh(1, 1)");
+        assertCalculationFailure("euler()");
+        assertCalculationFailure("euler(0.5)");
+        assertCalculationFailure("euler(i)");
+        assertCalculationFailure("euler(1, 1)");
         assertCalculationFailure("exp()");
         assertCalculationFailure("exp(1, 1)");
         assertCalculationFailure("log()");

@@ -194,6 +194,17 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number euler(Number x)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Euler can only be used with a valid integer argument");
+            }
+            long n = x.longValue();
+            return ApfloatMath.euler(n);
+        }
+
+        @Override
         public Number exp(Number x)
         {
             return ApcomplexMath.exp((Apcomplex) x);

@@ -2034,6 +2034,76 @@ public class ApfloatMath
     }
 
     /**
+     * Calculates &gamma;, the Euler-Mascheroni constant. Uses default radix.
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     *
+     * @param precision Number of digits of &gamma; to calculate.
+     *
+     * @return &gamma; accurate to <code>precision</code> digits, in the default radix.
+     *
+     * @exception java.lang.NumberFormatException If the default radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     *
+     * @since 1.10.0
+     */
+
+    public static Apfloat euler(long precision)
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return euler(precision, radix);
+    }
+
+    /**
+     * Calculates &gamma;, the Euler-Mascheroni constant.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     *
+     * @param precision Number of digits of &gamma; to calculate.
+     * @param radix The radix in which the number should be presented.
+     *
+     * @return &gamma; accurate to <code>precision</code> digits, in base <code>radix</code>.
+     *
+     * @exception java.lang.NumberFormatException If the radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     *
+     * @since 1.10.0
+     */
+
+    public static Apfloat euler(long precision, int radix)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
+        // See https://www.ams.org/journals/mcom/1980-34-149/S0025-5718-1980-0551307-4/S0025-5718-1980-0551307-4.pdf
+        // Mathematics of Computation, volume 34, number 149, January 1980, pages 305-312
+        // "Some new algorithms for high-precision computation of Euler's constant" by Richard P. Brent and Edwin M. McMillan
+        // Note that a faster algorithm using binary splitting would be possible but isn't implemented here. After all this is mostly just needed with the gamma functions, which are slow anyways.
+        long n = (long) (Apfloat.EXTRA_PRECISION + 0.25 * Math.log(radix) * precision),
+             workingPrecision = ApfloatHelper.extendPrecision(precision);
+        Apfloat a = log(new Apfloat(n, workingPrecision, radix)).negate(),
+                b = new Apfloat(1, workingPrecision, radix),
+                u = a,
+                v = b,
+                ou,
+                ov;
+        Apint one = new Apint(1, radix),
+              k = one,
+              n2 = ApintMath.pow(new Apint(n, radix), 2);
+        do
+        {
+            ou = u;
+            ov = v;
+            b = b.multiply(n2).divide(pow(k, 2));
+            a = a.multiply(n2).divide(k).add(b).divide(k);
+            u = u.add(a);
+            v = v.add(b);
+            k = k.add(one);
+        } while (u.equalDigits(ou) < precision || v.equalDigits(ov) < precision);
+        return u.divide(v).precision(precision);
+    }
+
+    /**
      * Gamma function.<p>
      *
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.

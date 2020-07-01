@@ -94,6 +94,7 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testToRadians"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testProduct"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testSum"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testEuler"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGamma"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
@@ -878,6 +879,28 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.sum(x);
         assertEquals("value", new Apfloat(1234567900), result);
         assertEquals("precision", 10, result.precision());
+    }
+
+    public static void testEuler()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
+        Apfloat result = helper.euler();
+        assertEquals("value", new Apfloat("0.5772156649015328606065120900824024310421593359399235988057672348848677267776646709369470632917467495"), result, new Apfloat("5e-100"));
+        assertEquals("precision", 100, result.precision());
+
+        result = helper.euler(16);
+        assertEquals("value 16", new Apfloat("0.93c467e37db0c7a4d1be3f810152cb56a1cecc3af65cc0190c03df34709affbd8e4b59fa03a9f0eed0649ccb621057d11057", Apfloat.DEFAULT, 16), result, new Apfloat(1e-100, 1, 16));
+        assertEquals("precision 16", 100, result.precision());
+
+        try
+        {
+            helper.euler(1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
     }
 
     public static void testGamma()

@@ -153,6 +153,7 @@ public abstract class FunctionCalculatorImpl
         public Number ceil(Number x);
         public Number cos(Number x);
         public Number cosh(Number x);
+        public Number euler(Number x);
         public Number exp(Number x);
         public Number factorial(Number x);
         public Number floor(Number x);
@@ -222,6 +223,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("ceil", fixedFunction("ceil", 1, (functions, arguments) -> functions.ceil(arguments.get(0))));
         setFunction("cos", fixedFunction("cos", 1, (functions, arguments) -> functions.cos(arguments.get(0))));
         setFunction("cosh", fixedFunction("cosh", 1, (functions, arguments) -> functions.cosh(arguments.get(0))));
+        setFunction("euler", fixedFunction("euler", 1, (functions, arguments) -> functions.euler(arguments.get(0))));
         setFunction("exp", fixedFunction("exp", 1, (functions, arguments) -> functions.exp(arguments.get(0))));
         setFunction("factorial", fixedFunction("factorial", 1, (functions, arguments) -> functions.factorial(arguments.get(0))));
         setFunction("floor", fixedFunction("floor", 1, (functions, arguments) -> functions.floor(arguments.get(0))));

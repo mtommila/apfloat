@@ -86,6 +86,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testToDegrees"));
         suite.addTest(new ApfloatMathTest("testProduct"));
         suite.addTest(new ApfloatMathTest("testSum"));
+        suite.addTest(new ApfloatMathTest("testEuler"));
         suite.addTest(new ApfloatMathTest("testGamma"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
@@ -1669,6 +1670,52 @@ public class ApfloatMathTest
 
         numbers[0] = numbers[0].add(new Apfloat("1e10000000", Apfloat.INFINITE));
         assertEquals("Big number big sum", new Apfloat(5000050000L).add(new Apfloat("1e10000000", Apfloat.INFINITE)), ApfloatMath.sum(numbers));
+    }
+
+    public static void testEuler()
+    {
+        Apfloat a = ApfloatMath.euler(10);
+        assertEquals("10 radix", 10, a.radix());
+        assertEquals("10 precision", 10, a.precision());
+        assertEquals("10 value", new Apfloat("0.5772156649"), a, new Apfloat("5e-10"));
+        a = ApfloatMath.euler(50);
+        assertEquals("50 radix", 10, a.radix());
+        assertEquals("50 precision", 50, a.precision());
+        assertEquals("50 value", new Apfloat("0.57721566490153286060651209008240243104215933593992"), a, new Apfloat("5e-50"));
+        a = ApfloatMath.euler(20, 16);
+        assertEquals("20 radix", 16, a.radix());
+        assertEquals("20 precision", 20, a.precision());
+        assertEquals("20 value", new Apfloat("0.93c467e37db0c7a4d1be", 20, 16), a, new Apfloat("5e-50"));
+
+        try
+        {
+            ApfloatMath.euler(0);
+            fail("Precision 0 accepted");
+        }
+        catch (IllegalArgumentException e)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.euler(Apfloat.INFINITE);
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.euler(50, 1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
     }
 
     public static void testGamma()
