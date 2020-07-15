@@ -88,6 +88,8 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testSum"));
         suite.addTest(new ApfloatMathTest("testEuler"));
         suite.addTest(new ApfloatMathTest("testGamma"));
+        suite.addTest(new ApfloatMathTest("testGammaIncomplete"));
+        suite.addTest(new ApfloatMathTest("testGammaIncompleteGeneralized"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testMax"));
@@ -1805,6 +1807,14 @@ public class ApfloatMathTest
         {
             // OK
         }
+    }
+
+    public static void testGammaIncomplete()
+    {
+    }
+
+    public static void testGammaIncompleteGeneralized()
+    {
     }
 
     public static void testRandom()

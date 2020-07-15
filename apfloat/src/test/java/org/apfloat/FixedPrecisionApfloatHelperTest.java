@@ -96,6 +96,8 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testSum"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testEuler"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGamma"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testGammaIncomplete"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testGammaIncompleteGeneralized"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testMax"));
@@ -911,6 +913,27 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.gamma(x);
         assertEquals("value", new Apfloat("2.22465301759833318396785103e11565705518092"), result, new Apfloat("5e11565705518066"));
         assertEquals("precision", 27, result.precision());
+    }
+
+    public static void testGammaIncomplete()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(5);
+        Apfloat a = new Apfloat("1.5");
+        Apfloat x = new Apfloat("3.5");
+        Apfloat result = helper.gamma(a, x);
+        assertEquals("value", new Apfloat("2.22465301759833318396785103e11565705518092"), result, new Apfloat("5e11565705518066"));
+        assertEquals("precision", 5, result.precision());
+    }
+
+    public static void testGammaIncompleteGeneralized()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(5);
+        Apfloat a = new Apfloat("1.5");
+        Apfloat x0 = new Apfloat("2.5");
+        Apfloat x1 = new Apfloat("3.5");
+        Apfloat result = helper.gamma(a, x0, x1);
+        assertEquals("value", new Apfloat("2.22465301759833318396785103e11565705518092"), result, new Apfloat("5e11565705518066"));
+        assertEquals("precision", 5, result.precision());
     }
 
     public static void testRandom()

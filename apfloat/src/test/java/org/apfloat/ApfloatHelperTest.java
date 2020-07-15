@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.4
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -45,6 +45,10 @@ public class ApfloatHelperTest
 
         suite.addTest(new ApfloatHelperTest("testGetMatchingPrecisions2"));
         suite.addTest(new ApfloatHelperTest("testGetMatchingPrecisions4"));
+        suite.addTest(new ApfloatHelperTest("testLimitPrecision"));
+        suite.addTest(new ApfloatHelperTest("testEnsurePrecision"));
+        suite.addTest(new ApfloatHelperTest("testExtendPrecision"));
+        suite.addTest(new ApfloatHelperTest("testReducePrecision"));
         suite.addTest(new ApfloatHelperTest("testSetPrecision"));
 
         return suite;
@@ -139,6 +143,83 @@ public class ApfloatHelperTest
         assertEquals("MAX-0-MAX [0]", Apfloat.INFINITE, precisions[0]);
         assertEquals("MAX-0-MAX [1]", 0, precisions[1]);
         assertEquals("MAX-0-MAX [2]", Apfloat.INFINITE, precisions[2]);
+    }
+
+    public static void testLimitPrecision()
+    {
+        Apfloat x = ApfloatHelper.limitPrecision(new Apfloat("1.23"), 2);
+        assertEquals("1.23, 2 value", new Apfloat("1.2"), x);
+        assertEquals("1.23, 2 precision", 2, x.precision());
+        x = ApfloatHelper.limitPrecision(new Apfloat("1.23"), 4);
+        assertEquals("1.23, 4 value", new Apfloat("1.23"), x);
+        assertEquals("1.23, 4 precision", 3, x.precision());
+        Apcomplex z = ApfloatHelper.limitPrecision(new Apcomplex("(1.23,4.56)"), 2);
+        assertEquals("(1.23, 4.56), 2 value", new Apcomplex("(1.2,4.5)"), z);
+        assertEquals("(1.23, 4.56), 2 precision", 2, z.precision());
+        z = ApfloatHelper.limitPrecision(new Apcomplex("(1.23,4.56)"), 4);
+        assertEquals("(1.23, 4.56), 4 value", new Apcomplex("(1.23,4.56)"), z);
+        assertEquals("(1.23, 4.56), 4 precision", 3, z.precision());
+    }
+
+    public static void testEnsurePrecision()
+    {
+        Apfloat x = ApfloatHelper.ensurePrecision(new Apfloat("1.23"), 2);
+        assertEquals("1.23, 2 value", new Apfloat("1.23"), x);
+        assertEquals("1.23, 2 precision", 3, x.precision());
+        x = ApfloatHelper.ensurePrecision(new Apfloat("1.23"), 4);
+        assertEquals("1.23, 4 value", new Apfloat("1.23"), x);
+        assertEquals("1.23, 4 precision", 4, x.precision());
+        Apcomplex z = ApfloatHelper.ensurePrecision(new Apcomplex("(1.23,4.56)"), 2);
+        assertEquals("(1.23, 4.56), 2 value", new Apcomplex("(1.23,4.56)"), z);
+        assertEquals("(1.23, 4.56), 2 precision", 3, z.precision());
+        z = ApfloatHelper.ensurePrecision(new Apcomplex("(1.23,4.56)"), 4);
+        assertEquals("(1.23, 4.56), 4 value", new Apcomplex("(1.23,4.56)"), z);
+        assertEquals("(1.23, 4.56), 4 precision", 4, z.precision());
+    }
+
+    public static void testExtendPrecision()
+    {
+        Apfloat x = ApfloatHelper.extendPrecision(new Apfloat("1.23"), 2);
+        assertEquals("1.23, 2 value", new Apfloat("1.23"), x);
+        assertEquals("1.23, 2 precision", 5, x.precision());
+        x = ApfloatHelper.extendPrecision(new Apfloat("1.23"));
+        assertEquals("1.23 value", new Apfloat("1.23"), x);
+        assertEquals("1.23 precision", 3 + Apfloat.EXTRA_PRECISION, x.precision());
+        Apcomplex z = ApfloatHelper.extendPrecision(new Apcomplex("(1.23,4.56)"), 2);
+        assertEquals("(1.23, 4.56), 2 value", new Apcomplex("(1.23,4.56)"), z);
+        assertEquals("(1.23, 4.56), 2 precision", 5, z.precision());
+        z = ApfloatHelper.extendPrecision(new Apcomplex("(1.23,4.56)"));
+        assertEquals("(1.23, 4.56) value", new Apcomplex("(1.23,4.56)"), z);
+        assertEquals("(1.23, 4.56) precision", 3 + Apcomplex.EXTRA_PRECISION, z.precision());
+    }
+
+    public static void testReducePrecision()
+    {
+        Apfloat x = ApfloatHelper.reducePrecision(new Apfloat("1.23").precision(3 + Apfloat.EXTRA_PRECISION));
+        assertEquals("1.23 value", new Apfloat("1.23"), x);
+        assertEquals("1.23 precision", 3, x.precision());
+        Apcomplex z = ApfloatHelper.reducePrecision(new Apcomplex("(1.23,4.56)").precision(3 + Apcomplex.EXTRA_PRECISION));
+        assertEquals("(1.23, 4.56) value", new Apcomplex("(1.23,4.56)"), z);
+        assertEquals("(1.23, 4.56) precision", 3, z.precision());
+
+        try
+        {
+            ApfloatHelper.reducePrecision(new Apfloat("1.23").precision(Apfloat.EXTRA_PRECISION));
+            fail("1.23 accepted");
+        }
+        catch (LossOfPrecisionException lope)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatHelper.reducePrecision(new Apcomplex("(1.23,4.56)").precision(Apcomplex.EXTRA_PRECISION));
+            fail("(1.23, 4.56) accepted");
+        }
+        catch (LossOfPrecisionException lope)
+        {
+            // OK
+        }
     }
 
     public static void testSetPrecision()

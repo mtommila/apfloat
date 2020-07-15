@@ -925,6 +925,45 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
+     * Incomplete gamma function.
+     *
+     * @param a The first operand.
+     * @param x The second operand.
+     *
+     * @return <code>&Gamma;(a, x)</code>.
+     *
+     * @throws ArithmeticException If <code>a</code> is not a positive integer and <code>x</code> is nonpositive.
+     *
+     * @since 1.10.0
+     */
+
+    public Apfloat gamma(Apfloat a, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.gamma(setGammaPrecision(a), setPrecision(x)));
+    }
+
+    /**
+     * Generalized incomplete gamma function.
+     *
+     * @param a The first operand.
+     * @param x0 The second operand.
+     * @param x1 The third operand.
+     *
+     * @return <code>&Gamma;(a, x0) - &Gamma;(a, x1)</code>.
+     *
+     * @throws ArithmeticException If <code>a</code> is not a positive integer and either <code>x0</code> or <code>x1</code> is nonpositive.
+     *
+     * @since 1.10.0
+     */
+
+    public Apfloat gamma(Apfloat a, Apfloat x0, Apfloat x1)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.gamma(setGammaPrecision(a), setPrecision(x0), setPrecision(x1)));
+    }
+
+    /**
      * Return a uniformly distributed random number <code>0 &le; x &lt; 1</code>.
      *
      * @return A random number.

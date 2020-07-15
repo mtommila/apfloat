@@ -71,6 +71,8 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testProduct"));
         suite.addTest(new ApcomplexMathTest("testSum"));
         suite.addTest(new ApcomplexMathTest("testGamma"));
+        suite.addTest(new ApcomplexMathTest("testGammaIncomplete"));
+        suite.addTest(new ApcomplexMathTest("testGammaIncompleteGeneralized"));
         suite.addTest(new ApcomplexMathTest("testUlp"));
 
         return suite;
@@ -1637,6 +1639,14 @@ public class ApcomplexMathTest
         {
             // OK
         }
+    }
+
+    public static void testGammaIncomplete()
+    {
+    }
+
+    public static void testGammaIncompleteGeneralized()
+    {
     }
 
     public static void testUlp()

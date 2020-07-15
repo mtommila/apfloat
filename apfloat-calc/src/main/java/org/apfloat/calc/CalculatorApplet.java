@@ -32,7 +32,6 @@ import org.apfloat.spi.FilenameGenerator;
  * @author Mikko Tommila
  */
 
-@SuppressWarnings("deprecation")
 public class CalculatorApplet
     extends Applet
 {

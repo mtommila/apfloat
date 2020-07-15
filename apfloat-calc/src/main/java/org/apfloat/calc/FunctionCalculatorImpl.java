@@ -159,6 +159,8 @@ public abstract class FunctionCalculatorImpl
         public Number floor(Number x);
         public Number frac(Number x);
         public Number gamma(Number x);
+        public Number gamma(Number x, Number y);
+        public Number gamma(Number x, Number y, Number z);
         public Number log(Number x);
         public Number log(Number x, Number y);
         public Number max(Number x, Number y);
@@ -229,7 +231,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("factorial", fixedFunction("factorial", 1, (functions, arguments) -> functions.factorial(arguments.get(0))));
         setFunction("floor", fixedFunction("floor", 1, (functions, arguments) -> functions.floor(arguments.get(0))));
         setFunction("frac", fixedFunction("frac", 1, (functions, arguments) -> functions.frac(arguments.get(0))));
-        setFunction("gamma", fixedFunction("gamma", 1, (functions, arguments) -> functions.gamma(arguments.get(0))));
+        setFunction("gamma", fixedFunction("gamma", 1, 3, (functions, arguments) -> (arguments.size() == 1 ? functions.gamma(arguments.get(0)) : arguments.size() == 2 ? functions.gamma(arguments.get(0), arguments.get(1)): functions.gamma(arguments.get(0), arguments.get(1), arguments.get(2)))));
         setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
         setFunction("max", fixedFunction("max", 2, (functions, arguments) -> functions.max(arguments.get(0), arguments.get(1))));
         setFunction("min", fixedFunction("min", 2, (functions, arguments) -> functions.min(arguments.get(0), arguments.get(1))));

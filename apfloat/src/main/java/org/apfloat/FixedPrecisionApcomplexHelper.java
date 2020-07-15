@@ -30,7 +30,7 @@ import org.apfloat.spi.Util;
  * <code>ApcomplexMath.acos(Apcomplex.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -715,7 +715,7 @@ public class FixedPrecisionApcomplexHelper
     /**
      * Gamma function.
      *
-     * @param z The operand(s).
+     * @param z The operand.
      *
      * @return <code>&Gamma;(z)</code>.
      *
@@ -728,6 +728,45 @@ public class FixedPrecisionApcomplexHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApcomplexMath.gamma(setGammaPrecision(z)));
+    }
+
+    /**
+     * Incomplete gamma function.
+     *
+     * @param a The first operand.
+     * @param z The second operand.
+     *
+     * @return <code>&Gamma;(a, z)</code>.
+     *
+     * @throws ArithmeticException If <code>a</code> is a nonpositive integer and <code>z</code> is zero.
+     *
+     * @since 1.10.0
+     */
+
+    public Apcomplex gamma(Apcomplex a, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.gamma(setGammaPrecision(a), setPrecision(z)));
+    }
+
+    /**
+     * Generalized incomplete gamma function.
+     *
+     * @param a The first operand.
+     * @param z0 The second operand.
+     * @param z1 The third operand.
+     *
+     * @return <code>&Gamma;(a, z0)</code> - <code>&Gamma;(a, z1)</code>.
+     *
+     * @throws ArithmeticException If <code>a</code> is a nonpositive integer and either <code>z0</code> or <code>z1</code> is zero.
+     *
+     * @since 1.10.0
+     */
+
+    public Apcomplex gamma(Apcomplex a, Apcomplex z0, Apcomplex z1)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.gamma(setGammaPrecision(a), setPrecision(z0), setPrecision(z1)));
     }
 
     /**

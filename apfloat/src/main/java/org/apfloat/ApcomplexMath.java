@@ -1735,6 +1735,59 @@ public class ApcomplexMath
     }
 
     /**
+     * Incomplete gamma function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the incomplete gamma function.
+     *
+     * @param a The first argument.
+     * @param z The second argument.
+     *
+     * @return <code>&Gamma;(a, z)</code>
+     *
+     * @throws ArithmeticException If the real part of <code>a</code> is nonpositive and <code>z</code> is zero.
+     *
+     * @since 1.10.0
+     */
+
+    public static Apcomplex gamma(Apcomplex a, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return IncompleteGammaHelper.gamma(a, z);
+    }
+
+    /**
+     * Generalized incomplete gamma function.<p>
+     *
+     * This function is defined as: <code>&Gamma;(a, z0, z1) = &Gamma;(a, z0) - &Gamma;(a, z1)</code><p>
+     *
+     * The lower gamma function can be calculated with: <code>&gamma;(a, z) = &Gamma;(a, 0, z)</code><p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the incomplete gamma function.
+     *
+     * @param a The first argument.
+     * @param z0 The second argument.
+     * @param z1 The third argument.
+     *
+     * @return <code>&Gamma;(a, z0, z1)</code>
+     *
+     * @throws ArithmeticException If the real part of <code>a</code> is nonpositive and either <code>z0</code> or <code>z1</code> is zero. For the lower gamma function if <code>a</code> is a nonpositive integer.
+     *
+     * @since 1.10.0
+     */
+
+    public static Apcomplex gamma(Apcomplex a, Apcomplex z0, Apcomplex z1)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return IncompleteGammaHelper.gamma(a, z0, z1);
+    }
+
+    /**
      * Returns the unit in the last place of the argument, considering the
      * scale and precision. This is maximum of the ulps of the real and
      * imaginary part of the argument.

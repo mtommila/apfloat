@@ -21,7 +21,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -82,6 +82,8 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testProduct"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testSum"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testGamma"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testGammaIncomplete"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testGammaIncompleteGeneralized"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testUlp"));
 
         return suite;
@@ -573,6 +575,27 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.gamma(z);
         assertEquals("value", new Apcomplex("(2.2799397381057012808806415e-682188176916,2.56143734228029034694359025e-682188176915)"), result, new Apfloat("5e-682188176941"));
         assertEquals("precision", 26, result.precision());
+    }
+
+    public static void testGammaIncomplete()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(5);
+        Apcomplex a = new Apcomplex("(1,2)");
+        Apcomplex z = new Apcomplex("(3,4)");
+        Apcomplex result = helper.gamma(a, z);
+        assertEquals("value", new Apcomplex("(2.2799397381057012808806415e-682188176916,2.56143734228029034694359025e-682188176915)"), result, new Apfloat("5e-682188176941"));
+        assertEquals("precision", 5, result.precision());
+    }
+
+    public static void testGammaIncompleteGeneralized()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(5);
+        Apcomplex a = new Apcomplex("(1,2)");
+        Apcomplex z0 = new Apcomplex("(3,4)");
+        Apcomplex z1 = new Apcomplex("(5,6)");
+        Apcomplex result = helper.gamma(a, z0, z1);
+        assertEquals("value", new Apcomplex("(2.2799397381057012808806415e-682188176916,2.56143734228029034694359025e-682188176915)"), result, new Apfloat("5e-682188176941"));
+        assertEquals("precision", 5, result.precision());
     }
 
     public static void testUlp()

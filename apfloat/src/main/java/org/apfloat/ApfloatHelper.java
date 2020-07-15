@@ -35,7 +35,7 @@ import static org.apfloat.spi.RadixConstants.*;
 /**
  * Various utility methods related to apfloats.
  *
- * @version 1.6.2
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
@@ -501,6 +501,25 @@ class ApfloatHelper
         return extendPrecision(precision, Apfloat.EXTRA_PRECISION);
     }
 
+    // Returns given precision reduced by specified amount
+    public static long reducePrecision(long precision, long extraPrecision)
+        throws ApfloatRuntimeException
+    {
+        precision = precision - extraPrecision;
+        if (precision <= 0)
+        {
+            throw new LossOfPrecisionException("Complete loss of precision");
+        }
+        return precision;
+    }
+
+    // Returns given precision reduced by Apfloat.EXTRA_PRECISION
+    public static long reducePrecision(long precision)
+        throws ApfloatRuntimeException
+    {
+        return reducePrecision(precision, Apfloat.EXTRA_PRECISION);
+    }
+
     // Returns x with precision extended by Apfloat.EXTRA_PRECISION
     public static Apfloat extendPrecision(Apfloat x)
         throws ApfloatRuntimeException
@@ -513,6 +532,13 @@ class ApfloatHelper
         throws ApfloatRuntimeException
     {
         return x.precision(extendPrecision(x.precision(), extraPrecision));
+    }
+
+    // Returns x with precision reduced by Apfloat.EXTRA_PRECISION
+    public static Apfloat reducePrecision(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return x.precision(reducePrecision(x.precision()));
     }
 
     // Returns z with precision as specified
@@ -558,32 +584,40 @@ class ApfloatHelper
     public static Apcomplex limitPrecision(Apcomplex z, long precision)
         throws ApfloatRuntimeException
     {
-        return new Apcomplex(z.real().precision(Math.min(z.real().precision(), precision)),
-                             z.imag().precision(Math.min(z.imag().precision(), precision)));
+        return new Apcomplex(limitPrecision(z.real(), precision),
+                             limitPrecision(z.imag(), precision));
     }
 
     // Returns z with precision at least as specified
     public static Apcomplex ensurePrecision(Apcomplex z, long precision)
         throws ApfloatRuntimeException
     {
-        return new Apcomplex(z.real().precision(Math.max(z.real().precision(), precision)),
-                             z.imag().precision(Math.max(z.imag().precision(), precision)));
+        return new Apcomplex(ensurePrecision(z.real(), precision),
+                             ensurePrecision(z.imag(), precision));
     }
 
     // Returns z with precision extended by Apfloat.EXTRA_PRECISION
     public static Apcomplex extendPrecision(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        return new Apcomplex(z.real().precision(extendPrecision(z.real().precision())),
-                             z.imag().precision(extendPrecision(z.imag().precision())));
+        return new Apcomplex(extendPrecision(z.real()),
+                             extendPrecision(z.imag()));
     }
 
     // Returns z with precision extended by specified precision
     public static Apcomplex extendPrecision(Apcomplex z, long extraPrecision)
         throws ApfloatRuntimeException
     {
-        return new Apcomplex(z.real().precision(extendPrecision(z.real().precision(), extraPrecision)),
-                             z.imag().precision(extendPrecision(z.imag().precision(), extraPrecision)));
+        return new Apcomplex(extendPrecision(z.real(), extraPrecision),
+                             extendPrecision(z.imag(), extraPrecision));
+    }
+
+    // Returns z with precision reduced by Apfloat.EXTRA_PRECISION
+    public static Apcomplex reducePrecision(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return new Apcomplex(reducePrecision(z.real()),
+                             reducePrecision(z.imag()));
     }
 
     public static long size(Aprational x)

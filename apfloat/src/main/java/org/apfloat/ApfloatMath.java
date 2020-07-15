@@ -2126,6 +2126,67 @@ public class ApfloatMath
     }
 
     /**
+     * Incomplete gamma function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the gamma function.
+     *
+     * @param a The first argument.
+     * @param x The second argument.
+     *
+     * @return <code>&Gamma;(a, x)</code>
+     *
+     * @throws ArithmeticException If <code>a</code> is not a positive integer and <code>x</code> is nonpositive.
+     *
+     * @since 1.10.0
+     */
+
+    public static Apfloat gamma(Apfloat a, Apfloat x)
+    {
+        if (x.signum() < 0 && !(a.signum() > 0 && a.isInteger()))
+        {
+            // For a real result, in the case x < 0, a must be a positive integer
+            throw new ArithmeticException("Non-real result");
+        }
+        return ApcomplexMath.gamma(a, x).real();
+    }
+
+    /**
+     * Generalized incomplete gamma function.<p>
+     *
+     * This function is defined as: <code>&Gamma;(a, x0, x1) = &Gamma;(a, x0) - &Gamma;(a, x1)</code><p>
+     *
+     * The lower gamma function can be calculated with: <code>&gamma;(a, x) = &Gamma;(a, 0, x)</code><p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the gamma function.
+     *
+     * @param a The first argument.
+     * @param x0 The second argument.
+     * @param x1 The third argument.
+     *
+     * @return <code>&Gamma;(a, x0, x1)</code>
+     *
+     * @throws ArithmeticException If <code>a</code> is not a positive integer and either <code>x0</code> or <code>x1</code> is nonpositive.
+     *
+     * @since 1.10.0
+     */
+
+    public static Apfloat gamma(Apfloat a, Apfloat x0, Apfloat x1)
+    {
+        if ((x0.signum() < 0 || x1.signum() < 0) && !(a.signum() > 0 && a.isInteger()))
+        {
+            // For a real result, in the case x < 0, a must be a positive integer
+            throw new ArithmeticException("Non-real result");
+        }
+        return ApcomplexMath.gamma(a, x0, x1).real();
+    }
+
+    /**
      * Generates a random number. Uses the default radix.
      * Returned values are chosen pseudorandomly with (approximately)
      * uniform distribution from the range <code>0 &le; x &lt; 1</code>.

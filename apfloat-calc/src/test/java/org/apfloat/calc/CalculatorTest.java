@@ -199,6 +199,8 @@ public class CalculatorTest
         assertCalculation("9e-1", "frac(2.9)");
         assertCalculation("9/10", "frac(29/10)");
         assertCalculation("6", "gamma(4)");
+        assertCalculation("5.8861", "gamma(4.0000, 1.0000)");
+        assertCalculation("5.0928", "gamma(4.0000, 0, 6.0000)");
         assertCalculation("4.74294943677064514689542753377e1-3.27488916473624576880974867017e1i", "gamma(100.000000000000000000000000000+374.000000000000000000000000000i)");
         assertCalculation("2", "fmod(5, 3)");
         assertCalculation("5", "hypot(3, 4)");
@@ -308,7 +310,7 @@ public class CalculatorTest
         assertCalculationFailure("frac(2, 2)");
         assertCalculationFailure("gamma(0)");
         assertCalculationFailure("gamma()");
-        assertCalculationFailure("gamma(2, 2)");
+        assertCalculationFailure("gamma(2, 2, 2, 2)");
         assertCalculationFailure("fmod(2, i)");
         assertCalculationFailure("fmod(2)");
         assertCalculationFailure("fmod(2, 2, 2)");
