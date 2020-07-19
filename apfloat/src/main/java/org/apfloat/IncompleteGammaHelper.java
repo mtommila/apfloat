@@ -71,7 +71,7 @@ class IncompleteGammaHelper
             return lowerGamma(a, z0).negate();
         }
 
-        if (z0.scale() < a.scale() && z1.scale() < a.scale())
+        if (useLowerGamma(a, z0) && useLowerGamma(a, z1))
         {
             // More efficient algorithm in this case
             return lowerGamma(a, z1).subtract(lowerGamma(a, z0));
@@ -90,20 +90,22 @@ class IncompleteGammaHelper
             long n = a.longValueExact(); // If this overflows then the factorial would overflow anyways
             return upperGamma(n, z);
         }
-        if ((z.real().signum() <= 0 || z.real().scale() < 0) && z.imag().scale() < 0)
+        if (useLowerGamma(a, z))
+        {
+            // The algorithm for upper gamma would not converge well
+            return ApcomplexMath.gamma(a).subtract(lowerGamma(a, z));
+        }
+        /*
+        if (mustUseLowerGamma(z))
         {
             // If z is too close to the negative real axis, the continued fraction converges poorly, so we use a different formula
             // gamma(a,y) - gamma(a,x) = sum[(-1)^n(x^(a+n)-y^(a+n))/(n!(a+n)),{n,0,Infinity}]
             // With y=1 (for simplicity)
             // Note: the sum does not work when a is a nonpositive integer
             Apfloat one = new Apfloat(1, Math.min(a.precision(), z.precision()), z.radix());
-            return upperGamma(a, one).subtract(sum(a, z));
+            return upperGamma(a, one).subtract(sum(a, z, true));
         }
-        if (z.scale() < a.scale())
-        {
-            // The algorithm for upper gamma would not converge well
-            return ApcomplexMath.gamma(a).subtract(lowerGamma(a, z));
-        }
+        */
 
         return upperGammaG(a, z);
     }
@@ -114,13 +116,36 @@ class IncompleteGammaHelper
         {
             throw new ArithmeticException("Lower gamma with first argument nonpositive integer");
         }
-        if (a.scale() < z.scale())
+        if (z.scale() <= 0)
+        {
+            // The series is fastest for small z
+            return sum(a, z, false);
+        }
+        if (useUpperGamma(a, z))
         {
             // The algorithm for lower gamma would not converge well
             return ApcomplexMath.gamma(a).subtract(upperGamma(a, z));
         }
 
         return lowerGammaG(a, z);
+    }
+
+    private static boolean useLowerGamma(Apcomplex a, Apcomplex z)
+    {
+        // The continued fraction for upper gamma would not converge well
+        return z.scale() < a.scale() || mustUseLowerGamma(z);
+    }
+
+    private static boolean mustUseLowerGamma(Apcomplex z)
+    {
+        // If z is too close to the negative real axis, the upper gamma continued fraction converges poorly
+        return (z.real().signum() <= 0 || z.real().scale() < 0) && z.imag().scale() < 0;
+    }
+
+    private static boolean useUpperGamma(Apcomplex a, Apcomplex z)
+    {
+        // The continued fraction for lower gamma would not converge well
+        return a.scale() < z.scale() && !mustUseLowerGamma(z);
     }
 
     private static Apcomplex upperGammaG(Apcomplex a, Apcomplex z)
@@ -257,7 +282,7 @@ class IncompleteGammaHelper
         return result;
     }
 
-    private static Apcomplex sum(Apcomplex a, Apcomplex z)
+    private static Apcomplex sum(Apcomplex a, Apcomplex z, boolean subtractOne)
     {
         a = ApfloatHelper.extendPrecision(a);
         z = ApfloatHelper.extendPrecision(z);
@@ -281,7 +306,7 @@ class IncompleteGammaHelper
                 f = f.multiply(nn);
             }
             ot = t;
-            t = za.subtract(one).divide(f.multiply(an));
+            t = (subtractOne ? za.subtract(one) : za).divide(f.multiply(an));
             sum = (n & 1) == 0 ? sum.add(t) : sum.subtract(t);
             n++;
         } while (sum.scale() - t.scale() < targetPrecision && !t.equals(Apcomplex.ZERO) ||  // This convergence check is a bit heuristic because the series isn't exactly alternating
