@@ -71,6 +71,7 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testProduct"));
         suite.addTest(new ApcomplexMathTest("testSum"));
         suite.addTest(new ApcomplexMathTest("testGamma"));
+        suite.addTest(new ApcomplexMathTest("testUlp"));
 
         return suite;
     }
@@ -1636,5 +1637,53 @@ public class ApcomplexMathTest
         {
             // OK
         }
+    }
+
+    public static void testUlp()
+    {
+        assertEquals("ulp 0", new Apcomplex("0"), ApcomplexMath.ulp(new Apcomplex("0")));
+        Apfloat a = ApcomplexMath.ulp(new Apcomplex(new Apfloat(1)));
+        assertEquals("ulp 1", new Apfloat("0"), a);
+        assertEquals("ulp 1 precision", Apcomplex.INFINITE, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex("1"));
+        assertEquals("ulp 1.", new Apfloat("1"), a);
+        assertEquals("ulp 1. precision", 1, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex("1.0"));
+        assertEquals("ulp 1.0", new Apfloat("0.1"), a);
+        assertEquals("ulp 1.0 precision", 1, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex("1.1"));
+        assertEquals("ulp 1.1", new Apfloat("0.1"), a);
+        assertEquals("ulp 1.1 precision", 1, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex("0.1"));
+        assertEquals("ulp 0.1", new Apfloat("0.1"), a);
+        assertEquals("ulp 0.1 precision", 1, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex("0.2"));
+        assertEquals("ulp 0.2", new Apfloat("0.1"), a);
+        assertEquals("ulp 0.2 precision", 1, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex("10"));
+        assertEquals("ulp 10.", new Apfloat("1"), a);
+        assertEquals("ulp 10. precision", 1, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex("1e1"));
+        assertEquals("ulp 1e1", new Apfloat("1e1"), a);
+        assertEquals("ulp 1e1 precision", 1, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex("-1e1"));
+        assertEquals("ulp -1e1", new Apfloat("1e1"), a);
+        assertEquals("ulp -1e1 precision", 1, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex(Apfloat.ZERO, new Apfloat("1.a", 2, 11)));
+        assertEquals("ulp (0, 1.a)", new Apfloat("0.1", 1, 11), a);
+        assertEquals("ulp (0, 1.a) precision", 1, a.precision());
+        assertEquals("ulp (0, 1.a) radix", 11, a.radix());
+        a = ApcomplexMath.ulp(new Apcomplex("1e-9000000000000000000"));
+        assertEquals("ulp 1e-9000000000000000000", new Apfloat("1e-9000000000000000000"), a);
+        assertEquals("ulp 1e-9000000000000000000 precision", 1, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex(new Apfloat("1e-9000000000000000000", 9000000000000000000L), new Apfloat("1e-9000000000000000000", 9000000000000000000L)));
+        assertEquals("ulp (1e-9000000000000000000.000, 1e-9000000000000000000.000)", new Apfloat(0), a);
+        assertEquals("ulp (1e-9000000000000000000.000, 1e-9000000000000000000.000) precision", Apcomplex.INFINITE, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex("(1.11,-101.1)"));
+        assertEquals("ulp (1.11,-101.1)", new Apfloat("0.1"), a);
+        assertEquals("ulp (1.11,-101.1) precision", 1, a.precision());
+        a = ApcomplexMath.ulp(new Apcomplex("(-9.9,0.0000011)"));
+        assertEquals("ulp (-9.9,0.0000011)", new Apfloat("0.1"), a);
+        assertEquals("ulp (-9.9,0.0000011) precision", 1, a.precision());
     }
 }

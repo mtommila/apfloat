@@ -1071,6 +1071,22 @@ public class FixedPrecisionApfloatHelper
         return valueOf(ApfloatMath.nextUp(setPrecision(x)));
     }
 
+    /**
+     * Unit in the last place.
+     *
+     * @param x The operand.
+     *
+     * @return The unit in the last place.
+     *
+     * @since 1.10.0
+     */
+
+    public Apfloat ulp(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.ulp(setPrecision(x)));
+    }
+
     private Apfloat setPrecision(Apfloat x)
         throws ApfloatRuntimeException
     {

@@ -82,6 +82,7 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testProduct"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testSum"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testGamma"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testUlp"));
 
         return suite;
     }
@@ -572,5 +573,13 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.gamma(z);
         assertEquals("value", new Apcomplex("(2.2799397381057012808806415e-682188176916,2.56143734228029034694359025e-682188176915)"), result, new Apfloat("5e-682188176941"));
         assertEquals("precision", 26, result.precision());
+    }
+
+    public static void testUlp()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(5);
+        Apfloat result = helper.ulp(new Apcomplex("(10,2)"));
+        assertEquals("(10,2) value", new Apfloat("0.001"), result);
+        assertEquals("(10,2) precision", 5, result.precision());
     }
 }

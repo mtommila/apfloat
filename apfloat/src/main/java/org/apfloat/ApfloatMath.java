@@ -2342,14 +2342,40 @@ public class ApfloatMath
         return nextInDirection(x, -1);
     }
 
+    /**
+     * Returns the unit in the last place of the argument, considering the
+     * scale and precision. This is same as the difference between the argument
+     * and the value returned from {@link #nextUp(Apfloat)}.
+     * If the precision of the argument is infinite, zero is returned.<p>
+     *
+     * For example, ulp of <code>1.</code> is <code>1</code>, ulp of <code>1.1</code> is <code>0.1</code>
+     * and ulp of <code>1.001</code> is <code>0.001</code> (considering significant digits only).
+     *
+     * @param x The argument.
+     *
+     * @return The ulp of the argument.
+     *
+     * @since 1.10.0
+     */
+
+    public static Apfloat ulp(Apfloat x)
+    {
+        return ulp(x, 1);
+    }
+
     private static Apfloat nextInDirection(Apfloat x, int direction)
+    {
+        return x.add(ulp(x, direction));
+    }
+
+    private static Apfloat ulp(Apfloat x, int direction)
     {
         long scale = x.scale() - x.precision();
         if (x.precision() == Apfloat.INFINITE || x.scale() < 0 && scale >= 0)   // Detect overflow
         {
-            return x;
+            return Apfloat.ZERO;
         }
-        return x.add(scale(new Apfloat(direction, 1, x.radix()), scale));
+        return scale(new Apfloat(direction, 1, x.radix()), scale);
     }
 
     // Extend the precision on last iteration

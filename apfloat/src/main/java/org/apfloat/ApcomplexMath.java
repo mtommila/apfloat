@@ -1734,6 +1734,24 @@ public class ApcomplexMath
         return result.precision(precision);
     }
 
+    /**
+     * Returns the unit in the last place of the argument, considering the
+     * scale and precision. This is maximum of the ulps of the real and
+     * imaginary part of the argument.
+     * If the precision of the argument is infinite, zero is returned.
+     *
+     * @param z The argument.
+     *
+     * @return The ulp of the argument.
+     *
+     * @since 1.10.0
+     */
+
+    public static Apfloat ulp(Apcomplex z)
+    {
+        return ApfloatMath.max(ApfloatMath.ulp(z.real()), ApfloatMath.ulp(z.imag()));
+    }
+
     // Extend the precision on last iteration
     private static Apcomplex lastIterationExtendPrecision(int iterations, int precisingIteration, Apcomplex z)
     {

@@ -103,6 +103,7 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testNextAfter"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testNextDown"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testNextUp"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testUlp"));
 
         return suite;
     }
@@ -1008,6 +1009,14 @@ public class FixedPrecisionApfloatHelperTest
         FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(5);
         Apfloat result = helper.nextUp(new Apfloat(1));
         assertEquals("1 value", new Apfloat("1.0001"), result);
+        assertEquals("1 precision", 5, result.precision());
+    }
+
+    public static void testUlp()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(5);
+        Apfloat result = helper.ulp(new Apfloat(1));
+        assertEquals("1 value", new Apfloat("0.0001"), result);
         assertEquals("1 precision", 5, result.precision());
     }
 }

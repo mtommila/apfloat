@@ -369,6 +369,12 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number ulp(Number x)
+        {
+            return ApcomplexMath.ulp((Apcomplex) x);
+        }
+
+        @Override
         public Number agm(Number x, Number y)
         {
             return ApcomplexMath.agm((Apcomplex) x, (Apcomplex) y);

@@ -261,6 +261,10 @@ public class CalculatorTest
         assertCalculation("2", "nextUp(1.)");
         assertCalculation("1", "nextDown(2.)");
         assertCalculation("2/3", "nextDown(2/3)");
+        assertCalculation("1", "ulp(2.)");
+        assertCalculation("0", "ulp(2/3)");
+        assertCalculation("0", "ulp(1+i)");
+        assertCalculation("1e-1", "ulp(-10.00-2.0i)");
         assertCalculation("1.57", "arg(1.00i)");
         assertCalculation("2-i", "conj(2+i)");
         assertCalculation("1", "imag(2+i)");
@@ -403,6 +407,8 @@ public class CalculatorTest
         assertCalculationFailure("nextDown()");
         assertCalculationFailure("nextDown(2, 2)");
         assertCalculationFailure("nextDown(i)");
+        assertCalculationFailure("ulp()");
+        assertCalculationFailure("ulp(2, 2)");
         assertCalculationFailure("arg()");
         assertCalculationFailure("arg(1, 1)");
         assertCalculationFailure("conj()");

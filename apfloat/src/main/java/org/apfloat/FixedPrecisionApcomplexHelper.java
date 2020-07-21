@@ -731,6 +731,22 @@ public class FixedPrecisionApcomplexHelper
     }
 
     /**
+     * Unit in the last place.
+     *
+     * @param z The operand.
+     *
+     * @return The unit in the last place.
+     *
+     * @since 1.10.0
+     */
+
+    public Apfloat ulp(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.ulp(setPrecision(z)));
+    }
+
+    /**
      * Returns the precision, which is used for the results.
      *
      * @return The precision of the results.

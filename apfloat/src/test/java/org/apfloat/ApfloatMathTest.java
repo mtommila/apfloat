@@ -95,6 +95,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testNextAfter"));
         suite.addTest(new ApfloatMathTest("testNextUp"));
         suite.addTest(new ApfloatMathTest("testNextDown"));
+        suite.addTest(new ApfloatMathTest("testUlp"));
 
         return suite;
     }
@@ -1989,5 +1990,47 @@ public class ApfloatMathTest
         a = ApfloatMath.nextDown(new Apfloat("1e-9000000000000000000", 9000000000000000000L));
         assertEquals("next down 1e-9000000000000000000.000", new Apfloat("1e-9000000000000000000"), a);
         assertEquals("next down 1e-9000000000000000000.000 precision", 9000000000000000000L, a.precision());
+    }
+
+    public static void testUlp()
+    {
+        assertEquals("ulp 0", new Apfloat(0), ApfloatMath.ulp(new Apfloat(0)));
+        Apfloat a = ApfloatMath.ulp(new Apfloat(1));
+        assertEquals("ulp 1", new Apfloat(0), a);
+        assertEquals("ulp 1 precision", Apfloat.INFINITE, a.precision());
+        a = ApfloatMath.ulp(new Apfloat("1"));
+        assertEquals("ulp 1.", new Apfloat("1"), a);
+        assertEquals("ulp 1. precision", 1, a.precision());
+        a = ApfloatMath.ulp(new Apfloat("1.0"));
+        assertEquals("ulp 1.0", new Apfloat("0.1"), a);
+        assertEquals("ulp 1.0 precision", 1, a.precision());
+        a = ApfloatMath.ulp(new Apfloat("1.1"));
+        assertEquals("ulp 1.1", new Apfloat("0.1"), a);
+        assertEquals("ulp 1.1 precision", 1, a.precision());
+        a = ApfloatMath.ulp(new Apfloat("0.1"));
+        assertEquals("ulp 0.1", new Apfloat("0.1"), a);
+        assertEquals("ulp 0.1 precision", 1, a.precision());
+        a = ApfloatMath.ulp(new Apfloat("0.2"));
+        assertEquals("ulp 0.2", new Apfloat("0.1"), a);
+        assertEquals("ulp 0.2 precision", 1, a.precision());
+        a = ApfloatMath.ulp(new Apfloat("10"));
+        assertEquals("ulp 10.", new Apfloat("1"), a);
+        assertEquals("ulp 10. precision", 1, a.precision());
+        a = ApfloatMath.ulp(new Apfloat("1e1"));
+        assertEquals("ulp 1e1", new Apfloat("1e1"), a);
+        assertEquals("ulp 1e1 precision", 1, a.precision());
+        a = ApfloatMath.ulp(new Apfloat("-1e1"));
+        assertEquals("ulp -1e1", new Apfloat("1e1"), a);
+        assertEquals("ulp -1e1 precision", 1, a.precision());
+        a = ApfloatMath.ulp(new Apfloat("1.a", 2, 11));
+        assertEquals("ulp 1.a", new Apfloat("0.1", 1, 11), a);
+        assertEquals("ulp 1.a precision", 1, a.precision());
+        assertEquals("ulp 1.a radix", 11, a.radix());
+        a = ApfloatMath.ulp(new Apfloat("1e-9000000000000000000"));
+        assertEquals("ulp 1e-9000000000000000000", new Apfloat("1e-9000000000000000000"), a);
+        assertEquals("ulp 1e-9000000000000000000 precision", 1, a.precision());
+        a = ApfloatMath.ulp(new Apfloat("1e-9000000000000000000", 9000000000000000000L));
+        assertEquals("ulp 1e-9000000000000000000.000", new Apfloat(0), a);
+        assertEquals("ulp 1e-9000000000000000000.000 precision", Apfloat.INFINITE, a.precision());
     }
 }
