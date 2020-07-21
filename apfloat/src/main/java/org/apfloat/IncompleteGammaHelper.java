@@ -214,13 +214,14 @@ class IncompleteGammaHelper
         return ApfloatHelper.reducePrecision(g);
     }
 
+    // Modified Lentz's method
     private static Apcomplex continuedFraction(Sequence s, int radix, long workingPrecision)
     {
         Apint one = new Apint(1, radix);
-        Apcomplex dm = ApcomplexMath.scale(one, -workingPrecision);
         long n = 1;
         Apcomplex an = s.a(n);
         Apcomplex bn = s.b(n);
+        Apcomplex dm = tiny(bn, workingPrecision);
         Apcomplex f = an.divide(bn);
         Apcomplex c = an.divide(dm);
         Apcomplex d = one.divide(bn);
@@ -236,20 +237,25 @@ class IncompleteGammaHelper
             if (d.real().signum() == 0 && d.imag().signum() == 0)
             {
                 System.err.println("Should not occur");
-                d = dm;
+                d = tiny(bn, workingPrecision);
             }
             c = bn.add(an.divide(c));
             c = ApfloatHelper.ensurePrecision(c, workingPrecision);
             if (c.real().signum() == 0 && c.imag().signum() == 0)
             {
                 System.err.println("Should not occur");
-                c = dm;
+                c = tiny(bn, workingPrecision);
             }
             d = one.divide(d);
             delta = c.multiply(d);
             f = f.multiply(delta);
         } while (delta.equalDigits(one) < workingPrecision - Apfloat.EXTRA_PRECISION / 2);  // Due to round-off errors we cannot always reach workingPrecision but slightly less is sufficient
         return f;
+    }
+
+    private static Apcomplex tiny(Apcomplex bn, long workingPrecision)
+    {
+        return ApcomplexMath.scale(ApcomplexMath.ulp(bn), -workingPrecision).precision(Apfloat.INFINITE);
     }
 
     // Upper gamma of nonpositive integer
