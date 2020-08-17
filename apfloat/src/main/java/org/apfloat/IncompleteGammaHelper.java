@@ -236,14 +236,14 @@ class IncompleteGammaHelper
             d = ApfloatHelper.ensurePrecision(d, workingPrecision);
             if (d.real().signum() == 0 && d.imag().signum() == 0)
             {
-                System.err.println("Should not occur");
+                System.err.println("Should not occur"); //FIXME at least in some cases this is normal and just "resets" the iteration
                 d = tiny(bn, workingPrecision);
             }
             c = bn.add(an.divide(c));
             c = ApfloatHelper.ensurePrecision(c, workingPrecision);
             if (c.real().signum() == 0 && c.imag().signum() == 0)
             {
-                System.err.println("Should not occur");
+                System.err.println("Should not occur"); //FIXME at least in some cases this is normal and just "resets" the iteration
                 c = tiny(bn, workingPrecision);
             }
             d = one.divide(d);
