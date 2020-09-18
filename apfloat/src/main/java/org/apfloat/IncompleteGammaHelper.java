@@ -119,7 +119,7 @@ class IncompleteGammaHelper
         if (z.scale() <= 0)
         {
             // The series is fastest for small z
-            return sum(a, z, false);
+            return sum(a, z);
         }
         if (useUpperGamma(a, z))
         {
@@ -288,35 +288,51 @@ class IncompleteGammaHelper
         return result;
     }
 
-    private static Apcomplex sum(Apcomplex a, Apcomplex z, boolean subtractOne)
+    private static Apcomplex sum(Apcomplex a, Apcomplex z)
     {
         a = ApfloatHelper.extendPrecision(a);
         z = ApfloatHelper.extendPrecision(z);
 
+        boolean useAlternatingSum = (z.real().signum() >= 0);
         Apcomplex za = ApcomplexMath.pow(z, a);
+        if (!useAlternatingSum)
+        {
+            za = za.multiply(ApcomplexMath.exp(z.negate()));
+        }
         long targetPrecision = Math.min(a.precision(), z.precision());
         int radix = z.radix();
         Apcomplex sum = Apcomplex.ZERO;
         Apint one = new Apint(1, radix);
-        Apfloat f = one.precision(targetPrecision);
+        Apcomplex f = (useAlternatingSum ? one.precision(targetPrecision) : a);
         long n = 0;
-        Apcomplex t = Apcomplex.ZERO,
-                  ot;
+        Apcomplex t;
         do
         {
-            Apint nn = new Apint(n, radix);
-            Apcomplex an = a.add(nn);
-            if (n > 0)
+            if (useAlternatingSum)
             {
-                za = za.multiply(z);
-                f = f.multiply(nn);
+                Apint nn = new Apint(n, radix);
+                Apcomplex an = a.add(nn);
+                if (n > 0)
+                {
+                    za = za.multiply(z);
+                    f = f.multiply(nn);
+                }
+                t = za.divide(f.multiply(an));
+                sum = (n & 1) == 0 ? sum.add(t) : sum.subtract(t);
             }
-            ot = t;
-            t = (subtractOne ? za.subtract(one) : za).divide(f.multiply(an));
-            sum = (n & 1) == 0 ? sum.add(t) : sum.subtract(t);
+            else
+            {
+                if (n > 0)
+                {
+                    a = a.add(one);
+                    za = za.multiply(z);
+                    f = f.multiply(a);
+                }
+                t = za.divide(f);
+                sum = sum.add(t);
+            }
             n++;
-        } while (sum.scale() - t.scale() < targetPrecision && !t.equals(Apcomplex.ZERO) ||  // This convergence check is a bit heuristic because the series isn't exactly alternating
-                 sum.scale() - ot.scale() < targetPrecision && !ot.equals(Apcomplex.ZERO)); // Also check for underflow of t, note that if e.g. a = 1 and z = -1 then t will be zero every other time
+        } while (sum.scale() - t.scale() < targetPrecision && !t.equals(Apcomplex.ZERO)); // Also check for underflow of t
 
         return ApfloatHelper.reducePrecision(sum);
     }
