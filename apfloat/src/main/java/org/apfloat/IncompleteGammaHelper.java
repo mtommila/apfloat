@@ -20,6 +20,7 @@ package org.apfloat;
 
 import java.util.function.BiFunction;
 import java.util.function.LongFunction;
+import java.util.stream.Stream;
 
 /**
  * Helper class for the incomplete gamma function.
@@ -115,17 +116,6 @@ class IncompleteGammaHelper
             // The algorithm for upper gamma would not converge well
             return ApcomplexMath.gamma(a).subtract(lowerGamma(a, z));
         }
-        /*
-        if (mustUseLowerGamma(z))
-        {
-            // If z is too close to the negative real axis, the continued fraction converges poorly, so we use a different formula
-            // gamma(a,y) - gamma(a,x) = sum[(-1)^n(x^(a+n)-y^(a+n))/(n!(a+n)),{n,0,Infinity}]
-            // With y=1 (for simplicity)
-            // Note: the sum does not work when a is a nonpositive integer
-            Apfloat one = new Apfloat(1, Math.min(a.precision(), z.precision()), z.radix());
-            return upperGamma(a, one).subtract(sum(a, z, true));
-        }
-        */
 
         return upperGammaG(a, z);
     }
@@ -185,6 +175,7 @@ class IncompleteGammaHelper
     {
         int radix = z.radix();
         Apfloat one = new Apint(1, radix);
+        Apcomplex za = z.subtract(a);
         Sequence s = new Sequence(n -> {
             if (n == 1)
             {
@@ -195,7 +186,7 @@ class IncompleteGammaHelper
                 Apint n1 = new Apint(n - 1, radix);
                 return n1.multiply(a.subtract(n1));
             }
-        }, n -> new Apint(2 * n - 1, radix).add(z).subtract(a));
+        }, n -> new Apint(2 * n - 1, radix).add(za));
         return s;
     }
 
@@ -225,13 +216,21 @@ class IncompleteGammaHelper
 
     private static Apcomplex g(BiFunction<Apcomplex, Apcomplex, Sequence> s, Apcomplex a, Apcomplex z)
     {
-        a = ApfloatHelper.extendPrecision(a);
-        z = ApfloatHelper.extendPrecision(z);
+        // Continued fractions sometimes converge strangely with larger input values, try to handle some of these
+        long extraPrecision = Apfloat.EXTRA_PRECISION;
+        if ((Math.abs(a.real().doubleValue()) > 1e2 || Math.abs(a.imag().doubleValue()) > 1e2) &&
+            (Math.abs(z.real().doubleValue()) > 1e1 || Math.abs(z.imag().doubleValue()) > 1e1))
+        {
+            double minPrecision = Stream.of(a, z).flatMap(v -> Stream.of(v.real(), v.imag())).mapToLong(Apfloat::longValue).map(Math::abs).max().getAsLong() / Math.log10(a.radix());
+            extraPrecision = Math.max(extraPrecision, (long) minPrecision - Math.min(a.precision(), z.precision()));
+        }
+        a = ApfloatHelper.extendPrecision(a, extraPrecision);
+        z = ApfloatHelper.extendPrecision(z, extraPrecision);
 
         Apcomplex f = continuedFraction(s.apply(a, z), z.radix(), Math.min(a.precision(), z.precision()));
         Apcomplex g = f.multiply(ApcomplexMath.exp(a.multiply(ApcomplexMath.log(z)).subtract(z)));
 
-        return ApfloatHelper.reducePrecision(g);
+        return ApfloatHelper.reducePrecision(g, extraPrecision);
     }
 
     // Modified Lentz's method
@@ -256,14 +255,12 @@ class IncompleteGammaHelper
             d = ApfloatHelper.ensurePrecision(d, workingPrecision);
             if (d.real().signum() == 0 && d.imag().signum() == 0)
             {
-                System.err.println("Should not occur"); //FIXME at least in some cases this is normal and just "resets" the iteration
                 d = tiny(bn, workingPrecision);
             }
             c = bn.add(an.divide(c));
             c = ApfloatHelper.ensurePrecision(c, workingPrecision);
             if (c.real().signum() == 0 && c.imag().signum() == 0)
             {
-                System.err.println("Should not occur"); //FIXME at least in some cases this is normal and just "resets" the iteration
                 c = tiny(bn, workingPrecision);
             }
             d = one.divide(d);

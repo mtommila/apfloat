@@ -541,6 +541,13 @@ class ApfloatHelper
         return x.precision(reducePrecision(x.precision()));
     }
 
+    // Returns x with precision reduced by specified amount
+    public static Apfloat reducePrecision(Apfloat x, long extraPrecision)
+        throws ApfloatRuntimeException
+    {
+        return x.precision(reducePrecision(x.precision(), extraPrecision));
+    }
+
     // Returns z with precision as specified
     public static Apcomplex setPrecision(Apcomplex z, long precision)
         throws ApfloatRuntimeException
@@ -618,6 +625,14 @@ class ApfloatHelper
     {
         return new Apcomplex(reducePrecision(z.real()),
                              reducePrecision(z.imag()));
+    }
+
+    // Returns z with precision reduced by specified amount
+    public static Apcomplex reducePrecision(Apcomplex z, long extraPrecision)
+        throws ApfloatRuntimeException
+    {
+        return new Apcomplex(reducePrecision(z.real(), extraPrecision),
+                             reducePrecision(z.imag(), extraPrecision));
     }
 
     public static long size(Aprational x)
