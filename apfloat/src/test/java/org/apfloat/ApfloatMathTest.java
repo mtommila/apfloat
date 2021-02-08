@@ -1811,10 +1811,41 @@ public class ApfloatMathTest
 
     public static void testGammaIncomplete()
     {
-    }
+        Apfloat a = ApfloatMath.gamma(new Apfloat("2.0000000"), new Apfloat("1.0000000"));
+        assertEquals("2,1 precision", 8, a.precision());
+        assertEquals("2,1 value", new Apfloat("0.73575888"), a, new Apfloat("5e-8"));
+        a = ApfloatMath.gamma(new Apfloat("4.0000000"), new Apfloat("6.0000000"));
+        assertEquals("4,6 precision", 8, a.precision());
+        assertEquals("4,6 value", new Apfloat("0.90722330"), a, new Apfloat("5e-8"));
+
+        a = ApfloatMath.gamma(new Apfloat(-1, 10), new Apfloat(1, 10));
+        assertEquals("-1,1 precision", 9, a.precision());
+        assertEquals("-1,1 value", new Apfloat("0.1484955068"), a, new Apfloat("5e-10"));
+        a = ApfloatMath.gamma(new Apfloat(-1, 10), new Apfloat(10, 10));
+        assertEquals("-1,10 precision", 8, a.precision());
+        assertEquals("-1,10 value", new Apfloat("3.830240466e-7"), a, new Apfloat("5e-16"));
+        a = ApfloatMath.gamma(new Apfloat(-10, 10), new Apfloat(1, 10));
+        assertEquals("-10,1 precision", 9, a.precision());
+        assertEquals("-10,1 value", new Apfloat("0.03314854471"), a, new Apfloat("5e-10"));
+        a = ApfloatMath.gamma(new Apfloat(-10, 10), new Apfloat(10, 10));
+        assertEquals("-10,10 precision", 5, a.precision());
+        assertEquals("-10,10 value", new Apfloat("2.214690319e-16"), a, new Apfloat("5e-20"));
+}
 
     public static void testGammaIncompleteGeneralized()
     {
+        Apfloat a = ApfloatMath.gamma(new Apfloat("2.0000000"), Apfloat.ZERO, new Apfloat("1.0000000"));
+        assertEquals("2,0,1 precision", 7, a.precision());
+        assertEquals("2,0,1 value", new Apfloat("0.26424112"), a, new Apfloat("5e-8"));
+        a = ApfloatMath.gamma(new Apfloat("1.0000000"), Apfloat.ZERO, new Apfloat("2.0000000"));
+        assertEquals("1,0,2 precision", 7, a.precision());
+        assertEquals("1,0,2 value", new Apfloat("0.86466472"), a, new Apfloat("5e-8"));
+        a = ApfloatMath.gamma(new Apfloat("4.0000000"), Apfloat.ZERO, new Apfloat("1.0000000"));
+        assertEquals("4,0,1 precision", 7, a.precision());
+        assertEquals("4,0,1 value", new Apfloat("0.11392894"), a, new Apfloat("5e-8"));
+        a = ApfloatMath.gamma(new Apfloat("4.0000000"), Apfloat.ZERO, new Apfloat("6.0000000"));
+        assertEquals("4,0,6 precision", 8, a.precision());
+        assertEquals("4,0,6 value", new Apfloat("5.0927767"), a, new Apfloat("5e-7"));
     }
 
     public static void testRandom()

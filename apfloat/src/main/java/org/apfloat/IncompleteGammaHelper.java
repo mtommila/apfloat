@@ -309,6 +309,10 @@ class IncompleteGammaHelper
         long n = 1;
         Apcomplex an = s.a(n);
         Apcomplex bn = s.b(n);
+        if (bn.real().signum() == 0 && bn.imag().signum() == 0)
+        {
+            bn = tiny(an.precision(workingPrecision), workingPrecision).precision(workingPrecision);
+        }
         Apcomplex dm = tiny(bn, workingPrecision);
         Apcomplex f = an.divide(bn);
         Apcomplex c = an.divide(dm);
@@ -340,9 +344,9 @@ class IncompleteGammaHelper
         return new ContinuedFractionResult(f, delta, n);
     }
 
-    private static Apcomplex tiny(Apcomplex bn, long workingPrecision)
+    private static Apcomplex tiny(Apcomplex z, long workingPrecision)
     {
-        return ApcomplexMath.scale(ApcomplexMath.ulp(bn), -workingPrecision).precision(Apfloat.INFINITE);
+        return ApcomplexMath.scale(ApcomplexMath.ulp(z), -workingPrecision).precision(Apfloat.INFINITE);
     }
 
     // Upper gamma of nonpositive integer

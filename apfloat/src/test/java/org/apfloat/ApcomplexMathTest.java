@@ -1643,10 +1643,16 @@ public class ApcomplexMathTest
 
     public static void testGammaIncomplete()
     {
+        Apcomplex a = ApcomplexMath.gamma(new Apcomplex("(-1.0000000e-2,4.0000000e2)"), new Apcomplex("(1.0000000e-2,1.0000000e2)"));
+        assertEquals("-1e-2+4e2i,1e-2+1e2i precision", 5, a.precision());
+        assertEquals("-1e-2+4e2i,1e-2+1e2i value", new Apcomplex("(-1.0542844e-274,-1.2073566e-274)"), a, new Apfloat("5e-278"));
     }
 
     public static void testGammaIncompleteGeneralized()
     {
+        Apcomplex a = ApcomplexMath.gamma(new Apcomplex("(-1.0000000e-2,4.0000000e2)"), Apcomplex.ZERO, new Apcomplex("(1.0000000e-2,1.0000000e2)"));
+        assertEquals("-1e-2+4e2i,0,1e-2+1e2i precision", 5, a.precision());
+        assertEquals("-1e-2+4e2i,0,1e-2+1e2i value", new Apcomplex("(4.3680e-276,1.761e-277)"), a, new Apfloat("5e-280"));
     }
 
     public static void testUlp()
