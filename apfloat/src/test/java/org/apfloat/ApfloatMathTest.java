@@ -1830,7 +1830,7 @@ public class ApfloatMathTest
         a = ApfloatMath.gamma(new Apfloat(-10, 10), new Apfloat(10, 10));
         assertEquals("-10,10 precision", 5, a.precision());
         assertEquals("-10,10 value", new Apfloat("2.214690319e-16"), a, new Apfloat("5e-20"));
-}
+    }
 
     public static void testGammaIncompleteGeneralized()
     {

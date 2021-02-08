@@ -307,11 +307,11 @@ class IncompleteGammaHelper
     {
         Apint one = new Apint(1, radix);
         long n = 1;
-        Apcomplex an = s.a(n);
-        Apcomplex bn = s.b(n);
+        Apcomplex an = s.a(n).precision(workingPrecision);
+        Apcomplex bn = s.b(n).precision(workingPrecision);
         if (bn.real().signum() == 0 && bn.imag().signum() == 0)
         {
-            bn = tiny(an.precision(workingPrecision), workingPrecision).precision(workingPrecision);
+            bn = tiny(an, workingPrecision);
         }
         Apcomplex dm = tiny(bn, workingPrecision);
         Apcomplex f = an.divide(bn);
@@ -322,16 +322,16 @@ class IncompleteGammaHelper
             n = Math.addExact(n, 1);
             an = s.a(n);
             bn = s.b(n);
-            an = ApfloatHelper.ensurePrecision(an, workingPrecision);
-            bn = ApfloatHelper.ensurePrecision(bn, workingPrecision);
+            //an = ApfloatHelper.ensurePrecision(an, workingPrecision);
+            //bn = ApfloatHelper.ensurePrecision(bn, workingPrecision);
             d = d.multiply(an).add(bn);
-            d = ApfloatHelper.ensurePrecision(d, workingPrecision);
+            //d = ApfloatHelper.ensurePrecision(d, workingPrecision);
             if (d.real().signum() == 0 && d.imag().signum() == 0)
             {
                 d = tiny(bn, workingPrecision);
             }
             c = bn.add(an.divide(c));
-            c = ApfloatHelper.ensurePrecision(c, workingPrecision);
+            //c = ApfloatHelper.ensurePrecision(c, workingPrecision);
             if (c.real().signum() == 0 && c.imag().signum() == 0)
             {
                 c = tiny(bn, workingPrecision);
@@ -339,6 +339,11 @@ class IncompleteGammaHelper
             d = one.divide(d);
             delta = c.multiply(d);
             f = f.multiply(delta);
+            if (f.precision() < Apfloat.EXTRA_PRECISION / 2)
+            {
+                throw new LossOfPrecisionException("Catastrophic loss of precision in continued fraction");
+            }
+            // FIXME: may now not terminate if some precision is lost
         } while (n <= maxIterations &&
                  delta.equalDigits(one) < workingPrecision - Apfloat.EXTRA_PRECISION / 2);  // Due to round-off errors we cannot always reach workingPrecision but slightly less is sufficient
         return new ContinuedFractionResult(f, delta, n);
@@ -346,7 +351,7 @@ class IncompleteGammaHelper
 
     private static Apcomplex tiny(Apcomplex z, long workingPrecision)
     {
-        return ApcomplexMath.scale(ApcomplexMath.ulp(z), -workingPrecision).precision(Apfloat.INFINITE);
+        return ApcomplexMath.scale(ApcomplexMath.ulp(z), -workingPrecision).precision(workingPrecision);
     }
 
     // Upper gamma of nonpositive integer
