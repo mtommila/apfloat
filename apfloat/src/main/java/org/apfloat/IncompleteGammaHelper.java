@@ -256,6 +256,7 @@ class IncompleteGammaHelper
         return s;
     }
 
+    // TODO: catch LossOfPrecisionException
     private static ContinuedFraction fastestG(Apcomplex a, Apcomplex z, ContinuedFraction fastest)
     {
         if (fastest != null)
@@ -292,11 +293,12 @@ class IncompleteGammaHelper
 
     private static Apcomplex g(BiFunction<Apcomplex, Apcomplex, Sequence> s, Apcomplex a, Apcomplex z)
     {
-        long extraPrecision = Apfloat.EXTRA_PRECISION;
+        int radix = z.radix();
+        long extraPrecision = (long) (Apfloat.EXTRA_PRECISION * 2 / Math.log10(radix)); // More extra precision because the incomplete gamma behaves so erratically
         a = ApfloatHelper.extendPrecision(a, extraPrecision);
         z = ApfloatHelper.extendPrecision(z, extraPrecision);
 
-        Apcomplex f = continuedFraction(s.apply(a, z), z.radix(), Math.min(a.precision(), z.precision()), Long.MAX_VALUE).getResult();
+        Apcomplex f = continuedFraction(s.apply(a, z), radix, Math.min(a.precision(), z.precision()), Long.MAX_VALUE).getResult();
         Apcomplex g = f.multiply(ApcomplexMath.exp(a.multiply(ApcomplexMath.log(z)).subtract(z)));
 
         return ApfloatHelper.reducePrecision(g, extraPrecision);

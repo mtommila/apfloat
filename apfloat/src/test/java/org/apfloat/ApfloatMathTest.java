@@ -1818,6 +1818,16 @@ public class ApfloatMathTest
         assertEquals("4,6 precision", 8, a.precision());
         assertEquals("4,6 value", new Apfloat("0.90722330"), a, new Apfloat("5e-8"));
 
+        a = ApfloatMath.gamma(new Apfloat(1, 10), new Apfloat(-1, 10));
+        assertEquals("1,-1 precision", 10, a.precision());
+        assertEquals("1,-1 value", new Apfloat("2.718281828"), a, new Apfloat("5e-9"));
+        a = ApfloatMath.gamma(new Apfloat(100, 10), new Apfloat(1, 10));
+        assertEquals("100,1 precision", 10, a.precision());
+        assertEquals("100,1 value", new Apfloat("9.332621544e155"), a, new Apfloat("5e-146"));
+        a = ApfloatMath.gamma(new Apfloat("-100.5", 12), new Apfloat(1, 12));
+        assertEquals("-100.5,1 precision", 11, a.precision());
+        assertEquals("-100.5,1 value", new Apfloat("0.00362407278773"), a, new Apfloat("5e-14"));
+
         a = ApfloatMath.gamma(new Apfloat(-1, 10), new Apfloat(1, 10));
         assertEquals("-1,1 precision", 9, a.precision());
         assertEquals("-1,1 value", new Apfloat("0.1484955068"), a, new Apfloat("5e-10"));
@@ -1830,6 +1840,34 @@ public class ApfloatMathTest
         a = ApfloatMath.gamma(new Apfloat(-10, 10), new Apfloat(10, 10));
         assertEquals("-10,10 precision", 5, a.precision());
         assertEquals("-10,10 value", new Apfloat("2.214690319e-16"), a, new Apfloat("5e-20"));
+
+        try
+        {
+            ApfloatMath.gamma(Apfloat.ZERO, Apfloat.ZERO);
+            fail("Gamma of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.gamma(new Apfloat(-1, 10), new Apfloat(-2, 10));
+            fail("Non-real result");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK non-real result
+        }
+        try
+        {
+            ApfloatMath.gamma(new Apfloat(0, 10), new Apfloat(-1, 10));
+            fail("Non-real result");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK non-real result
+        }
     }
 
     public static void testGammaIncompleteGeneralized()
@@ -1841,11 +1879,48 @@ public class ApfloatMathTest
         assertEquals("1,0,2 precision", 7, a.precision());
         assertEquals("1,0,2 value", new Apfloat("0.86466472"), a, new Apfloat("5e-8"));
         a = ApfloatMath.gamma(new Apfloat("4.0000000"), Apfloat.ZERO, new Apfloat("1.0000000"));
-        assertEquals("4,0,1 precision", 7, a.precision());
+        assertEquals("4,0,1 precision", 5, a.precision());
         assertEquals("4,0,1 value", new Apfloat("0.11392894"), a, new Apfloat("5e-8"));
         a = ApfloatMath.gamma(new Apfloat("4.0000000"), Apfloat.ZERO, new Apfloat("6.0000000"));
         assertEquals("4,0,6 precision", 8, a.precision());
         assertEquals("4,0,6 value", new Apfloat("5.0927767"), a, new Apfloat("5e-7"));
+        a = ApfloatMath.gamma(new Apfloat("1.0000000"), Apfloat.ZERO, new Apfloat("100.0000000"));
+        assertEquals("1,0,100 precision", 8, a.precision());
+        assertEquals("1,0,100 value", new Apfloat(1), a, new Apfloat("5e-7"));
+        a = ApfloatMath.gamma(new Apfloat(1, 10), Apfloat.ZERO, new Apfloat(-1, 10));
+        assertEquals("1,0,-1 precision", 10, a.precision());
+        assertEquals("1,0,-1 value", new Apfloat("-1.718281828"), a, new Apfloat("5e-9"));
+        a = ApfloatMath.gamma(new Apfloat(2, 10), Apfloat.ZERO, new Apfloat("-0.2", 10));
+        assertEquals("2,0,-0.2 precision", 10, a.precision());
+        assertEquals("2,0,-0.2 value", new Apfloat("0.02287779347"), a, new Apfloat("5e-11"));
+
+        try
+        {
+            ApfloatMath.gamma(Apfloat.ZERO, Apfloat.ZERO, Apfloat.ZERO);
+            fail("Gamma of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.gamma(new Apfloat(-1, 10), Apfloat.ZERO, new Apfloat(1, 10));
+            fail("Lower gamma of non-positive integer");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK a is non-positive integer
+        }
+        try
+        {
+            ApfloatMath.gamma(Apfloat.ZERO, Apfloat.ZERO, new Apfloat(-1, 10));
+            fail("Lower gamma of non-positive integer");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK a is non-positive integer
+        }
     }
 
     public static void testRandom()
