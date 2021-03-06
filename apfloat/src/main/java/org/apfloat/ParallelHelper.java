@@ -117,6 +117,22 @@ class ParallelHelper
         }
     }
 
+    public static <T> T getFuture(Future<T> future)
+    {
+        try
+        {
+            return future.get();
+        }
+        catch (InterruptedException ie)
+        {
+            throw new ApfloatRuntimeException("Waiting for dispatched task to complete was interrupted", ie);
+        }
+        catch (ExecutionException ee)
+        {
+            throw new ApfloatRuntimeException("Task execution failed", ee);
+        }
+    }
+
     public static void runParallel(Runnable runnable)
     {
         ApfloatContext ctx = ApfloatContext.getContext();
@@ -129,32 +145,18 @@ class ParallelHelper
     {
         ApfloatContext ctx = ApfloatContext.getContext();
         ExecutorService executorService = ctx.getExecutorService();
-        Future<?>[] futures = new Future[numberOfThreads];
+        List<Future<?>> futures = new ArrayList<Future<?>>();
 
         // Dispatch other threads, if any
-        for (int i = 0; i < futures.length; i++)
+        for (int i = 0; i < numberOfThreads; i++)
         {
-            futures[i] = executorService.submit(runnable);
+            futures.add(executorService.submit(runnable));
         }
 
         // Also run the Runnable in the current thread
         runnable.run();
 
         // Join the other threads, if any
-        for (Future<?> future : futures)
-        {
-            try
-            {
-                future.get();
-            }
-            catch (InterruptedException ie)
-            {
-                throw new ApfloatRuntimeException("Waiting for dispatched task to complete was interrupted", ie);
-            }
-            catch (ExecutionException ee)
-            {
-                throw new ApfloatRuntimeException("Task execution failed", ee);
-            }
-        }
+        futures.forEach(ParallelHelper::getFuture);
     }
 }

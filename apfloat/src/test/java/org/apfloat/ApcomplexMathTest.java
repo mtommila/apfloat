@@ -1664,9 +1664,9 @@ public class ApcomplexMathTest
         assertEquals("-1e-2+4e2i,1e-2+1e2i precision", 5, a.precision());
         assertEquals("-1e-2+4e2i,1e-2+1e2i value", new Apcomplex("(-1.0542844e-274,-1.2073566e-274)"), a, new Apfloat("5e-278"));
 
-//        a = ApcomplexMath.gamma(new Apcomplex("(-1.1538262523991663e-1,5.373868295802127e-5)"), new Apcomplex("(-1.773822473482807e1,1.1375203210348511e-1)"));
-//        assertEquals("-1.1538262523991663e-1+5.373868295802127e-5i,-1.773822473482807e1+1.1375203210348511e-1i precision", 16, a.precision());
-//        assertEquals("-1.1538262523991663e-1+5.373868295802127e-5i,-1.773822473482807e1+1.1375203210348511e-1i value", new Apcomplex("(1955553.446208209,989495.924550850)"), a, new Apfloat("5e-9"));
+        a = ApcomplexMath.gamma(new Apcomplex("(-1.1538262523991663e-1,5.373868295802127e-5)"), new Apcomplex("(-1.773822473482807e1,1.1375203210348511e-1)"));
+        assertEquals("-1.1538262523991663e-1+5.373868295802127e-5i,-1.773822473482807e1+1.1375203210348511e-1i precision", 15, a.precision());
+        assertEquals("-1.1538262523991663e-1+5.373868295802127e-5i,-1.773822473482807e1+1.1375203210348511e-1i value", new Apcomplex("(-1955553.446208209,989495.924550850)"), a, new Apfloat("5e-9"));
 
         a = ApcomplexMath.gamma(new Apcomplex("(-8.221677442966661e-11,-8.40160119100972e-11)"), new Apcomplex("(1.2025846683194057e-3,9.851413511989293e-9)"));
         assertEquals("-8.221677442966661e-11-8.40160119100972e-11i,1.2025846683194057e-3+9.851413511989293e-9i precision", 6, a.precision());
