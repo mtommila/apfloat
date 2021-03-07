@@ -327,7 +327,8 @@ class IncompleteGammaHelper
         int radix = z.radix();
         Apfloat one = new Apint(1, radix);
         Apcomplex za = z.subtract(a);
-        Sequence s = new Sequence(n -> {
+        Sequence s = new Sequence(n ->
+        {
             if (n == 1)
             {
                 return one;
@@ -346,20 +347,19 @@ class IncompleteGammaHelper
     {
         int radix = z.radix();
         Apfloat one = new Apint(1, radix);
-        Sequence s = new Sequence(n -> {
+        Sequence s = new Sequence(n ->
+        {
             if (n == 1)
             {
                 return one;
             }
             else if (n % 2 == 0)
             {
-                n /= 2;
-                return new Apint(1 - n, radix).subtract(a).multiply(z);
+                return new Apint(1 - n / 2, radix).subtract(a).multiply(z);
             }
             else
             {
-                n /= 2;
-                return new Apint(n, radix).multiply(z);
+                return new Apint(n / 2, radix).multiply(z);
             }
         }, n -> new Apint(n - 1, radix).add(a));
         return s;
@@ -369,16 +369,21 @@ class IncompleteGammaHelper
     {
         int radix = z.radix();
         Apfloat one = new Apint(1, radix);
-        Sequence s = new Sequence(n -> {
-            if (n % 2 == 1)
+        Sequence s = new Sequence(n ->
+        {
+            if (n == 1)
             {
                 return one;
             }
-            else
+            else if (n % 2 == 0)
             {
                 return new Apint(n / 2, radix).subtract(a);
             }
-        }, n -> (n % 2 == 1 ? z : one));
+            else
+            {
+                return new Apint(n / 2, radix);
+            }
+        }, n -> (n % 2 == 0 ? one : z));
         return s;
     }
 
@@ -387,7 +392,8 @@ class IncompleteGammaHelper
         int radix = z.radix();
         Apfloat one = new Apint(1, radix);
         Apcomplex az = a.add(z);
-        Sequence s = new Sequence(n -> {
+        Sequence s = new Sequence(n ->
+        {
             if (n == 1)
             {
                 return one;
@@ -396,7 +402,8 @@ class IncompleteGammaHelper
             {
                 return new Apint(2 - n, radix).subtract(a).multiply(z);
             }
-        }, n -> {
+        }, n ->
+        {
             if (n == 1)
             {
                 return a;
@@ -479,24 +486,17 @@ class IncompleteGammaHelper
     private static ContinuedFractionResult continuedFraction(Sequence s, int radix, long workingPrecision, long maxIterations)
     {
         Apint one = new Apint(1, radix);
-        long n = 1;
-        Apcomplex an = s.a(n).precision(workingPrecision);
-        Apcomplex bn = s.b(n).precision(workingPrecision);
-        if (bn.real().signum() == 0 && bn.imag().signum() == 0)
-        {
-            bn = tiny(an, workingPrecision);
-        }
-        Apcomplex dm = tiny(bn, workingPrecision);
-        Apcomplex f = an.divide(bn);
-        Apcomplex c = an.divide(dm);
-        Apcomplex d = one.divide(bn);
+        long n = 0;
+        Apcomplex an;
+        Apcomplex bn;
+        Apcomplex f = tiny(Apcomplex.ZERO, workingPrecision);
+        Apcomplex c = f;
+        Apcomplex d = Apcomplex.ZERO;
         Apcomplex delta;
         do {
             n = Math.addExact(n, 1);
             an = s.a(n).precision(workingPrecision);
             bn = s.b(n).precision(workingPrecision);
-            an = ApfloatHelper.ensurePrecision(an, workingPrecision);
-            bn = ApfloatHelper.ensurePrecision(bn, workingPrecision);
             d = d.multiply(an).add(bn);
             d = ApfloatHelper.ensurePrecision(d, workingPrecision);
             if (d.real().signum() == 0 && d.imag().signum() == 0)
@@ -519,6 +519,10 @@ class IncompleteGammaHelper
 
     private static Apcomplex tiny(Apcomplex z, long workingPrecision)
     {
+        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        {
+            z = new Apfloat(1, workingPrecision, z.radix());
+        }
         return ApcomplexMath.scale(ApcomplexMath.ulp(z), -workingPrecision).precision(workingPrecision);
     }
 
