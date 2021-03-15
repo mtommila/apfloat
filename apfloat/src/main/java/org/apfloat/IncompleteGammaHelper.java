@@ -92,16 +92,15 @@ class IncompleteGammaHelper
 
     private static enum ContinuedFraction
     {
-        LOWER2(ContinuedFractionType.LOWER, IncompleteGammaHelper::lowerGammaSequenceAlternative, null),
-        LOWER1(ContinuedFractionType.LOWER, IncompleteGammaHelper::lowerGammaSequence, LOWER2),
-        UPPER2(ContinuedFractionType.UPPER, IncompleteGammaHelper::upperGammaSequenceAlternative, null),
-        UPPER1(ContinuedFractionType.UPPER, IncompleteGammaHelper::upperGammaSequence, UPPER2);
+        LOWER1(ContinuedFractionType.LOWER, IncompleteGammaHelper::lowerGammaSequence),
+        LOWER2(ContinuedFractionType.LOWER, IncompleteGammaHelper::lowerGammaSequenceAlternative),
+        UPPER1(ContinuedFractionType.UPPER, IncompleteGammaHelper::upperGammaSequence),
+        UPPER2(ContinuedFractionType.UPPER, IncompleteGammaHelper::upperGammaSequenceAlternative);
 
-        private ContinuedFraction(ContinuedFractionType type, BiFunction<Apcomplex, Apcomplex, Sequence> sequence, ContinuedFraction alternative)
+        private ContinuedFraction(ContinuedFractionType type, BiFunction<Apcomplex, Apcomplex, Sequence> sequence)
         {
             this.type = type;
             this.sequence = sequence;
-            this.alternative = alternative;
         }
 
         public ContinuedFractionType getType()
@@ -112,11 +111,6 @@ class IncompleteGammaHelper
         public BiFunction<Apcomplex, Apcomplex, Sequence> getSequence()
         {
             return this.sequence;
-        }
-
-        public ContinuedFraction getAlternative()
-        {
-            return this.alternative;
         }
 
         public static ContinuedFraction[] upperValues()
@@ -139,7 +133,6 @@ class IncompleteGammaHelper
 
         private ContinuedFractionType type;
         private BiFunction<Apcomplex, Apcomplex, Sequence> sequence;
-        private ContinuedFraction alternative;
     }
 
     private static class GammaValue
@@ -311,13 +304,13 @@ class IncompleteGammaHelper
 
     private static GammaValue upperGammaG(Apcomplex a, Apcomplex z, ContinuedFraction algorithm)
     {
-        Apcomplex g = g(algorithm.getSequence(), algorithm.getAlternative().getSequence(), a, z);
+        Apcomplex g = g(algorithm.getSequence(), a, z);
         return new GammaValue(a, g, algorithm.getType() == ContinuedFractionType.LOWER);
     }
 
     private static GammaValue lowerGammaG(Apcomplex a, Apcomplex z, ContinuedFraction algorithm)
     {
-        Apcomplex g = g(algorithm.getSequence(), algorithm.getAlternative().getSequence(), a, z);
+        Apcomplex g = g(algorithm.getSequence(), a, z);
         return new GammaValue(a, g, algorithm.getType() == ContinuedFractionType.UPPER);
     }
 
@@ -462,7 +455,7 @@ class IncompleteGammaHelper
         return fastest;
     }
 
-    private static Apcomplex g(BiFunction<Apcomplex, Apcomplex, Sequence> s, BiFunction<Apcomplex, Apcomplex, Sequence> s2, Apcomplex a, Apcomplex z)
+    private static Apcomplex g(BiFunction<Apcomplex, Apcomplex, Sequence> s, Apcomplex a, Apcomplex z)
     {
         int radix = z.radix();
         long extraPrecision = (long) (Apfloat.EXTRA_PRECISION * 2 / Math.log10(radix)); // More extra precision because the incomplete gamma behaves so erratically
@@ -470,13 +463,6 @@ class IncompleteGammaHelper
         z = ApfloatHelper.extendPrecision(z, extraPrecision);
 
         Apcomplex f = continuedFraction(s.apply(a, z), radix, Math.min(a.precision(), z.precision()), Long.MAX_VALUE).getResult();
-        Apcomplex a2 = a.precision(extraPrecision);
-        Apcomplex z2 = z.precision(extraPrecision);
-        Apcomplex f2 = continuedFraction(s2.apply(a2, z2), radix, extraPrecision, Long.MAX_VALUE).getResult();
-        if (f.equalDigits(f2) < 1)
-        {
-            throw new ArithmeticException("Could not verify continued fraction convergence");
-        }
         Apcomplex g = f.multiply(ApcomplexMath.exp(a.multiply(ApcomplexMath.log(z)).subtract(z)));
 
         return ApfloatHelper.reducePrecision(g, extraPrecision);
