@@ -245,14 +245,20 @@ class IncompleteGammaHelper
 
     private static GammaValue upperGamma(Apcomplex a, Apcomplex z)
     {
+        long n = a.real().longValueExact(); // If this overflows then the value would overflow anyways
         if (a.isInteger() && a.real().signum() <= 0)
         {
             // Note that this transformation may be extremely slow if n is large
             // gamma(-n,z) = (-1)^n/n! gamma(0,z) - e^-z sum[z^(k-n-1)/(-n)_k,{k,1,n}]
             // See https://functions.wolfram.com/GammaBetaErf/Gamma2/17/02/01/
-            long n = a.longValueExact(); // If this overflows then the factorial would overflow anyways
             return new GammaValue(a, upperGamma(n, z), false);
         }
+        /*
+        if (n < 1)
+        {
+            return new GammaValue(a, transform(a, z, (a.real().signum() < 0 ? 2 : 1) - n, false), false);
+        }
+        */
         if (useLowerGamma(a, z))
         {
             return lowerGamma(a, z, ContinuedFraction.lowerValues()).invert();
@@ -274,6 +280,13 @@ class IncompleteGammaHelper
             // The series is fastest for small z
             return new GammaValue(a, sum(a, z), false);
         }
+        /*
+        long n = a.real().longValueExact(); // If this overflows then the value would overflow anyways
+        if (n < 1)
+        {
+            return new GammaValue(a, transform(a, z, (a.real().signum() < 0 ? 2 : 1) - n, true), false);
+        }
+        */
 
         if (algorithms == null)
         {
@@ -384,6 +397,7 @@ class IncompleteGammaHelper
         return s;
     }
 
+    // Inferior alternative to the upper gamma sequence, converges well only when z is not close to the negative real axis
     private static Sequence upperGammaSequenceAlternative(Apcomplex a, Apcomplex z)
     {
         int radix = z.radix();
@@ -406,6 +420,7 @@ class IncompleteGammaHelper
         return s;
     }
 
+    // Inferior alternative to the lower gamma sequence, converges well only when z is not close to the negative real axis
     private static Sequence lowerGammaSequenceAlternative(Apcomplex a, Apcomplex z)
     {
         int radix = z.radix();
@@ -505,6 +520,7 @@ class IncompleteGammaHelper
         Apcomplex c = f;
         Apcomplex d = Apcomplex.ZERO;
         Apcomplex delta;
+        long precision;
         do {
             n = Math.addExact(n, 1);
             an = s.a(n).precision(workingPrecision);
@@ -524,9 +540,10 @@ class IncompleteGammaHelper
             d = one.divide(d);
             delta = c.multiply(d);
             f = f.multiply(delta);
+            precision = delta.equalDigits(one);
         } while (n < minIterations ||
                  n <= maxIterations &&
-                 delta.equalDigits(one) < workingPrecision - Apfloat.EXTRA_PRECISION / 2);  // Due to round-off errors we cannot always reach workingPrecision but slightly less is sufficient
+                 precision < workingPrecision - Apfloat.EXTRA_PRECISION / 2);  // Due to round-off errors we cannot always reach workingPrecision but slightly less is sufficient
         return new ContinuedFractionResult(f, delta, n);
     }
 
@@ -537,6 +554,55 @@ class IncompleteGammaHelper
             z = new Apfloat(1, workingPrecision, z.radix());
         }
         return ApcomplexMath.scale(ApcomplexMath.ulp(z), -workingPrecision).precision(workingPrecision);
+    }
+
+    // Transform by adding an integer to a
+    private static Apcomplex transform(Apcomplex a, Apcomplex z, long n, boolean lower)
+    {
+        int radix = z.radix();
+        Apint nn = new Apint(n, radix);
+        Apcomplex result = (lower ? lowerGamma(a.add(nn), z, null).getValue() : upperGamma(a.add(nn), z).getValue());
+        if (n > 0)
+        {
+            Apcomplex an = a;
+            for (long k = 1; k < n; k++)
+            {
+                an = an.multiply(new Apint(k, radix).add(a));
+            }
+            result = result.divide(an);
+            Apcomplex s = ApcomplexMath.pow(z, a).divide(a),
+                      sum = s;
+            for (long k = 1; k < n; k++)
+            {
+                s = s.multiply(z).divide(new Apint(k, radix).add(a));
+                sum = sum.add(s);
+            }
+            Apcomplex ez = ApcomplexMath.exp(z.negate()).multiply(sum);
+            result = (lower ? result.add(ez) : result.subtract(ez));
+        }
+        else if (n < 0)
+        {
+            n = -n;
+            if ((n & 1) == 1)
+            {
+                result = result.negate();
+            }
+            for (long k = 1; k <= n; k++)
+            {
+                result = result.multiply(new Apint(k, radix).subtract(a));
+            }
+            Apcomplex a1 = a.subtract(new Apint(1, radix));
+            Apcomplex s = ApcomplexMath.pow(z, a1),
+                      sum = s;
+            for (long k = 1; k < n; k++)
+            {
+                s = s.multiply(new Apint(k, radix).subtract(a)).divide(z).negate();
+                sum = sum.add(s);
+            }
+            Apcomplex ez = ApcomplexMath.exp(z.negate()).multiply(sum);
+            result = (lower ? result.subtract(ez) : result.add(ez));
+        }
+        return result;
     }
 
     // Upper gamma of nonpositive integer
