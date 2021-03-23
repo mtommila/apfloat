@@ -205,6 +205,12 @@ class IncompleteGammaHelper
         private boolean inverted;
     }
 
+    private static class RetryException
+        extends RuntimeException
+    {
+        private static final long serialVersionUID = 1L;
+    }
+
     public static Apcomplex gamma(Apcomplex a, Apcomplex z)
     {
         if (z.real().signum() == 0 && z.imag().signum() == 0)
@@ -502,11 +508,27 @@ class IncompleteGammaHelper
         long extraPrecision = (long) (Apfloat.EXTRA_PRECISION * 2 / Math.log10(radix)); // More extra precision because the incomplete gamma behaves so erratically, the more the bigger the numbers
         a = ApfloatHelper.extendPrecision(a, extraPrecision);
         z = ApfloatHelper.extendPrecision(z, extraPrecision);
+        long reducePrecision = extraPrecision;
 
-        Apcomplex f = continuedFraction(s.apply(a, z), radix, Math.min(a.precision(), z.precision()), minIterations, Long.MAX_VALUE).getResult();
+        Apcomplex f = null;
+        do
+        {
+            try
+            {
+                f = continuedFraction(s.apply(a, z), radix, Math.min(a.precision(), z.precision()), minIterations, Long.MAX_VALUE).getResult();
+            }
+            catch (RetryException re)
+            {
+                // If the continued fraction initially converges to a wrong value and we don't calculate it accurately enough then keep increasing the precision
+                a = ApfloatHelper.extendPrecision(a, extraPrecision);
+                z = ApfloatHelper.extendPrecision(z, extraPrecision);
+                reducePrecision += extraPrecision;
+                extraPrecision += extraPrecision;
+            }
+        } while (f == null);
         Apcomplex g = f.multiply(ApcomplexMath.exp(a.multiply(ApcomplexMath.log(z)).subtract(z)));
 
-        return ApfloatHelper.reducePrecision(g, extraPrecision);
+        return ApfloatHelper.reducePrecision(g, reducePrecision);
     }
 
     // Modified Lentz's method
@@ -521,7 +543,11 @@ class IncompleteGammaHelper
         Apcomplex d = Apcomplex.ZERO;
         Apcomplex delta;
         long precision;
-        do {
+        long precisionLoss = (long) (Apfloat.EXTRA_PRECISION / 2 / Math.log10(radix));
+        long targetPrecision = workingPrecision - precisionLoss;  // Due to round-off errors we cannot always reach workingPrecision but slightly less is sufficient
+        long maxPrecision = 0;
+        do
+        {
             n = Math.addExact(n, 1);
             an = s.a(n).precision(workingPrecision);
             bn = s.b(n).precision(workingPrecision);
@@ -541,9 +567,14 @@ class IncompleteGammaHelper
             delta = c.multiply(d);
             f = f.multiply(delta);
             precision = delta.equalDigits(one);
+            maxPrecision = Math.max(maxPrecision, precision);
+            if (precision < precisionLoss && maxPrecision >= targetPrecision - precisionLoss)   // Check if the continued fraction initially converges to a wrong value and we don't calculate it accurately enough
+            {
+                throw new RetryException();
+            }
         } while (n < minIterations ||
                  n <= maxIterations &&
-                 precision < workingPrecision - Apfloat.EXTRA_PRECISION / 2);  // Due to round-off errors we cannot always reach workingPrecision but slightly less is sufficient
+                 precision < targetPrecision);
         return new ContinuedFractionResult(f, delta, n);
     }
 
@@ -556,6 +587,7 @@ class IncompleteGammaHelper
         return ApcomplexMath.scale(ApcomplexMath.ulp(z), -workingPrecision).precision(workingPrecision);
     }
 
+    /*
     // Transform by adding an integer to a
     private static Apcomplex transform(Apcomplex a, Apcomplex z, long n, boolean lower)
     {
@@ -604,6 +636,7 @@ class IncompleteGammaHelper
         }
         return result;
     }
+    */
 
     // Upper gamma of nonpositive integer
     private static Apcomplex upperGamma(long mn, Apcomplex z)
