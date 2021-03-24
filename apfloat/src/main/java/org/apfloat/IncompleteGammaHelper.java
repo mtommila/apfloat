@@ -251,13 +251,18 @@ class IncompleteGammaHelper
 
     private static GammaValue upperGamma(Apcomplex a, Apcomplex z)
     {
-        long n = a.real().longValueExact(); // If this overflows then the value would overflow anyways
+        ContinuedFraction[] algorithms = null;
         if (a.isInteger() && a.real().signum() <= 0)
         {
-            // Note that this transformation may be extremely slow if n is large
-            // gamma(-n,z) = (-1)^n/n! gamma(0,z) - e^-z sum[z^(k-n-1)/(-n)_k,{k,1,n}]
-            // See https://functions.wolfram.com/GammaBetaErf/Gamma2/17/02/01/
-            return new GammaValue(a, upperGamma(n, z), false);
+            if (isCloseToNegativeRealAxis(z))
+            {
+                // Note that this transformation may be extremely slow if n is large
+                // gamma(-n,z) = (-1)^n/n! gamma(0,z) - e^-z sum[z^(k-n-1)/(-n)_k,{k,1,n}]
+                // See https://functions.wolfram.com/GammaBetaErf/Gamma2/17/02/01/
+                long n = a.real().longValueExact(); // If this overflows then the value would overflow anyways
+                return new GammaValue(a, upperGamma(n, z), false);
+            }
+            algorithms = ContinuedFraction.upperValues();
         }
         /*
         if (n < 1)
@@ -265,12 +270,15 @@ class IncompleteGammaHelper
             return new GammaValue(a, transform(a, z, (a.real().signum() < 0 ? 2 : 1) - n, false), false);
         }
         */
-        if (useLowerGamma(a, z))
+        if (algorithms == null)
         {
-            return lowerGamma(a, z, ContinuedFraction.lowerValues()).invert();
+            if (useLowerGamma(a, z))
+            {
+                return lowerGamma(a, z, ContinuedFraction.lowerValues()).invert();
+            }
+            algorithms = (isMaybeUnstable(a, z) ? ContinuedFraction.bothValues() : ContinuedFraction.upperValues());
         }
 
-        ContinuedFraction[] algorithms = (isMaybeUnstable(a, z) ? ContinuedFraction.bothValues() : ContinuedFraction.upperValues());
         ContinuedFraction fastest = fastestG(a, z, algorithms);
         return gammaG(a, z, fastest, ContinuedFractionType.UPPER);
     }
@@ -281,7 +289,7 @@ class IncompleteGammaHelper
         {
             throw new ArithmeticException("Lower gamma with first argument nonpositive integer");
         }
-        if (useLowerGammaSum(z))
+        if (useSum(z))
         {
             // The series is fastest for small z
             return new GammaValue(a, sum(a, z), false);
@@ -313,7 +321,7 @@ class IncompleteGammaHelper
         return gammaG(a, z, fastest, ContinuedFractionType.LOWER);
     }
 
-    private static boolean useLowerGammaSum(Apcomplex z)
+    private static boolean useSum(Apcomplex z)
     {
         // The series converges fast for small z
         return z.scale() <= 0;
@@ -322,10 +330,10 @@ class IncompleteGammaHelper
     private static boolean useLowerGamma(Apcomplex a, Apcomplex z)
     {
         // The continued fraction for upper gamma would not converge well
-        return z.scale() < a.scale() || mustUseLowerGamma(z) || useLowerGammaSum(z);
+        return z.scale() < a.scale() || isCloseToNegativeRealAxis(z) || useSum(z);
     }
 
-    private static boolean mustUseLowerGamma(Apcomplex z)
+    private static boolean isCloseToNegativeRealAxis(Apcomplex z)
     {
         // If z is too close to the negative real axis, the upper gamma continued fraction converges poorly
         return (z.real().signum() <= 0 || z.real().scale() < 0) && z.imag().scale() < 0;
@@ -505,7 +513,7 @@ class IncompleteGammaHelper
     private static Apcomplex g(BiFunction<Apcomplex, Apcomplex, Sequence> s, Apcomplex a, Apcomplex z, long minIterations)
     {
         int radix = z.radix();
-        long extraPrecision = (long) (Apfloat.EXTRA_PRECISION * 2 / Math.log10(radix)); // More extra precision because the incomplete gamma behaves so erratically, the more the bigger the numbers
+        long extraPrecision = extraPrecision(radix); // More extra precision because the incomplete gamma behaves so erratically, the more the bigger the numbers
         a = ApfloatHelper.extendPrecision(a, extraPrecision);
         z = ApfloatHelper.extendPrecision(z, extraPrecision);
         long reducePrecision = extraPrecision;
@@ -531,6 +539,11 @@ class IncompleteGammaHelper
         return ApfloatHelper.reducePrecision(g, reducePrecision);
     }
 
+    private static long extraPrecision(int radix)
+    {
+        return (long) (Apfloat.EXTRA_PRECISION * 2 / Math.log10(radix));
+    }
+
     // Modified Lentz's method
     private static ContinuedFractionResult continuedFraction(Sequence s, int radix, long workingPrecision, long minIterations, long maxIterations)
     {
@@ -543,7 +556,7 @@ class IncompleteGammaHelper
         Apcomplex d = Apcomplex.ZERO;
         Apcomplex delta;
         long precision;
-        long precisionLoss = (long) (Apfloat.EXTRA_PRECISION / 2 / Math.log10(radix));
+        long precisionLoss = extraPrecision(radix) / 4;
         long targetPrecision = workingPrecision - precisionLoss;  // Due to round-off errors we cannot always reach workingPrecision but slightly less is sufficient
         long maxPrecision = 0;
         do
@@ -652,8 +665,8 @@ class IncompleteGammaHelper
             {
                 result = result.negate();
             }
-            Apcomplex ez = ApcomplexMath.exp(z.negate());
             z = ApfloatHelper.extendPrecision(z);
+            Apcomplex ez = ApcomplexMath.exp(z.negate());
             Apcomplex s = ApcomplexMath.pow(z, mn).divide(new Apint(mn, radix)),
                       sum = s;
             for (long k = 2; k <= n; k++)
@@ -662,7 +675,6 @@ class IncompleteGammaHelper
                 s = s.multiply(z).divide(new Apint(mn, radix));
                 sum = sum.add(s);
             }
-            sum = ApfloatHelper.reducePrecision(sum);
             result = result.subtract(ez.multiply(sum));
         }
         return result;
@@ -720,44 +732,25 @@ class IncompleteGammaHelper
     // Exponential integral for upperGamma(0, z)
     private static Apcomplex e1(Apcomplex z)
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
-        {
-            throw new ArithmeticException("E1 of zero");
-        }
+        assert (isCloseToNegativeRealAxis(z));
 
         int radix = z.radix();
-        Apcomplex result;
-        if (z.scale() <= 1)
+        long targetPrecision = z.precision();
+        Apcomplex mz = ApfloatHelper.extendPrecision(z).negate();
+        Apcomplex s = mz,
+                  sum = s,
+                  t;
+        long k = 1;
+        do
         {
-            // Small value, use series
-            long targetPrecision = z.precision();
-            Apcomplex mz = ApfloatHelper.extendPrecision(z).negate();
-            Apcomplex s = mz,
-                      sum = s,
-                      t;
-            long k = 1;
-            do
-            {
-                k++;
-                Apint kk = new Apint(k, radix);
-                s = s.multiply(mz).divide(kk);
-                t = s.divide(kk);
-                sum = sum.add(t);
-            } while (sum.scale() - t.scale() < targetPrecision && !t.equals(Apcomplex.ZERO));   // Also check for underflow of t
+            k++;
+            Apint kk = new Apint(k, radix);
+            s = s.multiply(mz).divide(kk);
+            t = s.divide(kk);
+            sum = sum.add(t);
+        } while (sum.scale() - t.scale() < targetPrecision && !t.equals(Apcomplex.ZERO));   // Also check for underflow of t
 
-            result = ApfloatMath.euler(targetPrecision).negate().subtract(ApcomplexMath.log(z)).subtract(ApfloatHelper.reducePrecision(sum));
-        }
-        else
-        {
-            // Large value, use continued fraction
-            Apcomplex zz = ApfloatHelper.extendPrecision(z);
-            long workingPrecision = zz.precision();
-            Apfloat one = new Apfloat(1, workingPrecision, radix);
-            Sequence sequence = new Sequence(a -> new Apint(a == 1 ? 1 : a / 2, radix), b -> (b & 1) == 0 ? one : zz);
-            Apcomplex continuedFraction = continuedFraction(sequence , radix, workingPrecision, 0, Long.MAX_VALUE).getResult();
-
-            result = ApcomplexMath.exp(z.negate()).multiply(ApfloatHelper.reducePrecision(continuedFraction));
-        }
+        Apcomplex result = ApfloatMath.euler(targetPrecision).negate().subtract(ApcomplexMath.log(z)).subtract(ApfloatHelper.reducePrecision(sum));
         return result;
     }
 }

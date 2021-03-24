@@ -1652,6 +1652,15 @@ public class ApcomplexMathTest
         a = ApcomplexMath.gamma(new Apfloat(0, 10), new Apfloat(-1, 10));
         assertEquals("0,-1 precision", 10, a.precision());
         assertEquals("0,-1 value", new Apcomplex("(-1.895117816,-3.141592654)"), a, new Apfloat("5e-9"));
+        a = ApcomplexMath.gamma(new Apfloat(-4, 10), new Apcomplex(Apfloat.ZERO, new Apfloat(-2, 10)));
+        assertEquals("-4,-2i precision", 10, a.precision());
+        assertEquals("-4,-2i value", new Apcomplex("(-0.01031978444,0.00762842656)"), a, new Apfloat("5e-11"));
+        a = ApcomplexMath.gamma(new Apfloat(-4, 10), new Apcomplex(Apfloat.ZERO, new Apfloat(2, 10)));
+        assertEquals("-4,2i precision", 10, a.precision());
+        assertEquals("-4,2i value", new Apcomplex("(-0.01031978444,-0.00762842656)"), a, new Apfloat("5e-11"));
+        a = ApcomplexMath.gamma(new Apfloat(-4, 10), new Apcomplex(Apfloat.ZERO, new Apfloat(-200, 10)));
+        assertEquals("-4,-200i precision", 8, a.precision());
+        assertEquals("-4,-200i value", new Apcomplex("(2.765031767e-12,1.453166391e-12)"), a, new Apfloat("5e-21"));
 
         a = ApcomplexMath.gamma(new Apcomplex("(1.5000000,1.0000000)"), new Apcomplex("(-1.0000000,1.0000000e-2)"));
         assertEquals("1.5+i,-1+0.01i precision", 8, a.precision());
