@@ -1841,6 +1841,10 @@ public class ApfloatMathTest
         assertEquals("-10,10 precision", 9, a.precision());
         assertEquals("-10,10 value", new Apfloat("2.214690319e-16"), a, new Apfloat("5e-24"));
 
+        a = ApfloatMath.gamma(new Apfloat("4.5000000"), Apfloat.ZERO);
+        assertEquals("4.5,0 precision", 8, a.precision());
+        assertEquals("4.5,0 value", new Apfloat("11.631728"), a, new Apfloat("5e-6"));
+
         try
         {
             ApfloatMath.gamma(Apfloat.ZERO, Apfloat.ZERO);
@@ -1893,6 +1897,24 @@ public class ApfloatMathTest
         a = ApfloatMath.gamma(new Apfloat(2, 10), Apfloat.ZERO, new Apfloat("-0.2", 10));
         assertEquals("2,0,-0.2 precision", 10, a.precision());
         assertEquals("2,0,-0.2 value", new Apfloat("0.02287779347"), a, new Apfloat("5e-11"));
+        a = ApfloatMath.gamma(new Apfloat(1000, 10), Apfloat.ZERO, new Apfloat(1, 10));
+        assertEquals("1000,0,1 precision", 10, a.precision());
+        assertEquals("1000,0,1 value", new Apfloat("0.0003682473202"), a, new Apfloat("5e-13"));
+
+        a = ApfloatMath.gamma(new Apfloat(4.0), new Apfloat(0.01), new Apfloat(10000.0));
+        assertEquals("4,0.01,10000 precision", 16, a.precision());
+        assertEquals("4,0.01,10000 value", new Apfloat("5.999999997519917"), a, new Apfloat("5e-15"));
+        a = ApfloatMath.gamma(new Apfloat(4.0), new Apfloat(10000.0), new Apfloat(0.01));
+        assertEquals("4,10000,0.01 precision", 16, a.precision());
+        assertEquals("4,10000,0.01 value", new Apfloat("-5.999999997519917"), a, new Apfloat("5e-15"));
+
+        a = ApfloatMath.gamma(new Apfloat("4.0000000"), new Apfloat("1.0000000"), Apfloat.ZERO);
+        assertEquals("4,1,0 precision", 7, a.precision());
+        assertEquals("4,1,0 value", new Apfloat("-0.11392894"), a, new Apfloat("5e-8"));
+
+        a = ApfloatMath.gamma(new Apfloat(-4), new Apfloat(10000.0), new Apfloat(0.01));
+        assertEquals("-4,10000,0.01 precision", 24, a.precision());
+        assertEquals("-4,10000,0.01 value", new Apfloat("-24669150.2547202578891267"), a, new Apfloat("5e-16"));
 
         try
         {
