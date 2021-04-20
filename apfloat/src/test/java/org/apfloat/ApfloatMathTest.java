@@ -1841,6 +1841,10 @@ public class ApfloatMathTest
         assertEquals("-10,10 precision", 9, a.precision());
         assertEquals("-10,10 value", new Apfloat("2.214690319e-16"), a, new Apfloat("5e-24"));
 
+        a = ApfloatMath.gamma(new Apfloat("-1.000e-50"), new Apfloat("100.0"));
+        assertEquals("-1e-50,100 precision", 2, a.precision());
+        assertEquals("-1e-50,100 value", new Apfloat("3.7e-46"), a, new Apfloat("5e-47"));
+
         a = ApfloatMath.gamma(new Apfloat("4.5000000"), Apfloat.ZERO);
         assertEquals("4.5,0 precision", 8, a.precision());
         assertEquals("4.5,0 value", new Apfloat("11.631728"), a, new Apfloat("5e-6"));
@@ -1907,6 +1911,13 @@ public class ApfloatMathTest
         a = ApfloatMath.gamma(new Apfloat(4.0), new Apfloat(10000.0), new Apfloat(0.01));
         assertEquals("4,10000,0.01 precision", 16, a.precision());
         assertEquals("4,10000,0.01 value", new Apfloat("-5.999999997519917"), a, new Apfloat("5e-15"));
+
+        a = ApfloatMath.gamma(new Apfloat(4.0), new Apfloat(0.01), new Apfloat(0.02));
+        assertEquals("4,0.01,0.02 precision", 15, a.precision());
+        assertEquals("4,0.01,0.02 value", new Apfloat("3.68852198942455e-8"), a, new Apfloat("5e-22"));
+        a = ApfloatMath.gamma(new Apfloat(4.0), new Apfloat(10000.0), new Apfloat(20000.0));
+        assertEquals("4,10000.0,20000.0 precision", 12, a.precision());
+        assertEquals("4,10000.0,20000.0 value", new Apfloat("1.13582457861018e-4331"), a, new Apfloat("5e-4342"));
 
         a = ApfloatMath.gamma(new Apfloat("4.0000000"), new Apfloat("1.0000000"), Apfloat.ZERO);
         assertEquals("4,1,0 precision", 7, a.precision());
