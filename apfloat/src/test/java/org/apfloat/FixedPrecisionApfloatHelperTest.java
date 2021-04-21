@@ -921,19 +921,19 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat a = new Apfloat("1.5");
         Apfloat x = new Apfloat("3.5");
         Apfloat result = helper.gamma(a, x);
-        assertEquals("value", new Apfloat("2.22465301759833318396785103e11565705518092"), result, new Apfloat("5e11565705518066"));
+        assertEquals("value", new Apfloat("0.063718"), result, new Apfloat("5e-6"));
         assertEquals("precision", 5, result.precision());
     }
 
     public static void testGammaIncompleteGeneralized()
     {
-        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(5);
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
         Apfloat a = new Apfloat("1.5");
         Apfloat x0 = new Apfloat("2.5");
         Apfloat x1 = new Apfloat("3.5");
         Apfloat result = helper.gamma(a, x0, x1);
-        assertEquals("value", new Apfloat("2.22465301759833318396785103e11565705518092"), result, new Apfloat("5e11565705518066"));
-        assertEquals("precision", 5, result.precision());
+        assertEquals("value", new Apfloat("0.0885335"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
     }
 
     public static void testRandom()

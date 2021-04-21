@@ -583,19 +583,19 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex a = new Apcomplex("(1,2)");
         Apcomplex z = new Apcomplex("(3,4)");
         Apcomplex result = helper.gamma(a, z);
-        assertEquals("value", new Apcomplex("(2.2799397381057012808806415e-682188176916,2.56143734228029034694359025e-682188176915)"), result, new Apfloat("5e-682188176941"));
+        assertEquals("value", new Apcomplex("(0.0087875,-0.0046329)"), result, new Apfloat("5e-7"));
         assertEquals("precision", 5, result.precision());
     }
 
     public static void testGammaIncompleteGeneralized()
     {
-        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(5);
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
         Apcomplex a = new Apcomplex("(1,2)");
         Apcomplex z0 = new Apcomplex("(3,4)");
         Apcomplex z1 = new Apcomplex("(5,6)");
         Apcomplex result = helper.gamma(a, z0, z1);
-        assertEquals("value", new Apcomplex("(2.2799397381057012808806415e-682188176916,2.56143734228029034694359025e-682188176915)"), result, new Apfloat("5e-682188176941"));
-        assertEquals("precision", 5, result.precision());
+        assertEquals("value", new Apcomplex("(0.00896428,-0.00326815)"), result, new Apfloat("5e-8"));
+        assertEquals("precision", 6, result.precision());
     }
 
     public static void testUlp()
