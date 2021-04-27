@@ -1817,6 +1817,9 @@ public class ApfloatMathTest
         a = ApfloatMath.gamma(new Apfloat("4.0000000"), new Apfloat("6.0000000"));
         assertEquals("4,6 precision", 8, a.precision());
         assertEquals("4,6 value", new Apfloat("0.90722330"), a, new Apfloat("5e-8"));
+        a = ApfloatMath.gamma(new Apfloat("4.500000"), new Apfloat("6.500000"));
+        assertEquals("4.5,6.5 precision", 6, a.precision());
+        assertEquals("4.5,6.5 value", new Apfloat("1.89139"), a, new Apfloat("5e-5"));
 
         a = ApfloatMath.gamma(new Apfloat(1, 10), new Apfloat(-1, 10));
         assertEquals("1,-1 precision", 10, a.precision());
@@ -1840,6 +1843,13 @@ public class ApfloatMathTest
         a = ApfloatMath.gamma(new Apfloat(-10, 10), new Apfloat(10, 10));
         assertEquals("-10,10 precision", 9, a.precision());
         assertEquals("-10,10 value", new Apfloat("2.214690319e-16"), a, new Apfloat("5e-24"));
+
+        a = ApfloatMath.gamma(new Apfloat(4, 10), new Apfloat("0.1", 10));
+        assertEquals("4,0.1 precision", 10, a.precision());
+        assertEquals("4,0.1 value", new Apfloat("5.999976919"), a, new Apfloat("5e-9"));
+        a = ApfloatMath.gamma(new Apfloat(4, 10), new Apfloat("-0.1", 10));
+        assertEquals("4,-0.1 precision", 10, a.precision());
+        assertEquals("4,-0.1 value", new Apfloat("5.999972914"), a, new Apfloat("5e-9"));
 
         a = ApfloatMath.gamma(new Apfloat("-1.000e-50"), new Apfloat("100.0"));
         assertEquals("-1e-50,100 precision", 2, a.precision());
@@ -1927,6 +1937,10 @@ public class ApfloatMathTest
         assertEquals("-4,10000,0.01 precision", 24, a.precision());
         assertEquals("-4,10000,0.01 value", new Apfloat("-24669150.2547202578891267"), a, new Apfloat("5e-16"));
 
+        a = ApfloatMath.gamma(Apfloat.ZERO, new Apfloat(1.0), new Apfloat(2.0));
+        assertEquals("0,1,2 precision", 16, a.precision());
+        assertEquals("0,1,2 value", new Apfloat("0.1704834236874592"), a, new Apfloat("5e-16"));
+
         try
         {
             ApfloatMath.gamma(Apfloat.ZERO, Apfloat.ZERO, Apfloat.ZERO);
@@ -1939,6 +1953,15 @@ public class ApfloatMathTest
         try
         {
             ApfloatMath.gamma(new Apfloat(-1, 10), Apfloat.ZERO, new Apfloat(1, 10));
+            fail("Lower gamma of non-positive integer");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK a is non-positive integer
+        }
+        try
+        {
+            ApfloatMath.gamma(Apfloat.ZERO, new Apfloat(-1, 10), Apfloat.ZERO);
             fail("Lower gamma of non-positive integer");
         }
         catch (ArithmeticException ae)

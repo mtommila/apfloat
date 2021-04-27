@@ -1661,6 +1661,9 @@ public class ApcomplexMathTest
         a = ApcomplexMath.gamma(new Apfloat(-4, 10), new Apcomplex(Apfloat.ZERO, new Apfloat(-200, 10)));
         assertEquals("-4,-200i precision", 8, a.precision());
         assertEquals("-4,-200i value", new Apcomplex("(2.765031767e-12,1.453166391e-12)"), a, new Apfloat("5e-21"));
+        a = ApcomplexMath.gamma(new Apcomplex(Apfloat.ZERO, new Apfloat(-4, 10)), new Apcomplex(Apfloat.ZERO, new Apfloat(2, 10)));
+        assertEquals("-4i,2i precision", 10, a.precision());
+        assertEquals("-4i,2i value", new Apcomplex("(89.37681331,-0.32076166)"), a, new Apfloat("5e-8"));
 
         a = ApcomplexMath.gamma(new Apcomplex("(1.5000000,1.0000000)"), new Apcomplex("(-1.0000000,1.0000000e-2)"));
         assertEquals("1.5+i,-1+0.01i precision", 8, a.precision());
@@ -1761,6 +1764,16 @@ public class ApcomplexMathTest
         a = ApcomplexMath.gamma(new Apcomplex("(1.154781984689458e4,-1.539926526059491e2)"), new Apcomplex("(1.154781984689458e4,3.651741272548377e1)"));
         assertEquals("1.154781984689458e4-1.539926526059491e2i,1.154781984689458e4+3.651741272548377e1i precision 16", 11, a.precision());
         assertEquals("1.154781984689458e4-1.539926526059491e2i,1.154781984689458e4+3.651741272548377e1i value 16", new Apcomplex("(-8.382175690814767e41895,-2.511119213693562e41895)"), a, new Apfloat("5e41880"));
+
+        try
+        {
+            ApcomplexMath.gamma(Apcomplex.ZERO, Apcomplex.ZERO);
+            fail("Gamma of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
     }
 
     public static void testGammaIncompleteGeneralized()
@@ -1774,6 +1787,67 @@ public class ApcomplexMathTest
         a = ApcomplexMath.gamma(new Apcomplex("(-1.0000000e-2,4.0000000e2)"), new Apcomplex("(1.0000000e-2,1.0000000e2)"), new Apcomplex("(1.0000000e-2,1.0000000e2)"));
         assertEquals("-1e-2+4e2i,1e-2+1e2i,1e-2+1e2i precision", Apfloat.INFINITE, a.precision());
         assertEquals("-1e-2+4e2i,1e-2+1e2i,1e-2+1e2i value", Apcomplex.ZERO, a);
+        a = ApcomplexMath.gamma(new Apcomplex("(0,1.0000)"), new Apcomplex("(0,1.0000)"), new Apcomplex("(0,2.0000)"));
+        assertEquals("i,i,2i precision", 5, a.precision());
+        assertEquals("i,i,2i value", new Apcomplex("(0.06560,-0.12764)"), a, new Apfloat("5e-5"));
+        a = ApcomplexMath.gamma(Apcomplex.ZERO, new Apcomplex("(0,1.0000)"), new Apcomplex("(0,2.0000)"));
+        assertEquals("0,i,2i precision", 5, a.precision());
+        assertEquals("0,i,2i value", new Apcomplex("(0.08558,-0.65933)"), a, new Apfloat("5e-5"));
+        a = ApcomplexMath.gamma(Apcomplex.ZERO, new Apcomplex("(1.0000,1.0000)"), new Apcomplex("(2.0000,0)"));
+        assertEquals("0,1+i,2 precision", 5, a.precision());
+        assertEquals("0,1+i,2 value", new Apcomplex("(-0.04862,-0.17932)"), a, new Apfloat("5e-5"));
+        a = ApcomplexMath.gamma(Apcomplex.ZERO, new Apcomplex("(1.0000,1.0000)"), new Apcomplex("(0,2.0000)"));
+        assertEquals("0,1+i,2i precision", 5, a.precision());
+        assertEquals("0,1+i,2i value", new Apcomplex("(0.42326,-0.21394)"), a, new Apfloat("5e-5"));
+        a = ApcomplexMath.gamma(new Apcomplex("(0,1.0000)"), new Apcomplex("(0,1.0000)"), Apcomplex.ZERO);
+        assertEquals("i,i,0 precision", 5, a.precision());
+        assertEquals("i,i,0 value", new Apcomplex("(0.14013,0.28147)"), a, new Apfloat("5e-5"));
+
+        try
+        {
+            ApcomplexMath.gamma(Apcomplex.ZERO, Apcomplex.ZERO, Apcomplex.ZERO);
+            fail("Gamma of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.gamma(new Apcomplex("-1"), Apcomplex.ZERO, new Apcomplex("(1,2)"));
+            fail("Lower gamma of non-positive integer");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK a is non-positive integer
+        }
+        try
+        {
+            ApcomplexMath.gamma(Apcomplex.ZERO, new Apcomplex("(0,-1)"), Apcomplex.ZERO);
+            fail("Lower gamma of non-positive integer");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK a is non-positive integer
+        }
+        try
+        {
+            ApcomplexMath.gamma(Apcomplex.ZERO, Apcomplex.ZERO, new Apcomplex("(0,-1)"));
+            fail("Lower gamma of non-positive integer");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK a is non-positive integer
+        }
+        try
+        {
+            ApcomplexMath.gamma(Apcomplex.ZERO, Apcomplex.ZERO, new Apcomplex("(1,-1)"));
+            fail("Lower gamma of non-positive integer");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK a is non-positive integer
+        }
     }
 
     public static void testUlp()
