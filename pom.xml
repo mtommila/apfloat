@@ -13,8 +13,8 @@
 
   <licenses>
     <license>
-      <name>GNU Lesser General Public License, Version 2.1</name>
-      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -242,7 +242,7 @@
             <configuration>
               <target>
                 <zip destfile="${project.build.directory}/apfloat-${project.version}.zip">
-                  <fileset dir="." includes="readme.html,lgpl.txt" />
+                  <fileset dir="." includes="readme.html,license.txt" />
                   <fileset dir="src/site/resources" />
                   <zipfileset dir="${project.build.directory}/site/apidocs" prefix="docs" />
                   <zipfileset src="${project.build.directory}/apfloat-parent-${project.version}-sources.jar" prefix="source" excludes="META-INF/" />
@@ -255,7 +255,7 @@
                   <zipfileset file="apfloat-aparapi/target/apfloat-aparapi.jar" fullpath="lib/apfloat-aparapi.jar" />
                 </zip>
                 <zip destfile="${project.build.directory}/apfloat-unittest-${project.version}.zip">
-                  <fileset dir="." includes="readme.html,lgpl.txt" />
+                  <fileset dir="." includes="readme.html,license.txt" />
                   <zipfileset src="apfloat/target/apfloat-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
                   <zipfileset src="apfloat-calc/target/apfloat-calc-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
                   <zipfileset src="apfloat-jscience/target/apfloat-jscience-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
