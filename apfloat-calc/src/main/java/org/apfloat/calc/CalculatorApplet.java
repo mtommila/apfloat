@@ -101,7 +101,7 @@ public class CalculatorApplet
     {
         String lineSeparator = System.lineSeparator();
         return "Calculator applet" + lineSeparator +
-               "Written by Mikko Tommila 2011 - 2020" + lineSeparator +
+               "Written by Mikko Tommila 2011 - 2021" + lineSeparator +
                "Java version: "         + System.getProperty("java.version") + lineSeparator +
                "Java Virtual Machine: " + System.getProperty("java.vm.name");
     }

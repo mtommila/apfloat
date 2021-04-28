@@ -116,7 +116,7 @@ public class PiApplet
 
         String lineSeparator = System.lineSeparator();
         return "Pi calculation applet" + lineSeparator +
-               "Written by Mikko Tommila 2002 - 2020" + lineSeparator +
+               "Written by Mikko Tommila 2002 - 2021" + lineSeparator +
                "Specification-Title: "    + specificationPackage.getSpecificationTitle() + lineSeparator +
                "Specification-Version: "  + specificationPackage.getSpecificationVersion() + lineSeparator +
                "Specification-Vendor: "   + specificationPackage.getSpecificationVendor() + lineSeparator +
