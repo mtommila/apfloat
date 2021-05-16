@@ -35,7 +35,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApfloatMath
  *
- * @version 1.9.0
+ * @version 1.10.0
  * @author Mikko Tommila
  */
 
