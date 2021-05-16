@@ -50,9 +50,9 @@
             </goals>
             <configuration>
               <artifactSet>
-                <excludes>
-                  <exclude>org.apfloat:apfloat</exclude>
-                </excludes>
+                <includes>
+                  <include>org.apfloat:apfloat-applet</include>
+                </includes>
               </artifactSet>
               <outputFile>${project.build.directory}/applet.jar</outputFile>
             </configuration>

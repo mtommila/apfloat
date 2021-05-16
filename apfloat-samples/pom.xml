@@ -74,13 +74,9 @@
             </goals>
             <configuration>
               <artifactSet>
-                <excludes>
-                  <exclude>org.apfloat:apfloat</exclude>
-                  <exclude>org.apfloat:apfloat-aparapi</exclude>
-                  <exclude>org.apfloat:apfloat-calc</exclude>
-                  <exclude>com.aparapi:aparapi</exclude>
-                  <exclude>com.aparapi:aparapi-jni</exclude>
-                </excludes>
+                <includes>
+                  <include>org.apfloat:apfloat-samples</include>
+                </includes>
               </artifactSet>
               <outputFile>${project.build.directory}/samples.jar</outputFile>
               <transformers>
@@ -99,11 +95,11 @@
             </goals>
             <configuration>
               <artifactSet>
-                <excludes>
-                  <exclude>org.apfloat:apfloat-aparapi</exclude>
-                  <exclude>com.aparapi:aparapi</exclude>
-                  <exclude>com.aparapi:aparapi-jni</exclude>
-                </excludes>
+                <includes>
+                  <include>org.apfloat:apfloat</include>
+                  <include>org.apfloat:apfloat-calc</include>
+                  <include>org.apfloat:apfloat-samples</include>
+                </includes>
               </artifactSet>
               <outputFile>${project.build.directory}/signedapplet.jar</outputFile>
             </configuration>

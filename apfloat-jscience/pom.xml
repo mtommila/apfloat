@@ -52,11 +52,9 @@
             </goals>
             <configuration>
               <artifactSet>
-                <excludes>
-                  <exclude>org.apfloat:apfloat</exclude>
-                  <exclude>org.jscience:jscience</exclude>
-                  <exclude>org.javolution:javolution</exclude>
-                </excludes>
+                <includes>
+                  <include>org.apfloat:apfloat-jscience</include>
+                </includes>
               </artifactSet>
               <outputFile>${project.build.directory}/apfloat-jscience.jar</outputFile>
             </configuration>

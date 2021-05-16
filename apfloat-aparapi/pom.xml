@@ -52,11 +52,9 @@
             </goals>
             <configuration>
               <artifactSet>
-                <excludes>
-                  <exclude>org.apfloat:apfloat</exclude>
-                  <exclude>com.aparapi:aparapi</exclude>
-                  <exclude>com.aparapi:aparapi-jni</exclude>
-                </excludes>
+                <includes>
+                  <include>org.apfloat:apfloat-aparapi</include>
+                </includes>
               </artifactSet>
               <outputFile>${project.build.directory}/apfloat-aparapi.jar</outputFile>
             </configuration>
