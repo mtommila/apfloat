@@ -1891,6 +1891,24 @@ public class ApfloatMathTest
         {
             // OK non-real result
         }
+        try
+        {
+            ApfloatMath.gamma(new Apfloat("1e100", 100), new Apfloat("1e102"));
+            fail("Overflow");
+        }
+        catch (OverflowException are)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.gamma(new Apfloat(4), new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testGammaIncompleteGeneralized()
@@ -1981,6 +1999,24 @@ public class ApfloatMathTest
         catch (ArithmeticException ae)
         {
             // OK a is non-positive integer
+        }
+        try
+        {
+            ApfloatMath.gamma(new Apfloat("1e100", 100), new Apfloat("1e102"), new Apfloat("1e103"));
+            fail("Overflow");
+        }
+        catch (OverflowException are)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.gamma(new Apfloat(4), Apfloat.ZERO, new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
         }
     }
 

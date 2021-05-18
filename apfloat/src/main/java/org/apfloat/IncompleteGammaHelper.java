@@ -23,6 +23,7 @@
  */
 package org.apfloat;
 
+import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.LongFunction;
 
@@ -100,7 +101,7 @@ class IncompleteGammaHelper
         LOWER1(ContinuedFractionType.LOWER, IncompleteGammaHelper::lowerGammaSequence)
         {
             @Override
-            public long getMinIterations(Apcomplex a, Apcomplex z)
+            protected long doGetMinIterations(Apcomplex a, Apcomplex z)
             {
                 return (a.real().signum() >= 0 ? 0 : Math.subtractExact(4, Math.multiplyExact(2, a.real().longValueExact())));
             }
@@ -108,7 +109,7 @@ class IncompleteGammaHelper
         LOWER2(ContinuedFractionType.LOWER, IncompleteGammaHelper::lowerGammaSequenceAlternative)
         {
             @Override
-            public long getMinIterations(Apcomplex a, Apcomplex z)
+            protected long doGetMinIterations(Apcomplex a, Apcomplex z)
             {
                 return Math.max(a.real().signum() >= 0 ? 0 : Math.subtractExact(3, a.real().longValueExact()),
                                 Math.subtractExact(2, Math.addExact(a.real().longValueExact(), z.real().longValueExact())));
@@ -117,7 +118,7 @@ class IncompleteGammaHelper
         UPPER1(ContinuedFractionType.UPPER, IncompleteGammaHelper::upperGammaSequence)
         {
             @Override
-            public long getMinIterations(Apcomplex a, Apcomplex z)
+            protected long doGetMinIterations(Apcomplex a, Apcomplex z)
             {
                 return Math.max(a.real().signum() <= 0 ? 0 : Math.addExact(2, a.real().longValueExact()),
                                 Math.addExact(1, Math.subtractExact(a.real().longValueExact(), z.real().longValueExact()) / 2));
@@ -126,7 +127,7 @@ class IncompleteGammaHelper
         UPPER2(ContinuedFractionType.UPPER, IncompleteGammaHelper::upperGammaSequenceAlternative)
         {
             @Override
-            public long getMinIterations(Apcomplex a, Apcomplex z)
+            protected long doGetMinIterations(Apcomplex a, Apcomplex z)
             {
                 return (a.real().signum() <= 0 ? 0 : Math.addExact(Math.multiplyExact(2, a.real().longValueExact()), 2));
             }
@@ -148,7 +149,19 @@ class IncompleteGammaHelper
             return this.sequence;
         }
 
-        public abstract long getMinIterations(Apcomplex a, Apcomplex z);
+        public long getMinIterations(Apcomplex a, Apcomplex z)
+        {
+            try
+            {
+                return doGetMinIterations(a, z);
+            }
+            catch (ArithmeticException ae)
+            {
+                throw new OverflowException(ae.getMessage(), ae);
+            }
+        }
+
+        protected abstract long doGetMinIterations(Apcomplex a, Apcomplex z);
 
         public static ContinuedFraction[] upperValues()
         {
@@ -226,6 +239,8 @@ class IncompleteGammaHelper
             }
             return ApcomplexMath.gamma(a);
         }
+        checkPrecision(a, z);
+
         return upperGamma(a, z).getValue();
     }
 
@@ -241,6 +256,7 @@ class IncompleteGammaHelper
         {
             return Apcomplex.ZERO;
         }
+        checkPrecision(a, z0, z1);
 
         if (z0.real().signum() == 0 && z0.imag().signum() == 0)
         {
@@ -254,6 +270,15 @@ class IncompleteGammaHelper
         return upperGamma(a, z0).subtract(upperGamma(a, z1));
     }
 
+    private static void checkPrecision(Apcomplex... z)
+    {
+        long precision = Arrays.stream(z).mapToLong(Apcomplex::precision).min().getAsLong();
+        if (precision == Apfloat.INFINITE)
+        {
+            throw new InfiniteExpansionException("Cannot calculate incomplete gamma function to infinite precision");
+        }
+    }
+
     private static GammaValue upperGamma(Apcomplex a, Apcomplex z)
     {
         ContinuedFraction[] algorithms = null;
@@ -264,7 +289,15 @@ class IncompleteGammaHelper
                 // Note that this transformation may be extremely slow if n is large
                 // gamma(-n,z) = (-1)^n/n! gamma(0,z) - e^-z sum[z^(k-n-1)/(-n)_k,{k,1,n}]
                 // See https://functions.wolfram.com/GammaBetaErf/Gamma2/17/02/01/
-                long n = a.real().longValueExact(); // If this overflows then the value would overflow anyways
+                long n;
+                try
+                {
+                    n = a.real().longValueExact(); // If this overflows then the value would overflow anyways
+                }
+                catch (ArithmeticException ae)
+                {
+                    throw new OverflowException(ae.getMessage(), ae);
+                }
                 return new GammaValue(a, upperGamma(n, z), false);
             }
             algorithms = ContinuedFraction.upperValues();
@@ -598,7 +631,8 @@ class IncompleteGammaHelper
     private static Apcomplex upperGamma(long mn, Apcomplex z)
     {
         Apcomplex result = e1(z);   // Same as upperGamma(0, z)
-        long n = Math.negateExact(mn);
+        assert (mn <= 0);
+        long n = -mn;
         if (n > 0)
         {
             long workingPrecision = ApfloatHelper.extendPrecision(z.precision());

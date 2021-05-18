@@ -1779,6 +1779,24 @@ public class ApcomplexMathTest
         {
             // OK
         }
+        try
+        {
+            ApcomplexMath.gamma(new Apcomplex("(1e100,1)"), new Apcomplex("(1e102,1)"));
+            fail("Overflow");
+        }
+        catch (OverflowException are)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.gamma(new Apcomplex(new Apfloat(4)), new Apcomplex(new Apfloat(5)), Apfloat.ZERO);
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testGammaIncompleteGeneralized()
@@ -1852,6 +1870,24 @@ public class ApcomplexMathTest
         catch (ArithmeticException ae)
         {
             // OK a is non-positive integer
+        }
+        try
+        {
+            ApcomplexMath.gamma(new Apcomplex("(1.00e19,1.00e19)"), new Apcomplex("(1.00e18,1.00e18)"), new Apcomplex("(2.00e19,2.00e19)"));
+            fail("Overflow");
+        }
+        catch (OverflowException are)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.gamma(new Apcomplex(Apfloat.ZERO, new Apfloat(4)), new Apcomplex(Apfloat.ZERO, new Apfloat(5)), new Apcomplex(Apfloat.ZERO, new Apfloat(6)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
         }
     }
 
