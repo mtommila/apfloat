@@ -56,6 +56,9 @@
               <addClasspath>true</addClasspath>
               <mainClass>org.apfloat.calc.CalculatorGUI</mainClass>
             </manifest>
+            <manifestEntries>
+              <Automatic-Module-Name>org.apfloat.calc</Automatic-Module-Name>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>

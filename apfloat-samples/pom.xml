@@ -60,6 +60,9 @@
               <addClasspath>true</addClasspath>
               <mainClass>org.apfloat.samples.PiParallelGUI</mainClass>
             </manifest>
+            <manifestEntries>
+              <Automatic-Module-Name>org.apfloat.samples</Automatic-Module-Name>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>
