@@ -1864,6 +1864,22 @@ public class ApfloatMathTest
         assertEquals("4.5,0 precision", 8, a.precision());
         assertEquals("4.5,0 value", new Apfloat("11.631728"), a, new Apfloat("5e-6"));
 
+        a = ApfloatMath.gamma(new Apfloat("4.0000000", Apfloat.DEFAULT, 11), new Apfloat("0.60000000", Apfloat.DEFAULT, 11));
+        assertEquals("4,0.6 precision radix 11", 8, a.precision());
+        assertEquals("4,0.6 value radix 11", new Apfloat("5.a929793", Apfloat.DEFAULT, 11), a, new Apfloat("5e-7", Apfloat.DEFAULT, 11));
+
+        a = ApfloatMath.gamma(new Apfloat("4.0000000", Apfloat.DEFAULT, 11), new Apfloat("-0.60000000", Apfloat.DEFAULT, 11));
+        assertEquals("4,-0.6 precision radix 11", 8, a.precision());
+        assertEquals("4,-0.6 value radix 11", new Apfloat("5.a6928aa", Apfloat.DEFAULT, 11), a, new Apfloat("5e-7", Apfloat.DEFAULT, 11));
+
+        a = ApfloatMath.gamma(new Apfloat("4.0000000", Apfloat.DEFAULT, 11), new Apfloat("6.0000000", Apfloat.DEFAULT, 11));
+        assertEquals("4,6 precision radix 11", 8, a.precision());
+        assertEquals("4,6 value radix 11", new Apfloat("0.9a857246", Apfloat.DEFAULT, 11), a, new Apfloat("5e-8", Apfloat.DEFAULT, 11));
+
+        a = ApfloatMath.gamma(new Apfloat("-4.0000000", Apfloat.DEFAULT, 11), new Apfloat("6.0000000", Apfloat.DEFAULT, 11));
+        assertEquals("-4,6 precision radix 11", 8, a.precision());
+        assertEquals("-4,6 value radix 11", new Apfloat("3.57a6772e-7", Apfloat.DEFAULT, 11), a, new Apfloat("5e-14", Apfloat.DEFAULT, 11));
+
         try
         {
             ApfloatMath.gamma(Apfloat.ZERO, Apfloat.ZERO);

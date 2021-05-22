@@ -1770,6 +1770,14 @@ public class ApcomplexMathTest
         assertEquals("1.154781984689458e4-1.539926526059491e2i,1.154781984689458e4+3.651741272548377e1i precision 16", 11, a.precision());
         assertEquals("1.154781984689458e4-1.539926526059491e2i,1.154781984689458e4+3.651741272548377e1i value 16", new Apcomplex("(-8.382175690814767e41895,-2.511119213693562e41895)"), a, new Apfloat("5e41880"));
 
+        a = ApcomplexMath.gamma(new Apfloat("-4.0000000", Apfloat.DEFAULT, 11), new Apfloat("-6.0000000", Apfloat.DEFAULT, 11));
+        assertEquals("-4,-6 precision radix 11", 7, a.precision());
+        assertEquals("-4,-6 value radix 11", new Apcomplex(new Apfloat("-0.0987840", Apfloat.DEFAULT, 11), new Apfloat("-0.1492559", Apfloat.DEFAULT, 11)), a, new Apfloat("5e-7", Apfloat.DEFAULT, 11));
+
+        a = ApcomplexMath.gamma(new Apfloat("-4.0000000", Apfloat.DEFAULT, 11), new Apfloat("-0.60000000", Apfloat.DEFAULT, 11));
+        assertEquals("-4,-0.6 precision radix 11", 9, a.precision());
+        assertEquals("-4,-0.6 value radix 11", new Apcomplex(new Apfloat("6.11a99456", Apfloat.DEFAULT, 11), new Apfloat("-0.14925588", Apfloat.DEFAULT, 11)), a, new Apfloat("5e-8", Apfloat.DEFAULT, 11));
+
         try
         {
             ApcomplexMath.gamma(Apcomplex.ZERO, Apcomplex.ZERO);

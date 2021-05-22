@@ -578,7 +578,7 @@ class IncompleteGammaHelper
         long n = 0;
         Apcomplex an;
         Apcomplex bn;
-        Apcomplex f = tiny(Apcomplex.ZERO, workingPrecision);
+        Apcomplex f = tiny(new Apint(0, radix), workingPrecision);
         Apcomplex c = f;
         Apcomplex d = Apcomplex.ZERO;
         Apcomplex delta;
@@ -727,7 +727,7 @@ class IncompleteGammaHelper
             sum = sum.add(t);
         } while (sum.scale() - t.scale() < targetPrecision && !t.equals(Apcomplex.ZERO));   // Also check for underflow of t
 
-        Apcomplex result = ApfloatMath.euler(targetPrecision).negate().subtract(ApcomplexMath.log(z)).subtract(ApfloatHelper.reducePrecision(sum));
+        Apcomplex result = ApfloatMath.euler(targetPrecision, radix).negate().subtract(ApcomplexMath.log(z)).subtract(ApfloatHelper.reducePrecision(sum));
         return result;
     }
 }

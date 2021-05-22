@@ -158,7 +158,7 @@ public class ApcomplexMath
         }
         else if (n < 0)
         {
-            z = Apcomplex.ONE.divide(z);
+            z = Apcomplex.ONES[z.radix()].divide(z);
             n = -n;
         }
 
