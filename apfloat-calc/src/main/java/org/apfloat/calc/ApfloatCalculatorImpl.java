@@ -38,7 +38,7 @@ import org.apfloat.spi.Util;
 /**
  * Arbitrary precision calculator implementation.
  *
- * @version 1.10.0
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -254,6 +254,12 @@ public class ApfloatCalculatorImpl
         public Number gamma(Number x, Number y, Number z)
         {
             return ApcomplexMath.gamma((Apcomplex) x, (Apcomplex) y, (Apcomplex) z);
+        }
+
+        @Override
+        public Number zeta(Number x)
+        {
+            return ApcomplexMath.zeta((Apcomplex) x);
         }
 
         @Override

@@ -29,7 +29,7 @@ import junit.framework.TestSuite;
 import static java.math.RoundingMode.*;
 
 /**
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -95,6 +95,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testGamma"));
         suite.addTest(new ApfloatMathTest("testGammaIncomplete"));
         suite.addTest(new ApfloatMathTest("testGammaIncompleteGeneralized"));
+        suite.addTest(new ApfloatMathTest("testZeta"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testMax"));
@@ -2055,6 +2056,56 @@ public class ApfloatMathTest
         try
         {
             ApfloatMath.gamma(new Apfloat(4), Apfloat.ZERO, new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testZeta()
+    {
+        Apfloat a = ApfloatMath.zeta(new Apfloat("3.00000"));
+        assertEquals("3 precision", 6, a.precision());
+        assertEquals("3 value", new Apfloat("1.20206"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.zeta(new Apfloat("-101.000"));
+        assertEquals("-101 precision", 3, a.precision(), 1);
+        assertEquals("-101 value", new Apfloat("-7.26e78"), a, new Apfloat("5e76"));
+
+        a = ApfloatMath.zeta(new Apfloat("-1001.000"));
+        assertEquals("-1001 precision", 2, a.precision(), 2);   // FIXME precision is too much off
+        assertEquals("-1001 value", new Apfloat("-1.3e1771"), a, new Apfloat("5e1770"));
+
+        a = ApfloatMath.zeta(new Apfloat("-3.00000"));
+        assertEquals("-3 precision", 5, a.precision(), 1);
+        assertEquals("-3 value", new Apfloat("0.00833333"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.zeta(new Apfloat("-5.00000"));
+        assertEquals("-5 precision", 5, a.precision(), 1);
+        assertEquals("-5 value", new Apfloat("-0.0039683"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.zeta(new Apfloat("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apfloat("-0.5"), a);
+
+        a = ApfloatMath.zeta(new Apint(0, 11));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Aprational(new Apint(-1, 11), new Apint(2, 11)), a);
+
+        try
+        {
+            ApcomplexMath.zeta(new Apint(1, 11));
+            fail("Zeta of one");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.zeta(new Apfloat(2));
             fail("Infinite expansion");
         }
         catch (InfiniteExpansionException iee)

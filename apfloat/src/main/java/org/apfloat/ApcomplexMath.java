@@ -35,7 +35,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApfloatMath
  *
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -698,7 +698,7 @@ public class ApcomplexMath
         // First check convergence
         while (precision < CONVERGING && precision < halfWorkingPrecision)
         {
-            Apcomplex t = a.add(b).divide(two);
+            Apcomplex t = limitPrecision(a.add(b)).divide(two);
             b = rightSqrt(a.multiply(b), t);
             a = t;
 
@@ -724,6 +724,11 @@ public class ApcomplexMath
         }
 
         return ApfloatHelper.setPrecision(a.add(b).divide(two), targetPrecision);
+    }
+
+    private static Apcomplex limitPrecision(Apcomplex z)
+    {
+        return z.precision(z.precision());
     }
 
     private static Apcomplex rightSqrt(Apcomplex z, Apcomplex reference)
@@ -1810,6 +1815,28 @@ public class ApcomplexMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         return IncompleteGammaHelper.gamma(a, z0, z1);
+    }
+
+    /**
+     * Riemann zeta function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few hundred digits. At the time of
+     * implementation no generic fast algorithm is known for the zeta function.
+     *
+     * @param s The argument.
+     *
+     * @return <code>&zeta;(s)</code>
+     *
+     * @throws ArithmeticException If <code>s</code> is <code>1</code>.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apcomplex zeta(Apcomplex s)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ZetaHelper.zeta(s);
     }
 
     /**

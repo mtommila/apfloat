@@ -37,7 +37,7 @@ import org.apfloat.spi.Util;
  * <code>ApfloatMath.acos(Apfloat.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.10.0
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -966,6 +966,24 @@ public class FixedPrecisionApfloatHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApfloatMath.gamma(setGammaPrecision(a), setPrecision(x0), setPrecision(x1)));
+    }
+
+    /**
+     * Riemann zeta function.
+     *
+     * @param s The argument.
+     *
+     * @return <code>&zeta;(s)</code>
+     *
+     * @throws ArithmeticException If <code>s</code> is <code>1</code>.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat zeta(Apfloat s)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.zeta(setZetaPrecision(s)));
     }
 
     /**
