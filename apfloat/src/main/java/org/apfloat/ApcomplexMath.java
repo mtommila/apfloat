@@ -1199,7 +1199,11 @@ public class ApcomplexMath
         Apcomplex i = new Apcomplex(Apfloat.ZERO, one),
                   w = i.multiply(log(z.add(sqrt(z.multiply(z).subtract(one)))));
 
-        if (z.real().signum() * z.imag().signum() >= 0)
+        if (z.real().signum() < 0 && z.imag().signum() == 0)
+        {
+            return new Apcomplex(w.real().negate(), w.imag());
+        }
+        else if (z.real().signum() * z.imag().signum() > 0 || z.real().signum() == 0)
         {
             return w.negate();
         }
@@ -1222,7 +1226,7 @@ public class ApcomplexMath
     {
         Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix());
 
-        if (z.real().signum() >= 0)
+        if (z.real().signum() > 0 || z.real().signum() == 0 && z.imag().signum() >= 0)
         {
             return log(z.add(sqrt(z.multiply(z).subtract(one))));
         }
@@ -1305,9 +1309,17 @@ public class ApcomplexMath
 
         Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix()),
                 two = new Apfloat(2, Apfloat.INFINITE, z.radix());
-        Apcomplex i = new Apcomplex(Apfloat.ZERO, one);
+        Apcomplex i = new Apcomplex(Apfloat.ZERO, one),
+                  w = log(i.add(z).divide(i.subtract(z))).multiply(i).divide(two);
 
-        return log(i.add(z).divide(i.subtract(z))).multiply(i).divide(two);
+        if (z.real().signum() == 0 && z.imag().signum() > 0)
+        {
+            return new Apcomplex(w.real().negate(), w.imag());
+        }
+        else
+        {
+            return w;
+        }
     }
 
     /**
@@ -1325,8 +1337,16 @@ public class ApcomplexMath
     {
         Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix()),
                 two = new Apfloat(2, Apfloat.INFINITE, z.radix());
+        Apcomplex w = log(one.add(z).divide(one.subtract(z))).divide(two);
 
-        return log(one.add(z).divide(one.subtract(z))).divide(two);
+        if (z.real().signum() > 0 && z.imag().signum() == 0)
+        {
+            return w.conj();
+        }
+        else
+        {
+            return w;
+        }
     }
 
     /**
