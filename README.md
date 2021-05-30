@@ -14,7 +14,7 @@ To build the signed applet files, you need to first generate a signing key, e.g.
 
 To build the library quickly, without running unit tests (takes about 10 minutes) and without signing with GPG run:
 
-`mvn clean install -DskipTests=true -Dgpg.skip=true`
+`mvn clean install -Dgpg.skip=true -DskipTests=true`
 
 ## Running the Sample Applications
 
