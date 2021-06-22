@@ -142,9 +142,9 @@
             <doctitle>Apfloat v. ${project.version} Specification</doctitle>
             <windowtitle>Apfloat Documentation</windowtitle>
             <links>
-              <link>http://docs.oracle.com/javase/9/docs/api/</link>
-              <link>http://jscience.org/api/</link>
-              <link>http://javolution.org/apidocs/</link>
+              <link>https://docs.oracle.com/javase/9/docs/api/</link>
+              <link>https://javadoc.io/doc/org.jscience/jscience/4.3.1/</link>
+              <link>https://javadoc.io/doc/org.javolution/javolution-core-java/6.0.0/</link>
             </links>
             <sourceFileExcludes>
               <exclude>apfloat.java</exclude>
