@@ -425,6 +425,9 @@ public class ApfloatMathTest
         assertEquals(new Apfloat("1.1111", Apfloat.DEFAULT, 3), ApfloatMath.round(new Apfloat("1.1111111111111111111111111111", Apfloat.DEFAULT, 3), 5, RoundingMode.HALF_EVEN));
         assertEquals(new Apfloat("1.1112", Apfloat.DEFAULT, 3), ApfloatMath.round(new Apfloat("1.1111111111111111111111111112", Apfloat.DEFAULT, 3), 5, RoundingMode.HALF_EVEN));
 
+        assertEquals(new Apfloat("2", Apfloat.DEFAULT, 28), ApfloatMath.round(new Apfloat("1.r", Apfloat.DEFAULT, 28), 1, RoundingMode.HALF_EVEN));
+        assertEquals(new Apfloat("2", Apfloat.DEFAULT, 36), ApfloatMath.round(new Apfloat("1.z", Apfloat.DEFAULT, 36), 1, RoundingMode.HALF_EVEN));
+
         assertEquals(new Apfloat("1.1e9223372036853775808"), ApfloatMath.round(new Apfloat("1.1e9223372036853775808"), 100000000000L, RoundingMode.HALF_EVEN));
         assertEquals(new Apfloat("1.1e-9223372036853775808"), ApfloatMath.round(new Apfloat("1.1e-9223372036853775808"), 100000000000L, RoundingMode.HALF_EVEN));
 
