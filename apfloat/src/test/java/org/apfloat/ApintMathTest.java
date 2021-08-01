@@ -555,7 +555,7 @@ public class ApintMathTest
         for (int radix = Character.MIN_RADIX; radix <= Character.MAX_RADIX; radix++)
         {
             Map<Apint, Integer> counts = new HashMap<>();
-            for (int i = 0; i < 10 * radix; i++)
+            for (int i = 0; i < 20 * radix; i++)
             {
                 Apint a = ApintMath.random(1, radix);
                 counts.put(a, counts.getOrDefault(a, 0) + 1);
