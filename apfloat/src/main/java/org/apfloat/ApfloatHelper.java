@@ -40,7 +40,7 @@ import static org.apfloat.spi.RadixConstants.*;
 /**
  * Various utility methods related to apfloats.
  *
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -578,13 +578,13 @@ class ApfloatHelper
         {
             if (realPrecision + precisionChange <= 0)
             {
-                return new Apcomplex(Apfloat.ZERO,
+                return new Apcomplex(Apfloat.ZEROS[z.radix()],
                                      z.imag().precision(precision));
             }
             else if (imagPrecision + precisionChange <= 0)
             {
                 return new Apcomplex(z.real().precision(precision),
-                                     Apfloat.ZERO);
+                                     Apfloat.ZEROS[z.radix()]);
             }
         }
 

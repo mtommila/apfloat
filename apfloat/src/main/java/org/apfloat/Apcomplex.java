@@ -43,7 +43,7 @@ import static java.util.FormattableFlags.*;
  * @see Apfloat
  * @see ApcomplexMath
  *
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -116,7 +116,7 @@ public class Apcomplex
 
     public Apcomplex(Apfloat real)
     {
-        this(real, ZERO);
+        this(real, ZEROS[real.radix()]);
     }
 
     /**
@@ -160,7 +160,7 @@ public class Apcomplex
         if (!value.startsWith("("))
         {
             this.real = new Apfloat(value);
-            this.imag = ZERO;
+            this.imag = ZEROS[this.real.radix()];
             return;
         }
         if (!value.endsWith(")"))
@@ -172,7 +172,7 @@ public class Apcomplex
         if (index < 0)
         {
             this.real = new Apfloat(value.substring(1, value.length() - 1).trim());
-            this.imag = ZERO;
+            this.imag = ZEROS[this.real.radix()];
             return;
         }
 
@@ -204,7 +204,7 @@ public class Apcomplex
         if (!ApfloatHelper.readMatch(in, '('))
         {
             this.real = new Apfloat(in);
-            this.imag = ZERO;
+            this.imag = ZEROS[this.real.radix()];
             return;
         }
 
@@ -219,7 +219,7 @@ public class Apcomplex
         }
         else
         {
-            this.imag = ZERO;
+            this.imag = ZEROS[this.real.radix()];
         }
 
         ApfloatHelper.extractWhitespace(in);
@@ -340,8 +340,8 @@ public class Apcomplex
         long realPrecision = precisions[0],
              imagPrecision = precisions[1];
 
-        return new Apcomplex(realPrecision > 0 ? z.real().precision(realPrecision) : Apfloat.ZERO,
-                             imagPrecision > 0 ? z.imag().precision(imagPrecision) : Apfloat.ZERO);
+        return new Apcomplex(realPrecision > 0 ? z.real().precision(realPrecision) : ZEROS[real().radix()],
+                             imagPrecision > 0 ? z.imag().precision(imagPrecision) : ZEROS[imag().radix()]);
     }
 
     /**
@@ -975,15 +975,19 @@ public class Apcomplex
         }
     }
 
+    static final Apint[] ZEROS;
     static final Apint[] ONES;
 
     static
     {
+        ZEROS = new Apint[37];
         ONES = new Apint[37];
         for (int i =  2; i <= 36; i++)
         {
+            ZEROS[i] = new Apint(0, i);
             ONES[i] = new Apint(1, i);
         }
+        ZEROS[ZERO.radix()] = ZERO;
         ONES[ONE.radix()] = ONE;
     }
 

@@ -47,7 +47,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApintMath
  *
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -167,7 +167,7 @@ public class ApfloatMath
         }
         else if (x.signum() == 0)
         {
-            return Apfloat.ZERO;                // Avoid division by zero
+            return Apfloat.ZEROS[x.radix()];    // Avoid division by zero
         }
         else if (n == 1)
         {
@@ -643,7 +643,7 @@ public class ApfloatMath
         }
         else if (x.precision() <= x.scale() - y.scale())                        // We now know that x.scale() >= y.scale()
         {
-            return Apfloat.ZERO;                // Degenerate case; not enough precision to make any sense
+            return Apfloat.ZEROS[x.radix()];    // Degenerate case; not enough precision to make any sense
         }
         else
         {
@@ -726,7 +726,7 @@ public class ApfloatMath
         precisions = ApfloatHelper.getMatchingPrecisions(a, b, c, d);
         if (precisions[0] == 0)
         {
-            ab = Apfloat.ZERO;
+            ab = Apfloat.ZEROS[a.radix()];
         }
         else
         {
@@ -736,7 +736,7 @@ public class ApfloatMath
         }
         if (precisions[1] == 0)
         {
-            cd = Apfloat.ZERO;
+            cd = Apfloat.ZEROS[c.radix()];
         }
         else
         {
@@ -764,12 +764,12 @@ public class ApfloatMath
     {
         if (a.signum() == 0 || b.signum() == 0)         // Would not converge quadratically
         {
-            return Apfloat.ZERO;
+            return Apfloat.ZEROS[a.radix()];
         }
 
         if (abs(a).equals(abs(b)))                      // Would not converge quadratically
         {
-            return a.signum() == b.signum() ? a.precision(Math.min(a.precision(), b.precision())) : Apfloat.ZERO;
+            return a.signum() == b.signum() ? a.precision(Math.min(a.precision(), b.precision())) : Apfloat.ZEROS[a.radix()];
         }
 
         if (a.signum() != b.signum())
@@ -1179,7 +1179,7 @@ public class ApfloatMath
         }
         else if (x.equals(Apfloat.ONE))
         {
-            return Apfloat.ZERO;
+            return Apfloat.ZEROS[x.radix()];
         }
 
         // Calculate the log using 1 / radix <= x < 1 and the log addition formula
@@ -1366,7 +1366,7 @@ public class ApfloatMath
         {
             // Underflow
 
-            return Apfloat.ZERO;
+            return Apfloat.ZEROS[radix];
         }
         else if (x.scale() <= Long.MIN_VALUE / 2 + Apfloat.EXTRA_PRECISION)
         {
@@ -1398,9 +1398,10 @@ public class ApfloatMath
             result = new Apfloat(Math.pow((double) radix, fractionalPart.doubleValue()), doublePrecision, radix);
             result = scale(result, integerPart.longValue());
 
-            if (result.signum() == 0) {
+            if (result.signum() == 0)
+            {
                 // Underflow
-                return Apfloat.ZERO;
+                return Apfloat.ZEROS[radix];
             }
 
             precision = doublePrecision;
@@ -1726,7 +1727,7 @@ public class ApfloatMath
         {
             if (x.signum() > 0)
             {
-                return Apfloat.ZERO;
+                return Apfloat.ZEROS[x.radix()];
             }
 
             return pi(x.precision(), x.radix());
@@ -1881,7 +1882,7 @@ public class ApfloatMath
         {
             if (x[i].signum() == 0)
             {
-                return Apfloat.ZERO;
+                return Apfloat.ZEROS[x[i].radix()];
             }
             maxPrec = Math.min(maxPrec, x[i].precision());
         }
@@ -2439,7 +2440,7 @@ public class ApfloatMath
         long scale = x.scale() - x.precision();
         if (x.precision() == Apfloat.INFINITE || x.scale() < 0 && scale >= 0)   // Detect overflow
         {
-            return Apfloat.ZERO;
+            return Apfloat.ZEROS[x.radix()];
         }
         return scale(new Apfloat(direction, 1, x.radix()), scale);
     }

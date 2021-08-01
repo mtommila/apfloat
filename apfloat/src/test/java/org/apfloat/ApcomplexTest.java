@@ -38,7 +38,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -97,6 +97,10 @@ public class ApcomplexTest
         assertEquals("(5, 7) radix", 12, a.radix());
         assertEquals("(5, 7) precision", Apfloat.INFINITE, a.precision());
         assertEquals("(5, 7) String", "(5, 7)", a.toString(true));
+        a = new Apcomplex(new Apfloat(7, Apfloat.DEFAULT, 12));
+        assertEquals("7 imag radix", 12, a.imag().radix());
+        assertEquals("7 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("7 String", "7", a.toString(true));
 
         a = new Apcomplex(new Apfloat(0, Apfloat.DEFAULT, 11), new Apfloat(7, Apfloat.DEFAULT, 12));
         a = new Apcomplex(new Apfloat(7, Apfloat.DEFAULT, 11), new Apfloat(0, Apfloat.DEFAULT, 12));
@@ -128,6 +132,13 @@ public class ApcomplexTest
 
         a = new Apcomplex("( 5 , 7 )");
         assertEquals("( 5 , 7 ) String", "(5, 7)", a.toString(true));
+
+        ApfloatContext.getContext().setDefaultRadix(12);
+        a = new Apcomplex("(5)");
+        assertEquals("(5) imag radix", 12, a.imag().radix());
+        a = new Apcomplex("5");
+        assertEquals("5 imag radix", 12, a.imag().radix());
+        ApfloatContext.getContext().setDefaultRadix(10);
 
         try
         {
@@ -162,6 +173,15 @@ public class ApcomplexTest
         in = new PushbackReader(new StringReader("( 5 , 7 )"));
         a = new Apcomplex(in);
         assertEquals("( 5 , 7 ) String", "(5, 7)", a.toString(true));
+
+        ApfloatContext.getContext().setDefaultRadix(12);
+        in = new PushbackReader(new StringReader("(5)"));
+        a = new Apcomplex(in);
+        assertEquals("(5) imag radix", 12, a.imag().radix());
+        in = new PushbackReader(new StringReader("5"));
+        a = new Apcomplex(in);
+        assertEquals("5 imag radix", 12, a.imag().radix());
+        ApfloatContext.getContext().setDefaultRadix(10);
 
         try
         {
@@ -357,6 +377,13 @@ public class ApcomplexTest
 
         a = new Apcomplex(new Apfloat(0), new Apfloat(0));
         assertEquals("(0, 0) -> 6 value", new Apcomplex(new Apfloat(0), new Apfloat(0)), a.precision(6));
+
+        a = new Apcomplex(new Apfloat("1", 1, 12), new Apfloat("10", 2, 12));
+        assertEquals("(1, 10) -> 1 value", new Apcomplex(Apfloat.ZERO, new Apfloat("10", 1, 12)), a.precision(1));
+        assertEquals("(1, 10) -> 1 real radix", 12, a.precision(1).real().radix());
+        a = new Apcomplex(new Apfloat("10", 2, 12), new Apfloat("1", 1, 12));
+        assertEquals("(10, 1) -> 1 value", new Apcomplex(new Apfloat("10", 1, 12), Apfloat.ZERO), a.precision(1));
+        assertEquals("(10, 1) -> 1 imag radix", 12, a.precision(1).imag().radix());
     }
 
     public static void testNegate()

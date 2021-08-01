@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -298,5 +298,10 @@ public class ApfloatHelperTest
         assertEquals("(3.33, 22) imag prec", 5, a.imag().precision());
         assertEquals("(3.33, 22) imag value", new Apfloat("22"), a.imag());
         assertEquals("(3.33, 22) prec", 5, a.precision());
+
+        a = ApfloatHelper.setPrecision(new Apcomplex(new Apfloat(1, 1, 12), new Apfloat(12, 2, 12)), 1);
+        assertEquals("(1, 12) real radix", 12, a.real().radix());
+        a = ApfloatHelper.setPrecision(new Apcomplex(new Apfloat(12, 2, 12), new Apfloat(1, 1, 12)), 1);
+        assertEquals("(12, 1) imag radix", 12, a.imag().radix());
     }
 }

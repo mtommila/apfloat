@@ -35,7 +35,7 @@ import org.apfloat.spi.Util;
  * <code>ApcomplexMath.acos(Apcomplex.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -303,7 +303,7 @@ public class FixedPrecisionApcomplexHelper
         if (z.real().signum() == 0 && z.imag().signum() == 0)
         {
             // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
-            return valueOf(new Apcomplex(Apfloat.ZERO, pi(z.radix()).divide(new Apfloat(2, precision(), z.radix()))));
+            return valueOf(new Apcomplex(Apfloat.ZEROS[z.radix()], pi(z.radix()).divide(new Apfloat(2, precision(), z.radix()))));
         }
         return valueOf(ApcomplexMath.acosh(setPrecision(z)));
     }

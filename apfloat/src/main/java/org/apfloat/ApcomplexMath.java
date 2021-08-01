@@ -35,7 +35,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApfloatMath
  *
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -274,7 +274,7 @@ public class ApcomplexMath
             {
                 throw new ArithmeticException("Inverse root of zero");
             }
-            return Apcomplex.ZERO;              // Avoid division by zero
+            return Apcomplex.ZEROS[z.radix()];  // Avoid division by zero
         }
         else if (n == 1)
         {
@@ -382,7 +382,7 @@ public class ApcomplexMath
         {
             // Avoid round-off errors and produce a pure imaginary result
             Apfloat y = ApfloatMath.inverseRoot(z.real().negate(), n);
-            return new Apcomplex(Apfloat.ZERO, k == 0 ? y.negate() : y);
+            return new Apcomplex(Apfloat.ZEROS[z.radix()], k == 0 ? y.negate() : y);
         }
 
         long targetPrecision = z.precision();
@@ -618,7 +618,7 @@ public class ApcomplexMath
                 throw new ArithmeticException("Inverse root of zero");
             }
             Apcomplex[] allRoots = new Apcomplex[n];
-            Arrays.fill(allRoots, Apcomplex.ZERO);
+            Arrays.fill(allRoots, Apcomplex.ZEROS[z.radix()]);
             return allRoots;                                    // Avoid division by zero
         }
 
@@ -657,7 +657,7 @@ public class ApcomplexMath
         if (a.real().signum() == 0 && a.imag().signum() == 0 ||
             b.real().signum() == 0 && b.imag().signum() == 0)         // Would not converge quadratically
         {
-            return Apcomplex.ZERO;
+            return Apcomplex.ZEROS[a.radix()];
         }
 
         if (a.real().signum() == b.real().signum() &&
@@ -674,7 +674,7 @@ public class ApcomplexMath
 
         if (a.equals(b.negate()))                                     // Would not converge quadratically
         {
-            return Apcomplex.ZERO;
+            return Apcomplex.ZEROS[a.radix()];
         }
 
         long workingPrecision = Math.min(a.precision(), b.precision()),
@@ -971,7 +971,7 @@ public class ApcomplexMath
         {
             // Underflow
 
-            return Apcomplex.ZERO;
+            return Apcomplex.ZEROS[z.radix()];
         }
 
         boolean negateResult = false;                           // If the final result is to be negated
@@ -1047,7 +1047,7 @@ public class ApcomplexMath
 
             if (resultReal.signum() == 0) {
                 // Underflow
-                return Apcomplex.ZERO;
+                return Apcomplex.ZEROS[z.radix()];
             }
         }
 
@@ -1585,7 +1585,7 @@ public class ApcomplexMath
         {
             if (z[i].real().signum() == 0 && z[i].imag().signum() == 0)
             {
-                return Apcomplex.ZERO;
+                return Apcomplex.ZEROS[z[i].radix()];
             }
             maxPrec = Math.min(maxPrec, z[i].precision());
         }

@@ -44,7 +44,7 @@ import org.apfloat.spi.ApfloatImpl;
  *
  * @see ApintMath
  *
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -398,7 +398,7 @@ public class Apint
 
         if (a.compareTo(b) < 0)
         {
-            return ZERO;                        // abs(this) < abs(x)
+            return ZEROS[a.radix()];            // abs(this) < abs(x)
         }
         else
         {
@@ -492,7 +492,7 @@ public class Apint
     public Apint frac()
         throws ApfloatRuntimeException
     {
-        return ZERO;
+        return ZEROS[radix()];
     }
 
     /**

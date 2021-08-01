@@ -31,7 +31,7 @@ import java.util.Comparator;
 /**
  * Various mathematical functions for arbitrary precision rational numbers.
  *
- * @version 1.9.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -244,7 +244,7 @@ public class AprationalMath
         {
             if (x[i].signum() == 0)
             {
-                return Aprational.ZERO;
+                return Aprational.ZEROS[x[i].radix()];
             }
             n[i] = x[i].numerator();
             m[i] = x[i].denominator();

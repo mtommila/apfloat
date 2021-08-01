@@ -28,7 +28,7 @@ import java.math.RoundingMode;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -165,6 +165,9 @@ public class AprationalMathTest
 
         a = AprationalMath.product(Aprational.ZERO, new Aprational("12345"));
         assertEquals("0 value", new Aprational("0"), a);
+
+        a = AprationalMath.product(new Apint(0, 12));
+        assertEquals("0 radix", 12, a.radix());
 
         Aprational[] x = new Aprational[] { new Aprational("1000000000000"), new Aprational("1") };
         AprationalMath.product(x);

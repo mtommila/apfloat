@@ -31,7 +31,7 @@ import java.util.Random;
 /**
  * Various mathematical functions for arbitrary precision integers.
  *
- * @version 1.9.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -66,7 +66,7 @@ public class ApintMath
         }
         else if (n < 0)
         {
-            return Apint.ZERO;
+            return Apint.ZEROS[x.radix()];
         }
 
         // Algorithm improvements by Bernd Kellner
@@ -160,11 +160,11 @@ public class ApintMath
         }
         else if (x.equals(Apint.ONE) || n == 1)
         {
-            return new Apint[] { x, Apint.ZERO };
+            return new Apint[] { x, Apint.ZEROS[x.radix()] };
         }
         else if (n < 0)
         {
-            return new Apint[] { Apint.ZERO, x };               // 1 / x where x > 1
+            return new Apint[] { Apint.ZEROS[x.radix()], x };   // 1 / x where x > 1
         }
 
         long precision = x.scale() / n + Apint.EXTRA_PRECISION;
@@ -359,7 +359,7 @@ public class ApintMath
         else if (y.equals(Apint.ONE))
         {
             // x / 1 = x
-            return new Apint[] { x, Apint.ZERO };
+            return new Apint[] { x, Apint.ZEROS[x.radix()] };
         }
 
         long precision;
@@ -371,7 +371,7 @@ public class ApintMath
 
         if (a.compareTo(b) < 0)
         {
-            return new Apint[] { Apint.ZERO, x };  // abs(x) < abs(y)
+            return new Apint[] { Apint.ZEROS[x.radix()], x };   // abs(x) < abs(y)
         }
         else
         {
@@ -434,7 +434,7 @@ public class ApintMath
     {
         if (a.signum() == 0 && b.signum() == 0)
         {
-            return Apint.ZERO;
+            return Apint.ZEROS[a.radix()];
         }
         else
         {

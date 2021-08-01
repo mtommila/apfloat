@@ -31,7 +31,7 @@ import java.util.function.LongFunction;
  * Helper class for the incomplete gamma function.
  *
  * @since 1.10.0
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -254,7 +254,7 @@ class IncompleteGammaHelper
         }
         if (z0.equals(z1))
         {
-            return Apcomplex.ZERO;
+            return Apcomplex.ZEROS[z0.radix()];
         }
         checkPrecision(a, z0, z1);
 

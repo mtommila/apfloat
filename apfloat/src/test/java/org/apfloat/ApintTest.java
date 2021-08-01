@@ -38,7 +38,7 @@ import java.util.IllegalFormatException;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -307,6 +307,7 @@ public class ApintTest
         assertEquals("0 / 4", new Apint(0), new Apint(0).divide(a));
         assertEquals("4 / 1", new Apint(4, 12), a.divide(new Apint(1, 12)));
         assertEquals("4 / ONE", new Apint(4, 12), a.divide(Apint.ONE));
+        assertEquals("4 / 3 radix", 12, b.divide(a).radix());
 
         try
         {
@@ -362,10 +363,11 @@ public class ApintTest
 
     public static void testFrac()
     {
-        Apint a = new Apint("2");
+        Apint a = new Apint("2", 12);
         assertEquals("2 frac", new Apint(0), a.frac());
+        assertEquals("2 frac radix", 12, a.frac().radix());
         a = new Apint(0);
-        assertEquals("0 truncate", new Apint(0), a.frac());
+        assertEquals("0 frac", new Apint(0), a.frac());
     }
 
     public static void testRoundAway()

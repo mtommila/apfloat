@@ -40,7 +40,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -116,6 +116,7 @@ public class ApfloatTest
         assertEquals("7 radix", 12, a.radix());
         assertEquals("7 precision", Apfloat.INFINITE, a.precision());
         assertEquals("7 String", "7", a.toString(true));
+        assertEquals("7 imag radix", 12, a.imag().radix());
 
         try
         {

@@ -55,7 +55,7 @@ import org.apfloat.spi.ApfloatImpl;
  *
  * @see ApfloatMath
  *
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -517,7 +517,7 @@ public class Apfloat
     @Override
     public Apfloat imag()
     {
-        return Apfloat.ZERO;
+        return Apfloat.ZEROS[radix()];
     }
 
     /**

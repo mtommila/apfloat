@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -397,8 +397,12 @@ public class FixedPrecisionApcomplexHelperTest
 
         z = Apcomplex.ZERO;
         result = helper.acosh(z);
-        assertEquals("value", new Apcomplex(Apfloat.ZERO, new Apfloat("1.570796326794896619231321691639751442098584699687552910487472296153908203143104499314017412671058534")), result, new Apfloat("1e-98"));
-        assertEquals("precision", 100, result.precision());
+        assertEquals("zero value", new Apcomplex(Apfloat.ZERO, new Apfloat("1.570796326794896619231321691639751442098584699687552910487472296153908203143104499314017412671058534")), result, new Apfloat("1e-98"));
+        assertEquals("zero precision", 100, result.precision());
+
+        z = new Apint(0, 12);
+        result = helper.acosh(z);
+        assertEquals("zero real radix", 12, result.real().radix());
     }
 
     public static void testAsinh()

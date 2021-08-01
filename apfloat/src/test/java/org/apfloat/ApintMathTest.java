@@ -29,7 +29,7 @@ import java.util.Map;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.0
+ * @version 1.10.1
  * @author Mikko Tommila
  */
 
@@ -79,6 +79,8 @@ public class ApintMathTest
         assertEquals("2^-1", new Apint(0), ApintMath.pow(x, -1));
         assertEquals("2^-3", new Apint(0), ApintMath.pow(x, -3));
         assertEquals("2^0", new Apint(1), ApintMath.pow(x, 0));
+
+        assertEquals("2^-3 radix", 12, ApintMath.pow(new Apint(2, 12), -3).radix());
 
         try
         {
@@ -183,6 +185,9 @@ public class ApintMathTest
         assertEquals("1st root rem", new Apint(0), ApintMath.root(new Apint(2), 1)[1]);
         assertEquals("-1st root quot", new Apint(0), ApintMath.root(new Apint(2), -1)[0]);
         assertEquals("-1st root rem", new Apint(2), ApintMath.root(new Apint(2), -1)[1]);
+
+        assertEquals("1st root rem radix", 12, ApintMath.root(new Apint(2, 12), 1)[1].radix());
+        assertEquals("-1st root quot radix", 12, ApintMath.root(new Apint(2, 12), -1)[0].radix());
 
         try
         {
@@ -321,6 +326,11 @@ public class ApintMathTest
         assertEquals("-very long / -very long", new Apint("88887588172852973806344237990766854843278434484762916030592876582400800681711796943572298887271879881107698627193143861585371238964537515138970410491320347"), r[0]);
         assertEquals("-very long % -very long", new Apint("-6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057150"), r[1]);
 
+        r = ApintMath.div(new Apint(1, 12), new Apint(3, 12));
+        assertEquals("1 / 3 radix", 12, r[0].radix());
+        r = ApintMath.div(new Apint(3, 12), new Apint(1, 12));
+        assertEquals("3 % 1 radix", 12, r[1].radix());
+
         try
         {
             ApintMath.div(new Apint(3), new Apint(0));
@@ -359,6 +369,7 @@ public class ApintMathTest
         assertEquals("0 lcm 3", new Apint(0), ApintMath.lcm(new Apint(0), new Apint(3)));
         assertEquals("3 lcm 0", new Apint(0), ApintMath.lcm(new Apint(3), new Apint(0)));
         assertEquals("0 lcm 0", new Apint(0), ApintMath.lcm(new Apint(0), new Apint(0)));
+        assertEquals("0 lcm 0 radix", 12, ApintMath.lcm(new Apint(0, 12), new Apint(0, 12)).radix());
     }
 
     public static void testModMultiply()

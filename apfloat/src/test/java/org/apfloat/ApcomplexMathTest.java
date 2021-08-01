@@ -373,6 +373,9 @@ public class ApcomplexMathTest
         assertEquals("cbrt((18,26), 3) branch 1", new Apcomplex("(-2.366,2.098)"), ApcomplexMath.root(new Apcomplex("(18.000,26.000)"), 3, 1), new Apfloat("0.005"));
         assertEquals("cbrt((18,26), 3) branch 2", new Apcomplex("(-0.634,-3.098)"), ApcomplexMath.root(new Apcomplex("(18.000,26.000)"), 3, 2), new Apfloat("0.005"));
 
+        assertEquals("0 radix 12", 12, ApcomplexMath.root(new Apint(0, 12), 3).radix());
+        assertEquals("-4 real part radix 12", 12, ApcomplexMath.root(new Apfloat(-4, 5, 12), 2).real().radix());
+
         try
         {
             ApcomplexMath.root(new Apcomplex("(2.0, 3.0)"), 0);
@@ -461,6 +464,11 @@ public class ApcomplexMathTest
         assertEquals("allRoots(-4,-4)[1]", new Apcomplex("(-0.500,-0.500)"), allRoots[1], new Apfloat("0.005"));
         assertEquals("allRoots(-4,-4)[2]", new Apcomplex("(-0.500,0.500)"), allRoots[2], new Apfloat("0.005"));
         assertEquals("allRoots(-4,-4)[3]", new Apcomplex("(0.500,0.500)"), allRoots[3], new Apfloat("0.005"));
+
+        allRoots = ApcomplexMath.allRoots(new Apint(0, 12), 2);
+        assertEquals("allRoots(0, 2) length", 2, allRoots.length);
+        assertEquals("allRoots(0, 2)[0] radix", 12, allRoots[0].radix());
+        assertEquals("allRoots(0, 2)[1] radix", 12, allRoots[0].radix());
 
         try
         {
@@ -682,6 +690,11 @@ public class ApcomplexMathTest
         assertEquals("(1,1), (1,-1) precision", 30, a.precision());
         assertEquals("(1,1), (1,-1) value", new Apcomplex("1.198140234735592207439922492280"), a, new Apfloat("5e-29"));
 
+        a = ApcomplexMath.agm(new Apint(1, 12), new Apint(0, 12));
+        assertEquals("1, 0 radix", 12, a.radix());
+        a = ApcomplexMath.agm(new Apcomplex(Apint.ZERO, new Apint(1, 12)), new Apcomplex(Apint.ZERO, new Apint(-1, 12)));
+        assertEquals("i, -i radix", 12, a.radix());
+
         try
         {
             ApcomplexMath.agm(new Apcomplex(new Apfloat(1)), new Apcomplex(new Apfloat(2)));
@@ -870,6 +883,11 @@ public class ApcomplexMathTest
         assertEquals("1 radix", 17, a.radix());
         assertEquals("1 prec", Apfloat.INFINITE, a.precision());
         assertEquals("1 value", new Apfloat(1), a);
+
+        a = ApcomplexMath.exp(new Apcomplex(new Apfloat("-100000000000000000000", 20, 17), new Apfloat("0.1", 1, 17)));
+        assertEquals("underflow radix", 17, a.radix());
+        assertEquals("underflow prec", Apfloat.INFINITE, a.precision());
+        assertEquals("underflow value", new Apfloat(0), a);
 
         a = ApcomplexMath.exp(new Apcomplex("(0.1,3.14159)"));
         assertEquals("(0.1,pi), precision", 2, a.precision());
@@ -1546,6 +1564,9 @@ public class ApcomplexMathTest
         a = ApcomplexMath.product(Apcomplex.ZERO, new Apcomplex("12345"));
         assertEquals("0 precision", Apcomplex.INFINITE, a.precision());
         assertEquals("0 value", new Apcomplex("0"), a);
+
+        a = ApcomplexMath.product(new Apint(0, 12));
+        assertEquals("0 radix", 12, a.radix());
 
         a = ApcomplexMath.product(new Apcomplex("-1"),
                                   new Apcomplex("(0,2.50000000000000000000000000000000000000000000000000000000000000000000001)"),
