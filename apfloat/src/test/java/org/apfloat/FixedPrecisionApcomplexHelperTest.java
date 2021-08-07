@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -89,6 +89,7 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testGamma"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testGammaIncomplete"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testGammaIncompleteGeneralized"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testZeta"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testUlp"));
 
         return suite;
@@ -604,6 +605,25 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex z1 = new Apcomplex("(5,6)");
         Apcomplex result = helper.gamma(a, z0, z1);
         assertEquals("value", new Apcomplex("(0.00896428,-0.00326815)"), result, new Apfloat("5e-8"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testZeta()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex s = new Apcomplex("(1.5,2.5)");
+        Apcomplex result = helper.zeta(s);
+        assertEquals("value", new Apcomplex("(0.725036,-0.213363)"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+
+        s = new Apcomplex("(0.5,10000)");
+        result = helper.zeta(s);
+        assertEquals("value", new Apcomplex("(-0.339374,-0.0370915)"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+
+        s = new Apcomplex("(0.5,51000)");
+        result = helper.zeta(s);
+        assertEquals("value", new Apcomplex("(0.00408268,0.00102467)"), result, new Apfloat("5e-8"));
         assertEquals("precision", 6, result.precision());
     }
 

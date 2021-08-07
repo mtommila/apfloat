@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -78,6 +78,7 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testGamma"));
         suite.addTest(new ApcomplexMathTest("testGammaIncomplete"));
         suite.addTest(new ApcomplexMathTest("testGammaIncompleteGeneralized"));
+        suite.addTest(new ApcomplexMathTest("testZeta"));
         suite.addTest(new ApcomplexMathTest("testUlp"));
 
         return suite;
@@ -776,6 +777,10 @@ public class ApcomplexMathTest
         a = ApcomplexMath.log(new Apcomplex(new Apfloat(-2, 100, 2)));
         assertEquals("-2, 100 radix 2 precision", 101, a.precision());
         assertEquals("-2, 100 radix 2 value", new Apcomplex(new Apfloat("0.10110001011100100001011111110111110100011100111101111001101010111100100111100011101100111001100000000011111100101111011010101111010000001111001101000011001001100111001010011000101101100010110110001010000011010001011101011011100010111010101011111010001010111110011110111000011101100010000001101101111010111010110010011000010101011001", Apfloat.DEFAULT, 2), new Apfloat("11.001001000011111101101010100010001000010110100011000010001101001100010011000110011000101000101110000000110111000001110011010001001010010000001001001110000010001000101001100111110011000111010000000010000010111011111010100110001110110001001110011011001000100101000101001010000010000111100110001110001101000000010011011101111011111001", Apfloat.DEFAULT, 2)), a, new Apfloat("1e-99", 1, 2));
+
+        a = ApcomplexMath.log(new Apcomplex(Apfloat.ZERO, new Apfloat(-2, 100, 11)));
+        assertEquals("-2, 100 radix 11 precision", 100, a.precision());
+        assertEquals("-2, 100 radix 11 value", new Apcomplex(new Apfloat("0.76964056aa1953a291444455a87588497353a063511118935186a366a24a331895629125a9a14432876a887204a134a72a99", Apfloat.DEFAULT, 11), new Apfloat("-1.63080356988524267266268493926a2097433442442708750a82107002329588113725817362690940a8831908396172469a", Apfloat.DEFAULT, 11)), a, new Apfloat("1e-100", 1, 11));
 
         try
         {
@@ -2008,6 +2013,123 @@ public class ApcomplexMathTest
         try
         {
             ApcomplexMath.gamma(new Apcomplex(Apfloat.ZERO, new Apfloat(4)), new Apcomplex(Apfloat.ZERO, new Apfloat(5)), new Apcomplex(Apfloat.ZERO, new Apfloat(6)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testZeta()
+    {
+        Apcomplex a = ApcomplexMath.zeta(new Apcomplex("(2.00000,3.00000)"));
+        assertEquals("2+3i precision", 6, a.precision());
+        assertEquals("2+3i value", new Apcomplex("(0.798022,-0.113744)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.zeta(new Apcomplex("(0,3.00000)"));
+        assertEquals("0+3i precision", 6, a.precision());
+        assertEquals("0+3i value", new Apcomplex("(0.439283,-0.0364719)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.zeta(new Apcomplex("(-1.50000,-3.00000)"));
+        assertEquals("-1.5-3i precision", 6, a.precision());
+        assertEquals("-1.5-3i value", new Apcomplex("(0.201329,-0.0971497)"), a, new Apfloat("5e-7"));
+
+        a = ApcomplexMath.zeta(new Apcomplex("(1.00000,3.00000)"));
+        assertEquals("1+3i precision", 6, a.precision());
+        assertEquals("1+3i value", new Apcomplex("(0.628852,-0.107476)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.zeta(new Apcomplex("(0.50000,3.00000)"));
+        assertEquals("0.5+3i precision", 6, a.precision());
+        assertEquals("0.5+3i value", new Apcomplex("(0.532737,-0.0788965)"), a, new Apfloat("5e-7"));
+
+        a = ApcomplexMath.zeta(new Apcomplex("(0.50000,1000.00000)"));
+        assertEquals("0.5+1000i precision", 6, a.precision());
+        assertEquals("0.5+1000i value", new Apcomplex("(0.356334,0.931998)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.zeta(new Apcomplex("(1.00000,0.00100000)"));
+        assertEquals("1+0.001i precision", 5, a.precision());
+        assertEquals("1+0.001i value", new Apcomplex("(0.577216,-1000.00)"), a, new Apfloat("5e-2"));
+
+        a = ApcomplexMath.zeta(new Apcomplex("(2,3)").precision(100));
+        assertEquals("2+3i precision", 100, a.precision());
+        assertEquals("2+3i value", new Apcomplex("(0.7980219851462757206222945007248126860252200816083761283248050997826895848039950677534983494423933738,-0.1137443080529385002159133658573150755701378063996650889647244069923585325514128567603037164372547988)"), a, new Apfloat("5e-100"));
+
+        a = ApcomplexMath.zeta(new Apcomplex(new Apfloat("0.5", 100), new Apfloat(1000, 104)));
+        assertEquals("0.5+1000i precision 100", 100, a.precision());
+        assertEquals("0.5+1000i value 100", new Apcomplex("(0.3563343671943960550744024767110296418750462109065525137341055161422510305547050764059845122070513740,0.9319978312329936651150604327370560741603548016645680162344141200846918466728345537721968349602390048)"), a, new Apfloat("5e-100"));
+
+        a = ApcomplexMath.zeta(new Apcomplex(new Apfloat("0.5", 5), new Apfloat(55000, 10)));
+        assertEquals("0.5+10000i precision", 5, a.precision());
+        assertEquals("0.5+10000i value", new Apcomplex("(0.33492,0.08418)"), a, new Apfloat("5e-5"));
+
+        /* These tests are quite slow
+        a = ApcomplexMath.zeta(new Apcomplex(new Apfloat("0.5", 100), new Apfloat(55000, 105)));
+        assertEquals("0.5+10000i precision", 100, a.precision());
+        assertEquals("0.5+10000i value", new Apcomplex("(0.3349197720514120096603674282428742796903831318984995606867247129474952184104423947312465231789576299,0.0841783899417542541667178765548311987703519184678648667055626089534129546322036235064366776146346549)"), a, new Apfloat("5e-100"));
+
+        a = ApcomplexMath.zeta(new Apcomplex(new Apfloat("0.5", 100), new Apfloat(10000, 105)));
+        assertEquals("0.5+10000i precision", 100, a.precision());
+        assertEquals("0.5+10000i value", new Apcomplex("(-0.3393738026388344575674710779459893805666468101906410889337680247470798756615454924994040171851332603,-0.0370915059732060314743442068130120234022523694433894137028295017082175782077688242563900270774953535)"), a, new Apfloat("5e-100"));
+
+        a = ApcomplexMath.zeta(new Apcomplex(new Apfloat("0.5", 100), new Apfloat(100000, 106)));
+        assertEquals("0.5+100000i precision", 101, a.precision());
+        assertEquals("0.5+100000i value", new Apcomplex("(1.0730320148577531321140762694920985306591621977677459354641392297498113660694398465432029270776708412,5.7808485443635039842610405578322343742615982357792297214917608074005985960567100284957369179276183025)"), a, new Apfloat("5e-100"));
+
+        a = ApcomplexMath.zeta(new Apcomplex(new Apfloat("0.5", 100), new Apfloat(1000000, 108)));
+        assertEquals("0.5+1000000i precision", 100, a.precision());
+        assertEquals("0.5+1000000i value", new Apcomplex("(0.076089069738227100005564558379927322310798604744722282657978217385062498238818630801746583609816947,2.805102101019298955393836716564940236462506152772803595920107742605247149870834705975457224921619717)"), a, new Apfloat("5e-100"));
+        */
+        for (int precision = 2; precision < 20; precision++)
+        {
+            a = ApcomplexMath.zeta(new Apcomplex("(2,3)").precision(precision));
+            assertEquals("2+3i precision " + precision, precision, a.precision());
+            assertEquals("2+3i value " + precision, new Apcomplex("(0.79802198514627572062,-0.11374430805293850021)").precision(precision), a, new Apfloat("5e-" + precision));
+        }
+
+        a = ApcomplexMath.zeta(new Apcomplex(new Apfloat(2, 6, 11), new Apfloat(3, 6, 11)));
+        assertEquals("2+3i radix 11 precision", 6, a.precision());
+        assertEquals("2+3i radix 11 value", new Apcomplex(new Apfloat("0.886193", 6, 11), new Apfloat("-0.128437", 6, 11)), a, new Apfloat("5e-6", 1, 11));
+
+        a = ApcomplexMath.zeta(new Apint(-2));
+        assertEquals("-2 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-2 value", Apfloat.ZERO, a);
+
+        a = ApcomplexMath.zeta(new Apint(-4, 11));
+        assertEquals("-4 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-4 value", Apfloat.ZERO, a);
+        assertEquals("-4 radix", 11, a.radix());
+
+        try
+        {
+            ApcomplexMath.zeta(Apcomplex.ONE);
+            fail("Zeta of one");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.zeta(new Apcomplex("(0.5,1e1000)"));
+            fail("Overflow");
+        }
+        catch (OverflowException are)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.zeta(new Apcomplex("(0.5,1e100)"));
+            fail("Loss of precision");
+        }
+        catch (LossOfPrecisionException lope)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.zeta(new Apcomplex(Apfloat.ZERO, new Apfloat(4)));
             fail("Infinite expansion");
         }
         catch (InfiniteExpansionException iee)

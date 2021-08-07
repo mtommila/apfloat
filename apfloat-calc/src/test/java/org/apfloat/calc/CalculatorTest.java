@@ -32,7 +32,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.0
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -239,6 +239,7 @@ public class CalculatorTest
         assertCalculation("2", "truncate(5/2)");
         assertCalculation("1.79e2", "toDegrees(3.14)");
         assertCalculation("1.57", "toRadians(90.0)");
+        assertCalculation("1.644", "zeta(2.000)");
         assertCalculation("3.14", "acos(-1.00)");
         assertCalculation("1.01", "acosh(1.55)");
         assertCalculation("1.57", "asin(1.00)");
@@ -364,6 +365,9 @@ public class CalculatorTest
         assertCalculationFailure("toRadians(i)");
         assertCalculationFailure("toRadians()");
         assertCalculationFailure("toRadians(2, 2)");
+        assertCalculationFailure("zeta(1)");
+        assertCalculationFailure("zeta()");
+        assertCalculationFailure("zeta(2,3)");
         assertCalculationFailure("acos()");
         assertCalculationFailure("acos(1, 1)");
         assertCalculationFailure("acosh()");

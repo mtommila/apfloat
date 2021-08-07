@@ -28,7 +28,7 @@ import java.math.RoundingMode;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.0
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -103,6 +103,7 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGamma"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGammaIncomplete"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGammaIncompleteGeneralized"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testZeta"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testMax"));
@@ -938,6 +939,25 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat x1 = new Apfloat("3.5");
         Apfloat result = helper.gamma(a, x0, x1);
         assertEquals("value", new Apfloat("0.0885335"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testZeta()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat s = new Apfloat("1.5");
+        Apfloat result = helper.zeta(s);
+        assertEquals("value", new Apfloat("2.61238"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        s = new Apfloat("1e8");
+        result = helper.zeta(s);
+        assertEquals("value", new Apfloat("1.00000"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        s = new Apfloat(-1001);
+        result = helper.zeta(s);
+        assertEquals("value", new Apfloat("-1.34859e1771"), result, new Apfloat("5e1766"));
         assertEquals("precision", 6, result.precision());
     }
 

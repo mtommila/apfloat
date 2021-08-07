@@ -47,7 +47,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApintMath
  *
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -2190,6 +2190,28 @@ public class ApfloatMath
             throw new ArithmeticException("Non-real result");
         }
         return ApcomplexMath.gamma(a, x0, x1).real();
+    }
+
+    /**
+     * Riemann zeta function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few hundred digits. At the time of
+     * implementation no generic fast algorithm is known for the zeta function.
+     *
+     * @param s The argument.
+     *
+     * @return <code>&zeta;(s)</code>
+     *
+     * @throws ArithmeticException If <code>s</code> is <code>1</code>.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat zeta(Apfloat s)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ZetaHelper.zeta(s).real();
     }
 
     /**

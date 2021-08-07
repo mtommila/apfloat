@@ -35,7 +35,7 @@ import org.apfloat.spi.Util;
  * <code>ApcomplexMath.acos(Apcomplex.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -775,6 +775,24 @@ public class FixedPrecisionApcomplexHelper
     }
 
     /**
+     * Riemann zeta function.
+     *
+     * @param s The argument.
+     *
+     * @return <code>&zeta;(s)</code>
+     *
+     * @throws ArithmeticException If <code>s</code> is <code>1</code>.
+     *
+     * @since 1.11.0
+     */
+
+    public Apcomplex zeta(Apcomplex s)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.zeta(setZetaPrecision(s)));
+    }
+
+    /**
      * Unit in the last place.
      *
      * @param z The operand.
@@ -865,6 +883,11 @@ public class FixedPrecisionApcomplexHelper
         return setTrigonometricPrecision(x);
     }
 
+    Apfloat setZetaPrecision(Apfloat x)
+    {
+        return setTrigonometricPrecision(x);
+    }
+
     private Apcomplex setPrecision(Apcomplex z)
         throws ApfloatRuntimeException
     {
@@ -902,6 +925,11 @@ public class FixedPrecisionApcomplexHelper
     {
         long precision = ApfloatHelper.extendPrecision(precision(), Math.max(0, z.scale()));
         return z.precision(precision);
+    }
+
+    private Apcomplex setZetaPrecision(Apcomplex z)
+    {
+        return new Apcomplex(setZetaPrecision(z.real()), setTrigonometricPrecision(z.imag()));
     }
 
     private long precision;
