@@ -29,7 +29,7 @@ import java.io.Writer;
 import java.io.IOException;
 import java.util.Formatter;
 import static java.util.FormattableFlags.*;
-import java.util.FormatFlagsConversionMismatchException ;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.IllegalFormatPrecisionException;
 
 import org.apfloat.spi.ApfloatImpl;
