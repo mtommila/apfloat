@@ -1361,7 +1361,7 @@ public class ApfloatContext
             MemoryUsage memoryUsage = memoryBean.getHeapMemoryUsage();
             totalMemory = Math.max(memoryUsage.getCommitted(), memoryUsage.getMax());
         }
-        catch (NoClassDefFoundError ncdfe)
+        catch (NoClassDefFoundError | NullPointerException e)
         {
             // The ManagementFactory class might be unavailable
             totalMemory = Runtime.getRuntime().maxMemory();
