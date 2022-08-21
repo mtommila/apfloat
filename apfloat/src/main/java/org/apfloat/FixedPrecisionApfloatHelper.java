@@ -882,36 +882,6 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
-     * &gamma;, the Euler-Mascheroni constant.
-     *
-     * @return <code>&gamma;</code>.
-     *
-     * @since 1.10.0
-     */
-
-    public Apfloat euler()
-        throws ApfloatRuntimeException
-    {
-        return ApfloatMath.euler(precision());
-    }
-
-    /**
-     * &gamma;, the Euler-Mascheroni constant.
-     *
-     * @param radix The radix of the result.
-     *
-     * @return <code>&gamma;</code>.
-     *
-     * @exception java.lang.NumberFormatException If the radix is invalid.
-     */
-
-    public Apfloat euler(int radix)
-        throws NumberFormatException, ApfloatRuntimeException
-    {
-        return ApfloatMath.euler(precision(), radix);
-    }
-
-    /**
      * Gamma function.
      *
      * @param x The operand.
@@ -966,6 +936,43 @@ public class FixedPrecisionApfloatHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApfloatMath.gamma(setGammaPrecision(a), setPrecision(x0), setPrecision(x1)));
+    }
+
+    /**
+     * Digamma function.
+     *
+     * @param x The argument.
+     *
+     * @return <code>&psi;(x)</code>
+     *
+     * @throws ArithmeticException If <code>x</code> is a nonpositive integer.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat digamma(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.digamma(setPrecision(x)));
+    }
+
+    /**
+     * Binomial coefficient.
+     *
+     * @param n The argument.
+     * @param k The argument.
+     *
+     * @return The binomial coefficient.
+     *
+     * @throws ArithmeticException If <code>n</code>, <code>k</code> or <code>n - k</code> is a nonpositive integer.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat binomial(Apfloat n, Apfloat k)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.binomial(setGammaPrecision(n), setGammaPrecision(k)));
     }
 
     /**

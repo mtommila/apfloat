@@ -25,6 +25,7 @@ package org.apfloat;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Queue;
 import java.util.PriorityQueue;
 
@@ -1520,6 +1521,22 @@ public class ApcomplexMath
         return (negate ? w.negate() : w);
     }
 
+    static Apcomplex cot(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        boolean negate = z.imag().signum() < 0;
+        z = (negate ? z.negate() : z);
+
+        Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix()),
+                two = new Apfloat(2, Apfloat.INFINITE, z.radix());
+        Apcomplex i = new Apcomplex(Apfloat.ZERO, one),
+                  w = exp(two.multiply(i).multiply(z));
+
+        w = i.multiply(w.add(one)).divide(w.subtract(one));
+
+        return (negate ? w.negate() : w);
+    }
+
     /**
      * Lambert W function. The W function gives the solution to the equation
      * <code>W e<sup>W</sup> = z</code>. Also known as the product logarithm.<p>
@@ -1815,6 +1832,173 @@ public class ApcomplexMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         return IncompleteGammaHelper.gamma(a, z0, z1);
+    }
+
+    /**
+     * Digamma function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the digamma function.
+     *
+     * @param z The argument.
+     *
+     * @return <code>&psi;(z)</code>
+     *
+     * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apcomplex digamma(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        // digamma(x) = digamma(1-x) - pi cot(pi x)
+        // |B_2n| ~ 4 sqrt(pi n) (n / (pi e))^2n
+        // digamma(z) ~ ln(z) - 1 / 2z - sum (j=1, infinity, B_2j / (2j z^2j)), re(z) > 0
+        // digamma(z) = digamma(z + N) - sum (k=0, N-1, 1 / (z + k))
+
+        // The sum diverges, but depending on how large re(z) is, the terms initially get smaller and smaller,
+        // until they start getting bigger and bigger (and grow to infinity)
+
+        // By truncating the sum at the point where the terms are the smallest, we can get a good approximation
+
+        // Thus we can calculate which is the smallest term, given any z
+        // The larger re(z) is, the larger the n of the term is, and the smaller the term is
+        // For higher precision we need more terms, and a larger re(z)
+        // Use the recurrence formula to move re(z) to be as large as needed
+        // For negative re(z) use first the reflection formula
+
+        // To calculate how many terms of the sum we need, and how big should re(z) be:
+        // Use the asymptotic formula for B_2n (which is good enough for n >= 3)
+        // The term in the sum is B_2n / (2n z^2n)
+        //
+        // which is approximately
+        //
+        // (n / (pi e))^2n / (2n z^2n)
+        // =
+        // 1/2 n^(2n-1) (e pi z)^(-2n)
+        // =
+        // 1/(2n) (e pi z / n)^(-2n)
+        //
+        // Take derivative with respect to n and solve when it's zero
+        //
+        // n = 1/(2 W(1/(2 pi z)))
+        // so then (solve for z)
+        // z = e^(-1/(2n)) n / pi
+        //
+        // Substitute back to what the term is at that point
+        //
+        // e^(1-2n) / (2n)
+        //
+        // For precision p in base b, we want that term to be equal to b^-p, solve that for n
+        //
+        // n = 1/2 W(b^p e)
+        //
+        // Use formula further above to get corresponding value for z
+        //
+        // W is Lambert's W function
+        // W can be approximated by log(z) - log(log(z))
+        // Followed possibly by iteration(s) of w = w/(1 + w) (1 + log(x/w))
+        //
+        // The bernoulli number factor of ~sqrt(n) has been ignored in the above calculations,
+        // compensate by adding a few digits of extra precision
+
+        long precision = z.precision();
+        int radix = z.radix();
+        Apint one = Apint.ONES[radix];
+
+        if (z.real().signum() <= 0)
+        {
+            if (z.real().isInteger() && z.imag().signum() == 0)
+            {
+                throw new ArithmeticException("Digamma of nonpositive integer");
+            }
+            Apfloat pi = ApfloatMath.pi(precision, radix);
+            // Use reflection formula
+            return digamma(one.subtract(z)).subtract(pi.multiply(cot(pi.multiply(z))));
+        }
+
+        double adjust = Math.log(precision) + 1,    // Adjustment for the sqrt(n) factor in bernoulli numbers
+               w = (precision + adjust) * Math.log(radix) + 1; 
+        long n = (long) Math.ceil(0.5 * (w - Math.log(w)));
+        Apfloat zReal = new Apfloat(Math.exp(-0.5 / n) * n / Math.PI, precision, radix);
+        Apcomplex s = Apfloat.ZERO;
+        if (z.real().compareTo(zReal) < 0)
+        {
+            long N = zReal.subtract(z.real()).roundAway().longValueExact();
+            // Use recurrence formula
+            for (long k = 0; k < N; k++)
+            {
+                s = s.subtract(one.divide(z.add(new Apint(k, radix))));
+            }
+            z = z.add(new Apint(N, radix));
+        }
+
+        Apint two = new Apint(2, radix);
+        s = s.add(log(z)).subtract(one.divide(two.multiply(z)));
+        Apcomplex z2 = z.multiply(z),
+                  zp = one;
+        Iterator<Aprational> bernoulli2 = AprationalMath.bernoullis2(n, radix);
+        for (long k = 1; k <= n; k++)
+        {
+            long k2 = Math.multiplyExact(k,  2);
+            zp = zp.multiply(z2);
+            Apcomplex term = bernoulli2.next().divide(new Apint(k2, radix).multiply(zp));
+
+            long[] matchingPrecisionsReal = ApfloatHelper.getMatchingPrecisions(s.real(), term.real());
+            long[] matchingPrecisionsImag = ApfloatHelper.getMatchingPrecisions(s.imag(), term.imag());
+            if (matchingPrecisionsReal[1] == 0 && matchingPrecisionsImag[1] == 0)
+            {
+                // The rest of the terms would be insignificantly small
+                break;
+            }
+
+            s = s.subtract(term);
+        }
+
+        return s;
+    }
+
+    /**
+     * Binomial coefficient. Calculated using the {@link #gamma(Apcomplex)} function.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     *
+     * @return <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *           <mrow>
+     *             <mo>(</mo>
+     *               <mfrac linethickness="0">
+     *                 <mi>n</mi>
+     *                 <mi>k</mi>
+     *               </mfrac>
+     *             <mo>)</mo>
+     *           </mrow>
+     *         </math>
+     *
+     * @throws ArithmeticException If <code>n</code> is a negative integer and <code>k</code> is noninteger.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apcomplex binomial(Apcomplex n, Apcomplex k)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (n.imag().signum() == 0 && k.imag().signum() == 0)
+        {
+            return ApfloatMath.binomial(n.real(), k.real());
+        }
+        Apcomplex nk = n.subtract(k);
+        if (k.isInteger() && k.real().signum() < 0 ||
+            nk.isInteger() && nk.real().signum() < 0)
+        {
+            // The divisor is infinity (but the dividend isn't) so we get zero
+            return Apcomplex.ZEROS[n.radix()];
+        }
+        Apint one = Apint.ONES[n.radix()];
+        return gamma(n.add(one)).divide(gamma(k.add(one)).multiply(gamma(nk.add(one))));
     }
 
     /**

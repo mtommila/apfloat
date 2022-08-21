@@ -31,7 +31,7 @@ import java.util.Random;
 /**
  * Various mathematical functions for arbitrary precision integers.
  *
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -645,6 +645,199 @@ public class ApintMath
         throws ArithmeticException, NumberFormatException, ApfloatRuntimeException
     {
         return new Apint(ApfloatMath.factorial(n, Apfloat.INFINITE, radix));
+    }
+
+    /**
+     * Binomial coefficient. Uses the default radix.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     *
+     * @return <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *           <mrow>
+     *             <mo>(</mo>
+     *               <mfrac linethickness="0">
+     *                 <mi>n</mi>
+     *                 <mi>k</mi>
+     *               </mfrac>
+     *             <mo>)</mo>
+     *           </mrow>
+     *         </math>
+     *
+     * @since 1.11.0
+     */
+
+    public static Apint binomial(long n, long k)
+        throws ApfloatRuntimeException
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return binomial(n, k, radix);
+    }
+
+    /**
+     * Binomial coefficient. Uses the specified radix.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     * @param radix The radix.
+     *
+     * @return <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *           <mrow>
+     *             <mo>(</mo>
+     *               <mfrac linethickness="0">
+     *                 <mi>n</mi>
+     *                 <mi>k</mi>
+     *               </mfrac>
+     *             <mo>)</mo>
+     *           </mrow>
+     *         </math>
+     *
+     * @throws NumberFormatException If the radix is not valid.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apint binomial(long n, long k, int radix)
+        throws NumberFormatException, ApfloatRuntimeException
+    {
+        // See https://mathworld.wolfram.com/BinomialCoefficient.html for the logic on negative values
+        boolean negate = false;
+        if (n < 0)
+        {
+            if (k >= 0)
+            {
+                n = Math.subtractExact(k, n) - 1;
+            }
+            else if (k <= n)
+            {
+                long n1 = -k - 1;
+                k = n - k;
+                n = n1;
+            }
+            else
+            {
+                return Apint.ZEROS[radix];
+            }
+            negate = ((k & 1) == 1);
+        }
+        else if (k < 0)
+        {
+            k = Math.subtractExact(n, k);
+        }
+        if (k < 0 || k > n)
+        {
+            return Apint.ZEROS[radix];
+        }
+        assert (n >= 0);
+        assert (k >= 0);
+        if (k > n / 2)
+        {
+            // Optimize performance
+            k = n - k;
+        }
+        Apint b = pochhammer(n - k + 1, k, radix).divide(factorial(k, radix));
+        return (negate ? b.negate() : b);
+    }
+
+    /**
+     * Binomial coefficient.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     *
+     * @return <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *           <mrow>
+     *             <mo>(</mo>
+     *               <mfrac linethickness="0">
+     *                 <mi>n</mi>
+     *                 <mi>k</mi>
+     *               </mfrac>
+     *             <mo>)</mo>
+     *           </mrow>
+     *         </math>
+     *
+     * @since 1.11.0
+     */
+
+    public static Apint binomial(Apint n, Apint k)
+        throws ApfloatRuntimeException
+    {
+        // See https://mathworld.wolfram.com/BinomialCoefficient.html for the logic on negative values
+        boolean negate = false;
+        int radix = n.radix();
+        Apint one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        if (n.signum() < 0)
+        {
+            if (k.signum() >= 0)
+            {
+                n = k.subtract(n).subtract(one);
+            }
+            else if (k.compareTo(n) <= 0)
+            {
+                Apint n1 = k.negate().subtract(one);
+                k = n.subtract(k);
+                n = n1;
+            }
+            else
+            {
+                return Apint.ZEROS[radix];
+            }
+            negate = (k.mod(two).signum() != 0);
+        }
+        else if (k.signum() < 0)
+        {
+            k = n.subtract(k);
+        }
+        if (k.signum() < 0 || k.compareTo(n) > 0)
+        {
+            return Apint.ZEROS[radix];
+        }
+        assert (n.signum() >= 0);
+        assert (k.signum() >= 0);
+        if (k.compareTo(n.divide(two)) > 0)
+        {
+            // Optimize performance
+            k = n.subtract(k);
+        }
+        Apint b = pochhammer(n.subtract(k).add(one), k).divide(factorial(k.longValueExact(), radix));
+        return (negate ? b.negate() : b);
+    }
+
+    // Product of the numbers n * (n + 1) * (n + 2) * ... * (n + m - 1)
+    private static Apint pochhammer(long n, long m, int radix)
+    {
+        assert (m >= 0);
+        if (m == 0)
+        {
+            return Apint.ONES[radix];
+        }
+        if (m == 1)
+        {
+            return new Apint(n, radix);
+        }
+        long k = m >>> 1;
+        return pochhammer(n, k, radix).multiply(pochhammer(n + k, m - k, radix));
+    }
+
+    // Product of the numbers n * (n + 1) * (n + 2) * ... * (n + m - 1)
+    private static Apint pochhammer(Apint n, Apint m)
+    {
+        assert (m.signum() >= 0);
+        Apint one = Apint.ONES[n.radix()];
+        if (m.signum() == 0)
+        {
+            return one;
+        }
+        if (m.equals(one))
+        {
+            return n;
+        }
+        Apint two = new Apint(2, n.radix());
+        Apint k = m.divide(two);
+        return pochhammer(n, k).multiply(pochhammer(n.add(k), m.subtract(k)));
     }
 
     /**

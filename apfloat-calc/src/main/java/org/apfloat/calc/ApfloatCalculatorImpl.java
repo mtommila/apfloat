@@ -175,6 +175,23 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number bernoulli(Number x)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Bernoulli can only be used with a valid integer argument");
+            }
+            long n = x.longValue();
+            return AprationalMath.bernoulli(n);
+        }
+
+        @Override
+        public Number binomial(Number x, Number y)
+        {
+            return ApcomplexMath.binomial((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
         public Number cbrt(Number x)
         {
             return root(x, 3);
@@ -196,6 +213,23 @@ public class ApfloatCalculatorImpl
         public Number cosh(Number x)
         {
             return ApcomplexMath.cosh((Apcomplex) x);
+        }
+
+        @Override
+        public Number digamma(Number x)
+        {
+            return ApcomplexMath.digamma((Apcomplex) x);
+        }
+
+        @Override
+        public Number e(Number x)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("E can only be used with a valid integer argument");
+            }
+            long n = x.longValue();
+            return ApfloatMath.e(n);
         }
 
         @Override
@@ -706,6 +740,12 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number binomial(Number x, Number y)
+        {
+            return AprationalMath.binomial((Aprational) x, (Aprational) y);
+        }
+
+        @Override
         public Number hypot(Number x, Number y)
         {
             return root(add(pow(x, 2), pow(y, 2)), 2);
@@ -743,6 +783,16 @@ public class ApfloatCalculatorImpl
     private static class ApintFunctions
         extends AprationalFunctions
     {
+        @Override
+        public Number binomial(Number x, Number y)
+        {
+            if (isLong(x) && isLong(y))
+            {
+                return ApintMath.binomial(x.longValue(), y.longValue());
+            }
+            return ApintMath.binomial((Apint) x, (Apint) y);
+        }
+
         @Override
         public Number gcd(Number x, Number y)
         {

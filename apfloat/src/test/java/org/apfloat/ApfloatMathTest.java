@@ -91,10 +91,13 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testToDegrees"));
         suite.addTest(new ApfloatMathTest("testProduct"));
         suite.addTest(new ApfloatMathTest("testSum"));
+        suite.addTest(new ApfloatMathTest("testE"));
         suite.addTest(new ApfloatMathTest("testEuler"));
         suite.addTest(new ApfloatMathTest("testGamma"));
         suite.addTest(new ApfloatMathTest("testGammaIncomplete"));
         suite.addTest(new ApfloatMathTest("testGammaIncompleteGeneralized"));
+        suite.addTest(new ApfloatMathTest("testDigamma"));
+        suite.addTest(new ApfloatMathTest("testBinomial"));
         suite.addTest(new ApfloatMathTest("testZeta"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
@@ -1704,6 +1707,52 @@ public class ApfloatMathTest
         assertEquals("Big number big sum", new Apfloat(5000050000L).add(new Apfloat("1e10000000", Apfloat.INFINITE)), ApfloatMath.sum(numbers));
     }
 
+    public static void testE()
+    {
+        Apfloat a = ApfloatMath.e(10);
+        assertEquals("10 radix", 10, a.radix());
+        assertEquals("10 precision", 10, a.precision());
+        assertEquals("10 value", new Apfloat("2.718281828"), a, new Apfloat("5e-9"));
+        a = ApfloatMath.e(50);
+        assertEquals("50 radix", 10, a.radix());
+        assertEquals("50 precision", 50, a.precision());
+        assertEquals("50 value", new Apfloat("2.7182818284590452353602874713526624977572470937000"), a, new Apfloat("5e-49"));
+        a = ApfloatMath.e(20, 16);
+        assertEquals("20 radix", 16, a.radix());
+        assertEquals("20 precision", 20, a.precision());
+        assertEquals("20 value", new Apfloat("2.b7e151628aed2a6abf7", 20, 16), a, new Apfloat("0.0000000000000000008", 1, 16));
+
+        try
+        {
+            ApfloatMath.e(0);
+            fail("Precision 0 accepted");
+        }
+        catch (IllegalArgumentException e)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.e(Apfloat.INFINITE);
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.e(50, 1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
+    }
+
     public static void testEuler()
     {
         Apfloat a = ApfloatMath.euler(10);
@@ -1717,7 +1766,7 @@ public class ApfloatMathTest
         a = ApfloatMath.euler(20, 16);
         assertEquals("20 radix", 16, a.radix());
         assertEquals("20 precision", 20, a.precision());
-        assertEquals("20 value", new Apfloat("0.93c467e37db0c7a4d1be", 20, 16), a, new Apfloat("5e-50"));
+        assertEquals("20 value", new Apfloat("0.93c467e37db0c7a4d1be", 20, 16), a, new Apfloat("0.00000000000000000008", 1, 16));
 
         try
         {
@@ -2061,6 +2110,111 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+        }
+    }
+
+    public static void testDigamma()
+    {
+        Apfloat a = ApfloatMath.digamma(new Apfloat(6, 30, 10));
+        assertEquals("6 precision", 30, a.precision(), 1);
+        assertEquals("6 value", new Apfloat("1.70611766843180047272682124325"), a, new Apfloat("5e-29"));
+
+        a = ApfloatMath.digamma(new Apfloat("-6.5", 30, 10));
+        assertEquals("-6.5 precision", 30, a.precision(), 1);
+        assertEquals("-6.5 value", new Apfloat("1.94675748424608678806929117727"), a, new Apfloat("5e-29"));
+
+        a = ApfloatMath.digamma(new Apfloat("1e100", 30, 10));
+        assertEquals("1e100 precision", 33, a.precision(), 1);
+        assertEquals("1e100 value", new Apfloat("230.258509299404568401799145468436"), a, new Apfloat("5e-29"));
+
+        a = ApfloatMath.digamma(new Apfloat("-10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.1"));
+        assertEquals("-1e100-1 precision", 4, a.precision());
+        assertEquals("-1e100-1 value", new Apfloat("239.927337"), a, new Apfloat("5e-1"));
+
+        a = ApfloatMath.digamma(new Apfloat("1e1000000", 30, 10));
+        assertEquals("1e1000000 precision", 36, a.precision(), 1);
+        assertEquals("1e1000000 value", new Apfloat("2302585.09299404568401799145468436421"), a, new Apfloat("5e-26"));
+
+        a = ApfloatMath.digamma(new Apfloat(1, 1));
+        assertEquals("1 precision", 1, a.precision());
+        assertEquals("1 value", new Apfloat("-0.6"), a, new Apfloat("5e-1"));
+
+        try
+        {
+            ApfloatMath.digamma(new Apfloat(0));
+            fail("Digamma of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.digamma(new Apfloat(-6));
+            fail("Digamma of -6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            ApfloatMath.digamma(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testBinomial()
+    {
+        Apfloat a = ApfloatMath.binomial(new Apfloat("9.000000000"), new Apfloat("4.000000000"));
+        assertEquals("9,4 precision", 10, a.precision());
+        assertEquals("9,4 value", new Apfloat("126.0000000"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.binomial(new Apfloat("9.30000"), new Apfloat("4.20000"));
+        assertEquals("9.3,4.2 precision", 6, a.precision());
+        assertEquals("9.3,4.2 value", new Apfloat("154.376"), a, new Apfloat("5e-3"));
+
+        a = ApfloatMath.binomial(new Apfloat("-9.30000"), new Apfloat("-4.20000"));
+        assertEquals("-9.3,-4.2 precision", 6, a.precision(), 1);
+        assertEquals("-9.3,-4.2 value", new Apfloat("0.000200991"), a, new Apfloat("5e-9"));
+
+        a = ApfloatMath.binomial(new Apfloat(0), new Apfloat(0));
+        assertEquals("0,0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0,0 value", new Apfloat(1), a);
+
+        a = ApfloatMath.binomial(new Apfloat(1), new Apfloat(0));
+        assertEquals("1,0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("1,0 value", new Apfloat(1), a);
+
+        a = ApfloatMath.binomial(new Apfloat("3.20000"), new Apfloat("4.00000"));
+        assertEquals("3.2,4 precision", 5, a.precision());
+        assertEquals("3.2,4 value", new Apfloat("0.070400"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.binomial(new Apfloat("7.20000"), new Apfloat("4.20000"));
+        assertEquals("7.2,4.2 precision", 6, a.precision());
+        assertEquals("7.2,4.2 value", new Apfloat("38.6880"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.binomial(new Apfloat("3.20000"), new Apfloat("4.20000"));
+        assertEquals("3.2,4.2 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("3.2,4.2 value", new Apfloat(0), a);
+
+        a = ApfloatMath.binomial(new Apfloat("3.20000"), new Apfloat("-4.00000"));
+        assertEquals("3.2,-4 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("3.2,-4 value", new Apfloat(0), a);
+
+        try
+        {
+            ApfloatMath.binomial(new Apfloat("-3.0"), new Apfloat("4.2"));
+            fail("Binomial of -3,4.2");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is infinite
         }
     }
 

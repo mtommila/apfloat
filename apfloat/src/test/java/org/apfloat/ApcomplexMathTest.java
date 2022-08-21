@@ -73,11 +73,14 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testCos"));
         suite.addTest(new ApcomplexMathTest("testSin"));
         suite.addTest(new ApcomplexMathTest("testTan"));
+        suite.addTest(new ApcomplexMathTest("testCot"));
         suite.addTest(new ApcomplexMathTest("testProduct"));
         suite.addTest(new ApcomplexMathTest("testSum"));
         suite.addTest(new ApcomplexMathTest("testGamma"));
         suite.addTest(new ApcomplexMathTest("testGammaIncomplete"));
         suite.addTest(new ApcomplexMathTest("testGammaIncompleteGeneralized"));
+        suite.addTest(new ApcomplexMathTest("testDigamma"));
+        suite.addTest(new ApcomplexMathTest("testBinomial"));
         suite.addTest(new ApcomplexMathTest("testZeta"));
         suite.addTest(new ApcomplexMathTest("testUlp"));
 
@@ -1547,6 +1550,61 @@ public class ApcomplexMathTest
         }
     }
 
+    public static void testCot()
+    {
+        Apcomplex a = ApcomplexMath.cot(new Apcomplex(new Apfloat(3, 100), new Apfloat(4, 100)));
+        assertEquals("(3,4), 100 precision", 100, a.precision(), 2);
+        assertEquals("(3,4), 100 value", new Apcomplex("(-0.00018758773798365921562850466246423355472564846529309782893964921914630968050082632783622198386659471,-1.00064439247155908009818470784307948938834227700912898634814356679250631676718292100755226328263131)"), a, new Apfloat("5e-99"));
+
+        a = ApcomplexMath.cot(new Apcomplex(new Apfloat(3, 100), new Apfloat(-4, 100)));
+        assertEquals("(3,-4), 100 precision", 100, a.precision(), 2);
+        assertEquals("(3,-4), 100 value", new Apcomplex("(-0.00018758773798365921562850466246423355472564846529309782893964921914630968050082632783622198386659471,1.00064439247155908009818470784307948938834227700912898634814356679250631676718292100755226328263131)"), a, new Apfloat("5e-99"));
+
+        a = ApcomplexMath.cot(new Apcomplex(new Apfloat(-3, 100), new Apfloat(4, 100)));
+        assertEquals("(-3,4), 100 precision", 100, a.precision(), 2);
+        assertEquals("(-3,4), 100 value", new Apcomplex("(0.00018758773798365921562850466246423355472564846529309782893964921914630968050082632783622198386659471,-1.00064439247155908009818470784307948938834227700912898634814356679250631676718292100755226328263131)"), a, new Apfloat("5e-99"));
+
+        a = ApcomplexMath.cot(new Apcomplex(new Apfloat(-3, 100), new Apfloat(-4, 100)));
+        assertEquals("(-3,-4), 100 precision", 100, a.precision(), 2);
+        assertEquals("(-3,-4), 100 value", new Apcomplex("(0.00018758773798365921562850466246423355472564846529309782893964921914630968050082632783622198386659471,1.00064439247155908009818470784307948938834227700912898634814356679250631676718292100755226328263131)"), a, new Apfloat("5e-99"));
+
+        a = ApcomplexMath.cot(new Apcomplex(Apfloat.ZERO, new Apfloat(4, 100)));
+        assertEquals("(0,4), 100 precision", 102, a.precision(), 1);
+        assertEquals("(0,4), 100 value", new Apcomplex("(0,-1.000671150401682489912111744434371930958710622745064689809122475628813351918433317813144115811237098917)"), a, new Apfloat("5e-100"));
+
+        a = ApcomplexMath.cot(new Apcomplex(Apfloat.ZERO, new Apfloat(-4, 100)));
+        assertEquals("(0,-4), 100 precision", 102, a.precision(), 1);
+        assertEquals("(0,-4), 100 value", new Apcomplex("(0,1.000671150401682489912111744434371930958710622745064689809122475628813351918433317813144115811237098917)"), a, new Apfloat("5e-100"));
+
+        a = ApcomplexMath.cot(new Apfloat(3, 100));
+        assertEquals("(3,0), 100 precision", 100, a.precision(), 1);
+        assertEquals("(3,0), 100 value", new Apcomplex("-7.0152525514345334694285513795264765782931033520963538381563324249075850694824874909055796047896063"), a, new Apfloat("5e-99"));
+
+        a = ApcomplexMath.cot(new Apfloat(-3, 100));
+        assertEquals("(-3,0), 100 precision", 100, a.precision(), 1);
+        assertEquals("(-3,0), 100 value", new Apcomplex("7.0152525514345334694285513795264765782931033520963538381563324249075850694824874909055796047896063"), a, new Apfloat("5e-99"));
+
+        try
+        {
+            ApcomplexMath.cot(new Apcomplex(new Apfloat(0)));
+            fail("cot(0) accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; division by zero
+        }
+
+        try
+        {
+            ApcomplexMath.cot(new Apcomplex(new Apfloat(1000, 3), new Apfloat("1.5")));
+            fail("cot(1000 prec 3) accepted");
+        }
+        catch (LossOfPrecisionException lope)
+        {
+            // OK; loss of precision
+        }
+    }
+
     public static void testW()
     {
         Apcomplex a = new Apcomplex(new Apfloat(1, 45, 16), new Apfloat(2, 45, 16));
@@ -2016,6 +2074,112 @@ public class ApcomplexMathTest
             fail("Infinite expansion");
         }
         catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testDigamma()
+    {
+        Apcomplex a = ApcomplexMath.digamma(new Apcomplex("(3,4)").precision(30));
+        assertEquals("3+4i precision", 32, a.precision(), 1);
+        assertEquals("3+4i value", new Apcomplex("(1.55035981733341091269899018667062,1.01050220918604445291687052250976)"), a, new Apfloat("5e-31"));
+
+        a = ApcomplexMath.digamma(new Apcomplex("(3,-4)").precision(30));
+        assertEquals("3-4i precision", 32, a.precision(), 1);
+        assertEquals("3-4i value", new Apcomplex("(1.55035981733341091269899018667062,-1.01050220918604445291687052250976)"), a, new Apfloat("5e-31"));
+
+        a = ApcomplexMath.digamma(new Apcomplex("(-3,4)").precision(30));
+        assertEquals("-3+4i precision", 30, a.precision());
+        assertEquals("-3+4i value", new Apcomplex("(1.67035981733341091269899018667,2.29109044448016209997569405192)"), a, new Apfloat("5e-29"));
+
+        a = ApcomplexMath.digamma(new Apcomplex("(-3,-4)").precision(30));
+        assertEquals("-3-4i precision", 30, a.precision());
+        assertEquals("-3-4i value", new Apcomplex("(1.67035981733341091269899018667,-2.29109044448016209997569405192)"), a, new Apfloat("5e-29"));
+
+        a = ApcomplexMath.digamma(new Apcomplex("(-3000000,4000000)").precision(30));
+        assertEquals("-3000000+4000000i precision", 30, a.precision());
+        assertEquals("-3000000+4000000i value", new Apcomplex("(15.4249485303983754120420413947,2.2142975155881778060341309203)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.digamma(new Apcomplex(new Apfloat(-3, 30, 11), new Apfloat(-4, 30, 11)));
+        assertEquals("-3-4i precision radix 11", 30, a.precision());
+        assertEquals("-3-4i value radix 11", new Apcomplex(new Apfloat("1.741281343469756a206022a991993", 30, 11), new Apfloat("-2.32249452a48596236132467355150", 30, 11)), a, new Apfloat("5e-29", 1, 11));
+
+        a = ApcomplexMath.digamma(new Apfloat(6, 30, 10));
+        assertEquals("6 precision", 30, a.precision(), 1);
+        assertEquals("6 value", new Apcomplex("1.70611766843180047272682124325"), a, new Apfloat("5e-29"));
+
+        a = ApcomplexMath.digamma(new Apfloat("-6.5", 30, 10));
+        assertEquals("-6.5 precision", 30, a.precision(), 1);
+        assertEquals("-6.5 value", new Apcomplex("1.94675748424608678806929117727"), a, new Apfloat("5e-29"));
+
+        try
+        {
+            ApcomplexMath.digamma(Apcomplex.ZERO);
+            fail("Digamma of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            ApcomplexMath.digamma(new Apint(-1));
+            fail("Digamma of -1");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            ApcomplexMath.digamma(new Apcomplex(Apfloat.ZERO, new Apfloat(4)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testBinomial()
+    {
+        Apcomplex a = ApcomplexMath.binomial(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("(3,4),(5,6) precision", 6, a.precision());
+        assertEquals("(3,4),(5,6) value", new Apcomplex("(-3.10924,-1.60449)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.binomial(new Apfloat(0), new Apfloat(0));
+        assertEquals("0,0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0,0 value", new Apfloat(1), a);
+
+        a = ApcomplexMath.binomial(new Apfloat(1), new Apfloat(0));
+        assertEquals("1,0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("1,0 value", new Apfloat(1), a);
+
+        a = ApcomplexMath.binomial(new Apcomplex("(0,3.20000)"), new Apcomplex("4.00000"));
+        assertEquals("3.2i,4 precision", 5, a.precision());
+        assertEquals("3.2i,4 value", new Apcomplex("(-0.32427,7.3920)"), a, new Apfloat("5e-4"));
+
+        a = ApcomplexMath.binomial(new Apcomplex("(7.20000,1.00000)"), new Apcomplex("(4.20000,1.00000)"));
+        assertEquals("7.2+i,4.2+i precision", 6, a.precision());
+        assertEquals("7.2+i,4.2+i value", new Apcomplex("(35.5880,18.8867)"), a, new Apfloat("5e-4"));
+
+        a = ApcomplexMath.binomial(new Apcomplex("(3.20000,1.00000)"), new Apcomplex("(4.20000,1.00000)"));
+        assertEquals("3.2+i,4.2+i precision", Apcomplex.INFINITE, a.precision());
+        assertEquals("3.2+i,4.2+i value", new Apcomplex("0"), a);
+
+        a = ApcomplexMath.binomial(new Apcomplex("(0,3.20000)"), new Apcomplex("-4.00000"));
+        assertEquals("3.2i,-4 precision", Apcomplex.INFINITE, a.precision());
+        assertEquals("3.2i,-4 value", new Apcomplex("0"), a);
+
+        try
+        {
+            ApcomplexMath.binomial(new Apcomplex("-3.00000"), new Apcomplex("(0,4.00000)"));
+            fail("Binomial of -3,4i");
+        }
+        catch (ArithmeticException ae)
         {
             // OK
         }

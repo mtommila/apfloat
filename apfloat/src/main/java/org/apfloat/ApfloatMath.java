@@ -2040,6 +2040,88 @@ public class ApfloatMath
     }
 
     /**
+     * Calculates <i>e</i>. Uses default radix.
+     *
+     * @param precision Number of digits of <i>e</i> to calculate.
+     *
+     * @return <i>e</i> accurate to <code>precision</code> digits, in the default radix.
+     *
+     * @throws NumberFormatException If the default radix is not valid.
+     * @throws IllegalArgumentException In case the precision is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat e(long precision)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return e(precision, radix);
+    }
+
+    /**
+     * Calculates <i>e</i>.
+     *
+     * @param precision Number of digits of <i>e</i> to calculate.
+     * @param radix The radix in which the number should be presented.
+     *
+     * @return <i>e</i> accurate to <code>precision</code> digits, in base <code>radix</code>.
+     *
+     * @throws NumberFormatException If the radix is not valid.
+     * @throws IllegalArgumentException In case the precision is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat e(long precision, int radix)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
+        if (precision <= 0)
+        {
+            throw new IllegalArgumentException("Precision " + precision + " is not positive");
+        }
+        else if (precision == Apfloat.INFINITE)
+        {
+            throw new InfiniteExpansionException("Cannot calculate e to infinite precision");
+        }
+
+        long terms = inverseFactorial(precision, radix);
+        Apfloat[] pq = e(1, terms, precision, radix);
+        return pq[0].divide(pq[1]).add(Apfloat.ONES[radix]);
+    }
+
+    // Rough approximation of log(n!) = n log n - n
+    private static long inverseFactorial(long precision, int radix)
+    {
+        double x = precision * Math.log(radix) + 7, // Does not work with extremely low precision
+               n = x,
+               p;
+        do
+        {
+            p = n;
+            n = x / (Math.log(n) - 1);
+        } while ((long) p != (long) n);
+        return (long) Math.ceil(n);
+    }
+
+    private static Apfloat[] e(long start, long end, long precision, int radix)
+    {
+        if (end - start == 1)
+        {
+            Apfloat[] pq = { Apfloat.ONES[radix], new Apfloat(start, precision, radix) };
+            return pq;
+        }
+
+        long mid = start + end >>> 1;
+        Apfloat[] first = e(start, mid, precision, radix),
+                  last = e(mid, end, precision, radix),
+                  pq = { first[0].multiply(last[1]).add(last[0]), first[1].multiply(last[1]) };
+        return pq;
+    }
+
+    /**
      * Calculates &gamma;, the Euler-Mascheroni constant. Uses default radix.
      *
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
@@ -2055,6 +2137,7 @@ public class ApfloatMath
      */
 
     public static Apfloat euler(long precision)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
     {
         ApfloatContext ctx = ApfloatContext.getContext();
         int radix = ctx.getDefaultRadix();
@@ -2127,6 +2210,7 @@ public class ApfloatMath
      */
 
     public static Apfloat gamma(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
     {
         return ApcomplexMath.gamma(x).real();
     }
@@ -2150,6 +2234,7 @@ public class ApfloatMath
      */
 
     public static Apfloat gamma(Apfloat a, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
     {
         if (x.signum() < 0 && !(a.signum() > 0 && a.isInteger()))
         {
@@ -2183,6 +2268,7 @@ public class ApfloatMath
      */
 
     public static Apfloat gamma(Apfloat a, Apfloat x0, Apfloat x1)
+        throws ArithmeticException, ApfloatRuntimeException
     {
         if ((x0.signum() < 0 || x1.signum() < 0) && !(a.signum() > 0 && a.isInteger()))
         {
@@ -2190,6 +2276,69 @@ public class ApfloatMath
             throw new ArithmeticException("Non-real result");
         }
         return ApcomplexMath.gamma(a, x0, x1).real();
+    }
+
+    /**
+     * Digamma function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the digamma function.
+     *
+     * @param x The argument.
+     *
+     * @return <code>&psi;(x)</code>
+     *
+     * @throws ArithmeticException If <code>x</code> is a nonpositive integer.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat digamma(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.digamma(x).real();
+    }
+
+    /**
+     * Binomial coefficient. Calculated using the {@link #gamma(Apfloat)} function.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     *
+     * @return <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *           <mrow>
+     *             <mo>(</mo>
+     *               <mfrac linethickness="0">
+     *                 <mi>n</mi>
+     *                 <mi>k</mi>
+     *               </mfrac>
+     *             <mo>)</mo>
+     *           </mrow>
+     *         </math>
+     *
+     * @throws ArithmeticException If <code>n</code> is a negative integer and <code>k</code> is noninteger.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat binomial(Apfloat n, Apfloat k)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (n.isInteger() && k.isInteger())
+        {
+            return ApintMath.binomial(n.truncate(), k.truncate()).precision(Math.min(n.precision(), k.precision()));
+        }
+        Apfloat nk = n.subtract(k);
+        if (k.isInteger() && k.signum() < 0 ||
+            nk.isInteger() && nk.signum() < 0)
+        {
+            // The divisor is infinity (but the dividend isn't) so we get zero
+            return Apcomplex.ZEROS[n.radix()];
+        }
+        Apint one = Apint.ONES[n.radix()];
+        return gamma(n.add(one)).divide(gamma(k.add(one)).multiply(gamma(nk.add(one))));
     }
 
     /**

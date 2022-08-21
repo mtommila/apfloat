@@ -29,7 +29,7 @@ import java.util.Map;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -63,6 +63,7 @@ public class ApintMathTest
         suite.addTest(new ApintMathTest("testModPow"));
         suite.addTest(new ApintMathTest("testFactorial"));
         suite.addTest(new ApintMathTest("testProduct"));
+        suite.addTest(new ApintMathTest("testBinomial"));
         suite.addTest(new ApintMathTest("testSum"));
         suite.addTest(new ApintMathTest("testRandom"));
         suite.addTest(new ApintMathTest("testMax"));
@@ -485,6 +486,158 @@ public class ApintMathTest
         catch (ArithmeticException ae)
         {
             // OK: factorial of negative number
+        }
+    }
+
+    public static void testBinomial()
+    {
+        Apint a = ApintMath.binomial(10, 2);
+        assertEquals("10,2 value", new Apint(45), a);
+
+        a = ApintMath.binomial(10, 3);
+        assertEquals("10,3 value", new Apint(120), a);
+
+        a = ApintMath.binomial(10, 4);
+        assertEquals("10,4 value", new Apint(210), a);
+
+        a = ApintMath.binomial(10, 5);
+        assertEquals("10,5 value", new Apint(252), a);
+
+        a = ApintMath.binomial(10, 6);
+        assertEquals("10,6 value", new Apint(210), a);
+
+        a = ApintMath.binomial(10, 0);
+        assertEquals("10,0 value", new Apint(1), a);
+
+        a = ApintMath.binomial(10, 1);
+        assertEquals("10,1 value", new Apint(10), a);
+
+        a = ApintMath.binomial(10, 10);
+        assertEquals("10,10 value", new Apint(1), a);
+
+        a = ApintMath.binomial(11, 4);
+        assertEquals("11,4 value", new Apint(330), a);
+
+        a = ApintMath.binomial(11, 5);
+        assertEquals("11,5 value", new Apint(462), a);
+
+        a = ApintMath.binomial(11, 6);
+        assertEquals("11,6 value", new Apint(462), a);
+
+        a = ApintMath.binomial(2, 3);
+        assertEquals("2,3 value", new Apint(0), a);
+
+        a = ApintMath.binomial(0,0);
+        assertEquals("0,0 value", new Apint(1), a);
+
+        a = ApintMath.binomial(-4, -9);
+        assertEquals("-4,-9 value", new Apint(-56), a);
+
+        a = ApintMath.binomial(-4, 9);
+        assertEquals("-4,9 value", new Apint(-220), a);
+
+        a = ApintMath.binomial(4, -9);
+        assertEquals("4,-9 value", new Apint(0), a);
+
+        a = ApintMath.binomial(-9, -4);
+        assertEquals("-9,-4 value", new Apint(0), a);
+
+        a = ApintMath.binomial(-9, 4);
+        assertEquals("-9,4 value", new Apint(495), a);
+
+        a = ApintMath.binomial(9, -4);
+        assertEquals("9,-4 value", new Apint(0), a);
+
+        a = ApintMath.binomial(Long.MAX_VALUE, Long.MAX_VALUE - 1);
+        assertEquals("MAX_VALUE,MAX_VALUE-1 value", new Apint(Long.MAX_VALUE), a);
+
+        a = ApintMath.binomial(Long.MAX_VALUE, 1);
+        assertEquals("MAX_VALUE,1 value", new Apint(Long.MAX_VALUE), a);
+
+        a = ApintMath.binomial(9, 5, 11);
+        assertEquals("9,5 radix 11 value", new Apint(126, 11), a);
+
+        a = ApintMath.binomial(new Apint(10), new Apint(2));
+        assertEquals("10,2 apint value", new Apint(45), a);
+
+        a = ApintMath.binomial(new Apint(10), new Apint(3));
+        assertEquals("10,3 apint value", new Apint(120), a);
+
+        a = ApintMath.binomial(new Apint(10), new Apint(4));
+        assertEquals("10,4 apint value", new Apint(210), a);
+
+        a = ApintMath.binomial(new Apint(10), new Apint(5));
+        assertEquals("10,5 apint value", new Apint(252), a);
+
+        a = ApintMath.binomial(new Apint(10), new Apint(6));
+        assertEquals("10,6 apint value", new Apint(210), a);
+
+        a = ApintMath.binomial(new Apint(10), new Apint(0));
+        assertEquals("10,0 apint value", new Apint(1), a);
+
+        a = ApintMath.binomial(new Apint(10), new Apint(1));
+        assertEquals("10,1 apint value", new Apint(10), a);
+
+        a = ApintMath.binomial(new Apint(10), new Apint(10));
+        assertEquals("10,10 apint value", new Apint(1), a);
+
+        a = ApintMath.binomial(new Apint(11), new Apint(4));
+        assertEquals("11,4 apint value", new Apint(330), a);
+
+        a = ApintMath.binomial(new Apint(11), new Apint(5));
+        assertEquals("11,5 apint value", new Apint(462), a);
+
+        a = ApintMath.binomial(new Apint(11), new Apint(6));
+        assertEquals("11,6 apint value", new Apint(462), a);
+
+        a = ApintMath.binomial(new Apint(2), new Apint(3));
+        assertEquals("2,3 apint value", new Apint(0), a);
+
+        a = ApintMath.binomial(new Apint(0), new Apint(0));
+        assertEquals("0,0 apint value", new Apint(1), a);
+
+        a = ApintMath.binomial(new Apint(-4), new Apint(-9));
+        assertEquals("-4,-9 apint value", new Apint(-56), a);
+
+        a = ApintMath.binomial(new Apint(-4), new Apint(9));
+        assertEquals("-4,9 apint value", new Apint(-220), a);
+
+        a = ApintMath.binomial(new Apint(4), new Apint(-9));
+        assertEquals("4,-9 apint value", new Apint(0), a);
+
+        a = ApintMath.binomial(new Apint(-9), new Apint(-4));
+        assertEquals("-9,-4 apint value", new Apint(0), a);
+
+        a = ApintMath.binomial(new Apint(-9), new Apint(4));
+        assertEquals("-9,4 apint value", new Apint(495), a);
+
+        a = ApintMath.binomial(new Apint(9), new Apint(-4));
+        assertEquals("9,-4 apint value", new Apint(0), a);
+
+        a = ApintMath.binomial(new Apint("1000000000000000000000000000000"), new Apint(3));
+        assertEquals("1000000000000000000000000000000,3 value", new Apint("166666666666666666666666666666166666666666666666666666666667000000000000000000000000000000"), a);
+
+        a = ApintMath.binomial(new Apint(9, 9), new Apint(4, 9));
+        assertEquals("9,4 radix 9 apint value", new Apint(126, 9), a);
+
+        try
+        {
+            ApintMath.binomial(Long.MIN_VALUE, 0);
+            fail("Binomial(min,0) allowed");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK: overflow
+        }
+
+        try
+        {
+            ApintMath.binomial(Long.MAX_VALUE, -1);
+            fail("Binomial(max,-1) allowed");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK: overflow
         }
     }
 

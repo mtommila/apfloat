@@ -99,10 +99,14 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testToRadians"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testProduct"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testSum"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testE"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testEuler"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGamma"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGammaIncomplete"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGammaIncompleteGeneralized"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testDigamma"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testBinomial"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testBernoulli"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testZeta"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
@@ -890,6 +894,28 @@ public class FixedPrecisionApfloatHelperTest
         assertEquals("precision", 10, result.precision());
     }
 
+    public static void testE()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
+        Apfloat result = helper.e();
+        assertEquals("value", new Apfloat("2.718281828459045235360287471352662497757247093699959574966967627724076630353547594571382178525166427"), result, new Apfloat("5e-99"));
+        assertEquals("precision", 100, result.precision());
+
+        result = helper.e(16);
+        assertEquals("value 16", new Apfloat("2.b7e151628aed2a6abf7158809cf4f3c762e7160f38b4da56a784d9045190cfef324e7738926cfbe5f4bf8d8d8c31d763da0", Apfloat.DEFAULT, 16), result, new Apfloat(1e-100, 1, 16));
+        assertEquals("precision 16", 100, result.precision());
+
+        try
+        {
+            helper.euler(1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
+    }
+
     public static void testEuler()
     {
         FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
@@ -940,6 +966,71 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.gamma(a, x0, x1);
         assertEquals("value", new Apfloat("0.0885335"), result, new Apfloat("5e-7"));
         assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testDigamma()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("2.5");
+        Apfloat result = helper.digamma(x);
+        assertEquals("value", new Apfloat("0.703157"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+
+        try
+        {
+            helper.digamma(new Apfloat(0));
+            fail("digamma(0) accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
+    public static void testBinomial()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("2.5");
+        Apfloat y = new Apfloat("1.2");
+        Apfloat result = helper.binomial(x, y);
+        assertEquals("value", new Apfloat("2.58529"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        result = helper.binomial(10, 2);
+        assertEquals("long value", new Apfloat(45), result);
+        assertEquals("long precision", 6, result.precision());
+
+        result = helper.binomial(9, 3, 12);
+        assertEquals("radix 12 value", new Apint(84, 12), result);
+        assertEquals("radix 12 precision", 6, result.precision());
+
+        try
+        {
+            helper.binomial(new Apfloat(-1), new Apfloat("-1.1"));
+            fail("binomial(-1,-1.1) accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
+    public static void testBernoulli()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat result = helper.bernoulli(10);
+        assertEquals("value", new Apfloat("0.0757576"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+
+        try
+        {
+            helper.bernoulli(-1);
+            fail("bernoulli(-1) accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK
+        }
     }
 
     public static void testZeta()

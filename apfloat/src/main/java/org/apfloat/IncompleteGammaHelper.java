@@ -31,7 +31,7 @@ import java.util.function.LongFunction;
  * Helper class for the incomplete gamma function.
  *
  * @since 1.10.0
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -555,6 +555,9 @@ class IncompleteGammaHelper
             catch (RetryException re)
             {
                 // If the continued fraction initially converges to a wrong value and we don't calculate it accurately enough then keep increasing the precision
+                // See:
+                // Walter Gautschi, "Anomalous convergence of a continued fraction for ratios of Kummer functions", Mathematics of Computation, volume 31, number 140, October 1977, pages 994-999
+                // https://www.ams.org/journals/mcom/1977-31-140/S0025-5718-1977-0442204-3/S0025-5718-1977-0442204-3.pdf
                 a = ApfloatHelper.extendPrecision(a, extraPrecision);
                 z = ApfloatHelper.extendPrecision(z, extraPrecision);
                 reducePrecision += extraPrecision;

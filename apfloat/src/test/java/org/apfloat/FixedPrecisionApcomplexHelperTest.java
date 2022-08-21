@@ -89,6 +89,8 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testGamma"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testGammaIncomplete"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testGammaIncompleteGeneralized"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testDigamma"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testBinomial"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testZeta"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testUlp"));
 
@@ -606,6 +608,45 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.gamma(a, z0, z1);
         assertEquals("value", new Apcomplex("(0.00896428,-0.00326815)"), result, new Apfloat("5e-8"));
         assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testDigamma()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex x = new Apcomplex("(-2.5,1.3)");
+        Apcomplex result = helper.digamma(x);
+        assertEquals("value", new Apcomplex("(1.18732,2.73369)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        try
+        {
+            helper.digamma(new Apcomplex("0"));
+            fail("digamma(0) accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
+    public static void testBinomial()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex x = new Apcomplex("(2.5,3.5)");
+        Apcomplex y = new Apcomplex("(1.2,2.3)");
+        Apcomplex result = helper.binomial(x, y);
+        assertEquals("value", new Apcomplex("(-0.819659,2.18133)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        try
+        {
+            helper.binomial(new Apcomplex("-3"), new Apcomplex("(0,1)"));
+            fail("binomial(-3,i) accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
     }
 
     public static void testZeta()

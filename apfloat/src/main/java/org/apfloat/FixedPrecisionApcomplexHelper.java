@@ -718,6 +718,70 @@ public class FixedPrecisionApcomplexHelper
     }
 
     /**
+     * <i>e</i>.
+     *
+     * @return <i>e</i>.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat e()
+        throws ApfloatRuntimeException
+    {
+        return ApfloatMath.e(precision());
+    }
+
+    /**
+     * <i>e</i>.
+     *
+     * @param radix The radix of the result.
+     *
+     * @return <i>e</i>.
+     *
+     * @throws NumberFormatException If the radix is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat e(int radix)
+        throws NumberFormatException, ApfloatRuntimeException
+    {
+        return ApfloatMath.e(precision(), radix);
+    }
+
+    /**
+     * &gamma;, the Euler-Mascheroni constant.
+     *
+     * @return <code>&gamma;</code>.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat euler()
+        throws ApfloatRuntimeException
+    {
+        return ApfloatMath.euler(precision());
+    }
+
+    /**
+     * &gamma;, the Euler-Mascheroni constant.
+     *
+     * @param radix The radix of the result.
+     *
+     * @return <code>&gamma;</code>.
+     *
+     * @throws NumberFormatException If the radix is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat euler(int radix)
+        throws NumberFormatException, ApfloatRuntimeException
+    {
+        return ApfloatMath.euler(precision(), radix);
+    }
+
+    /**
      * Gamma function.
      *
      * @param z The operand.
@@ -772,6 +836,121 @@ public class FixedPrecisionApcomplexHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApcomplexMath.gamma(setGammaPrecision(a), setPrecision(z0), setPrecision(z1)));
+    }
+
+    /**
+     * Digamma function.
+     *
+     * @param z The argument.
+     *
+     * @return <code>&psi;(x)</code>
+     *
+     * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.11.0
+     */
+
+    public Apcomplex digamma(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.digamma(setPrecision(z)));
+    }
+
+    /**
+     * Binomial coefficient.
+     *
+     * @param n The argument.
+     * @param k The argument.
+     *
+     * @return The binomial coefficient.
+     *
+     * @throws ArithmeticException If <code>n</code> or <code>k</code> is negative.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat binomial(long n, long k)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApintMath.binomial(n, k));
+    }
+
+    /**
+     * Binomial coefficient.
+     *
+     * @param n The argument.
+     * @param k The argument.
+     * @param radix The radix.
+     *
+     * @return The binomial coefficient.
+     *
+     * @throws ArithmeticException If <code>n</code> or <code>k</code> is negative.
+     * @throws NumberFormatException If the radix is not valid.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat binomial(long n, long k, int radix)
+        throws ArithmeticException, NumberFormatException, ApfloatRuntimeException
+    {
+        return valueOf(ApintMath.binomial(n, k, radix));
+    }
+
+    /**
+     * Binomial coefficient.
+     *
+     * @param n The argument.
+     * @param k The argument.
+     *
+     * @return The binomial coefficient.
+     *
+     * @throws ArithmeticException If <code>n</code>, <code>k</code> or <code>n - k</code> is a nonpositive integer.
+     *
+     * @since 1.11.0
+     */
+
+    public Apcomplex binomial(Apcomplex n, Apcomplex k)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.binomial(setGammaPrecision(n), setGammaPrecision(k)));
+    }
+
+    /**
+     * Bernoulli number.
+     *
+     * @param n The argument.
+     *
+     * @return <code>B<sub>n</sub></code>
+     *
+     * @throws IllegalArgumentException If <code>n &lt; 0</code>.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat bernoulli(long n)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return valueOf(AprationalMath.bernoulli(n));
+    }
+
+    /**
+     * Bernoulli number.
+     *
+     * @param n The argument.
+     * @param radix The radix.
+     *
+     * @return <code>B<sub>n</sub></code>
+     *
+     * @throws IllegalArgumentException If <code>n &lt; 0</code>.
+     * @throws NumberFormatException If the radix is not valid.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat bernoulli(long n, int radix)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
+        return valueOf(AprationalMath.bernoulli(n, radix));
     }
 
     /**

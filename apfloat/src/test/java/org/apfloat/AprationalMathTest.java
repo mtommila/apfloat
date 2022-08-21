@@ -24,11 +24,13 @@
 package org.apfloat;
 
 import java.math.RoundingMode;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -59,6 +61,8 @@ public class AprationalMathTest
         suite.addTest(new AprationalMathTest("testSum"));
         suite.addTest(new AprationalMathTest("testMax"));
         suite.addTest(new AprationalMathTest("testMin"));
+        suite.addTest(new AprationalMathTest("testBinomial"));
+        suite.addTest(new AprationalMathTest("testBernoulli"));
 
         return suite;
     }
@@ -224,5 +228,299 @@ public class AprationalMathTest
         assertEquals("min of 1/2 and 1/2", new Aprational("1/2"), AprationalMath.min(new Aprational("1/2"), new Aprational("1/2")));
         assertEquals("min of 1/2 and 2/3", new Aprational("1/2"), AprationalMath.min(new Aprational("1/2"), new Aprational("2/3")));
         assertEquals("min of 2/3 and 1/2", new Aprational("1/2"), AprationalMath.min(new Aprational("2/3"), new Aprational("1/2")));
+    }
+
+    public static void testBinomial()
+    {
+        Aprational a = AprationalMath.binomial(new Aprational("0"), new Aprational("0"));
+        assertEquals("0,0 value", new Aprational("1"), a);
+
+        a = AprationalMath.binomial(new Aprational("-9"), new Aprational("2"));
+        assertEquals("-9,2 value", new Aprational("45"), a);
+
+        a = AprationalMath.binomial(new Aprational("19/3"), new Aprational("3"));
+        assertEquals("19/3,3 value", new Aprational("1976/81"), a);
+
+        a = AprationalMath.binomial(new Aprational("-19/3"), new Aprational("3"));
+        assertEquals("-19/3,3 value", new Aprational("-5225/81"), a);
+
+        a = AprationalMath.binomial(new Aprational("19/3"), new Aprational("-3"));
+        assertEquals("19/3,-3 value", new Aprational("0"), a);
+
+        a = AprationalMath.binomial(new Aprational("-19/3"), new Aprational("-3"));
+        assertEquals("-19/3,-3 value", new Aprational("0"), a);
+
+        a = AprationalMath.binomial(new Aprational("7/3"), new Aprational("4"));
+        assertEquals("7/3,4 value", new Aprational("-7/243"), a);
+
+        a = AprationalMath.binomial(new Aprational("-7/3"), new Aprational("4"));
+        assertEquals("-7/3,4 value", new Aprational("1820/243"), a);
+
+        a = AprationalMath.binomial(new Aprational("7/3"), new Aprational("-4"));
+        assertEquals("7/3,-4 value", new Aprational("0"), a);
+
+        a = AprationalMath.binomial(new Aprational("-7/3"), new Aprational("-4"));
+        assertEquals("-7/3,-4 value", new Aprational("0"), a);
+
+        a = AprationalMath.binomial(new Aprational("19/3"), new Aprational("4/3"));
+        assertEquals("19/3,4/3 value", new Aprational("6916/729"), a);
+
+        a = AprationalMath.binomial(new Aprational("-19/3"), new Aprational("-4/3"));
+        assertEquals("-19/3,-4/3 value", new Aprational("0"), a);
+
+        a = AprationalMath.binomial(new Aprational("4/3"), new Aprational("19/3"));
+        assertEquals("4/3,19/3 value", new Aprational("0"), a);
+
+        a = AprationalMath.binomial(new Aprational("-4/3"), new Aprational("-19/3"));
+        assertEquals("-4/3,-19/3 value", new Aprational("-1456/729"), a);
+
+        try
+        {
+            AprationalMath.binomial(new Aprational("9"), new Aprational("4/3"));
+            fail("9,4/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is not a rational number
+        }
+        try
+        {
+            AprationalMath.binomial(new Aprational("9"), new Aprational("-4/3"));
+            fail("9,-4/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is not a rational number
+        }
+        try
+        {
+            AprationalMath.binomial(new Aprational("-9"), new Aprational("4/3"));
+            fail("-9,4/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is infinite
+        }
+        try
+        {
+            AprationalMath.binomial(new Aprational("-9"), new Aprational("-4/3"));
+            fail("-9,-4/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is infinite
+        }
+
+        try
+        {
+            AprationalMath.binomial(new Aprational("2"), new Aprational("19/3"));
+            fail("2,19/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is not a rational number
+        }
+        try
+        {
+            AprationalMath.binomial(new Aprational("2"), new Aprational("-19/3"));
+            fail("2,-19/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is not a rational number
+        }
+        try
+        {
+            AprationalMath.binomial(new Aprational("-2"), new Aprational("19/3"));
+            fail("-2,19/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is infinite
+        }
+        try
+        {
+            AprationalMath.binomial(new Aprational("-2"), new Aprational("-19/3"));
+            fail("-2,-19/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is infinite
+        }
+
+        try
+        {
+            AprationalMath.binomial(new Aprational("-19/3"), new Aprational("4/3"));
+            fail("-19/3,4/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is not a rational number
+        }
+        try
+        {
+            AprationalMath.binomial(new Aprational("19/3"), new Aprational("-4/3"));
+            fail("19/3,-4/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is not a rational number
+        }
+        try
+        {
+            AprationalMath.binomial(new Aprational("-4/3"), new Aprational("19/3"));
+            fail("-4/3,19/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is not a rational number
+        }
+        try
+        {
+            AprationalMath.binomial(new Aprational("4/3"), new Aprational("-19/3"));
+            fail("4/3,-19/3 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result is not a rational number
+        }
+    }
+
+    public static void testBernoulli()
+    {
+        Aprational a = AprationalMath.bernoulli(0L);
+        assertEquals("0 value", new Aprational("1"), a);
+
+        a = AprationalMath.bernoulli(1L);
+        assertEquals("1 value", new Aprational("-1/2"), a);
+
+        a = AprationalMath.bernoulli(2L);
+        assertEquals("2 value", new Aprational("1/6"), a);
+
+        a = AprationalMath.bernoulli(3L);
+        assertEquals("3 value", new Aprational("0"), a);
+
+        a = AprationalMath.bernoulli(4L);
+        assertEquals("4 value", new Aprational("-1/30"), a);
+
+        a = AprationalMath.bernoulli(6, 7);
+        assertEquals("6 value", new Aprational("1/60", 7), a);
+
+        Iterator<Aprational> iterator = AprationalMath.bernoullis(4, 10);
+        assertEquals("iterator hasNext", true, iterator.hasNext());
+        assertEquals("iterator next 1", new Aprational("1"), iterator.next());
+        assertEquals("iterator next 2", new Aprational("-1/2"), iterator.next());
+        assertEquals("iterator next 3", new Aprational("1/6"), iterator.next());
+        assertEquals("iterator next 4", new Aprational("0"), iterator.next());
+        assertEquals("iterator next 5", new Aprational("-1/30"), iterator.next());
+
+        iterator = AprationalMath.bernoullisSmall(10);
+        assertEquals("iteratorSmall hasNext", true, iterator.hasNext());
+        assertEquals("iteratorSmall next 1", new Aprational("1"), iterator.next());
+        assertEquals("iteratorSmall next 2", new Aprational("-1/2"), iterator.next());
+        assertEquals("iteratorSmall next 3", new Aprational("1/6"), iterator.next());
+        assertEquals("iteratorSmall next 4", new Aprational("0"), iterator.next());
+        assertEquals("iteratorSmall next 5", new Aprational("-1/30"), iterator.next());
+        assertEquals("iteratorSmall hasNext 2", true, iterator.hasNext());
+
+        iterator = AprationalMath.bernoullisBig(4, 10);
+        assertEquals("iteratorBig hasNext", true, iterator.hasNext());
+        assertEquals("iteratorBig next 1", new Aprational("1"), iterator.next());
+        assertEquals("iteratorBig next 2", new Aprational("-1/2"), iterator.next());
+        assertEquals("iteratorBig next 3", new Aprational("1/6"), iterator.next());
+        assertEquals("iteratorBig next 4", new Aprational("0"), iterator.next());
+        assertEquals("iteratorBig next 5", new Aprational("-1/30"), iterator.next());
+        assertEquals("iteratorBig hasNext 2", false, iterator.hasNext());
+
+        try
+        {
+            iterator.next();
+            fail("iteratorBig allowed next");
+        }
+        catch (NoSuchElementException nsee)
+        {
+            // OK
+        }
+
+        iterator = AprationalMath.bernoullisSmall(2);
+        Iterator<Aprational> iterator2 = AprationalMath.bernoullisBig(100, 2);
+        for (int i = 0; i <= 100; i++)
+        {
+            a = (i > 0 ? AprationalMath.bernoulliSmall(i, 2) : AprationalMath.bernoulli(i, 2));
+            assertEquals("directSmall vs iteratorSmall " + i, a, iterator.next());
+            assertEquals("directSmall vs iteratorBig " + i, a, iterator2.next());
+            if (i % 2 == 0 && i > 0)
+            {
+                assertEquals("directSmall vs directBig " + i, a, AprationalMath.bernoulliBig(i, 2));
+            }
+        }
+
+        iterator = AprationalMath.bernoullis(4, 15);
+        assertEquals("iterator radix 15 next 1", new Aprational("1", 15), iterator.next());
+        assertEquals("iterator radix 15 next 2", new Aprational("-1/2", 15), iterator.next());
+        assertEquals("iterator radix 15 next 3", new Aprational("1/6", 15), iterator.next());
+        assertEquals("iterator radix 15 next 4", new Aprational("0", 15), iterator.next());
+        assertEquals("iterator radix 15 next 5", new Aprational("-1/20", 15), iterator.next());
+
+        iterator = AprationalMath.bernoullisSmall(15);
+        assertEquals("iteratorSmall radix 15 next 1", new Aprational("1", 15), iterator.next());
+        assertEquals("iteratorSmall radix 15 next 2", new Aprational("-1/2", 15), iterator.next());
+        assertEquals("iteratorSmall radix 15 next 3", new Aprational("1/6", 15), iterator.next());
+        assertEquals("iteratorSmall radix 15 next 4", new Aprational("0", 15), iterator.next());
+        assertEquals("iteratorSmall radix 15 next 5", new Aprational("-1/20", 15), iterator.next());
+
+        iterator = AprationalMath.bernoullisBig(4, 15);
+        assertEquals("iteratorBig radix 15 next 1", new Aprational("1", 15), iterator.next());
+        assertEquals("iteratorBig radix 15 next 2", new Aprational("-1/2", 15), iterator.next());
+        assertEquals("iteratorBig radix 15 next 3", new Aprational("1/6", 15), iterator.next());
+        assertEquals("iteratorBig radix 15 next 4", new Aprational("0", 15), iterator.next());
+        assertEquals("iteratorBig radix 15 next 5", new Aprational("-1/20", 15), iterator.next());
+
+        iterator = AprationalMath.bernoullis2(2, 10);
+        assertEquals("iterator2 hasNext", true, iterator.hasNext());
+        assertEquals("iterator2 next 1", new Aprational("1/6"), iterator.next());
+        assertEquals("iterator2 next 2", new Aprational("-1/30"), iterator.next());
+
+        iterator = AprationalMath.bernoullis2Small(10);
+        assertEquals("iterator2Small hasNext", true, iterator.hasNext());
+        assertEquals("iterator2Small next 1", new Aprational("1/6"), iterator.next());
+        assertEquals("iterator2Small next 2", new Aprational("-1/30"), iterator.next());
+        assertEquals("iterator2Small hasNext 2", true, iterator.hasNext());
+
+        iterator = AprationalMath.bernoullis2Big(2, 10);
+        assertEquals("iterator2Big hasNext", true, iterator.hasNext());
+        assertEquals("iterator2Big next 1", new Aprational("1/6"), iterator.next());
+        assertEquals("iterator2Big next 2", new Aprational("-1/30"), iterator.next());
+        assertEquals("iterator2Big hasNext 2", false, iterator.hasNext());
+
+        try
+        {
+            iterator.next();
+            fail("iterator2Big allowed next");
+        }
+        catch (NoSuchElementException nsee)
+        {
+            // OK
+        }
+
+        for (int radix = 2; radix <= 36; radix++)
+        {
+            iterator = AprationalMath.bernoullisSmall(radix);
+            iterator2 = AprationalMath.bernoullisBig(50, radix);
+            for (int i = 0; i <= 50; i++)
+            {
+                assertEquals("iteratorSmall vs iteratorBig " + i + " radix " + radix, iterator.next(), iterator2.next());
+            }
+        }
+
+        try
+        {
+            AprationalMath.bernoulli(-1);
+            fail("-1 accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK
+        }
     }
 }

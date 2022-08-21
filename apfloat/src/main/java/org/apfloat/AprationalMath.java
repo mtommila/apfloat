@@ -24,14 +24,17 @@
 package org.apfloat;
 
 import java.math.RoundingMode;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Various mathematical functions for arbitrary precision rational numbers.
  *
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -295,6 +298,7 @@ public class AprationalMath
      */
 
     public static Aprational max(Aprational x, Aprational y)
+        throws ApfloatRuntimeException
     {
         return (x.compareTo(y) > 0 ? x : y);
     }
@@ -311,8 +315,358 @@ public class AprationalMath
      */
 
     public static Aprational min(Aprational x, Aprational y)
+        throws ApfloatRuntimeException
     {
         return (x.compareTo(y) < 0 ? x : y);
+    }
+
+    /**
+     * Binomial coefficient.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     *
+     * @return <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *           <mrow>
+     *             <mo>(</mo>
+     *               <mfrac linethickness="0">
+     *                 <mi>n</mi>
+     *                 <mi>k</mi>
+     *               </mfrac>
+     *             <mo>)</mo>
+     *           </mrow>
+     *         </math>
+     *
+     * @throws ArithmeticException If the result is not finite or not a rational number.
+     *
+     * @since 1.11.0
+     */
+
+    public static Aprational binomial(Aprational n, Aprational k)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (n.isInteger() && k.isInteger())
+        {
+            return ApintMath.binomial(n.numerator(), k.numerator());
+        }
+        if (n.isInteger() && n.signum() < 0 && !k.isInteger())
+        {
+            throw new ArithmeticException("Binomial coefficient is not finite");
+        }
+        if (!k.isInteger())
+        {
+            k = n.subtract(k);
+        }
+        if (!k.isInteger())
+        {
+            throw new ArithmeticException("Binomial coefficient is not a rational number");
+        }
+        int radix = n.radix();
+        if (k.signum() < 0)
+        {
+            return Apint.ZEROS[radix];
+        }
+        Apint one = new Apint(1, radix);
+        return pochhammer(n.subtract(k).add(one), k.numerator()).divide(ApintMath.factorial(k.longValueExact(), radix));
+    }
+
+    // Product of the numbers n * (n + 1) * (n + 2) * ... * (n + m - 1)
+    private static Aprational pochhammer(Aprational n, Apint m)
+    {
+        assert (m.signum() >= 0);
+        Apint one = Apint.ONES[n.radix()];
+        if (m.signum() == 0)
+        {
+            return one;
+        }
+        if (m.equals(one))
+        {
+            return n;
+        }
+        Apint two = new Apint(2, n.radix());
+        Apint k = m.divide(two);
+        return pochhammer(n, k).multiply(pochhammer(n.add(k), m.subtract(k)));
+    }
+
+    /**
+     * Returns the specified Bernoulli number. The default radix is used.
+     *
+     * @param n The argument.
+     *
+     * @return The Bernoulli number <code>B<sub>n</sub></code>.
+     *
+     * @throws IllegalArgumentException If <code>n &lt; 0</code>.
+     *
+     * @since 1.11.0
+     */
+
+    public static Aprational bernoulli(long n)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return bernoulli(n, radix);
+    }
+
+    /**
+     * Returns the specified Bernoulli number in the given radix.
+     * 
+     * @param n The argument.
+     * @param radix The radix.
+     *
+     * @return The Bernoulli number <code>B<sub>n</sub></code>.
+     *
+     * @throws IllegalArgumentException If <code>n &lt; 0</code>.
+     * @throws NumberFormatException If the radix is not valid.
+     *
+     * @since 1.11.0
+     */
+
+    public static Aprational bernoulli(long n, int radix)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
+        if (n < 0)
+        {
+            throw new IllegalArgumentException("Negative Bernoulli number: " + n);
+        }
+
+        if (n == 0)
+        {
+            return Apint.ONES[radix];
+        }
+        if (n == 1)
+        {
+            return new Aprational(new Apint(-1, radix), new Apint(2, radix));
+        }
+        if ((n & 1) == 1)
+        {
+            return Apint.ZEROS[radix];
+        }
+        return (n <= 2000 ? bernoulliSmall(n, radix) : bernoulliBig(n, radix));
+    }
+
+    static Aprational bernoulliSmall(long n, int radix)
+    {
+        assert (n > 0);
+        Aprational sum = Aprational.ZERO;
+        for (long k = 1; k <= n; k++)
+        {
+            Apint binomial = new Apint(1, radix);
+            Apint part = Apint.ZERO;
+            for (long v = 1; v <= k; v++)
+            {
+                binomial = binomial.multiply(new Apint(k + 1 - v, radix)).divide(new Apint(v, radix));
+                Apint term = binomial.multiply(ApintMath.pow(new Apint(v, radix), n));
+                part = ((v & 1) == 0 ? part.add(term) : part.subtract(term));
+            }
+            sum = sum.add(new Aprational(part, new Apint(k + 1, radix)));
+        }
+        return sum;
+
+        // Alternative algorithm that uses more memory but isn't really much faster:
+        //
+        //     factorial = factorial.multiply(new Apint(k, radix));
+        //     sum = sum.multiply(new Apint(k + 1, radix)).add(part.multiply(factorial));
+        // }
+        // return new Aprational(sum, ApintMath.factorial(n + 1, radix));
+    }
+
+    static Aprational bernoulliBig(long n, int radix)
+    {
+        // See https://arxiv.org/abs/1108.0286 for the algorithm, Fast computation of Bernoulli, Tangent and Secant numbers by Richard P. Brent, David Harvey
+        assert (n > 1);
+        assert (n & 1) == 0;
+        n >>= 1;
+
+        Apint one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        long p = Math.max(1, (long) Math.ceil(n * Math.log(n) / Math.log(radix))),
+             precision = ApfloatHelper.extendPrecision(Math.multiplyExact(Math.multiplyExact(2, n) + 1, p));  // 2 * n * p + 2 is not enough!
+        Apint f2n1 = ApintMath.factorial(2 * n - 1,  radix);
+        Apfloat z = ApfloatMath.scale(new Apfloat(1, precision, radix), -p),
+                v = ApfloatMath.scale(f2n1.multiply(ApfloatMath.tan(z)), -p);
+        v = ApfloatMath.scale(v, 2 * p * (n - 1));
+        v = v.frac();
+        v = ApfloatMath.scale(v, 2 * p);
+        Apint t = v.truncate();
+        Apint two2n1 = ApintMath.pow(two, 2 * n - 1),
+              two2n = two2n1.multiply(two);
+        Aprational b = new Aprational(new Apint((n & 1) == 1 ? n : -n, radix).multiply(t), two2n.subtract(one).multiply(two2n1));
+        return b;
+    }
+
+    static Iterator<Aprational> bernoullis(long n, int radix)
+    {
+        return (n <= 2000 ? bernoullisSmall(radix) : bernoullisBig(n, radix));
+    }
+
+    // Returns the even bernoulli numbers B_2n, n > 0
+    static Iterator<Aprational> bernoullis2(long n, int radix)
+    {
+        return (n < 1000 ? bernoullis2Small(radix) : bernoullis2Big(n, radix));
+    }
+
+    static Iterator<Aprational> bernoullisSmall(int radix)
+    {
+        return new Iterator<Aprational>()
+        {
+            @Override
+            public boolean hasNext()
+            {
+                return true;
+            }
+
+            @Override
+            public Aprational next()
+            {
+                Aprational b;
+                if (this.n == 0)
+                {
+                    b = Aprational.ONES[radix];
+                }
+                else if (this.n > 1 && (this.n & 1) == 1)
+                {
+                    b = Aprational.ZEROS[radix];
+                }
+                else
+                {
+                    b = Aprational.ZEROS[radix];
+                    Iterator<Aprational> iterator = this.all.iterator();
+                    Apint binomial = null;
+                    for (long k = 0; iterator.hasNext(); k++)
+                    {
+                        binomial = (k == 0 ? new Apint(1, radix) : binomial.multiply(new Apint(n + 1 - k, radix)).divide(new Apint(k, radix)));
+                        b = b.subtract(binomial.multiply(iterator.next()).divide(new Apint(n - k + 1, radix)));
+                    }
+                }
+                this.all.add(b);
+                this.n++;
+
+                return b;
+            }
+
+            private long n;
+            private List<Aprational> all = new ArrayList<>();
+        };
+    }
+
+    // Returns the even bernoulli numbers B_2n, n > 0
+    static Iterator<Aprational> bernoullis2Small(int radix)
+    {
+        return new Iterator<Aprational>()
+        {
+            @Override
+            public boolean hasNext()
+            {
+                return true;
+            }
+
+            @Override
+            public Aprational next()
+            {
+                this.i.next();
+                return this.i.next();
+            }
+
+            private Iterator<Aprational> i = bernoullisSmall(radix);
+
+            {
+                this.i.next();
+            }
+        };
+    }
+
+    static Iterator<Aprational> bernoullisBig(long n, int radix)
+    {
+        return new Iterator<Aprational>()
+        {
+            @Override
+            public boolean hasNext()
+            {
+                return this.k <= n;
+            }
+
+            @Override
+            public Aprational next()
+            {
+                if (this.k > n)
+                {
+                    throw new NoSuchElementException();
+                }
+
+                Aprational b;
+                if (this.k == 0)
+                {
+                    b = Aprational.ONES[radix];
+                }
+                else if (this.k == 1)
+                {
+                    b = new Aprational(new Apint(-1, radix), new Apint(2, radix));
+                }
+                else if ((this.k & 1) == 1)
+                {
+                    b = Aprational.ZEROS[radix];
+                }
+                else
+                {
+                    b = this.i.next();
+                }
+                this.k++;
+
+                return b;
+            }
+
+            private long k;
+            private Iterator<Aprational> i = bernoullis2Big(n >> 1, radix);
+        };
+    }
+
+    // Returns the even bernoulli numbers B_2n, n > 0
+    static Iterator<Aprational> bernoullis2Big(long n, int radix)
+    {
+        Apint one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        long p = (long) Math.ceil(n * Math.log(n) / Math.log(radix)),
+             precision = ApfloatHelper.extendPrecision(Math.multiplyExact(Math.multiplyExact(2, n) + 1, p));  // 2 * n * p + 2 is not enough!
+        Apint f2n1 = ApintMath.factorial(2 * n - 1,  radix);
+        Apfloat z = ApfloatMath.scale(new Apfloat(1, precision, radix), -p);
+
+        return new Iterator<Aprational>()
+        {
+            @Override
+            public boolean hasNext()
+            {
+                return this.k <= n;
+            }
+
+            @Override
+            public Aprational next()
+            {
+                if (this.k > n)
+                {
+                    throw new NoSuchElementException();
+                }
+
+                long k = this.k;
+                this.v = ApfloatMath.scale(this.v, 2 * p);
+                Apint t1 = this.v.truncate();
+                this.f2k1 = (k == 1 ? this.f2k1 : this.f2k1.multiply(new Apint(2 * k - 1, radix)).multiply(new Apint(2 * k - 2, radix)));
+                Apint t = t1.multiply(this.f2k1).divide(f2n1);
+                this.v = this.v.frac();
+                this.two2k = this.two2k1.multiply(two);
+                Aprational b = new Aprational(new Apint((k & 1) == 1 ? k : -k, radix).multiply(t), this.two2k.subtract(one).multiply(this.two2k1));
+                this.two2k1 = this.two2k.multiply(two);
+                this.k++;
+                return b;
+            }
+
+            private long k = 1;
+            private Apfloat v = ApfloatMath.scale(f2n1.multiply(ApfloatMath.tan(z)), -p);
+            private Apint f2k1 = one,
+                    two2k1 = two,
+                    two2k;
+        };
     }
 
     private static Aprational recursiveSum(Aprational[] x, int n, int m)

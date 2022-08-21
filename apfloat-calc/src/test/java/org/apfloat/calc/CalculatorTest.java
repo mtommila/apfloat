@@ -191,6 +191,18 @@ public class CalculatorTest
         assertCalculation("3", "abs(-3)");
         assertCalculation("3", "abs(-3i)");
         assertCalculation("5", "abs(3.00 + 4.00I)");
+        assertCalculation("7/6", "bernoulli(14)");
+        assertCalculation("1.5057e2", "binomial(9.2000,4.6000)");
+        assertCalculation("2.3282", "binomial(4,3.5000)");
+        assertCalculation("6.5625", "binomial(4.5000,3)");
+        assertCalculation("45", "binomial(10,2)");
+        assertCalculation("366166666666666666665821666666666666666667100000000000000000000", "binomial(1300000000000000000000,3)");
+        assertCalculation("1040/81", "binomial(16/3,7/3)");
+        assertCalculation("-455/81", "binomial(-7/3,-16/3)");
+        assertCalculation("-1", "binomial(-1,1)");
+        assertCalculation("0", "binomial(1,-1)");
+        assertCalculation("0", "binomial(3.5,4.5)");
+        assertCalculation("-3.109-1.604i", "binomial(3.000+4.000i,5.000+6.000i)");
         assertCalculation("2", "cbrt(8)");
         assertCalculation("2/3", "cbrt(8/27)");
         assertCalculation("7.07e-1+7.07e-1i", "cbrt(-0.707+0.707i)");
@@ -198,6 +210,7 @@ public class CalculatorTest
         assertCalculation("2", "ceil(1.1)");
         assertCalculation("2", "ceil(3/2)");
         assertCalculation("-2", "copySign(2, -3)");
+        assertCalculation("1.7061", "digamma(6.0000)");
         assertCalculation("5040", "factorial(7)");
         assertCalculation("2", "floor(2.9)");
         assertCalculation("2", "floor(29/10)");
@@ -253,6 +266,7 @@ public class CalculatorTest
         assertCalculation("1.18", "sinh(1.00)");
         assertCalculation("1.56", "tan(1.00)");
         assertCalculation("9.64e-1", "tanh(2.00)");
+        assertCalculation("2.7182818284590452353602874713526624977572470937", "e(47)");
         assertCalculation("5.772e-1", "euler(4)");
         assertCalculation("2.718", "exp(1.000)");
         assertCalculation("1.79+3.14i", "log(-6.00)");
@@ -294,6 +308,16 @@ public class CalculatorTest
         assertCalculation("2", "mod(5, 3)");
         assertCalculation("8", "pow(2, 3)");
 
+        assertCalculationFailure("bernoulli(-1)");
+        assertCalculationFailure("bernoulli(i)");
+        assertCalculationFailure("bernoulli()");
+        assertCalculationFailure("bernoulli(1,1)");
+        assertCalculationFailure("binomial(-3,5i)");
+        assertCalculationFailure("binomial(-3,3.5)");
+        assertCalculationFailure("binomial(4/3,3/2)");
+        assertCalculationFailure("binomial()");
+        assertCalculationFailure("binomial(2)");
+        assertCalculationFailure("binomial(2,2,2)");
         assertCalculationFailure("cbrt(2)");
         assertCalculationFailure("cbrt()");
         assertCalculationFailure("cbrt(8, 2)");
@@ -303,6 +327,9 @@ public class CalculatorTest
         assertCalculationFailure("copySign(2i, -3)");
         assertCalculationFailure("copySign(2)");
         assertCalculationFailure("copySign(2, 2, 2)");
+        assertCalculationFailure("digamma(0)");
+        assertCalculationFailure("digamma()");
+        assertCalculationFailure("digamma(2,2)");
         assertCalculationFailure("factorial(0.5)");
         assertCalculationFailure("factorial(2i)");
         assertCalculationFailure("factorial(2/3)");
@@ -395,6 +422,12 @@ public class CalculatorTest
         assertCalculationFailure("tan(1, 1)");
         assertCalculationFailure("tanh()");
         assertCalculationFailure("tanh(1, 1)");
+        assertCalculationFailure("e()");
+        assertCalculationFailure("e(0)");
+        assertCalculationFailure("e(-1)");
+        assertCalculationFailure("e(0.5)");
+        assertCalculationFailure("e(i)");
+        assertCalculationFailure("e(1, 1)");
         assertCalculationFailure("euler()");
         assertCalculationFailure("euler(0.5)");
         assertCalculationFailure("euler(i)");
