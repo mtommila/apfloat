@@ -908,7 +908,7 @@ public class ApfloatMath
      * also be thought of as a pointer to an apfloat.
      */
 
-    private static class ApfloatHolder
+    static class ApfloatHolder
     {
         public ApfloatHolder()
         {
@@ -2123,8 +2123,6 @@ public class ApfloatMath
     /**
      * Calculates &gamma;, the Euler-Mascheroni constant. Uses default radix.
      *
-     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
-     *
      * @param precision Number of digits of &gamma; to calculate.
      *
      * @return &gamma; accurate to <code>precision</code> digits, in the default radix.
@@ -2145,9 +2143,7 @@ public class ApfloatMath
     }
 
     /**
-     * Calculates &gamma;, the Euler-Mascheroni constant.<p>
-     *
-     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * Calculates &gamma;, the Euler-Mascheroni constant.
      *
      * @param precision Number of digits of &gamma; to calculate.
      * @param radix The radix in which the number should be presented.
@@ -2163,12 +2159,27 @@ public class ApfloatMath
     public static Apfloat euler(long precision, int radix)
         throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
     {
+        if (precision <= 0)
+        {
+            throw new IllegalArgumentException("Precision " + precision + " is not positive");
+        }
+        else if (precision == Apfloat.INFINITE)
+        {
+            throw new InfiniteExpansionException("Cannot calculate Euler gamma to infinite precision");
+        }
+
+        return (precision <= 2000 ? eulerSmall(precision, radix) : EulerHelper.euler(precision, radix));
+    }
+
+    static Apfloat eulerSmall(long precision, int radix)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
         // See https://www.ams.org/journals/mcom/1980-34-149/S0025-5718-1980-0551307-4/S0025-5718-1980-0551307-4.pdf
         // Mathematics of Computation, volume 34, number 149, January 1980, pages 305-312
         // "Some new algorithms for high-precision computation of Euler's constant" by Richard P. Brent and Edwin M. McMillan
-        // Note that a faster algorithm using binary splitting would be possible but isn't implemented here. After all this is mostly just needed with the gamma functions, which are slow anyways.
         long n = (long) (Apfloat.EXTRA_PRECISION + 0.25 * Math.log(radix) * precision),
-             workingPrecision = ApfloatHelper.extendPrecision(precision);
+             workingPrecision = ApfloatHelper.extendPrecision(precision),
+             targetPrecision = ApfloatHelper.extendPrecision(precision, Apfloat.EXTRA_PRECISION / 2);
         Apfloat a = log(new Apfloat(n, workingPrecision, radix)).negate(),
                 b = new Apfloat(1, workingPrecision, radix),
                 u = a,
@@ -2187,7 +2198,7 @@ public class ApfloatMath
             u = u.add(a);
             v = v.add(b);
             k = k.add(one);
-        } while (u.equalDigits(ou) < precision || v.equalDigits(ov) < precision);
+        } while (u.equalDigits(ou) < targetPrecision || v.equalDigits(ov) < targetPrecision);
         return u.divide(v).precision(precision);
     }
 

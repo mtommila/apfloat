@@ -1768,12 +1768,33 @@ public class ApfloatMathTest
         assertEquals("20 precision", 20, a.precision());
         assertEquals("20 value", new Apfloat("0.93c467e37db0c7a4d1be", 20, 16), a, new Apfloat("0.00000000000000000008", 1, 16));
 
+        a = ApfloatMath.eulerSmall(2000, 10);
+        assertEquals("long and short match", EulerHelper.euler(2000, 10), a);
+
+        for (int radix = 2; radix <= 36; radix++)
+        {
+            a = ApfloatMath.eulerSmall(20, radix);
+            assertEquals("long and short match radix " + radix + " precision 20", EulerHelper.euler(20, radix), a);
+            a = ApfloatMath.eulerSmall(200, radix);
+            assertEquals("long and short match radix " + radix + " precision 200", EulerHelper.euler(200, radix), a);
+        }
+
         try
         {
             ApfloatMath.euler(0);
             fail("Precision 0 accepted");
         }
-        catch (IllegalArgumentException e)
+        catch (IllegalArgumentException iae)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.euler(-1);
+            fail("Precision -1 accepted");
+        }
+        catch (IllegalArgumentException iae)
         {
             // OK; invalid precision
         }

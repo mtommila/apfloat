@@ -429,6 +429,8 @@ public class CalculatorTest
         assertCalculationFailure("e(i)");
         assertCalculationFailure("e(1, 1)");
         assertCalculationFailure("euler()");
+        assertCalculationFailure("euler(0)");
+        assertCalculationFailure("euler(-1)");
         assertCalculationFailure("euler(0.5)");
         assertCalculationFailure("euler(i)");
         assertCalculationFailure("euler(1, 1)");
