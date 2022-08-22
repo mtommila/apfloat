@@ -879,7 +879,7 @@ public class ApfloatMath
         }
 
         // Get synchronization lock - getting the lock is also synchronized
-        Integer radixKey = getRadixKey(ApfloatMath.radixPiKeys, radix);
+        Object radixKey = getRadixKey(ApfloatMath.radixPiKeys, radix);
 
         Apfloat pi;
 
@@ -888,11 +888,11 @@ public class ApfloatMath
         // - doesn't block getting it for other radixes
         synchronized (radixKey)
         {
-            pi = ApfloatMath.radixPi.get(radixKey);
+            pi = ApfloatMath.radixPi.get(radix);
 
             if (pi == null || pi.precision() < precision)
             {
-                pi = calculatePi(precision, radixKey);
+                pi = calculatePi(precision, radix);
             }
             else
             {
@@ -1041,15 +1041,14 @@ public class ApfloatMath
     // Perform actual calculation of pi for radix, and store the result to pre-calulation maps.
     // Uses the Chudnovskys' binary splitting algorithm.
     // Uses previously calculated terms (if such exist) to improve the precision of the calculation.
-    private static Apfloat calculatePi(long precision, Integer radixKey)
+    private static Apfloat calculatePi(long precision, int radix)
         throws ApfloatRuntimeException
     {
-        int radix = radixKey;
-        PiCalculator piCalculator = ApfloatMath.radixPiCalculator.get(radixKey);
+        PiCalculator piCalculator = ApfloatMath.radixPiCalculator.get(radix);
         if (piCalculator == null)
         {
             piCalculator = new PiCalculator(radix);
-            ApfloatMath.radixPiCalculator.put(radixKey, piCalculator);
+            ApfloatMath.radixPiCalculator.put(radix, piCalculator);
         }
 
         Apfloat LT,
@@ -1067,11 +1066,11 @@ public class ApfloatMath
         long neededTerms = (long) ((double) precision * Math.log((double) radix) / 32.65445004177),
              workingPrecision = ApfloatHelper.extendPrecision(precision);   // To avoid cumulative round-off errors
 
-        Long terms = ApfloatMath.radixPiTerms.get(radixKey);
-        LT = ApfloatMath.radixPiT.get(radixKey);
-        LQ = ApfloatMath.radixPiQ.get(radixKey);
-        LP = ApfloatMath.radixPiP.get(radixKey);
-        inverseRoot = ApfloatMath.radixPiInverseRoot.get(radixKey);
+        Long terms = ApfloatMath.radixPiTerms.get(radix);
+        LT = ApfloatMath.radixPiT.get(radix);
+        LQ = ApfloatMath.radixPiQ.get(radix);
+        LP = ApfloatMath.radixPiP.get(radix);
+        inverseRoot = ApfloatMath.radixPiInverseRoot.get(radix);
 
         if (terms != null && LT != null && LQ != null && LP != null && inverseRoot != null)
         {
@@ -1110,12 +1109,12 @@ public class ApfloatMath
         pi = pi.precision(precision);
 
         // Put the updated values to the caches
-        ApfloatMath.radixPiT.put(radixKey, LT);
-        ApfloatMath.radixPiQ.put(radixKey, LQ);
-        ApfloatMath.radixPiP.put(radixKey, LP);
-        ApfloatMath.radixPiInverseRoot.put(radixKey, inverseRoot);
-        ApfloatMath.radixPiTerms.put(radixKey, neededTerms + 1);
-        ApfloatMath.radixPi.put(radixKey, pi);
+        ApfloatMath.radixPiT.put(radix, LT);
+        ApfloatMath.radixPiQ.put(radix, LQ);
+        ApfloatMath.radixPiP.put(radix, LP);
+        ApfloatMath.radixPiInverseRoot.put(radix, inverseRoot);
+        ApfloatMath.radixPiTerms.put(radix, neededTerms + 1);
+        ApfloatMath.radixPi.put(radix, pi);
 
         return pi;
     }
@@ -1276,7 +1275,7 @@ public class ApfloatMath
         throws ApfloatRuntimeException
     {
         // Get synchronization lock - getting the lock is also synchronized
-        Integer radixKey = getRadixKey(ApfloatMath.radixLogKeys, radix);
+        Object radixKey = getRadixKey(ApfloatMath.radixLogKeys, radix);
 
         Apfloat logRadix;
 
@@ -1286,7 +1285,7 @@ public class ApfloatMath
         synchronized (radixKey)
         {
             Map<Integer, Apfloat> cache = (multiplyByPi ? ApfloatMath.radixLogPi : ApfloatMath.radixLog);     // Which cache to use, the one multiplied by pi or not
-            logRadix = cache.get(radixKey);
+            logRadix = cache.get(radix);
 
             if (logRadix == null || logRadix.precision() < precision)
             {
@@ -1304,7 +1303,7 @@ public class ApfloatMath
                     logRadix = rawLog(f, multiplyByPi).negate();
                 }
 
-                cache.put(radixKey, logRadix);
+                cache.put(radix, logRadix);
             }
             else
             {
@@ -2462,12 +2461,12 @@ public class ApfloatMath
     public static Apfloat randomGaussian(long digits, int radix)
     {
         // Get synchronization lock - getting the lock is also synchronized
-        Integer radixKey = getRadixKey(ApfloatMath.radixGaussianKeys, radix);
+        Object radixKey = getRadixKey(ApfloatMath.radixGaussianKeys, radix);
 
         synchronized (radixKey)
         {
-            Apfloat nextGaussian = ApfloatMath.nextGaussian.remove(radixKey);
-            Long nextGaussianPrecision = ApfloatMath.nextGaussianPrecision.remove(radixKey);
+            Apfloat nextGaussian = ApfloatMath.nextGaussian.remove(radix);
+            Long nextGaussianPrecision = ApfloatMath.nextGaussianPrecision.remove(radix);
             if (nextGaussian != null && nextGaussianPrecision == digits)
             {
                 return nextGaussian;
@@ -2485,8 +2484,8 @@ public class ApfloatMath
                 } while (s.compareTo(one) >= 1 || s.signum() == 0);
                 Apfloat multiplier = sqrt(two.negate().multiply(log(s)).divide(s));
                 nextGaussian = v2.multiply(multiplier);
-                ApfloatMath.nextGaussian.put(radixKey, nextGaussian);
-                ApfloatMath.nextGaussianPrecision.put(radixKey, digits);
+                ApfloatMath.nextGaussian.put(radix, nextGaussian);
+                ApfloatMath.nextGaussianPrecision.put(radix, digits);
                 return v1.multiply(multiplier);
             }
         }
@@ -2624,11 +2623,10 @@ public class ApfloatMath
     }
 
     // Get shared radix key for synchronizing getting and calculating something per radix
-    private static Integer getRadixKey(Map<Integer, Integer> radixKeys, int radix)
+    private static Object getRadixKey(Map<Integer, Object> radixKeys, int radix)
     {
-        @SuppressWarnings("deprecation")
-        Integer value = new Integer(radix); // Use new Integer since we synchronize on it; Integer.valueOf() could be shared instance
-        Integer radixKey = radixKeys.putIfAbsent(value, value);
+        Object value = new Object();
+        Object radixKey = radixKeys.putIfAbsent(radix, value);
         if (radixKey == null)
         {
             radixKey = value;
@@ -2722,7 +2720,7 @@ public class ApfloatMath
     private static final Map<Integer, Apfloat> SHUTDOWN_MAP = new ShutdownMap<>();
 
     // Synchronization keys for pi calculation
-    private static ConcurrentMap<Integer, Integer> radixPiKeys = new ConcurrentHashMap<>();
+    private static ConcurrentMap<Integer, Object> radixPiKeys = new ConcurrentHashMap<>();
 
     // Shared cached values related to pi for different radixes
     private static Map<Integer, Apfloat> radixPi = new ConcurrentSoftHashMap<>();
@@ -2734,14 +2732,14 @@ public class ApfloatMath
     private static Map<Integer, Long> radixPiTerms = new Hashtable<>();
 
     // Synchronization keys for logarithm calculation
-    private static ConcurrentMap<Integer, Integer> radixLogKeys = new ConcurrentHashMap<>();
+    private static ConcurrentMap<Integer, Object> radixLogKeys = new ConcurrentHashMap<>();
 
     // Shared cached values related to logarithm for different radixes
     private static Map<Integer, Apfloat> radixLog = new ConcurrentHashMap<>();
     private static Map<Integer, Apfloat> radixLogPi = new ConcurrentHashMap<>();
 
     // Synchronization keys for random Gaussian calculation
-    private static ConcurrentMap<Integer, Integer> radixGaussianKeys = new ConcurrentHashMap<>();
+    private static ConcurrentMap<Integer, Object> radixGaussianKeys = new ConcurrentHashMap<>();
 
     // Used by randomGaussian
     private static Map<Integer, Apfloat> nextGaussian = new ConcurrentHashMap<>();
