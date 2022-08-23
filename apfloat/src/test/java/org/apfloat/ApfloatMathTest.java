@@ -1044,6 +1044,14 @@ public class ApfloatMathTest
         a = ApfloatMath.pow(new Apfloat(1), new Apfloat(2));
         assertEquals("1^2", new Apfloat(1), a);
 
+        a = ApfloatMath.pow(new Apfloat("-3.21000"), new Apfloat("-2.00000"));
+        assertEquals("-3.21^-2.00 precision", 6, a.precision());
+        assertEquals("-3.21^-2.00 value", new Apfloat("0.0970487"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.pow(new Apfloat("-1.000000000000000000000000000010000000000"), new Apfloat("1.000000000000000000000000000000000000000e20"));
+        assertEquals("-1.00000000000000000000000000001^1e20 precision", 20, a.precision());
+        assertEquals("-1.00000000000000000000000000001^1e20 value", new Apfloat("1.0000000010000000000"), a, new Apfloat("5e-19"));
+
         try
         {
             ApfloatMath.pow(new Apfloat("1.2"), new Apfloat("57"));

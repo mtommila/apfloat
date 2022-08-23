@@ -1466,17 +1466,14 @@ public class ApfloatMath
     }
 
     /**
-     * Arbitrary power. Calculated using <code>log()</code> and <code>exp()</code>.<p>
-     *
-     * This method doesn't calculate the result properly if <code>x</code> is negative
-     * and <code>y</code> is an integer. For that you should use {@link #pow(Apfloat,long)}.
+     * Arbitrary power. Calculated using <code>log()</code> and <code>exp()</code>.
      *
      * @param x The base.
      * @param y The exponent.
      *
      * @return <code>x<sup>y</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If both <code>x</code> and <code>y</code> are zero, or <code>x</code> is negative.
+     * @exception ArithmeticException If both <code>x</code> and <code>y</code> are zero, or <code>x</code> is negative and <code>y</code> is not an integer.
      */
 
     public static Apfloat pow(Apfloat x, Apfloat y)
@@ -1488,6 +1485,10 @@ public class ApfloatMath
         if (result != null)
         {
             return result;
+        }
+        else if (x.signum() < 0 && y.isInteger())
+        {
+            return ApcomplexMath.pow(x, y).real();
         }
 
         // Try to precalculate the needed values just once to the required precision,

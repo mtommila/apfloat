@@ -157,7 +157,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <code>x<sup>y</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> and <code>y</code> are zero, or <code>x</code> is negative.
+     * @exception ArithmeticException If <code>x</code> and <code>y</code> are zero, or <code>x</code> is negative and <code>y</code> is not an integer.
      */
 
     public Apfloat pow(Apfloat x, Apfloat y)
@@ -167,6 +167,10 @@ public class FixedPrecisionApfloatHelper
         if (result != null)
         {
             return valueOf(result);
+        }
+        else if (x.signum() < 0 && y.isInteger())
+        {
+            return valueOf(pow((Apcomplex) x, (Apcomplex) y).real());
         }
         return exp(multiply(log(x), y));
     }

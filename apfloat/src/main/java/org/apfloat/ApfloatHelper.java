@@ -402,7 +402,6 @@ class ApfloatHelper
 
     private static void checkPowPrecision(long targetPrecision)
         throws InfiniteExpansionException
-
     {
         if (targetPrecision == Apfloat.INFINITE)
         {
@@ -452,9 +451,9 @@ class ApfloatHelper
         {
             return result.real();
         }
-        else if (x.signum() < 0)
+        else if (x.signum() < 0 && !y.isInteger())
         {
-            throw new ArithmeticException("Power of negative number; result would be complex");
+            throw new ArithmeticException("Power of negative number to non-integer; result would be complex");
         }
 
         checkPowPrecision(targetPrecision);

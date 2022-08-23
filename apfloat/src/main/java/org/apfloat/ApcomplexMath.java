@@ -773,9 +773,13 @@ public class ApcomplexMath
     public static Apcomplex log(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (z.real().signum() >= 0 && z.imag().signum() == 0)
+        if (z.imag().signum() == 0)
         {
-            return ApfloatMath.log(z.real());
+            if (z.real().signum() >= 0)
+            {
+                return ApfloatMath.log(z.real());
+            }
+            return new Apcomplex(ApfloatMath.log(z.real().negate()), ApfloatMath.pi(z.precision(), z.radix()));
         }
 
         // Calculate the log using 1 / radix <= |z| < 1 and the log addition formula

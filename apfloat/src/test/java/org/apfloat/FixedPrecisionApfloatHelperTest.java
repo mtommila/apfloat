@@ -593,6 +593,18 @@ public class FixedPrecisionApfloatHelperTest
         assertEquals("value", new Apfloat(1), result, new Apfloat("5e-99"));
         assertEquals("precision", 100, result.precision());
 
+        result = helper.pow(new Apfloat("1.5"), new Apfloat("2.5"));
+        assertEquals("1.5^2.5 value", new Apfloat("2.755675960631075360471944584044127815961690915738753894486779138157330424639479404857341862242720264"), result, new Apfloat("5e-99"));
+        assertEquals("1.5^2.5 precision", 100, result.precision());
+
+        result = helper.pow(new Apfloat(-4), new Apfloat(-2));
+        assertEquals("-4^-2 value", new Apfloat("0.0625"), result, new Apfloat("5e-101"));
+        assertEquals("-4^-2 precision", 100, result.precision());
+
+        result = helper.pow(new Apfloat("-1.00000000000000000000000000001"), new Apfloat("1e20"));
+        assertEquals("-1.00000000000000000000000000001^1e20 value", new Apfloat("1.0000000010000000005000000001666666667033333333366666666655555555549539682538306"), result, new Apfloat("5e-79"));
+        assertEquals("-1.00000000000000000000000000001^1e20 precision", 100, result.precision());
+
         try
         {
             helper.pow(new Apfloat(0), new Apfloat(0));
