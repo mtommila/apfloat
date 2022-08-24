@@ -787,8 +787,8 @@ public class ApcomplexTest
         assertEquals("fi_FI %s radix 11", "(1,23456e5, 1,23456e5)", String.format(locale, "%s", new Apcomplex(new Apfloat("123456", 6, 11), new Apfloat("123456", 6, 11))));
 
         locale = new Locale("hi", "IN");
-        assertEquals("hi_IN %#.6s", "(\u0967\u0968\u0969\u096a\u096b\u096c, \u0967\u0968\u0969\u096a\u096b\u096c)", String.format(locale, "%#.6s", new Apcomplex(new Apfloat("123456.7890123456"), new Apfloat("123456.7890123456"))));
-        assertEquals("hi_IN %#s radix 9", "(\u0967\u0968\u0969\u096a\u096b\u096c, \u0967\u0968\u0969\u096a\u096b\u096c)", String.format(locale, "%#s", new Apcomplex(new Apfloat("123456", 6, 9), new Apfloat("123456", 6, 9))));
+        assertEquals("hi_IN %#.6s", "(१२३४५६, १२३४५६)", String.format(locale, "%#.6s", new Apcomplex(new Apfloat("123456.7890123456"), new Apfloat("123456.7890123456"))));
+        assertEquals("hi_IN %#s radix 9", "(१२३४५६, १२३४५६)", String.format(locale, "%#s", new Apcomplex(new Apfloat("123456", 6, 9), new Apfloat("123456", 6, 9))));
         assertEquals("hi_IN %s radix 11", "(1.23456e5, 1.23456e5)", String.format(locale, "%s", new Apcomplex(new Apfloat("123456", 6, 11), new Apfloat("123456", 6, 11))));
 
         Writer writer = new Writer()

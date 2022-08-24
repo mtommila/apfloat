@@ -262,7 +262,7 @@ public class ApfloatTest
         assertEquals("aa precision", 2, a.precision());
         assertEquals("aa String", "aa", a.toString(true));
 
-        a = new Apfloat("\u0967\u0968\u0969\u096a\u096b\u096c");
+        a = new Apfloat("१२३४५६");
         assertEquals("localized", "123456", a.toString(true));
 
         try
@@ -1132,8 +1132,8 @@ public class ApfloatTest
         assertEquals("fi_FI %S radix 11", "1,23456789AE9", String.format(locale, "%S", new Apfloat("123456789a", 10, 11)));
 
         locale = new Locale("hi", "IN");
-        assertEquals("hi_IN %#.6s", "\u0967\u0968\u0969\u096a\u096b\u096c", String.format(locale, "%#.6s", new Apfloat("123456.7890123456")));
-        assertEquals("hi_IN %#s radix 9", "\u0967\u0968\u0969\u096a\u096b\u096c", String.format(locale, "%#s", new Apfloat("123456", 6, 9)));
+        assertEquals("hi_IN %#.6s", "१२३४५६", String.format(locale, "%#.6s", new Apfloat("123456.7890123456")));
+        assertEquals("hi_IN %#s radix 9", "१२३४५६", String.format(locale, "%#s", new Apfloat("123456", 6, 9)));
         assertEquals("hi_IN %s radix 11", "1.23456e5", String.format(locale, "%s", new Apfloat("123456", 6, 11)));
 
         Writer writer = new Writer()

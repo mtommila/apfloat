@@ -102,7 +102,8 @@ public class FixedPrecisionApcomplexHelperTest
         FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(20);
         Apcomplex z = new Apcomplex("(2,3)");
         Apcomplex result = helper.valueOf(z);
-        assertEquals("value", new Apcomplex("(2,3)"), result);
+        assertEquals("value", new Apcomplex("(2,3)"), result);
+
         assertEquals("precision", 20, result.precision());
     }
 

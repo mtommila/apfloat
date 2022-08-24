@@ -863,8 +863,8 @@ public class AprationalTest
         assertEquals("null %s apint", "123456789", String.format(locale, "%s", new Aprational("123456789")));
 
         locale = new Locale("hi", "IN");
-        assertEquals("hi_IN %s", "\u0967\u0968\u0969\u096a\u096b\u096c\u096d\u096e\u096f/\u0967\u0968\u0969\u096a", String.format(locale, "%s", new Aprational("123456789/1234")));
-        assertEquals("hi_IN %s radix 9", "\u0967\u0968\u0969\u096a\u096b\u096c\u096d\u096e/\u0967\u0968\u096a", String.format(locale, "%s", new Aprational("12345678/124", 9)));
+        assertEquals("hi_IN %s", "१२३४५६७८९/१२३४", String.format(locale, "%s", new Aprational("123456789/1234")));
+        assertEquals("hi_IN %s radix 9", "१२३४५६७८/१२४", String.format(locale, "%s", new Aprational("12345678/124", 9)));
         assertEquals("hi_IN %s radix 11", "12345678/124", String.format(locale, "%s", new Aprational("12345678/124", 11)));
 
         try

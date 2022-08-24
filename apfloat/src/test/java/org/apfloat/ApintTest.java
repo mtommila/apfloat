@@ -642,8 +642,8 @@ public class ApintTest
         assertEquals("null %-10s", "123456789 ", String.format(locale, "%-10s", new Apint("123456789")));
 
         locale = new Locale("hi", "IN");
-        assertEquals("hi_IN %s", "\u0967\u0968\u0969\u096a\u096b\u096c\u096d\u096e\u096f", String.format(locale, "%s", new Apint("123456789")));
-        assertEquals("hi_IN %s radix 9", "\u0967\u0968\u0969\u096a\u096b\u096c\u096d\u096e", String.format(locale, "%s", new Apint("12345678", 9)));
+        assertEquals("hi_IN %s", "१२३४५६७८९", String.format(locale, "%s", new Apint("123456789")));
+        assertEquals("hi_IN %s radix 9", "१२३४५६७८", String.format(locale, "%s", new Apint("12345678", 9)));
         assertEquals("hi_IN %s radix 11", "123456789", String.format(locale, "%s", new Apint("123456789", 11)));
 
         try

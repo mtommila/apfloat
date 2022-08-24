@@ -35,7 +35,8 @@
   </developers>
 
   <properties>
-    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <gpg.useagent>true</gpg.useagent>
   </properties>
 
@@ -119,6 +120,7 @@
           <version>3.8.1</version>
           <configuration>
             <release>8</release>
+            <encoding>${project.build.sourceEncoding}</encoding>
           </configuration>
         </plugin>
         <plugin>
@@ -138,7 +140,7 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.3.0</version>
           <configuration>
-            <docencoding>ISO-8859-1</docencoding>
+            <docencoding>${project.build.sourceEncoding}</docencoding>
             <doctitle>Apfloat v. ${project.version} Specification</doctitle>
             <windowtitle>Apfloat Documentation</windowtitle>
             <links>

@@ -38,7 +38,7 @@ import java.util.function.LongFunction;
 class IncompleteGammaHelper
 {
     // See https://hal.archives-ouvertes.fr/hal-01329669/document
-    // Fast and accurate evaluation of a generalized incomplete gamma function Rémy Abergel, Lionel Moisan
+    // Fast and accurate evaluation of a generalized incomplete gamma function RÃ©my Abergel, Lionel Moisan
 
     private static class Sequence
     {

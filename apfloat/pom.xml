@@ -15,7 +15,6 @@
   <url>http://www.apfloat.org</url>
 
   <properties>
-    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
     <java9.build.sourceDirectory>${project.build.sourceDirectory}9</java9.build.sourceDirectory>
     <java9.build.outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</java9.build.outputDirectory>
   </properties>
