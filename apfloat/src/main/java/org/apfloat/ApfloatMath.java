@@ -2375,6 +2375,33 @@ public class ApfloatMath
     }
 
     /**
+     * Hurwitz zeta function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few hundred digits. At the time of
+     * implementation no generic fast algorithm is known for the zeta function.
+     *
+     * @param s The first argument.
+     * @param a The second argument.
+     *
+     * @return <code>&zeta;(s, a)</code>
+     *
+     * @throws ArithmeticException If <code>s</code> is <code>1</code> or if <code>a</code> is a nonpositive integer or if <code>s</code> is not an integer and <code>a</code> is nonpositive.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat zeta(Apfloat s, Apfloat a)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (!s.isInteger() && a.signum() < 0 && !a.isInteger())
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return HurwitzZetaHelper.zeta(s, a).real();
+    }
+
+    /**
      * Generates a random number. Uses the default radix.
      * Returned values are chosen pseudorandomly with (approximately)
      * uniform distribution from the range <code>0 &le; x &lt; 1</code>.

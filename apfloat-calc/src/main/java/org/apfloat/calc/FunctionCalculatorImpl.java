@@ -191,6 +191,7 @@ public abstract class FunctionCalculatorImpl
         public Number toRadians(Number x);
         public Number ulp(Number x);
         public Number zeta(Number x);
+        public Number zeta(Number x, Number y);
 
         public Number agm(Number x, Number y);
         public Number w(Number x);
@@ -265,7 +266,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("toDegrees", fixedFunction("toDegrees", 1, (functions, arguments) -> functions.toDegrees(arguments.get(0))));
         setFunction("toRadians", fixedFunction("toRadians", 1, (functions, arguments) -> functions.toRadians(arguments.get(0))));
         setFunction("ulp", fixedFunction("ulp", 1, (functions, arguments) -> functions.ulp(arguments.get(0))));
-        setFunction("zeta", fixedFunction("zeta", 1, (functions, arguments) -> functions.zeta(arguments.get(0))));
+        setFunction("zeta", fixedFunction("zeta", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.zeta(arguments.get(0)) : functions.zeta(arguments.get(0), arguments.get(1)))));
 
         setFunction("arg", fixedFunction("arg", 1, (functions, arguments) -> functions.arg(arguments.get(0))));
         setFunction("conj", fixedFunction("conj", 1, (functions, arguments) -> functions.conj(arguments.get(0))));

@@ -2028,6 +2028,29 @@ public class ApcomplexMath
     }
 
     /**
+     * Hurwitz zeta function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few hundred digits. At the time of
+     * implementation no generic fast algorithm is known for the zeta function.
+     *
+     * @param s The first argument.
+     * @param a The second argument.
+     *
+     * @return <code>&zeta;(s, a)</code>
+     *
+     * @throws ArithmeticException If <code>s</code> is <code>1</code> or if <code>a</code> is a nonpositive integer.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apcomplex zeta(Apcomplex s, Apcomplex a)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return HurwitzZetaHelper.zeta(s, a);
+    }
+
+    /**
      * Returns the unit in the last place of the argument, considering the
      * scale and precision. This is maximum of the ulps of the real and
      * imaginary part of the argument.

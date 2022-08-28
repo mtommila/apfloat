@@ -972,6 +972,25 @@ public class FixedPrecisionApcomplexHelper
     }
 
     /**
+     * Hurwitz zeta function.
+     *
+     * @param s The first argument.
+     * @param a The second argument.
+     *
+     * @return <code>&zeta;(s, a)</code>
+     *
+     * @throws ArithmeticException If <code>s</code> is <code>1</code> or if <code>a</code> is a nonpositive integer.
+     *
+     * @since 1.11.0
+     */
+
+    public Apcomplex zeta(Apcomplex s, Apcomplex a)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.zeta(setZetaPrecision(s), setPrecision(a)));
+    }
+
+    /**
      * Unit in the last place.
      *
      * @param z The operand.

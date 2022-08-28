@@ -253,6 +253,7 @@ public class CalculatorTest
         assertCalculation("1.79e2", "toDegrees(3.14)");
         assertCalculation("1.57", "toRadians(90.0)");
         assertCalculation("1.644", "zeta(2.000)");
+        assertCalculation("1.181e-1", "zeta(3.000,-1.500)");
         assertCalculation("3.14", "acos(-1.00)");
         assertCalculation("1.01", "acosh(1.55)");
         assertCalculation("1.57", "asin(1.00)");
@@ -393,8 +394,10 @@ public class CalculatorTest
         assertCalculationFailure("toRadians()");
         assertCalculationFailure("toRadians(2, 2)");
         assertCalculationFailure("zeta(1)");
+        assertCalculationFailure("zeta(2,0)");
+        assertCalculationFailure("zeta(2,-1)");
         assertCalculationFailure("zeta()");
-        assertCalculationFailure("zeta(2,3)");
+        assertCalculationFailure("zeta(2,3,4)");
         assertCalculationFailure("acos()");
         assertCalculationFailure("acos(1, 1)");
         assertCalculationFailure("acosh()");

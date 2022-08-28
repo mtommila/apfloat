@@ -92,6 +92,7 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testDigamma"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testBinomial"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testZeta"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testZetaHurwitz"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testUlp"));
 
         return suite;
@@ -666,6 +667,16 @@ public class FixedPrecisionApcomplexHelperTest
         s = new Apcomplex("(0.5,51000)");
         result = helper.zeta(s);
         assertEquals("value", new Apcomplex("(0.00408268,0.00102467)"), result, new Apfloat("5e-8"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testZetaHurwitz()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex s = new Apcomplex("(-1.5,-2.5)"),
+                  a = new Apcomplex("(1.5,2.5)");
+        Apcomplex result = helper.zeta(s, a);
+        assertEquals("value", new Apcomplex("(0.00199905,0.163402)"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
     }
 

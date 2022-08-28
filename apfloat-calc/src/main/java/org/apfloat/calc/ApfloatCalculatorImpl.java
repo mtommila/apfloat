@@ -432,6 +432,12 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number zeta(Number x, Number y)
+        {
+            return ApcomplexMath.zeta((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
         public Number agm(Number x, Number y)
         {
             return ApcomplexMath.agm((Apcomplex) x, (Apcomplex) y);

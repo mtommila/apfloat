@@ -108,6 +108,7 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBinomial"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBernoulli"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testZeta"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testZetaHurwitz"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testMax"));
@@ -1061,6 +1062,16 @@ public class FixedPrecisionApfloatHelperTest
         s = new Apfloat(-1001);
         result = helper.zeta(s);
         assertEquals("value", new Apfloat("-1.34859e1771"), result, new Apfloat("5e1766"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testZetaHurwitz()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat s = new Apfloat("-1.5"),
+                a = new Apfloat("1.5");
+        Apfloat result = helper.zeta(s, a);
+        assertEquals("value", new Apfloat("-0.337079"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
     }
 

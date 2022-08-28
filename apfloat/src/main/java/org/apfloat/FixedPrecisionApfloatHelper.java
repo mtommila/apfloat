@@ -998,6 +998,25 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
+     * Hurwitz zeta function.
+     *
+     * @param s The first argument.
+     * @param a The second argument.
+     *
+     * @return <code>&zeta;(s, a)</code>
+     *
+     * @throws ArithmeticException If <code>s</code> is <code>1</code> or if <code>a</code> is a nonpositive integer or if <code>s</code> is not an integer and <code>a</code> is nonpositive.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat zeta(Apfloat s, Apfloat a)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.zeta(setZetaPrecision(s), setPrecision(a)));
+    }
+
+    /**
      * Return a uniformly distributed random number <code>0 &le; x &lt; 1</code>.
      *
      * @return A random number.

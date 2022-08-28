@@ -99,6 +99,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testDigamma"));
         suite.addTest(new ApfloatMathTest("testBinomial"));
         suite.addTest(new ApfloatMathTest("testZeta"));
+        suite.addTest(new ApfloatMathTest("testZetaHurwitz"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testMax"));
@@ -2279,7 +2280,7 @@ public class ApfloatMathTest
 
         try
         {
-            ApcomplexMath.zeta(new Apint(1, 11));
+            ApfloatMath.zeta(new Apint(1, 11));
             fail("Zeta of one");
         }
         catch (ArithmeticException ae)
@@ -2288,10 +2289,65 @@ public class ApfloatMathTest
         }
         try
         {
-            ApcomplexMath.zeta(new Apfloat(2));
+            ApfloatMath.zeta(new Apfloat(2));
             fail("Infinite expansion");
         }
         catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testZetaHurwitz()
+    {
+        Apfloat a = ApfloatMath.zeta(new Apfloat("3.00000"), new Apfloat("4.00000"));
+        assertEquals("3,4 precision", 6, a.precision());
+        assertEquals("3,4 value", new Apfloat("0.0400199"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.zeta(new Apfloat("3.00000"), new Apfloat("-4.20000"));
+        assertEquals("3,4.2 precision", 5, a.precision());
+        assertEquals("3,4.2 value", new Apfloat("-123.50"), a, new Apfloat("5e-2"));
+
+        a = ApfloatMath.zeta(new Apfloat("-3.00000"), new Apfloat("-4.20000"));
+        assertEquals("-3,4.2 precision", 7, a.precision());
+        assertEquals("-3,4.2 value", new Apfloat("-119.2381"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.zeta(new Apfloat("3.00000"), new Apfloat("4.20000"));
+        assertEquals("3,4.2 precision", 6, a.precision());
+        assertEquals("3,4.2 value", new Apfloat("0.0358824"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.zeta(new Apfloat("3.20000"), new Apfloat("4.00000"));
+        assertEquals("-3,4.2 precision", 6, a.precision());
+        assertEquals("-3,4.2 value", new Apfloat("0.0282234"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.zeta(new Apfloat("3.20000"), new Apfloat("4.20000"));
+        assertEquals("-3,4.2 precision", 6, a.precision());
+        assertEquals("-3,4.2 value", new Apfloat("0.0250343"), a, new Apfloat("5e-7"));
+
+        try
+        {
+            ApfloatMath.zeta(new Apint(1, 11), new Apint(2, 11));
+            fail("Zeta of s one");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.zeta(new Apfloat("-3.2"), new Apfloat("-4.2"));
+            fail("Zeta of s noninteger and a nonpositive");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.zeta(new Apfloat("-3.2"), new Apfloat("-4.0"));
+            fail("Zeta of s noninteger and a nonpositive");
+        }
+        catch (ArithmeticException ae)
         {
             // OK
         }
