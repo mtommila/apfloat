@@ -140,6 +140,7 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.3.0</version>
           <configuration>
+            <failOnError>false</failOnError>
             <docencoding>${project.build.sourceEncoding}</docencoding>
             <doctitle>Apfloat v. ${project.version} Specification</doctitle>
             <windowtitle>Apfloat Documentation</windowtitle>
