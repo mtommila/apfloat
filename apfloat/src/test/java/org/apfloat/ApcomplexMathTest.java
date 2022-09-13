@@ -79,6 +79,7 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testGamma"));
         suite.addTest(new ApcomplexMathTest("testGammaIncomplete"));
         suite.addTest(new ApcomplexMathTest("testGammaIncompleteGeneralized"));
+        suite.addTest(new ApcomplexMathTest("testLogGamma"));
         suite.addTest(new ApcomplexMathTest("testDigamma"));
         suite.addTest(new ApcomplexMathTest("testBinomial"));
         suite.addTest(new ApcomplexMathTest("testZeta"));
@@ -2072,6 +2073,203 @@ public class ApcomplexMathTest
         try
         {
             ApcomplexMath.gamma(new Apcomplex(Apfloat.ZERO, new Apfloat(4)), new Apcomplex(Apfloat.ZERO, new Apfloat(5)), new Apcomplex(Apfloat.ZERO, new Apfloat(6)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testLogGamma()
+    {
+        Apcomplex a = ApcomplexMath.logGamma(new Apcomplex("(3,4)").precision(30));
+        assertEquals("3+4i precision", 29, a.precision());
+        assertEquals("3+4i value", new Apcomplex("(-1.75662678460378411053060418162,4.74266443803465792819488940755)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(3,-4)").precision(30));
+        assertEquals("3-4i precision", 29, a.precision());
+        assertEquals("3-4i value", new Apcomplex("(-1.75662678460378411053060418162,-4.74266443803465792819488940755)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-3,4)").precision(30));
+        assertEquals("-3+4i precision", 30, a.precision());
+        assertEquals("-3+4i value", new Apcomplex("(-10.5813046757679821776505859518,-5.3256146315280061739958499710)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-3,-4)").precision(30));
+        assertEquals("-3-4i precision", 30, a.precision());
+        assertEquals("-3-4i value", new Apcomplex("(-10.5813046757679821776505859518,5.3256146315280061739958499710)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(300,4)").precision(30));
+        assertEquals("300+4i precision", 30, a.precision());
+        assertEquals("300+4i value", new Apcomplex("(1409.17535710394427231445345360,22.80857843613452556017830512)"), a, new Apfloat("5e-26"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-300,-4)").precision(30));
+        assertEquals("-300-4i precision", 30, a.precision());
+        assertEquals("-300-4i value", new Apcomplex("(-1425.60772200752672992622696153,921.22668142430419691996693265)"), a, new Apfloat("5e-26"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(3,400)").precision(30));
+        assertEquals("3+400i precision", 30, a.precision());
+        assertEquals("3+400i value", new Apcomplex("(-612.42091519215003296376447609,2000.50510137367765558763842034)"), a, new Apfloat("5e-26"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(7,-4)").precision(30));
+        assertEquals("7-4i precision", 29, a.precision());
+        assertEquals("7-4i value", new Apcomplex("(5.4180869718730471169905929840,-7.7181013652048386845411947705)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(3e100000,4e100000)").precision(30));
+        assertEquals("3e100000+4e100000i precision", 30, a.precision());
+        assertEquals("3e100000+4e100000i value", new Apcomplex("(6.90773647031079001057591524633e100005,9.21039256834922014845392270448e100005)"), a, new Apfloat("5e99975"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-3e100000,4e100000)").precision(30));
+        assertEquals("-3e100000+4e100000i precision", 30, a.precision());
+        assertEquals("-3e100000+4e100000i value", new Apcomplex("(-6.90786213401693360230545375207e100005,9.21029832056961245465676882518e100005)"), a, new Apfloat("5e99975"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(0.001,0.001)").precision(30));
+        assertEquals("0.001+0.001i precision", 29, a.precision());
+        assertEquals("0.001+0.001i value", new Apcomplex("(6.56060447383755263956515723187,-0.785973734929653434835994646315)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(0,0.001)").precision(30));
+        assertEquals("0.001i precision", 30, a.precision());
+        assertEquals("0.001i value", new Apcomplex("(6.90775445651537420857962686091,-1.571373542059112725090803754152)"), a, new Apfloat("5e-29"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-0.001,0.001)").precision(30));
+        assertEquals("-0.001+0.001i precision", 29, a.precision());
+        assertEquals("-0.001+0.001i value", new Apcomplex("(6.56175890356461150865814111470,-2.356773351592683747807274450833)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(0.001,2)").precision(30));
+        assertEquals("0.001+2i precision", 29, a.precision());
+        assertEquals("0.001+2i value", new Apcomplex("(-2.56851143797407428601007061119,-1.43932944213613926991901894905)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(0,2)").precision(30));
+        assertEquals("2i precision", 29, a.precision());
+        assertEquals("2i value", new Apcomplex("(-2.56922596699087465064722769986,-1.44115001048510830784761423525)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-0.001,2)").precision(30));
+        assertEquals("-0.001+2i precision", 29, a.precision());
+        assertEquals("-0.001+2i value", new Apcomplex("(-2.56994062107649702287048674102,-1.44297105665961289556329006395)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(0.999,2)").precision(30));
+        assertEquals("0.999+2i precision", 29, a.precision());
+        assertEquals("0.999+2i value", new Apcomplex("(-1.87679331551656733845065045339,0.12832527009361706325136384495)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-0.999,2)").precision(30));
+        assertEquals("-0.999+2i precision", 29, a.precision());
+        assertEquals("-0.999+2i value", new Apcomplex("(-3.37303045422046060401853555827,-3.47337329793718494112946036370)"), a, new Apfloat("5e-28"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-0.5,0.01)").precision(17));
+        assertEquals("-0.5,0.1 precision", 17, a.precision());
+        assertEquals("-0.5,0.1 value", new Apcomplex("(1.2650654639403971,-3.141227615720128556)"), a, new Apfloat("5e-16"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-0.5)").precision(17));
+        assertEquals("-0.5 precision", 17, a.precision());
+        assertEquals("-0.5 value", new Apcomplex("(1.2655121234846454,-3.1415926535897932)"), a, new Apfloat("5e-16"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-0.5,-0.01)").precision(17));
+        assertEquals("-0.5,-0.01 precision", 17, a.precision());
+        assertEquals("-0.5,-0.01 value", new Apcomplex("(1.2650654639403971,3.141227615720128556)"), a, new Apfloat("5e-16"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-1.5,0.01)").precision(17));
+        assertEquals("-1.5,0.1 precision", 16, a.precision());
+        assertEquals("-1.5,0.1 value", new Apcomplex("(0.8595781341038230,-6.27615370140605357)"), a, new Apfloat("5e-15"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-1.5)").precision(17));
+        assertEquals("-1.5 precision", 16, a.precision());
+        assertEquals("-1.5 value", new Apcomplex("(0.8600470153764810,-6.2831853071795865)"), a, new Apfloat("5e-15"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-1.5,-0.01)").precision(17));
+        assertEquals("-1.5,-0.01 precision", 16, a.precision());
+        assertEquals("-1.5,-0.01 value", new Apcomplex("(0.8595781341038230,6.27615370140605357)"), a, new Apfloat("5e-15"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-2.5,0.01)").precision(17));
+        assertEquals("-2.5,0.1 precision", 16, a.precision());
+        assertEquals("-2.5,0.1 value", new Apcomplex("(-0.0567205977063328,-9.4137463763289753)"), a, new Apfloat("5e-15"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-2.5)").precision(17));
+        assertEquals("-2.5 precision", 16, a.precision());
+        assertEquals("-2.5 value", new Apcomplex("(-0.0562437164976741,-9.4247779607693797)"), a, new Apfloat("5e-15"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-2.5,-0.01)").precision(17));
+        assertEquals("-2.5,-0.01 precision", 16, a.precision());
+        assertEquals("-2.5,-0.01 value", new Apcomplex("(-0.0567205977063328,9.4137463763289753)"), a, new Apfloat("5e-15"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(1.0,600000.0)"));
+        assertEquals("1+600000i precision", 7, a.precision());
+        assertEquals("1+600000i value", new Apcomplex("(-942470,7382812)"), a, new Apfloat("5e0"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(0,600000)"));
+        assertEquals("600000i precision", 6, a.precision());
+        assertEquals("600000i value", new Apcomplex("(-942483,7382810)"), a, new Apfloat("5e1"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(0,600000.0)"));
+        assertEquals("600000.0i precision", 7, a.precision());
+        assertEquals("600000.0i value", new Apcomplex("(-942483,7382810)"), a, new Apfloat("5e0"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-1.0,600000.0)"));
+        assertEquals("-1+600000i precision", 7, a.precision());
+        assertEquals("-1+600000i value", new Apcomplex("(-942497,7382809)"), a, new Apfloat("5e0"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(1.00000e600000,0)"));
+        assertEquals("1e600000 precision", 6, a.precision());
+        assertEquals("1e600000 value", new Apcomplex("(1.38155e600006)"), a, new Apfloat("5e600001"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-1.00000e600000,1)"));
+        assertEquals("-1e600000+i precision", 6, a.precision());
+        assertEquals("-1e600000+i value", new Apcomplex("(-1.38155e600006,-3.14159e600000)"), a, new Apfloat("5e600001"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-1.00000e600000,-1)"));
+        assertEquals("-1e600000-i precision", 6, a.precision());
+        assertEquals("-1e600000-i value", new Apcomplex("(-1.38155e600006,-3.14159e600000)"), a, new Apfloat("5e600001"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(0,1.00000e600000)"));
+        assertEquals("1e600000i precision", 6, a.precision());
+        assertEquals("1e600000i value", new Apcomplex("(-1.5708e600000,1.38155e600006)"), a, new Apfloat("5e600001"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("6.00000"));
+        assertEquals("6 precision", 6, a.precision());
+        assertEquals("6 value", new Apcomplex("4.78749"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("-4.50000"));
+        assertEquals("-4.5 precision", 7, a.precision());
+        assertEquals("-4.5 value", new Apcomplex("(-2.81308,-15.70796)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("(-9.71e-2,1.5386)"));
+        assertEquals("-9.71e-2+1.5386i precision", 4, a.precision());
+        assertEquals("-9.71e-2+1.5386i value", new Apcomplex("(-1.75979,-1.90299)"), a, new Apfloat("5e-3"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("3"));
+        assertEquals("3 precision", 1, a.precision(), 1);
+        assertEquals("3 value", new Apcomplex("0.7"), a, new Apfloat("5e-1"));
+
+        a = ApcomplexMath.logGamma(new Apcomplex("1").precision(100));
+        assertEquals("1 value", new Apcomplex("0"), a);
+
+        a = ApcomplexMath.logGamma(new Apcomplex("2").precision(100));
+        assertEquals("2 value", new Apcomplex("0"), a);
+
+        a = ApcomplexMath.logGamma(new Apcomplex(new Apfloat(-5, 20, 9), new Apfloat(-6, 20,9)));
+        assertEquals("-5-6i radix precision", 20, a.precision());
+        assertEquals("-5-6i radix value", new Apcomplex(new Apfloat("-20.8777170116531164514", 20, 9), new Apfloat("6.1201335747842606317", 20, 9)), a, new Apfloat("5e-18", 1, 9));
+
+        try
+        {
+            ApcomplexMath.logGamma(Apcomplex.ZERO);
+            fail("Log gamma of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.logGamma(new Apcomplex("-1"));
+            fail("Log gamma of -1");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.logGamma(new Apcomplex(new Apint(3), new Apint(4)));
             fail("Infinite expansion");
         }
         catch (InfiniteExpansionException iee)

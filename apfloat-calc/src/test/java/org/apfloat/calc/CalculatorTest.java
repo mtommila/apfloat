@@ -227,6 +227,7 @@ public class CalculatorTest
         assertCalculation("5e-1", "inverseRoot(4.0, 2)");
         assertCalculation("7.07e-1-7.07e-1i", "inverseRoot(-0.707+0.707i, 3)");
         assertCalculation("-5e-1", "inverseRoot(4.0, 2, 1)");
+        assertCalculation("-4.371-3.651i", "logGamma(-1.234+2.345i)");
         assertCalculation("1.23", "n(1.23456, 3)");
         assertCalculation("2", "root(8, 3)");
         assertCalculation("2/3", "root(16/81, 4)");
@@ -359,6 +360,10 @@ public class CalculatorTest
         assertCalculationFailure("inverseRoot(2.0, i, 1)");
         assertCalculationFailure("inverseRoot(2.0, i, i)");
         assertCalculationFailure("inverseRoot(2.0, 2, 2, 2)");
+        assertCalculationFailure("logGamma(0)");
+        assertCalculationFailure("logGamma(-1)");
+        assertCalculationFailure("logGamma()");
+        assertCalculationFailure("logGamma(2,2)");
         assertCalculationFailure("n(1.23456, i)");
         assertCalculationFailure("n(1.23456, 0.5)");
         assertCalculationFailure("n(1.23456)");

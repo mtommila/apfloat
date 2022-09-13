@@ -96,6 +96,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testGamma"));
         suite.addTest(new ApfloatMathTest("testGammaIncomplete"));
         suite.addTest(new ApfloatMathTest("testGammaIncompleteGeneralized"));
+        suite.addTest(new ApfloatMathTest("testLogGamma"));
         suite.addTest(new ApfloatMathTest("testDigamma"));
         suite.addTest(new ApfloatMathTest("testBinomial"));
         suite.addTest(new ApfloatMathTest("testZeta"));
@@ -2140,6 +2141,40 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+        }
+    }
+
+    public static void testLogGamma()
+    {
+        Apfloat a = ApfloatMath.logGamma(new Apfloat(6, 30, 10));
+        assertEquals("6 precision", 29, a.precision());
+        assertEquals("6 value", new Apfloat("4.7874917427820459942477009345232"), a, new Apfloat("5e-28"));
+
+        a = ApfloatMath.logGamma(new Apfloat("4.20000"));
+        assertEquals("4.2 precision", 6, a.precision());
+        assertEquals("4.2 value", new Apfloat("2.04856"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.logGamma(new Apfloat("1.50000"));
+        assertEquals("1.5 precision", 5, a.precision());
+        assertEquals("1.5 value", new Apfloat("-0.120782"), a, new Apfloat("5e-5"));
+
+        try
+        {
+            ApfloatMath.logGamma(new Apfloat("-0.1"));
+            fail("Log gamma of non-positive value");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK a is negative
+        }
+        try
+        {
+            ApfloatMath.logGamma(Apfloat.ZERO);
+            fail("Lower gamma of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK a is zero
         }
     }
 

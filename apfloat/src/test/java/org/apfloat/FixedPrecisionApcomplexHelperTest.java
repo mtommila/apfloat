@@ -89,6 +89,7 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testGamma"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testGammaIncomplete"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testGammaIncompleteGeneralized"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testLogGamma"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testDigamma"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testBinomial"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testZeta"));
@@ -610,6 +611,25 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.gamma(a, z0, z1);
         assertEquals("value", new Apcomplex("(0.00896428,-0.00326815)"), result, new Apfloat("5e-8"));
         assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLogGamma()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex x = new Apcomplex("(-2.5,1.3)");
+        Apcomplex result = helper.logGamma(x);
+        assertEquals("value", new Apcomplex("(-3.17613,-7.9530)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        try
+        {
+            helper.logGamma(new Apcomplex("0"));
+            fail("logGamma(0) accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
     }
 
     public static void testDigamma()

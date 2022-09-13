@@ -1839,6 +1839,229 @@ public class ApcomplexMath
     }
 
     /**
+     * Logarithm of the gamma function. Note that this function has a different branch
+     * structure than <code>log(gamma(z))</code>.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the gamma function.
+     *
+     * @param z The argument.
+     *
+     * @return <code>log&Gamma;(z)</code>
+     *
+     * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apcomplex logGamma(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        // |B_2n| ~ 4 sqrt(pi n) (n / (pi e))^2n
+        // Stirling's series (does not converge)
+        // B_2n / (2n(2n-1)z^(2n-1))
+
+        // The sum diverges, but depending on how large re(z) is, the terms initially get smaller and smaller,
+        // until they start getting bigger and bigger (and grow to infinity)
+
+        // By truncating the sum at the point where the terms are the smallest, we can get a good approximation
+
+        // Thus we can calculate which is the smallest term, given any z
+        // The larger re(z) is, the larger the n of the term is, and the smaller the term is
+        // For higher precision we need more terms, and a larger re(z)
+        // Use the recurrence formula to move re(z) to be as large as needed
+        // For negative re(z) use first the reflection formula
+
+        // To calculate how many terms of the sum we need, and how big should re(z) be:
+        // Use the asymptotic formula for B_2n (which is good enough for n >= 3)
+        // The term in the sum is B_2n / (2n(2n-1)z^(2n-1))
+        //
+        // which is approximately
+        //
+        //  z (E Pi z / n)^(-2n) / (2n (2n - 1))
+        //
+        // Take derivative with respect to n and solve when it's zero
+        //
+        // z = (n exp((4n - 1) / (2n - 4n^2))) / Pi
+        //
+        // Substitute back to what the term is at that point
+        //
+        // exp(-(2n - 1)^2 / (2n)) / (2 Pi (2 n - 1))
+        //
+        // For precision p in base b, we want that term to be equal to b^-p, solve that for n
+        // (cannot be solved but approximately 2n ~ 2n-1 for large n, then it can be solved)
+        //
+        // n = 1/2 (1 + W(b^p / (2 Pi)))
+        //
+        // Use formula further above to get corresponding value for z
+        //
+        // W is Lambert's W function
+        // W can be approximated by log(z) - log(log(z))
+        // Followed possibly by iteration(s) of w = w/(1 + w) (1 + log(x/w))
+        //
+        // The bernoulli number factor of ~sqrt(n) has been ignored in the above calculations,
+        // compensate by adding a few digits of extra precision
+
+        long precision = z.precision();
+        if (z.imag().signum() == 0)
+        {
+            if (z.real().signum() == 0)
+            {
+                throw new ArithmeticException("Log gamma of zero");
+            }
+            if (z.real().isInteger() && z.real().signum() < 0)
+            {
+                throw new ArithmeticException("Log gamma of negative integer");
+            }
+        }
+        if (precision == Apfloat.INFINITE)
+        {
+            throw new InfiniteExpansionException("Cannot calculate log gamma function to infinite precision");
+        }
+
+        int radix = z.radix();
+        Apint one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        long workingPrecision = ApfloatHelper.extendPrecision(precision);
+        Apfloat pi = ApfloatMath.pi(workingPrecision, radix);
+
+        if (z.real().signum() <= 0)
+        {
+            // Use reflection formula
+            return log(pi).subtract(logSin(z)).subtract(logGamma(one.subtract(z)));
+        }
+
+        double adjust = Math.log(precision) + 1,    // Adjustment for the sqrt(n) factor in bernoulli numbers
+               w = (precision + adjust) * Math.log(radix) - Math.log(2 * Math.PI);
+        long n = (long) Math.ceil(0.5 * (1 + w - Math.log(w)));
+        Apfloat zReal = new Apfloat(n * Math.exp((4. * n - 1) / (2 * n - 4. * n * n)) / Math.PI, precision, radix);
+        Apcomplex s = Apcomplex.ZERO;
+        if (z.real().compareTo(zReal) < 0)
+        {
+            long N = zReal.subtract(z.real()).roundAway().longValueExact();
+            // Use recurrence formula
+            s = s.subtract(logPochhammer(z, N));
+            z = z.add(new Apfloat(N, precision, radix));
+        }
+
+        s = s.add(z.subtract(new Aprational(one, two)).multiply(log(z))).subtract(z).add(log(two.multiply(pi)).divide(two));
+        Apcomplex z2 = z.multiply(z),
+                  zp = z;
+        Iterator<Aprational> bernoulli2 = AprationalMath.bernoullis2(n, radix);
+        for (long k = 1; k <= n; k++)
+        {
+            long k2 = Math.multiplyExact(k,  2);
+            Apcomplex term = bernoulli2.next().precision(workingPrecision).divide(new Apint(k2, radix).multiply(new Apint(k2 - 1, radix)).multiply(zp));
+            if (k < n)
+            {
+                zp = zp.multiply(z2);
+            }
+
+            long[] matchingPrecisionsReal = ApfloatHelper.getMatchingPrecisions(s.real(), term.real());
+            long[] matchingPrecisionsImag = ApfloatHelper.getMatchingPrecisions(s.imag(), term.imag());
+            if (matchingPrecisionsReal[1] == 0 && matchingPrecisionsImag[1] == 0)
+            {
+                // The rest of the terms would be insignificantly small
+                break;
+            }
+
+            s = s.add(term);
+        }
+
+        return s;
+    }
+
+    // log(sin(pi z)) with correct branch structure
+    private static Apcomplex logSin(Apcomplex z)
+    {
+        // See https://arxiv.org/pdf/2109.08392.pdf Arbitrary-precision computation of the gamma function by Fredrik Johansson
+        long precision = z.precision(),
+             workingPrecision = ApfloatHelper.extendPrecision(precision);
+        int radix = z.radix();
+        Apint n = z.real().floor(),
+              one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        Apfloat half = new Aprational(one, two).precision(workingPrecision),
+                pi = ApfloatMath.pi(workingPrecision, radix);
+        Apcomplex i = new Apcomplex(Apint.ZERO, Apint.ONES[radix]);
+        Apcomplex offset = n.multiply(pi).multiply(i);
+        assert (z.real().signum() <= 0);
+        if (z.imag().signum() >= 0)
+        {
+            offset = offset.negate();
+        }
+        z = z.subtract(n);
+        Apcomplex ls;
+        if (z.imag().compareTo(one) > 0)
+        {
+            ls = log(half.multiply(one.subtract(expNoLoP(two.multiply(i).multiply(pi).multiply(z))))).subtract(i.multiply(pi).multiply(z.subtract(half)));
+        }
+        else if (z.imag().compareTo(one.negate()) < 0)
+        {
+            ls = log(half.multiply(one.subtract(expNoLoP(two.negate().multiply(i).multiply(pi).multiply(z))))).add(i.multiply(pi).multiply(z.subtract(half)));
+        }
+        else
+        {
+            ls = log(sin(pi.multiply(z)));
+        }
+        return ls.add(offset);
+    }
+
+    private static Apcomplex expNoLoP(Apcomplex z)
+    {
+        // Avoid loss of precision if z is too big
+        assert (z.real().signum() < 0);
+        if (z.real().scale() > 1)
+        {
+            if (z.real().precision() <= z.real().scale() - 1)
+            {
+                z = new Apcomplex(z.real().precision(z.real().scale()), z.imag());
+            }
+        }
+        return exp(z);
+    }
+
+    private static Apcomplex logPochhammer(Apcomplex z, long n)
+    {
+        // Hare's algorithm
+        boolean conj = (z.imag().signum() < 0);
+        if (conj)
+        {
+            z = z.conj();
+        }
+        int radix = z.radix();
+        Apcomplex s = z;
+        long m = 0;
+        for (long k = 1; k < n; k++)
+        {
+            Apcomplex t = s.multiply(z.add(new Apint(k, radix)));
+            if (s.imag().signum() >= 0 && t.imag().signum() < 0)
+            {
+                 m += 2;
+            }
+            s = t;
+        }
+        if (s.real().signum() < 0)
+        {
+            if (s.imag().signum() >= 0)
+            {
+                m++;
+            }
+            else
+            {
+                m--;
+            }
+            s = s.negate();
+        }
+        Apcomplex i = new Apcomplex(Apint.ZERO, Apint.ONES[radix]);
+        Apfloat pi = ApfloatMath.pi(z.precision(), radix);
+        Apcomplex result = log(s).add(pi.multiply(i).multiply(new Apint(m, radix)));
+        return (conj ? result.conj() : result);
+    }
+
+    /**
      * Digamma function.<p>
      *
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
@@ -1925,7 +2148,7 @@ public class ApcomplexMath
         }
 
         double adjust = Math.log(precision) + 1,    // Adjustment for the sqrt(n) factor in bernoulli numbers
-               w = (precision + adjust) * Math.log(radix) + 1; 
+               w = (precision + adjust) * Math.log(radix) + 1;
         long n = (long) Math.ceil(0.5 * (w - Math.log(w)));
         Apfloat zReal = new Apfloat(Math.exp(-0.5 / n) * n / Math.PI, precision, radix);
         Apcomplex s = Apfloat.ZERO;
@@ -1937,7 +2160,7 @@ public class ApcomplexMath
             {
                 s = s.subtract(one.divide(z.add(new Apint(k, radix))));
             }
-            z = z.add(new Apint(N, radix));
+            z = z.add(new Apfloat(N, precision, radix));
         }
 
         Apint two = new Apint(2, radix);
@@ -1949,7 +2172,7 @@ public class ApcomplexMath
         {
             long k2 = Math.multiplyExact(k,  2);
             zp = zp.multiply(z2);
-            Apcomplex term = bernoulli2.next().divide(new Apint(k2, radix).multiply(zp));
+            Apcomplex term = bernoulli2.next().precision(precision).divide(new Apint(k2, radix).multiply(zp));
 
             long[] matchingPrecisionsReal = ApfloatHelper.getMatchingPrecisions(s.real(), term.real());
             long[] matchingPrecisionsImag = ApfloatHelper.getMatchingPrecisions(s.imag(), term.imag());

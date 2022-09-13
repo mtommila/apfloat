@@ -943,6 +943,24 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
+     * Logarithm of the gamma function.
+     *
+     * @param x The argument.
+     *
+     * @return <code>log&Gamma;(x)</code>
+     *
+     * @throws ArithmeticException If <code>x</code> is nonpositive.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat logGamma(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.logGamma(setPrecision(x)));
+    }
+
+    /**
      * Digamma function.
      *
      * @param x The argument.

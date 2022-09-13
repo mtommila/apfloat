@@ -839,11 +839,29 @@ public class FixedPrecisionApcomplexHelper
     }
 
     /**
+     * Logarithm of the gamma function.
+     *
+     * @param z The argument.
+     *
+     * @return <code>log&Gamma;(z)</code>
+     *
+     * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.11.0
+     */
+
+    public Apcomplex logGamma(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.logGamma(setPrecision(z)));
+    }
+
+    /**
      * Digamma function.
      *
      * @param z The argument.
      *
-     * @return <code>&psi;(x)</code>
+     * @return <code>&psi;(z)</code>
      *
      * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
      *

@@ -2290,6 +2290,33 @@ public class ApfloatMath
     }
 
     /**
+     * Logarithm of the gamma function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the gamma function.
+     *
+     * @param x The argument.
+     *
+     * @return <code>log&Gamma;(x)</code>
+     *
+     * @throws ArithmeticException If <code>x</code> is nonpositive.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat logGamma(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() < 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.logGamma(x).real();
+    }
+
+    /**
      * Digamma function.<p>
      *
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.

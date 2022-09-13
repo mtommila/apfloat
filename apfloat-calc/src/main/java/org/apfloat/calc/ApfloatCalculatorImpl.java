@@ -303,6 +303,12 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number logGamma(Number x)
+        {
+            return ApcomplexMath.logGamma((Apcomplex) x);
+        }
+
+        @Override
         public Number max(Number x, Number y)
         {
             throw new IllegalArgumentException("Max can only be used with scalar values");
