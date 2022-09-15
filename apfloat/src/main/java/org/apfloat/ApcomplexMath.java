@@ -1534,9 +1534,9 @@ public class ApcomplexMath
         Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix()),
                 two = new Apfloat(2, Apfloat.INFINITE, z.radix());
         Apcomplex i = new Apcomplex(Apfloat.ZERO, one),
-                  w = exp(two.multiply(i).multiply(z));
+                  w = expNoLoP(two.multiply(i).multiply(z));
 
-        w = i.multiply(w.add(one)).divide(w.subtract(one));
+        w = i.multiply(two.multiply(w).divide(w.subtract(one)).subtract(one));
 
         return (negate ? w.negate() : w);
     }
@@ -1738,6 +1738,7 @@ public class ApcomplexMath
         }
         if (z.real().signum() < 0)
         {
+            // Use reflection formula, see e.g. https://functions.wolfram.com/GammaBetaErf/Gamma/16/03/01/
             z = z.negate();
             Apfloat pi = ApfloatMath.pi(precision, radix);
             return pi.negate().divide(z.multiply(sin(pi.multiply(z))).multiply(gamma(z)));
@@ -1930,6 +1931,13 @@ public class ApcomplexMath
         if (z.real().signum() <= 0)
         {
             // Use reflection formula
+            if (z.scale() < -precision)
+            {
+                // See e.g. https://functions.wolfram.com/GammaBetaErf/LogGamma/16/01/01/
+                // Note that with z so small, now sin(z) ~= z, accurate to the precision of z
+                return log(pi).subtract(log(pi.multiply(z))).subtract(logGamma(z.negate())).subtract(log(z.negate()));
+            }
+            // See: Arbitrary-precision computation of the gamma function, Fredrik Johansson, https://arxiv.org/pdf/2109.08392.pdf
             return log(pi).subtract(logSin(z)).subtract(logGamma(one.subtract(z)));
         }
 
@@ -2012,12 +2020,14 @@ public class ApcomplexMath
     private static Apcomplex expNoLoP(Apcomplex z)
     {
         // Avoid loss of precision if z is too big
-        assert (z.real().signum() < 0);
-        if (z.real().scale() > 1)
+        if (z.real().signum() < 0)
         {
-            if (z.real().precision() <= z.real().scale() - 1)
+            if (z.real().scale() > 1)
             {
-                z = new Apcomplex(z.real().precision(z.real().scale()), z.imag());
+                if (z.real().precision() <= z.real().scale() - 1)
+                {
+                    z = new Apcomplex(z.real().precision(z.real().scale()), z.imag());
+                }
             }
         }
         return exp(z);
@@ -2143,7 +2153,11 @@ public class ApcomplexMath
                 throw new ArithmeticException("Digamma of nonpositive integer");
             }
             Apfloat pi = ApfloatMath.pi(precision, radix);
-            // Use reflection formula
+            // Use reflection formula, see e.g. https://functions.wolfram.com/GammaBetaErf/PolyGamma/16/01/01/
+            if (z.scale() < -precision)
+            {
+                return digamma(z.negate()).subtract(pi.multiply(cot(pi.multiply(z)))).subtract(one.divide(z));
+            }
             return digamma(one.subtract(z)).subtract(pi.multiply(cot(pi.multiply(z))));
         }
 
