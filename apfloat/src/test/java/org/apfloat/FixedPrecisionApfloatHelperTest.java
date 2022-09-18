@@ -101,6 +101,9 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testSum"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testE"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testEuler"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testCatalan"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testGlaisher"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testKhinchin"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGamma"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGammaIncomplete"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGammaIncompleteGeneralized"));
@@ -916,7 +919,7 @@ public class FixedPrecisionApfloatHelperTest
         assertEquals("precision", 100, result.precision());
 
         result = helper.e(16);
-        assertEquals("value 16", new Apfloat("2.b7e151628aed2a6abf7158809cf4f3c762e7160f38b4da56a784d9045190cfef324e7738926cfbe5f4bf8d8d8c31d763da0", Apfloat.DEFAULT, 16), result, new Apfloat(1e-100, 1, 16));
+        assertEquals("value 16", new Apfloat("2.b7e151628aed2a6abf7158809cf4f3c762e7160f38b4da56a784d9045190cfef324e7738926cfbe5f4bf8d8d8c31d763da0", Apfloat.DEFAULT, 16), result, new Apfloat(4e-121, 1, 16));
         assertEquals("precision 16", 100, result.precision());
 
         try
@@ -938,12 +941,78 @@ public class FixedPrecisionApfloatHelperTest
         assertEquals("precision", 100, result.precision());
 
         result = helper.euler(16);
-        assertEquals("value 16", new Apfloat("0.93c467e37db0c7a4d1be3f810152cb56a1cecc3af65cc0190c03df34709affbd8e4b59fa03a9f0eed0649ccb621057d11057", Apfloat.DEFAULT, 16), result, new Apfloat(1e-100, 1, 16));
+        assertEquals("value 16", new Apfloat("0.93c467e37db0c7a4d1be3f810152cb56a1cecc3af65cc0190c03df34709affbd8e4b59fa03a9f0eed0649ccb621057d11057", Apfloat.DEFAULT, 16), result, new Apfloat(4e-121, 1, 16));
         assertEquals("precision 16", 100, result.precision());
 
         try
         {
             helper.euler(1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
+    }
+
+    public static void testCatalan()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
+        Apfloat result = helper.catalan();
+        assertEquals("value", new Apfloat("0.9159655941772190150546035149323841107741493742816721342664981196217630197762547694793565129261151062"), result, new Apfloat("5e-100"));
+        assertEquals("precision", 100, result.precision());
+
+        result = helper.catalan(16);
+        assertEquals("value 16", new Apfloat("0.ea7cb89f409ae845215822e37d32d0c63ec43e1381c2ff8094a263e5a3ccd76f94dc058a46eec5858f924d663f739c42ec96", Apfloat.DEFAULT, 16), result, new Apfloat(4e-121, 1, 16));
+        assertEquals("precision 16", 100, result.precision());
+
+        try
+        {
+            helper.catalan(1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
+    }
+
+    public static void testGlaisher()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
+        Apfloat result = helper.glaisher();
+        assertEquals("value", new Apfloat("1.282427129100622636875342568869791727767688927325001192063740021740406308858826461129736491958202374"), result, new Apfloat("5e-99"));
+        assertEquals("precision", 100, result.precision());
+
+        result = helper.glaisher(16);
+        assertEquals("value 16", new Apfloat("1.484d24f2fd8731313ed56e343da775794768e0cabd1a57f64185e87606793b86ed92e2208eddc71810d323a0fb6eced612d8", Apfloat.DEFAULT, 16), result, new Apfloat(7e-120, 1, 16));
+        assertEquals("precision 16", 100, result.precision());
+
+        try
+        {
+            helper.glaisher(1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
+    }
+
+    public static void testKhinchin()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
+        Apfloat result = helper.khinchin();
+        assertEquals("value", new Apfloat("2.685452001065306445309714835481795693820382293994462953051152345557218859537152002801141174931847698"), result, new Apfloat("5e-99"));
+        assertEquals("precision", 100, result.precision());
+
+        result = helper.khinchin(16);
+        assertEquals("value 16", new Apfloat("2.af79c8478da1aef2fdf3e394667f9c3392e021e61829ddfa4d87063b39522441a3b8f9696bfe8c1fd5ea06533d2dbf594d55", Apfloat.DEFAULT, 16), result, new Apfloat(7e-120, 1, 16));
+        assertEquals("precision 16", 100, result.precision());
+
+        try
+        {
+            helper.khinchin(1);
             fail("Radix 1 accepted");
         }
         catch (NumberFormatException nfe)

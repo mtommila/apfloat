@@ -782,6 +782,102 @@ public class FixedPrecisionApcomplexHelper
     }
 
     /**
+     * Catalan's constant <i>G</i>.
+     *
+     * @return <i>G</i>.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat catalan()
+        throws ApfloatRuntimeException
+    {
+        return ApfloatMath.catalan(precision());
+    }
+
+    /**
+     * Catalan's constant <i>G</i>.
+     *
+     * @param radix The radix of the result.
+     *
+     * @return <i>G</i>.
+     *
+     * @throws NumberFormatException If the radix is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat catalan(int radix)
+        throws NumberFormatException, ApfloatRuntimeException
+    {
+        return ApfloatMath.catalan(precision(), radix);
+    }
+
+    /**
+     * The Glaisher-Kinkelin constant <i>A</i>.
+     *
+     * @return <i>A</i>.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat glaisher()
+        throws ApfloatRuntimeException
+    {
+        return ApfloatMath.glaisher(precision());
+    }
+
+    /**
+     * The Glaisher-Kinkelin constant <i>A</i>.
+     *
+     * @param radix The radix of the result.
+     *
+     * @return <i>A</i>.
+     *
+     * @throws NumberFormatException If the radix is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat glaisher(int radix)
+        throws NumberFormatException, ApfloatRuntimeException
+    {
+        return ApfloatMath.glaisher(precision(), radix);
+    }
+
+    /**
+     * Khinchin's constant <i>K</i>.
+     *
+     * @return <i>K</i>.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat khinchin()
+        throws ApfloatRuntimeException
+    {
+        return ApfloatMath.khinchin(precision());
+    }
+
+    /**
+     * Khinchin's constant <i>K</i>.
+     *
+     * @param radix The radix of the result.
+     *
+     * @return <i>K</i>.
+     *
+     * @throws NumberFormatException If the radix is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat khinchin(int radix)
+        throws NumberFormatException, ApfloatRuntimeException
+    {
+        return ApfloatMath.khinchin(precision(), radix);
+    }
+
+    /**
      * Gamma function.
      *
      * @param z The operand.

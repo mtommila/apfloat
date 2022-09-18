@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Queue;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -2201,6 +2202,228 @@ public class ApfloatMath
             k = k.add(one);
         } while (u.equalDigits(ou) < targetPrecision || v.equalDigits(ov) < targetPrecision);
         return u.divide(v).precision(precision);
+    }
+
+    /**
+     * Calculates Catalan's constant, <i>G</i>. Uses the default radix.<p>
+     *
+     * This implementation is <i>slow</i>.
+     *
+     * @param precision Number of digits of <i>G</i> to calculate.
+     *
+     * @return <i>G</i> accurate to <code>precision</code> digits, in the default radix.
+     *
+     * @exception java.lang.NumberFormatException If the default radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat catalan(long precision)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return catalan(precision, radix);
+    }
+
+    /**
+     * Calculates Catalan's constant, <i>G</i>. Uses the specified radix.<p>
+     *
+     * This implementation is <i>slow</i>.
+     *
+     * @param precision Number of digits of <i>G</i> to calculate.
+     * @param radix The radix in which the number should be presented.
+     *
+     * @return <i>G</i> accurate to <code>precision</code> digits, in base <code>radix</code>.
+     *
+     * @exception java.lang.NumberFormatException If the radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat catalan(long precision, int radix)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
+        if (precision <= 0)
+        {
+            throw new IllegalArgumentException("Precision " + precision + " is not positive");
+        }
+        else if (precision == Apfloat.INFINITE)
+        {
+            throw new InfiniteExpansionException("Cannot calculate C to infinite precision");
+        }
+
+        long workingPrecision = ApfloatHelper.extendPrecision(precision);
+        Apfloat one = new Apfloat(1, workingPrecision, radix),
+                two = new Apfloat(2, workingPrecision, radix),
+                three = new Apfloat(3, workingPrecision, radix),
+                four = new Apfloat(4, workingPrecision, radix);
+        return zeta(two, one.divide(four)).subtract(zeta(two, three.divide(four))).divide(new Apint(16, radix)).precision(precision);
+    }
+
+    /**
+     * Calculates the Glaisher‐Kinkelin constant, <i>A</i>. Uses the default radix.<p>
+     *
+     * This implementation is <i>slow</i>. At the time of implementation no
+     * efficient algorithm is known for the Glaisher‐Kinkelin constant.
+     *
+     * @param precision Number of digits of <i>A</i> to calculate.
+     *
+     * @return <i>A</i> accurate to <code>precision</code> digits, in the default radix.
+     *
+     * @exception java.lang.NumberFormatException If the default radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat glaisher(long precision)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return glaisher(precision, radix);
+    }
+
+    /**
+     * Calculates the Glaisher‐Kinkelin constant, <i>A</i>. Uses the specified radix.<p>
+     *
+     * This implementation is <i>slow</i>. At the time of implementation no
+     * efficient algorithm is known for the Glaisher‐Kinkelin constant.
+     *
+     * @param precision Number of digits of <i>A</i> to calculate.
+     * @param radix The radix in which the number should be presented.
+     *
+     * @return <i>A</i> accurate to <code>precision</code> digits, in base <code>radix</code>.
+     *
+     * @exception java.lang.NumberFormatException If the radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat glaisher(long precision, int radix)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
+        if (precision <= 0)
+        {
+            throw new IllegalArgumentException("Precision " + precision + " is not positive");
+        }
+        else if (precision == Apfloat.INFINITE)
+        {
+            throw new InfiniteExpansionException("Cannot calculate A to infinite precision");
+        }
+
+        // Calculated using A = exp(euler/12 - zeta'(2)/(2 pi^2)) (2 pi)^(1/12)
+        // The tricky part is the derivative of the zeta function
+        // See: An Efficient Algorithm for the Riemann Zeta Function (1995) by P. Borwein, http://www.cecm.sfu.ca/~pborwein/PAPERS/P155.pdf
+        // d_k = n sum((n + i - 1)! 4^i / ((n - i)! (2i)!), i=0..k)
+        // zeta'(2) = 1/d_n sum((-1)^(k+1) (d_n - d_k) (log(4) + 2 log(1 + k))/(1 + k)^2, k=0..n-1)
+        // d_n - d_k = n sum((n + i - 1)! 4^i / ((n - i)! (2i)!), i=k+1..n)
+        long workingPrecision = ApfloatHelper.extendPrecision(precision),
+             n = (long) Math.ceil(workingPrecision * Math.log(radix) / Math.log(3 + Math.sqrt(8)));
+        Apfloat two = new Apfloat(2, workingPrecision, radix),
+                four = new Apfloat(4, workingPrecision, radix),
+                log4 = log(four),
+                pi = pi(workingPrecision, radix),
+                d = pow(two, Math.multiplyExact(2,  n) - 1),
+                dnk = d,
+                z = Apfloat.ZERO;
+        for (long k = n - 1; k >= 0; k--)
+        {
+            Apfloat k1 = new Apfloat(k + 1, workingPrecision, radix),
+                    term = dnk.multiply(log4.add(two.multiply(log(k1)))).divide(k1.multiply(k1));
+            z = (k & 1) == 0 ? z.subtract(term): z.add(term);
+            d = d.multiply(new Apint(2 * k + 2, radix)).multiply(new Apint(2 * k + 1, radix)).divide(four.multiply(new Apint(n + k, radix)).multiply(new Apint(n - k, radix)));
+            dnk = dnk.add(d);
+        }
+        z = z.divide(dnk);
+        return exp(euler(workingPrecision, radix).divide(new Apint(12, radix)).subtract(z.divide(two.multiply(pi).multiply(pi)))).multiply(root(two.multiply(pi), 12)).precision(precision);
+    }
+
+    /**
+     * Calculates Khinchin's constant, <i>K</i>.Uses the default radix.<p>
+     *
+     * This implementation is <i>slow</i>. At the time of implementation no
+     * efficient algorithm is known for Khinchin's constant.
+     *
+     * @param precision Number of digits of <i>K</i> to calculate.
+     *
+     * @return <i>K</i> accurate to <code>precision</code> digits, in the default radix.
+     *
+     * @exception java.lang.NumberFormatException If the default radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat khinchin(long precision)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return khinchin(precision, radix);
+    }
+
+    /**
+     * Calculates Khinchin's constant, <i>K</i>. Uses the specified radix.<p>
+     *
+     * This implementation is <i>slow</i>. At the time of implementation no
+     * efficient algorithm is known for Khinchin's constant.
+     *
+     * @param precision Number of digits of <i>K</i> to calculate.
+     * @param radix The radix in which the number should be presented.
+     *
+     * @return <i>K</i> accurate to <code>precision</code> digits, in base <code>radix</code>.
+     *
+     * @exception java.lang.NumberFormatException If the radix is not valid.
+     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat khinchin(long precision, int radix)
+        throws IllegalArgumentException, NumberFormatException, ApfloatRuntimeException
+    {
+        if (precision <= 0)
+        {
+            throw new IllegalArgumentException("Precision " + precision + " is not positive");
+        }
+        else if (precision == Apfloat.INFINITE)
+        {
+            throw new InfiniteExpansionException("Cannot calculate K to infinite precision");
+        }
+
+        // log(K) = 1/log(2) sum((zeta(2n) - 1) / n sum((-1)^k / k, k=1..2n-1), n=1..infinity)
+        // zeta(2n) = (-1)^(n+1) B_2n (2 pi)^2n / (2 (2n)!) 
+        long workingPrecision = ApfloatHelper.extendPrecision(precision);
+        Apint one = Apfloat.ONES[radix],
+              two = new Apint(2, radix);
+        Apfloat twopi2 = pow(pi(workingPrecision, radix).multiply(two), 2),
+                f = new Aprational(one, two),
+                s = Apfloat.ZERO;
+        Iterator<Aprational> bernoullis2 = AprationalMath.bernoullis2Small(radix);
+        for (long n = 1; ; n++)
+        {
+            f = f.multiply(twopi2).divide(new Apint(Math.multiplyExact(2, n) - 1, radix).multiply(new Apint(2 * n, radix)));
+            Apfloat z = abs(bernoullis2.next()).multiply(f).subtract(one);
+            if (z.scale() < -precision)
+            {
+                break;
+            }
+            Apfloat a = Apfloat.ZERO;
+            for (long k = 1; k < 2 * n; k++)
+            {
+                a = a.add(((k & 1) == 1 ? one : one.negate()).divide(new Apfloat(k, workingPrecision, radix)));
+            }
+            s = s.add(z.divide(new Apfloat(n, workingPrecision, radix)).multiply(a));
+        }
+        return exp(s.divide(log(new Apfloat(2, workingPrecision, radix)))).precision(precision);
     }
 
     /**

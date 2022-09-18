@@ -192,6 +192,17 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number catalan(Number x)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Catalan can only be used with a valid integer argument");
+            }
+            long n = x.longValue();
+            return ApfloatMath.catalan(n);
+        }
+
+        @Override
         public Number cbrt(Number x)
         {
             return root(x, 3);
@@ -273,6 +284,17 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number glaisher(Number x)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Glaisher can only be used with a valid integer argument");
+            }
+            long n = x.longValue();
+            return ApfloatMath.glaisher(n);
+        }
+
+        @Override
         public Number gamma(Number x)
         {
             return ApcomplexMath.gamma((Apcomplex) x);
@@ -288,6 +310,17 @@ public class ApfloatCalculatorImpl
         public Number gamma(Number x, Number y, Number z)
         {
             return ApcomplexMath.gamma((Apcomplex) x, (Apcomplex) y, (Apcomplex) z);
+        }
+
+        @Override
+        public Number khinchin(Number x)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Khinchin can only be used with a valid integer argument");
+            }
+            long n = x.longValue();
+            return ApfloatMath.khinchin(n);
         }
 
         @Override

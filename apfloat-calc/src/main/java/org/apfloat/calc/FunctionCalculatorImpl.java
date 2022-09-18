@@ -156,6 +156,7 @@ public abstract class FunctionCalculatorImpl
         public Number atanh(Number x);
         public Number bernoulli(Number x);
         public Number binomial(Number x, Number y);
+        public Number catalan(Number x);
         public Number cbrt(Number x);
         public Number ceil(Number x);
         public Number cos(Number x);
@@ -170,6 +171,8 @@ public abstract class FunctionCalculatorImpl
         public Number gamma(Number x);
         public Number gamma(Number x, Number y);
         public Number gamma(Number x, Number y, Number z);
+        public Number glaisher(Number x);
+        public Number khinchin(Number x);
         public Number log(Number x);
         public Number log(Number x, Number y);
         public Number logGamma(Number x);
@@ -236,6 +239,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("atanh", fixedFunction("atanh", 1, (functions, arguments) -> functions.atanh(arguments.get(0))));
         setFunction("bernoulli", fixedFunction("bernoulli", 1, (functions, arguments) -> functions.bernoulli(arguments.get(0))));
         setFunction("binomial", fixedFunction("binomial", 2, (functions, arguments) -> functions.binomial(arguments.get(0), arguments.get(1))));
+        setFunction("catalan", fixedFunction("catalan", 1, (functions, arguments) -> functions.catalan(arguments.get(0))));
         setFunction("cbrt", fixedFunction("cbrt", 1, (functions, arguments) -> functions.cbrt(arguments.get(0))));
         setFunction("ceil", fixedFunction("ceil", 1, (functions, arguments) -> functions.ceil(arguments.get(0))));
         setFunction("cos", fixedFunction("cos", 1, (functions, arguments) -> functions.cos(arguments.get(0))));
@@ -248,6 +252,8 @@ public abstract class FunctionCalculatorImpl
         setFunction("floor", fixedFunction("floor", 1, (functions, arguments) -> functions.floor(arguments.get(0))));
         setFunction("frac", fixedFunction("frac", 1, (functions, arguments) -> functions.frac(arguments.get(0))));
         setFunction("gamma", fixedFunction("gamma", 1, 3, (functions, arguments) -> (arguments.size() == 1 ? functions.gamma(arguments.get(0)) : arguments.size() == 2 ? functions.gamma(arguments.get(0), arguments.get(1)): functions.gamma(arguments.get(0), arguments.get(1), arguments.get(2)))));
+        setFunction("glaisher", fixedFunction("glaisher", 1, (functions, arguments) -> functions.glaisher(arguments.get(0))));
+        setFunction("khinchin", fixedFunction("khinchin", 1, (functions, arguments) -> functions.khinchin(arguments.get(0))));
         setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
         setFunction("logGamma", fixedFunction("logGamma", 1, (functions, arguments) -> functions.logGamma(arguments.get(0))));
         setFunction("max", fixedFunction("max", 2, (functions, arguments) -> functions.max(arguments.get(0), arguments.get(1))));

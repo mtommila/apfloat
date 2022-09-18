@@ -93,6 +93,9 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testSum"));
         suite.addTest(new ApfloatMathTest("testE"));
         suite.addTest(new ApfloatMathTest("testEuler"));
+        suite.addTest(new ApfloatMathTest("testCatalan"));
+        suite.addTest(new ApfloatMathTest("testGlaisher"));
+        suite.addTest(new ApfloatMathTest("testKhinchin"));
         suite.addTest(new ApfloatMathTest("testGamma"));
         suite.addTest(new ApfloatMathTest("testGammaIncomplete"));
         suite.addTest(new ApfloatMathTest("testGammaIncompleteGeneralized"));
@@ -1822,6 +1825,174 @@ public class ApfloatMathTest
         try
         {
             ApfloatMath.euler(50, 1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
+    }
+
+    public static void testCatalan()
+    {
+        Apfloat a = ApfloatMath.catalan(10);
+        assertEquals("10 radix", 10, a.radix());
+        assertEquals("10 precision", 10, a.precision());
+        assertEquals("10 value", new Apfloat("0.9159655942"), a, new Apfloat("5e-10"));
+        a = ApfloatMath.catalan(50);
+        assertEquals("50 radix", 10, a.radix());
+        assertEquals("50 precision", 50, a.precision());
+        assertEquals("50 value", new Apfloat("0.91596559417721901505460351493238411077414937428167"), a, new Apfloat("5e-50"));
+        a = ApfloatMath.catalan(20, 16);
+        assertEquals("20 radix", 16, a.radix());
+        assertEquals("20 precision", 20, a.precision());
+        assertEquals("20 value", new Apfloat("0.ea7cb89f409ae8452158", 20, 16), a, new Apfloat("0.00000000000000000008", 1, 16));
+
+        try
+        {
+            ApfloatMath.catalan(0);
+            fail("Precision 0 accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.catalan(-1);
+            fail("Precision -1 accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.catalan(Apfloat.INFINITE);
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.catalan(50, 1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
+    }
+
+    public static void testGlaisher()
+    {
+        Apfloat a = ApfloatMath.glaisher(10);
+        assertEquals("10 radix", 10, a.radix());
+        assertEquals("10 precision", 10, a.precision());
+        assertEquals("10 value", new Apfloat("1.282427129"), a, new Apfloat("5e-9"));
+        a = ApfloatMath.glaisher(50);
+        assertEquals("50 radix", 10, a.radix());
+        assertEquals("50 precision", 50, a.precision());
+        assertEquals("50 value", new Apfloat("1.2824271291006226368753425688697917277676889273250"), a, new Apfloat("5e-49"));
+        a = ApfloatMath.glaisher(20, 16);
+        assertEquals("20 radix", 16, a.radix());
+        assertEquals("20 precision", 20, a.precision());
+        assertEquals("20 value", new Apfloat("1.484d24f2fd8731313ed", 20, 16), a, new Apfloat("0.0000000000000000008", 1, 16));
+
+        try
+        {
+            ApfloatMath.glaisher(0);
+            fail("Precision 0 accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.glaisher(-1);
+            fail("Precision -1 accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.glaisher(Apfloat.INFINITE);
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.glaisher(50, 1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
+    }
+
+    public static void testKhinchin()
+    {
+        Apfloat a = ApfloatMath.khinchin(10);
+        assertEquals("10 radix", 10, a.radix());
+        assertEquals("10 precision", 10, a.precision());
+        assertEquals("10 value", new Apfloat("2.685452001"), a, new Apfloat("5e-9"));
+        a = ApfloatMath.khinchin(50);
+        assertEquals("50 radix", 10, a.radix());
+        assertEquals("50 precision", 50, a.precision());
+        assertEquals("50 value", new Apfloat("2.6854520010653064453097148354817956938203822939945"), a, new Apfloat("5e-49"));
+        a = ApfloatMath.khinchin(20, 16);
+        assertEquals("20 radix", 16, a.radix());
+        assertEquals("20 precision", 20, a.precision());
+        assertEquals("20 value", new Apfloat("2.af79c8478da1aef2fdf", 20, 16), a, new Apfloat("0.0000000000000000008", 1, 16));
+
+        try
+        {
+            ApfloatMath.khinchin(0);
+            fail("Precision 0 accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.khinchin(-1);
+            fail("Precision -1 accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.khinchin(Apfloat.INFINITE);
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            ApfloatMath.khinchin(50, 1);
             fail("Radix 1 accepted");
         }
         catch (NumberFormatException nfe)

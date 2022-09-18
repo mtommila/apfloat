@@ -203,6 +203,7 @@ public class CalculatorTest
         assertCalculation("0", "binomial(1,-1)");
         assertCalculation("0", "binomial(3.5,4.5)");
         assertCalculation("-3.109-1.604i", "binomial(3.000+4.000i,5.000+6.000i)");
+        assertCalculation("9.1596559e-1", "catalan(8)");
         assertCalculation("2", "cbrt(8)");
         assertCalculation("2/3", "cbrt(8/27)");
         assertCalculation("7.07e-1+7.07e-1i", "cbrt(-0.707+0.707i)");
@@ -220,6 +221,7 @@ public class CalculatorTest
         assertCalculation("5.8861", "gamma(4.0000, 1.0000)");
         assertCalculation("5.0928", "gamma(4.0000, 0, 6.0000)");
         assertCalculation("4.74294943677064514689542753377e1-3.27488916473624576880974867017e1i", "gamma(100.000000000000000000000000000+374.000000000000000000000000000i)");
+        assertCalculation("1.282427", "glaisher(7)");
         assertCalculation("2", "fmod(5, 3)");
         assertCalculation("5", "hypot(3, 4)");
         assertCalculation("5e-1", "hypot(0.3, 0.4)");
@@ -227,6 +229,7 @@ public class CalculatorTest
         assertCalculation("5e-1", "inverseRoot(4.0, 2)");
         assertCalculation("7.07e-1-7.07e-1i", "inverseRoot(-0.707+0.707i, 3)");
         assertCalculation("-5e-1", "inverseRoot(4.0, 2, 1)");
+        assertCalculation("2.685452", "khinchin(7)");
         assertCalculation("-4.371-3.651i", "logGamma(-1.234+2.345i)");
         assertCalculation("1.23", "n(1.23456, 3)");
         assertCalculation("2", "root(8, 3)");
@@ -320,6 +323,12 @@ public class CalculatorTest
         assertCalculationFailure("binomial()");
         assertCalculationFailure("binomial(2)");
         assertCalculationFailure("binomial(2,2,2)");
+        assertCalculationFailure("catalan()");
+        assertCalculationFailure("catalan(5, 5)");
+        assertCalculationFailure("catalan(0)");
+        assertCalculationFailure("catalan(-1)");
+        assertCalculationFailure("catalan(0.5)");
+        assertCalculationFailure("catalan(i)");
         assertCalculationFailure("cbrt(2)");
         assertCalculationFailure("cbrt()");
         assertCalculationFailure("cbrt(8, 2)");
@@ -346,6 +355,12 @@ public class CalculatorTest
         assertCalculationFailure("gamma(0)");
         assertCalculationFailure("gamma()");
         assertCalculationFailure("gamma(2, 2, 2, 2)");
+        assertCalculationFailure("glaisher()");
+        assertCalculationFailure("glaisher(5, 5)");
+        assertCalculationFailure("glaisher(0)");
+        assertCalculationFailure("glaisher(-1)");
+        assertCalculationFailure("glaisher(0.5)");
+        assertCalculationFailure("glaisher(i)");
         assertCalculationFailure("fmod(2, i)");
         assertCalculationFailure("fmod(2)");
         assertCalculationFailure("fmod(2, 2, 2)");
@@ -360,6 +375,12 @@ public class CalculatorTest
         assertCalculationFailure("inverseRoot(2.0, i, 1)");
         assertCalculationFailure("inverseRoot(2.0, i, i)");
         assertCalculationFailure("inverseRoot(2.0, 2, 2, 2)");
+        assertCalculationFailure("khinchin()");
+        assertCalculationFailure("khinchin(5, 5)");
+        assertCalculationFailure("khinchin(0)");
+        assertCalculationFailure("khinchin(-1)");
+        assertCalculationFailure("khinchin(0.5)");
+        assertCalculationFailure("khinchin(i)");
         assertCalculationFailure("logGamma(0)");
         assertCalculationFailure("logGamma(-1)");
         assertCalculationFailure("logGamma()");
