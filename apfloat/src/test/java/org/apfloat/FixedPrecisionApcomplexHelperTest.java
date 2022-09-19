@@ -465,6 +465,11 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.sinh(z);
         assertEquals("value", new Apcomplex("(-6.548120040911001647766811018835324740820888396888583499736134313039666841835229556393917343956455199,-7.619231720321410208487135736804311796557265472675575619426852074665542955161180340917983240028178743)"), result, new Apfloat("1e-98"));
         assertEquals("precision", 100, result.precision());
+
+        z = new Apcomplex("(3e-1000000000000,4e-1000000000000)");
+        result = helper.sinh(z);
+        assertEquals("small value", new Apcomplex("(3e-1000000000000,4e-1000000000000)").precision(100), result, new Apfloat("1e-1000000000099"));
+        assertEquals("small precision", 100, result.precision());
     }
 
     public static void testTanh()
@@ -479,6 +484,11 @@ public class FixedPrecisionApcomplexHelperTest
         result = helper.tanh(z);
         assertEquals("big value", new Apcomplex(new Apfloat(1)), result, new Apfloat("1e-99"));
         assertEquals("big precision", 100, result.precision());
+
+        z = new Apcomplex("(3e-1000000000000,4e-1000000000000)");
+        result = helper.tanh(z);
+        assertEquals("small value", new Apcomplex("(3e-1000000000000,4e-1000000000000)").precision(100), result, new Apfloat("1e-1000000000099"));
+        assertEquals("small precision", 100, result.precision());
     }
 
     public static void testAcos()
@@ -533,6 +543,11 @@ public class FixedPrecisionApcomplexHelperTest
         assertEquals("value", new Apcomplex("(3.853738037919377321617528940463730667068274946989034956763346803317838585207899050385464301460315524,-27.01681325800393448809754375499215226336386568976518470594798897425063415478434990691671779691472675)"), result, new Apfloat("1e-97"));
         assertEquals("precision", 100, result.precision());
 
+        z = new Apcomplex("(3e-1000000000000,4e-1000000000000)");
+        result = helper.sin(z);
+        assertEquals("small value", new Apcomplex("(3e-1000000000000,4e-1000000000000)").precision(100), result, new Apfloat("1e-1000000000099"));
+        assertEquals("small precision", 100, result.precision());
+
         // Loss of precision
         helper.sin(new Apcomplex(new Apfloat("1e1000", 3), new Apfloat("1.5")));
     }
@@ -544,6 +559,11 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.tan(z);
         assertEquals("value", new Apcomplex("(-0.0001873462046294784262242556377282181042124242427296606263580802232052224832174311687842725259181727521,0.9993559873814731413916496303201330615648885028135384928319757364498179348866065958722698773248799920)"), result, new Apfloat("1e-98"));
         assertEquals("precision", 100, result.precision());
+
+        z = new Apcomplex("(3e-1000000000000,4e-1000000000000)");
+        result = helper.tan(z);
+        assertEquals("small value", new Apcomplex("(3e-1000000000000,4e-1000000000000)").precision(100), result, new Apfloat("1e-1000000000099"));
+        assertEquals("small precision", 100, result.precision());
 
         // Loss of precision
         helper.tan(new Apcomplex(new Apfloat("1e1000", 3), new Apfloat("1.5")));

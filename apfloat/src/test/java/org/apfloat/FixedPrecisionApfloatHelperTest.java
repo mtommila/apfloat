@@ -724,6 +724,11 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.sinh(x);
         assertEquals("value", new Apfloat("3.626860407847018767668213982801261704886342012321135721309484474934250210988785036723607181294232373"), result, new Apfloat("1e-99"));
         assertEquals("precision", 100, result.precision());
+
+        x = new Apfloat("2e-1000000000000");
+        result = helper.sinh(x);
+        assertEquals("small value", new Apfloat("2e-1000000000000", 100), result, new Apfloat("1e-1000000000099"));
+        assertEquals("small precision", 100, result.precision());
     }
 
     public static void testTanh()
@@ -738,6 +743,11 @@ public class FixedPrecisionApfloatHelperTest
         result = helper.tanh(x);
         assertEquals("big value", new Apfloat(1), result, new Apfloat("1e-99"));
         assertEquals("big precision", 100, result.precision());
+
+        x = new Apfloat("2e-1000000000000");
+        result = helper.tanh(x);
+        assertEquals("small value", new Apfloat("2e-1000000000000", 100), result, new Apfloat("1e-1000000000099"));
+        assertEquals("small precision", 100, result.precision());
     }
 
     public static void testAcos()
@@ -843,6 +853,11 @@ public class FixedPrecisionApfloatHelperTest
         result = helper.sin(new Apfloat(0));
         assertEquals("value 0", new Apfloat(0), result);
 
+        x = new Apfloat("2e-1000000000000");
+        result = helper.sin(x);
+        assertEquals("small value", new Apfloat("2e-1000000000000", 100), result, new Apfloat("1e-1000000000099"));
+        assertEquals("small precision", 100, result.precision());
+
         // Loss of precision
         helper.sin(new Apfloat("1e1000"));
     }
@@ -857,6 +872,11 @@ public class FixedPrecisionApfloatHelperTest
 
         result = helper.tan(new Apfloat(0));
         assertEquals("value 0", new Apfloat(0), result);
+
+        x = new Apfloat("2e-1000000000000");
+        result = helper.tan(x);
+        assertEquals("small value", new Apfloat("2e-1000000000000", 100), result, new Apfloat("1e-1000000000099"));
+        assertEquals("small precision", 100, result.precision());
 
         // Loss of precision
         helper.tan(new Apfloat("1e1000"));

@@ -470,6 +470,11 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex sin(Apcomplex z)
         throws ApfloatRuntimeException
     {
+        Apcomplex result = checkSmallLinear(z);
+        if (result != null)
+        {
+            return result;
+        }
         return valueOf(ApcomplexMath.sin(setTrigExpPrecision(z)));
     }
 
@@ -484,6 +489,11 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex sinh(Apcomplex z)
         throws ApfloatRuntimeException
     {
+        Apcomplex result = checkSmallLinear(z);
+        if (result != null)
+        {
+            return result;
+        }
         return valueOf(ApcomplexMath.sinh(setExpTrigPrecision(z)));
     }
 
@@ -514,6 +524,11 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex tan(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        Apcomplex result = checkSmallLinear(z);
+        if (result != null)
+        {
+            return result;
+        }
         return valueOf(ApcomplexMath.tan(setTrigExpPrecision(z)));
     }
 
@@ -530,6 +545,11 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex tanh(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        Apcomplex result = checkSmallLinear(z);
+        if (result != null)
+        {
+            return result;
+        }
         return valueOf(ApcomplexMath.tanhFixedPrecision(setExpTrigPrecision(z)));
     }
 
@@ -1242,6 +1262,15 @@ public class FixedPrecisionApcomplexHelper
     private Apcomplex setZetaPrecision(Apcomplex z)
     {
         return new Apcomplex(setZetaPrecision(z.real()), setTrigonometricPrecision(z.imag()));
+    }
+
+    private Apcomplex checkSmallLinear(Apcomplex z)
+    {
+        if (z.scale() <= -precision())
+        {
+            return setPrecision(z);
+        }
+        return null;
     }
 
     private long precision;

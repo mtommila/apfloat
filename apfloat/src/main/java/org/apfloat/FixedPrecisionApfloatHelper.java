@@ -408,6 +408,11 @@ public class FixedPrecisionApfloatHelper
     public Apfloat sin(Apfloat x)
         throws ApfloatRuntimeException
     {
+        Apfloat result = checkSmallLinear(x);
+        if (result != null)
+        {
+            return result;
+        }
         return valueOf(ApfloatMath.sin(setTrigonometricPrecision(x)));
     }
 
@@ -422,6 +427,11 @@ public class FixedPrecisionApfloatHelper
     public Apfloat sinh(Apfloat x)
         throws ApfloatRuntimeException
     {
+        Apfloat result = checkSmallLinear(x);
+        if (result != null)
+        {
+            return result;
+        }
         return valueOf(ApfloatMath.sinh(setExponentialPrecision(x)));
     }
 
@@ -454,6 +464,11 @@ public class FixedPrecisionApfloatHelper
     public Apfloat tan(Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        Apfloat result = checkSmallLinear(x);
+        if (result != null)
+        {
+            return result;
+        }
         return valueOf(ApfloatMath.tan(setTrigonometricPrecision(x)));
     }
 
@@ -468,6 +483,11 @@ public class FixedPrecisionApfloatHelper
     public Apfloat tanh(Apfloat x)
         throws ApfloatRuntimeException
     {
+        Apfloat result = checkSmallLinear(x);
+        if (result != null)
+        {
+            return result;
+        }
         return valueOf(ApfloatMath.tanhFixedPrecision(setExponentialPrecision(x)));
     }
 
@@ -1212,5 +1232,14 @@ public class FixedPrecisionApfloatHelper
             tmp[i] = setPrecision(x[i]);
         }
         return tmp;
+    }
+
+    private Apfloat checkSmallLinear(Apfloat x)
+    {
+        if (x.scale() <= -precision())
+        {
+            return setPrecision(x);
+        }
+        return null;
     }
 }
