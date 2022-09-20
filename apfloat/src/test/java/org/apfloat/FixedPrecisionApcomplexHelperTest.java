@@ -485,6 +485,11 @@ public class FixedPrecisionApcomplexHelperTest
         assertEquals("big value", new Apcomplex(new Apfloat(1)), result, new Apfloat("1e-99"));
         assertEquals("big precision", 100, result.precision());
 
+        z = new Apcomplex(new Apfloat(-5000000000000L), new Apfloat("3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068"));
+        result = helper.tanh(z);
+        assertEquals("big negative value", new Apcomplex(new Apfloat(-1)), result, new Apfloat("1e-99"));
+        assertEquals("big negative precision", 100, result.precision());
+
         z = new Apcomplex("(3e-1000000000000,4e-1000000000000)");
         result = helper.tanh(z);
         assertEquals("small value", new Apcomplex("(3e-1000000000000,4e-1000000000000)").precision(100), result, new Apfloat("1e-1000000000099"));
@@ -559,6 +564,16 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.tan(z);
         assertEquals("value", new Apcomplex("(-0.0001873462046294784262242556377282181042124242427296606263580802232052224832174311687842725259181727521,0.9993559873814731413916496303201330615648885028135384928319757364498179348866065958722698773248799920)"), result, new Apfloat("1e-98"));
         assertEquals("precision", 100, result.precision());
+
+        z = new Apcomplex(Apfloat.ZERO, new Apfloat(5000000000000L));
+        result = helper.tan(z);
+        assertEquals("big value", new Apcomplex(Apfloat.ZERO, new Apfloat(1)), result, new Apfloat("1e-99"));
+        assertEquals("big precision", 100, result.precision());
+
+        z = new Apcomplex(Apfloat.ZERO, new Apfloat(-5000000000000L));
+        result = helper.tan(z);
+        assertEquals("big negative value", new Apcomplex(Apfloat.ZERO, new Apfloat(-1)), result, new Apfloat("1e-99"));
+        assertEquals("big negative precision", 100, result.precision());
 
         z = new Apcomplex("(3e-1000000000000,4e-1000000000000)");
         result = helper.tan(z);

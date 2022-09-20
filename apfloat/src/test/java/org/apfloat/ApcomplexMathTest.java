@@ -1305,6 +1305,10 @@ public class ApcomplexMathTest
         assertEquals("(5000000,pi), 100 precision", 4343037, a.precision(), 1);
         assertEquals("(5000000,pi), 100 value", new Apfloat(1).subtract(new Apfloat("3.03387356179746871517892756452203249280217116298171287391802587502345779082540217305405121824e-4342945")), a, new Apfloat("5e-4343037"));
 
+        a = ApcomplexMath.tanh(new Apcomplex(new Apfloat(-5000000, 100), new Apfloat("3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068")));
+        assertEquals("(-5000000,pi), 100 precision", 4343037, a.precision(), 1);
+        assertEquals("(-5000000,pi), 100 value", new Apfloat(-1).add(new Apfloat("3.03387356179746871517892756452203249280217116298171287391802587502345779082540217305405121824e-4342945")), a, new Apfloat("5e-4343037"));
+
         a = ApcomplexMath.tanh(new Apcomplex("0"));
         assertEquals("0, 100 value", new Apfloat(0), a);
     }
@@ -1523,24 +1527,32 @@ public class ApcomplexMathTest
     public static void testTan()
     {
         Apcomplex a = ApcomplexMath.tan(new Apcomplex(new Apfloat(3, 100), new Apfloat(4, 100)));
-        assertEquals("(3,4), 100 precision", 100, a.precision(), 1);
+        assertEquals("(3,4), 100 precision", 101, a.precision(), 1);
         assertEquals("(3,4), 100 value", new Apcomplex("(-0.0001873462046294784262242556377282181042124242427296606263580802232052224832174311687842725259181727521,0.9993559873814731413916496303201330615648885028135384928319757364498179348866065958722698773248799920)"), a, new Apfloat("5e-98"));
 
         a = ApcomplexMath.tan(new Apcomplex(new Apfloat(3, 100), new Apfloat(-4, 100)));
-        assertEquals("(3,-4), 100 precision", 100, a.precision(), 1);
+        assertEquals("(3,-4), 100 precision", 101, a.precision(), 1);
         assertEquals("(3,-4), 100 value", new Apcomplex("(-0.0001873462046294784262242556377282181042124242427296606263580802232052224832174311687842725259181727521,-0.9993559873814731413916496303201330615648885028135384928319757364498179348866065958722698773248799920)"), a, new Apfloat("5e-98"));
 
         a = ApcomplexMath.tan(new Apcomplex(new Apfloat(-3, 100), new Apfloat(4, 100)));
-        assertEquals("(-3,4), 100 precision", 100, a.precision(), 1);
+        assertEquals("(-3,4), 100 precision", 101, a.precision(), 1);
         assertEquals("(-3,4), 100 value", new Apcomplex("(0.0001873462046294784262242556377282181042124242427296606263580802232052224832174311687842725259181727521,0.9993559873814731413916496303201330615648885028135384928319757364498179348866065958722698773248799920)"), a, new Apfloat("5e-98"));
 
         a = ApcomplexMath.tan(new Apcomplex(new Apfloat(-3, 100), new Apfloat(-4, 100)));
-        assertEquals("(-3,-4), 100 precision", 100, a.precision(), 1);
+        assertEquals("(-3,-4), 100 precision", 101, a.precision(), 1);
         assertEquals("(-3,-4), 100 value", new Apcomplex("(0.0001873462046294784262242556377282181042124242427296606263580802232052224832174311687842725259181727521,-0.9993559873814731413916496303201330615648885028135384928319757364498179348866065958722698773248799920)"), a, new Apfloat("5e-98"));
 
         a = ApcomplexMath.tan(new Apfloat("3.1415926535897932384626433832795", 24).divide(new Apint(180)));
         assertEquals("1 degree value", new Apfloat("0.0174550649282175857651289"), a, new Apfloat("5e-25"));
         assertEquals("1 degree imag value", new Apfloat(0), a.imag());
+
+        a = ApcomplexMath.tan(new Apcomplex(new Apfloat(0), new Apfloat(5000000, 100)));
+        assertEquals("(0,5000000), 100 precision", 4343037, a.precision(), 1);
+        assertEquals("(0,5000000), 100 value", new Apcomplex(Apfloat.ZERO, new Apfloat(1).subtract(new Apfloat("3.03387356179746871517892756452203249280217116298171287391802587502345779082540217305405121824e-4342945"))), a, new Apfloat("5e-4343037"));
+
+        a = ApcomplexMath.tan(new Apcomplex(new Apfloat(0), new Apfloat(-5000000, 100)));
+        assertEquals("(0,-5000000), 100 precision", 4343037, a.precision(), 1);
+        assertEquals("(0,-5000000), 100 value", new Apcomplex(Apfloat.ZERO, new Apfloat(-1).add(new Apfloat("3.03387356179746871517892756452203249280217116298171287391802587502345779082540217305405121824e-4342945"))), a, new Apfloat("5e-4343037"));
 
         a = ApcomplexMath.tan(new Apcomplex(new Apfloat(0)));
         assertEquals("0, 100 value", new Apfloat(0), a);

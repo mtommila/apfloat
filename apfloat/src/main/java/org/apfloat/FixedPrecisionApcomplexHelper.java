@@ -529,7 +529,7 @@ public class FixedPrecisionApcomplexHelper
         {
             return result;
         }
-        return valueOf(ApcomplexMath.tan(setTrigExpPrecision(z)));
+        return valueOf(ApcomplexMath.tanFixedPrecision(setTrigExpPrecision(z)));
     }
 
     /**
