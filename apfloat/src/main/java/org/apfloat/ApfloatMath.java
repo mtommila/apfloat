@@ -2430,7 +2430,7 @@ public class ApfloatMath
      * Gamma function.<p>
      *
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
-     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the gamma function.
      *
@@ -2453,7 +2453,7 @@ public class ApfloatMath
      * Incomplete gamma function.<p>
      *
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
-     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the gamma function.
      *
@@ -2486,7 +2486,7 @@ public class ApfloatMath
      * The lower gamma function can be calculated with: <code>&gamma;(a, x) = &Gamma;(a, 0, x)</code><p>
      *
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
-     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the gamma function.
      *
@@ -2516,7 +2516,7 @@ public class ApfloatMath
      * Logarithm of the gamma function.<p>
      *
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
-     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the gamma function.
      *
@@ -2543,7 +2543,7 @@ public class ApfloatMath
      * Digamma function.<p>
      *
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
-     * The asymptotic complexity is something like O(n<sup>2</sup>log&nbsp;n) and it is
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the digamma function.
      *
@@ -2644,7 +2644,7 @@ public class ApfloatMath
     public static Apfloat zeta(Apfloat s, Apfloat a)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (!s.isInteger() && a.signum() < 0 && !a.isInteger())
+        if (!s.isInteger() && a.signum() < 0)
         {
             throw new ArithmeticException("Result would be complex");
         }

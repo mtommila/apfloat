@@ -48,11 +48,30 @@ class HurwitzZetaHelper
         {
             throw new ArithmeticException("Zeta of first argument one");
         }
-        if (a.isInteger() && a.real().signum() <= 0)
+        if (s.real().signum() == 0 && s.imag().signum() == 0 && a.real().signum() == 0 && a.imag().signum() == 0)
         {
-            throw new ArithmeticException("Zeta of second argument nonpositive integer");
+            Apint two = new Apint(2, radix);
+            return new Aprational(one, two);
         }
         long precision = Math.min(s.precision(),  a.precision());
+        if (a.isInteger() && a.real().signum() <= 0)
+        {
+            if (s.real().signum() < 0 || s.real().signum() == 0 && s.imag().signum() == 0)
+            {
+                // Use recurrence formula: zeta(s, a) = a^-s + zeta(s, a + 1)
+                Apcomplex t = Apcomplex.ZERO;
+                long i = a.longValueExact();
+                while (i++ <= 0)
+                {
+                    t = t.add(ApcomplexMath.pow(a, s.negate()));
+                    a = a.add(one);
+                }
+                a = a.precision(precision);
+                return t.add(zeta(s, a).precision(precision));  // Precision is not correct as S, I and T cancel out each other
+            }
+
+            throw new ArithmeticException("Zeta of second argument nonpositive integer");
+        }
         if (precision == Apfloat.INFINITE)
         {
             throw new InfiniteExpansionException("Cannot calculate zeta function to infinite precision");
@@ -81,7 +100,7 @@ class HurwitzZetaHelper
         Apint one = Apint.ONES[a.radix()];
         s = ApfloatHelper.extendPrecision(s, extraPrecision);
         a = ApfloatHelper.extendPrecision(a, extraPrecision);
-        return ApcomplexMath.pow(a, one.subtract(s)).divide(s.subtract(one)).scale();
+        return ApcomplexMath.pow(a, one.subtract(s)).divide(s.subtract(one)).scale();   // Is not actually valid if re(s) <= 1 or re(a) <= 0
     }
 
     private static Apint binarySearch(Apcomplex s, Apcomplex a, long precision, long targetScale)

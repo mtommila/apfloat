@@ -2530,6 +2530,22 @@ public class ApfloatMathTest
         assertEquals("-3,4.2 precision", 6, a.precision());
         assertEquals("-3,4.2 value", new Apfloat("0.0250343"), a, new Apfloat("5e-7"));
 
+        a = ApfloatMath.zeta(new Apfloat("-3.00000"), new Apfloat("-3.00000"));
+        assertEquals("-3,-3 precision", 6, a.precision());
+        assertEquals("-3,-3 value", new Apfloat("-35.9917"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.zeta(new Apfloat("-3.00000"), new Apfloat("-1.00000"));
+        assertEquals("-3,-1 precision", 5, a.precision());
+        assertEquals("-3,-1 value", new Apfloat("-0.991667"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.zeta(new Apfloat("-3.00000"), new Apfloat("0"));
+        assertEquals("-3,0 precision", 6, a.precision());
+        assertEquals("-3,0 value", new Apfloat("0.00833333"), a, new Apfloat("5e-8"));
+
+        a = ApfloatMath.zeta(new Apfloat("0"), new Apfloat("0"));
+        assertEquals("0,0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0,0 value", new Apfloat("0.5"), a);
+
         try
         {
             ApfloatMath.zeta(new Apint(1, 11), new Apint(2, 11));
@@ -2551,6 +2567,15 @@ public class ApfloatMathTest
         try
         {
             ApfloatMath.zeta(new Apfloat("-3.2"), new Apfloat("-4.0"));
+            fail("Zeta of s noninteger and a nonpositive");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.zeta(new Apfloat("-3.2"), new Apfloat("-4.2"));
             fail("Zeta of s noninteger and a nonpositive");
         }
         catch (ArithmeticException ae)

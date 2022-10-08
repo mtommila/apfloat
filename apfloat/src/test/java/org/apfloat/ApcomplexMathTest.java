@@ -2717,6 +2717,10 @@ public class ApcomplexMathTest
         assertEquals("2+3i,4-500i precision", 99, a.precision());
         assertEquals("2+3i,4-500i value", new Apcomplex("(5.0338645992382203943127065468352767974294594906081231220922940782795777163156383519458119414034535e-6,2.8849419459666930023386959675393149889556619942479574528174439105380251522298975471376059729833694e-6)"), a, new Apfloat("5e-101"));
 
+        a = ApcomplexMath.zeta(new Apcomplex("(-1.00000,2.00000)"), new Apcomplex("-3.00000"));
+        assertEquals("-1+2i,-3 precision", 6, a.precision());
+        assertEquals("-1+2i,-3 value", new Apcomplex("(210.002,2354.18)"), a, new Apfloat("5e-2"));
+
         a = ApcomplexMath.zeta(new Apcomplex("(2,3)"), new Apcomplex("(4,5)"));
         assertEquals("2+3i,4+5i precision", 1, a.precision());
         assertEquals("2+3i,4+5i value", new Apcomplex("(0.2,-0.9)"), a, new Apfloat("5e-1"));
@@ -2761,6 +2765,24 @@ public class ApcomplexMathTest
         {
             ApcomplexMath.zeta(new Apcomplex("2"), new Apfloat("-1"));
             fail("Zeta of a -1");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.zeta(new Apcomplex("(0,1.00000)"), new Apfloat("0"));
+            fail("Zeta of i,0");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.zeta(new Apcomplex("(0,1)"), new Apfloat("-1"));
+            fail("Zeta of i,-1");
         }
         catch (ArithmeticException ae)
         {
