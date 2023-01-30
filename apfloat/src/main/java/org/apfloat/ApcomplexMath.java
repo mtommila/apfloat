@@ -2299,6 +2299,80 @@ public class ApcomplexMath
     }
 
     /**
+     * Confluent hypergeometric function <i><sub>0</sub>F<sub>1</sub></i>.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param z The second argument.
+     *
+     * @return <i><sub>0</sub>F<sub>1</sub>(; a; z)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apcomplex hypergeometric0F1(Apcomplex a, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return new HypergeometricHelper(new Apcomplex[] { a }, new Apcomplex[0], z).hypergeometricPFQ();
+    }
+
+    /**
+     * Kummer confluent hypergeometric function <i><sub>1</sub>F<sub>1</sub></i>.
+     * Also known as the confluent hypergeometric function of the first kind.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param z The third argument.
+     *
+     * @return <i><sub>1</sub>F<sub>1</sub>(a; b; z)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apcomplex hypergeometric1F1(Apcomplex a, Apcomplex b, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return new HypergeometricHelper(new Apcomplex[] { a }, new Apcomplex[] { b }, z).hypergeometricPFQ();
+    }
+
+    /**
+     * Hypergeometric function <i><sub>2</sub>F<sub>1</sub></i>.
+     * Also known as the Gaussian or ordinary hypergeometric function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param c The third argument.
+     * @param z The fourth argument.
+     *
+     * @return <i><sub>2</sub>F<sub>1</sub>(a, b; c; z)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apcomplex hypergeometric2F1(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return new HypergeometricHelper(new Apcomplex[] { a, b }, new Apcomplex[] { c }, z).hypergeometricPFQ();
+    }
+
+    /**
      * Returns the unit in the last place of the argument, considering the
      * scale and precision. This is maximum of the ulps of the real and
      * imaginary part of the argument.

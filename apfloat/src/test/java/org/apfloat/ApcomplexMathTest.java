@@ -2817,6 +2817,11 @@ public class ApcomplexMathTest
         }
     }
 
+    public static void testHypergeometric2F1()
+    {
+        //Hypergeometric2F1[-1.1, 4.4, 3.4, 1] = 1.08283e-15
+    }
+
     public static void testUlp()
     {
         assertEquals("ulp 0", new Apcomplex("0"), ApcomplexMath.ulp(new Apcomplex("0")));
