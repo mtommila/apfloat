@@ -73,6 +73,8 @@ Generally, the result of various mathematical operations is accurate to
 the second last digit in the resulting number. This means roughly that the
 last significant digit of the result can be inaccurate. For example, the
 number 12345, with precision 5, should be considered 12345&nbsp;&#177;&nbsp;10.
+This only applies to elementary mathematical operations. More complicated
+functions may have slightly larger errors due to error accumulation.
 This should generally not be a problem, as you should typically be using
 apfloats for calculations with a precision of thousands or millions of
 digits.<p>

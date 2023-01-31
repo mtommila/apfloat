@@ -65,16 +65,18 @@ class HypergeometricHelper
 
         public void ensurePrecision(long precision)
         {
-            this.precision = precision;
             this.a = ApfloatHelper.ensurePrecision(this.a, precision);
             this.b = ApfloatHelper.ensurePrecision(this.b, precision);
             this.c = ApfloatHelper.ensurePrecision(this.c, precision);
             this.z = ApfloatHelper.ensurePrecision(this.z, precision);
         }
 
-        public Apcomplex evaluate(Apcomplex[] a, Apcomplex[] b, Apcomplex z, Apint minN)
+        public Apcomplex evaluate(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
         {
-            return HypergeometricHelper.this.evaluate(a, b, z, minN);
+            Apint one = Apint.ONES[radix];
+            Apint minN = ApintMath.max(Apint.ONES[radix], c.real().truncate().negate()).add(one);
+
+            return HypergeometricHelper.this.evaluate(new Apcomplex[] { a, b }, new Apcomplex[] { c }, z, minN);
         }
 
         public long precision;
@@ -113,7 +115,7 @@ class HypergeometricHelper
                           b = helper.b,
                           c = helper.c,
                           z = helper.z;
-                return evaluate(helper, a, b, c, z);
+                return helper.evaluate(a, b, c, z);
             }
         },
         T1 {
@@ -149,9 +151,9 @@ class HypergeometricHelper
                           t = c.subtract(b);
                 if (s.isInteger() && s.real().signum() <= 0 && (!t.isInteger() || t.real().signum() > 0 || s.real().compareTo(t.real()) >= 0))
                 {
-                    return ApcomplexMath.pow(z1, b.negate()).multiply(evaluate(helper, s, b, c, z(z)));
+                    return ApcomplexMath.pow(z1, b.negate()).multiply(helper.evaluate(s, b, c, z(z)));
                 }
-                return ApcomplexMath.pow(z1, a.negate()).multiply(evaluate(helper, a, t, c, z(z)));
+                return ApcomplexMath.pow(z1, a.negate()).multiply(helper.evaluate(a, t, c, z(z)));
             }
         },
         T2 {
@@ -343,16 +345,7 @@ class HypergeometricHelper
         private static Apcomplex transform(Hypergeometric2F1Helper helper, Apcomplex s, Apcomplex c, Apcomplex base1, Apcomplex exp1, Apcomplex g1, Apcomplex g2, Apcomplex a1, Apcomplex b1, Apcomplex c1, Apcomplex base2, Apcomplex exp2, Apcomplex base3, Apcomplex exp3, Apcomplex g3, Apcomplex g4, Apcomplex a2, Apcomplex b2, Apcomplex c2, Apcomplex z)
         {
             Apfloat pi = pi(helper.precision, helper.radix);
-            return gamma(c).multiply(pi).divide(sin(pi.multiply(s))).multiply(pow(base1, exp1).divide(gamma(g1).multiply(gamma(g2)).multiply(gamma(c1))).multiply(evaluate(helper, a1, b1, c1, z)).subtract(pow(base2, exp2).multiply(pow(base3, exp3)).divide(gamma(g3).multiply(gamma(g4)).multiply(gamma(c2))).multiply(evaluate(helper, a2, b2, c2, z))));
-        }
-
-        private static Apcomplex evaluate(Hypergeometric2F1Helper helper, Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
-        {
-            int radix = helper.radix;
-            Apint one = Apint.ONES[radix];
-            Apint minN = ApintMath.max(Apint.ONES[radix], c.real().truncate().negate()).add(one);
-
-            return helper.evaluate(new Apcomplex[] { a, b }, new Apcomplex[] { c }, z, minN);
+            return gamma(c).multiply(pi).divide(sin(pi.multiply(s))).multiply(pow(base1, exp1).divide(gamma(g1).multiply(gamma(g2)).multiply(gamma(c1))).multiply(helper.evaluate(a1, b1, c1, z)).subtract(pow(base2, exp2).multiply(pow(base3, exp3)).divide(gamma(g3).multiply(gamma(g4)).multiply(gamma(c2))).multiply(helper.evaluate(a2, b2, c2, z))));
         }
     }
 
@@ -437,7 +430,7 @@ class HypergeometricHelper
         // If c = a or c = b (and not a nonpositive integer) then it's 1F0
         // Then perform transformation so that transformed z is as small as possible (in absolute value)
         // If transformed z is too big (i.e. near exp(i pi / 3)) then use alternative algorithm
-        // If transformation requires division by possible zero (e.g. b - a), then alter the parameters slightly to be nonzero, e.g. by largest ulp of a or b, ensure the required working precision (or calculate average of two calls with +-ulp)
+        // If transformation requires division by possible zero (e.g. b - a), then alter the parameters slightly to be nonzero, e.g. by largest ulp of a or b, ensure the required working precision (nb. probably no point to calculate average of two calls with +-ulp due to shape of function)
         // Real version is real if z <= 1 (may be infinite if z = 1 depending on a, b and c as said above)
         Apint one = Apint.ONES[radix];
         if (z.equals(one))
@@ -452,17 +445,22 @@ class HypergeometricHelper
             {
                 return Apint.ZEROS[radix];
             }
-            return gamma(c).multiply(gamma(s.subtract(b))).divide(gamma(s).multiply(gamma(t)));
+            Apcomplex cab = s.subtract(b);
+            s = ApfloatHelper.ensurePrecision(s, precision);
+            t = ApfloatHelper.ensurePrecision(t, precision);
+            cab = ApfloatHelper.ensurePrecision(cab, precision);
+            return gamma(c).multiply(gamma(cab)).divide(gamma(s).multiply(gamma(t)));
         }
         Apcomplex zDoublePrecision = z.precision(ApfloatHelper.getDoublePrecision(radix));
+        // Does it make any sense to check first if the transform results in a polynomial? The polynomial could potentially be of huge degree anyways
         Transformation transformation = Arrays.stream(Transformation.values()).filter(t -> t.isApplicable(z)).min(comparing(t -> abs(t.z(zDoublePrecision)))).get();
-        if (abs(transformation.z(zDoublePrecision)).doubleValue() > 0.8) // TODO does it make any sense to check for polynomial? The polynomial could potentially be of huge degree anyways
+        if (abs(transformation.z(zDoublePrecision)).doubleValue() > 0.8)
         {
             // Use alternative algorithm as none of the transforms is very good
             return alternative(a, b, c, z);
         }
 
-        return ApfloatHelper.limitPrecision(transformation.value(new Hypergeometric2F1Helper()), precision);
+        return transformation.value(new Hypergeometric2F1Helper());
     }
 
     private static long precision(Apcomplex[] z0, Apcomplex[] z1, Apcomplex z2)

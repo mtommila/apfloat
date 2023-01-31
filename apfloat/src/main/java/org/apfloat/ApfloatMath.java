@@ -2652,6 +2652,85 @@ public class ApfloatMath
     }
 
     /**
+     * Confluent hypergeometric function <i><sub>0</sub>F<sub>1</sub></i>.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param x The second argument.
+     *
+     * @return <i><sub>0</sub>F<sub>1</sub>(; a; x)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat hypergeometric0F1(Apfloat a, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return new HypergeometricHelper(new Apfloat[] { a }, new Apfloat[0], x).hypergeometricPFQ().real();
+    }
+
+    /**
+     * Kummer confluent hypergeometric function <i><sub>1</sub>F<sub>1</sub></i>.
+     * Also known as the confluent hypergeometric function of the first kind.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param x The third argument.
+     *
+     * @return <i><sub>1</sub>F<sub>1</sub>(a; b; x)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat hypergeometric1F1(Apfloat a, Apfloat b, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return new HypergeometricHelper(new Apfloat[] { a }, new Apfloat[] { b }, x).hypergeometricPFQ().real();
+    }
+
+    /**
+     * Hypergeometric function <i><sub>2</sub>F<sub>1</sub></i>.
+     * Also known as the Gaussian or ordinary hypergeometric function.<p>
+     *
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param c The third argument.
+     * @param x The fourth argument.
+     *
+     * @return <i><sub>2</sub>F<sub>1</sub>(a, b; c; x)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite or real.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat hypergeometric2F1(Apfloat a, Apfloat b, Apfloat c, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apint one = Apint.ONES[x.radix()];
+        if (x.compareTo(one) > 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return new HypergeometricHelper(new Apfloat[] { a, b }, new Apfloat[] { c }, x).hypergeometricPFQ().real();
+    }
+
+    /**
      * Generates a random number. Uses the default radix.
      * Returned values are chosen pseudorandomly with (approximately)
      * uniform distribution from the range <code>0 &le; x &lt; 1</code>.

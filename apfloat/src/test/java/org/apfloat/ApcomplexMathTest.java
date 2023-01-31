@@ -84,6 +84,9 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testBinomial"));
         suite.addTest(new ApcomplexMathTest("testZeta"));
         suite.addTest(new ApcomplexMathTest("testZetaHurwitz"));
+        suite.addTest(new ApcomplexMathTest("testHypergeometric0F1"));
+        suite.addTest(new ApcomplexMathTest("testHypergeometric1F1"));
+        suite.addTest(new ApcomplexMathTest("testHypergeometric2F1"));
         suite.addTest(new ApcomplexMathTest("testUlp"));
 
         return suite;
@@ -2817,9 +2820,64 @@ public class ApcomplexMathTest
         }
     }
 
+    public static void testHypergeometric0F1()
+    {
+    }
+
+    public static void testHypergeometric1F1()
+    {
+    }
+
     public static void testHypergeometric2F1()
     {
-        //Hypergeometric2F1[-1.1, 4.4, 3.4, 1] = 1.08283e-15
+        // T0
+        Apcomplex a = ApcomplexMath.hypergeometric2F1(new Apcomplex("1.00000"), new Apcomplex("2.20000"), new Apcomplex("3.30000"), new Apcomplex("0.100000"));
+        assertEquals("1, 2.2, 3.3, 0.1 precision", 8, a.precision());
+        assertEquals("1, 2.2, 3.3, 0.1 value", new Apcomplex("1.0720565"), a, new Apfloat("5e-7"));
+
+        // T1
+        a = ApcomplexMath.hypergeometric2F1(new Apcomplex("1.00000"), new Apcomplex("2.20000"), new Apcomplex("3.30000"), new Apcomplex("-0.500000"));
+        assertEquals("1, 2.2, 3.3, -0.5 precision", 6, a.precision(), 1);
+        assertEquals("1, 2.2, 3.3, -0.5 value", new Apcomplex("0.755818"), a, new Apfloat("5e-6"));
+
+        // T2
+        a = ApcomplexMath.hypergeometric2F1(new Apcomplex("1.00000"), new Apcomplex("2.20000"), new Apcomplex("3.30000"), new Apcomplex("5.00000"));
+        assertEquals("1, 2.2, 3.3, 5 precision", 6, a.precision(), 1);
+        assertEquals("1, 2.2, 3.3, 5 value", new Apcomplex("(-0.527130,-0.228019)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.hypergeometric2F1(new Apcomplex("1.00000"), new Apcomplex("1.00000"), new Apcomplex("3.30000"), new Apcomplex("5.00000"));    // a = b
+        assertEquals("1, 1, 3.3, 5 precision", 6, a.precision());
+        assertEquals("1, 1, 3.3, 5 value", new Apcomplex("(0.041932,-1.081246)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.hypergeometric2F1(new Apcomplex("1.00000"), new Apcomplex("1.00001"), new Apcomplex("3.30000"), new Apcomplex("5.00000"));    // a = b almost
+        assertEquals("1, 1.00001, 3.3, 5 precision", 6, a.precision());
+        assertEquals("1, 1.00001, 3.3, 5 value", new Apcomplex("(0.041918,-1.081244)"), a, new Apfloat("5e-6"));
+
+        // T3
+        a = ApcomplexMath.hypergeometric2F1(new Apcomplex("1.00000"), new Apcomplex("2.20000"), new Apcomplex("3.30000"), new Apcomplex("-5.00000"));
+        assertEquals("1, 2.2, 3.3, -5 precision", 6, a.precision(), 1);
+        assertEquals("1, 2.2, 3.3, -5 value", new Apcomplex("0.254205"), a, new Apfloat("5e-6"));
+
+        // T4
+        a = ApcomplexMath.hypergeometric2F1(new Apcomplex("1.00000"), new Apcomplex("2.20000"), new Apcomplex("3.30000"), new Apcomplex("0.900000"));
+        assertEquals("1, 2.2, 3.3, 0.9 precision", 6, a.precision(), 1);
+        assertEquals("1, 2.2, 3.3, 0.9 value", new Apcomplex("3.38469"), a, new Apfloat("5e-5"));
+
+        // T5
+        a = ApcomplexMath.hypergeometric2F1(new Apcomplex("1.00000"), new Apcomplex("2.20000"), new Apcomplex("3.30000"), new Apcomplex("1.10000"));
+        assertEquals("1, 2.2, 3.3, 1.1 precision", 6, a.precision(), 1);
+        assertEquals("1, 2.2, 3.3, 1.1 value", new Apcomplex("(2.412471,-5.13090)"), a, new Apfloat("5e-5"));
+
+        // AA
+        a = ApcomplexMath.hypergeometric2F1(new Apcomplex("1.00000"), new Apcomplex("2.20000"), new Apcomplex("3.30000"), new Apcomplex("(0.500000,0.866025)"));
+        assertEquals("1, 2.2, 3.3, 0.500000+0.866025i precision", 5, a.precision());
+        assertEquals("1, 2.2, 3.3, 0.500000+0.866025i value", new Apcomplex("(0.81703,0.68820)"), a, new Apfloat("5e-5"));
+
+        // z = 1
+        a = ApcomplexMath.hypergeometric2F1(new Apcomplex("-1.10000"), new Apcomplex("4.40000"), new Apcomplex("3.40000"), new Apcomplex("1.00000"));
+        assertEquals("-1.1, 4.4, 3.4, 1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-1.1, 4.4, 3.4, 1 value", new Apcomplex("0"), a);
+
     }
 
     public static void testUlp()

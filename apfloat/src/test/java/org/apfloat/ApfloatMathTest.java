@@ -104,6 +104,9 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testBinomial"));
         suite.addTest(new ApfloatMathTest("testZeta"));
         suite.addTest(new ApfloatMathTest("testZetaHurwitz"));
+        suite.addTest(new ApfloatMathTest("testHypergeometric0F1"));
+        suite.addTest(new ApfloatMathTest("testHypergeometric1F1"));
+        suite.addTest(new ApfloatMathTest("testHypergeometric2F1"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testMax"));
@@ -2577,6 +2580,35 @@ public class ApfloatMathTest
         {
             ApfloatMath.zeta(new Apfloat("-3.2"), new Apfloat("-4.2"));
             fail("Zeta of s noninteger and a nonpositive");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
+    public static void testHypergeometric0F1()
+    {
+    }
+
+    public static void testHypergeometric1F1()
+    {
+    }
+
+    public static void testHypergeometric2F1()
+    {
+        Apfloat a = ApfloatMath.hypergeometric2F1(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("0.100000"));
+        assertEquals("1, 2.2, 3.3, 0.1 precision", 8, a.precision());
+        assertEquals("1, 2.2, 3.3, 0.1 value", new Apfloat("1.0720565"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.hypergeometric2F1(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("1.000000"));
+        assertEquals("1, 2.2, 3.3, 1 precision", 6, a.precision());
+        assertEquals("1, 2.2, 3.3, 1 value", new Apfloat("23.0000"), a, new Apfloat("5e-4"));
+
+        try
+        {
+            ApfloatMath.hypergeometric2F1(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("1.000001"));
+            fail("2F1 of x > 1");
         }
         catch (ArithmeticException ae)
         {
