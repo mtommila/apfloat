@@ -23,6 +23,7 @@
  */
 package org.apfloat;
 
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -31,11 +32,6 @@ import org.apfloat.spi.Util;
 import static java.util.Comparator.comparing;
 
 import static org.apfloat.ApcomplexMath.abs;
-import static org.apfloat.ApcomplexMath.gamma;
-import static org.apfloat.ApcomplexMath.pow;
-import static org.apfloat.ApcomplexMath.sin;
-import static org.apfloat.ApcomplexMath.ulp;
-import static org.apfloat.ApfloatMath.max;
 import static org.apfloat.ApfloatMath.pi;
 import static org.apfloat.ApfloatMath.scale;
 
@@ -59,28 +55,131 @@ class HypergeometricHelper
             this.b = HypergeometricHelper.this.a[1];
             this.c = HypergeometricHelper.this.b[0];
             this.z = HypergeometricHelper.this.z;
-            this.precision = HypergeometricHelper.this.precision;
-            this.radix = HypergeometricHelper.this.radix;
+            this.one = Apint.ONES[radix];
+            this.zero = Apint.ZEROS[radix];
         }
 
-        public void ensurePrecision(long precision)
+        public void ensurePrecision()
         {
-            this.a = ApfloatHelper.ensurePrecision(this.a, precision);
-            this.b = ApfloatHelper.ensurePrecision(this.b, precision);
-            this.c = ApfloatHelper.ensurePrecision(this.c, precision);
-            this.z = ApfloatHelper.ensurePrecision(this.z, precision);
+            a = ApfloatHelper.ensurePrecision(a, precision);
+            b = ApfloatHelper.ensurePrecision(b, precision);
+            c = ApfloatHelper.ensurePrecision(c, precision);
+            z = ApfloatHelper.ensurePrecision(z, precision);
         }
 
-        public Apcomplex evaluate(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
+        public void adjustIntegerAB()
         {
-            Apint one = Apint.ONES[radix];
-            Apint minN = ApintMath.max(Apint.ONES[radix], c.real().truncate().negate()).add(one);
+            // Transforms T2 and T3 are of the form factor * (term1 - term2) where term1 and term2 are very close to each other, so overall precision needs to be increased to get the actual result, instead of just zero
+            Apcomplex ab = a.subtract(b);
+            long digitLoss;
+            if (ab.isInteger())
+            {
+                digitLoss = precision;
+                precision = Util.ifFinite(precision, precision + digitLoss);
+                Apfloat offset = scale(new Apfloat("0.1", precision, radix), -digitLoss);
+                a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset), a.imag());
+                b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag()); // Could just set the precision but overflow handling is more difficult
+                ensurePrecision();
+            }
+            else
+            {
+                Apint abRounded = (ab.scale() <= 0 ? zero : ApfloatMath.round(ab.real(), ab.scale(), RoundingMode.HALF_EVEN).truncate());
+                digitLoss = -ab.subtract(abRounded).scale();
+                if (digitLoss > 0)
+                {
+                    precision = Util.ifFinite(precision, precision + digitLoss);
+                    // Set precision of a and b so that after computing a - b the difference still has the required precision
+                    Apfloat offset = scale(new Apfloat("0.1", precision, radix), -digitLoss);
+                    a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag());
+                    b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag());
+                    ensurePrecision();
+                }
+            }
+        }
+
+        public void adjustIntegerCAB()
+        {
+            Apcomplex cab = c.subtract(a).subtract(b);
+            long digitLoss;
+            if (cab.isInteger())
+            {
+                digitLoss = precision;
+                precision = Util.ifFinite(precision, precision + digitLoss);
+                Apfloat offset = scale(new Apfloat("0.1", precision, radix), -digitLoss);
+                c = new Apcomplex(c.real().precision(Apfloat.INFINITE).add(offset), c.imag());
+                a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag()); // Could just set the precision but overflow handling is more difficult
+                b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag()); // Could just set the precision but overflow handling is more difficult
+                ensurePrecision();
+            }
+            else
+            {
+                Apint cabRounded = (cab.scale() <= 0 ? Apfloat.ZEROS[radix] : ApfloatMath.round(cab.real(), cab.scale(), RoundingMode.HALF_EVEN)).truncate();
+                digitLoss = -cab.subtract(cabRounded).scale();
+                if (digitLoss > 0)
+                {
+                    precision = Util.ifFinite(precision, precision + digitLoss);
+                    Apfloat offset = scale(new Apfloat("0.1", precision, radix), -digitLoss);
+                    c = new Apcomplex(c.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), c.imag());
+                    a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag());
+                    b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag());
+                    ensurePrecision();
+                }
+            }
+        }
+
+        public Apcomplex transform(Apcomplex s, Apcomplex c, Apcomplex base1, Apcomplex exp1, Apcomplex g1, Apcomplex g2, Apcomplex a1, Apcomplex b1, Apcomplex c1, Apcomplex base2, Apcomplex exp2, Apcomplex base3, Apcomplex exp3, Apcomplex g3, Apcomplex g4, Apcomplex a2, Apcomplex b2, Apcomplex c2, Apcomplex z)
+        {
+            Apfloat pi = pi(precision, radix);
+            Apint zero = Apcomplex.ZEROS[radix];
+            Apcomplex term1,
+                      term2;
+            if (g1.isInteger() && g1.real().signum() <= 0 || g2.isInteger() && g2.real().signum() <= 0)
+            {
+                term1 = zero;   // Division by infinity
+            }
+            else
+            {
+                term1 = pow(base1, exp1).divide(gamma(g1).multiply(gamma(g2)).multiply(gamma(c1))).multiply(evaluate(a1, b1, c1, z));
+            }
+            if (g3.isInteger() && g3.real().signum() <= 0 || g4.isInteger() && g4.real().signum() <= 0)
+            {
+                term2 = zero;   // Division by infinity
+            }
+            else
+            {
+                term2 = pow(base2, exp2).multiply(pow(base3, exp3)).divide(gamma(g3).multiply(gamma(g4)).multiply(gamma(c2))).multiply(evaluate(a2, b2, c2, z));
+            }
+            return gamma(c).multiply(pi).divide(sin(pi.multiply(s))).multiply(term1.subtract(term2));
+        }
+
+        private Apcomplex gamma(Apcomplex z)
+        {
+//            ApfloatHelper.ensurePrecision(z, precision);
+            return ApcomplexMath.gamma(z);
+        }
+
+        private Apcomplex pow(Apcomplex z, Apcomplex w)
+        {
+//            ApfloatHelper.ensurePrecision(z, precision);
+//            ApfloatHelper.ensurePrecision(w, precision);
+            return ApcomplexMath.pow(z, w);
+        }
+
+        private Apcomplex sin(Apcomplex z)
+        {
+//            ApfloatHelper.ensurePrecision(z, precision);
+            return ApcomplexMath.sin(z);
+        }
+
+        private Apcomplex evaluate(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
+        {
+            Apint minN = ApintMath.max(one, c.real().truncate().negate()).add(one);
 
             return HypergeometricHelper.this.evaluate(new Apcomplex[] { a, b }, new Apcomplex[] { c }, z, minN);
         }
 
-        public long precision;
-        public int radix;
+        public Apint one,
+                     zero;
         public Apcomplex a,
                          b,
                          c,
@@ -94,12 +193,6 @@ class HypergeometricHelper
             public boolean isApplicable(Apcomplex z)
             {
                 return true;
-            }
-
-            @Override
-            public Apint polynomialTerms(Apcomplex a, Apcomplex b, Apcomplex c)
-            {
-                return minNegativeIntegerNegated(a, b);
             }
 
             @Override
@@ -126,12 +219,6 @@ class HypergeometricHelper
             }
 
             @Override
-            public Apint polynomialTerms(Apcomplex a, Apcomplex b, Apcomplex c)
-            {
-                return minNegativeIntegerNegated(c.subtract(a), c.subtract(b));
-            }
-
-            @Override
             public Apcomplex z(Apcomplex z)
             {
                 Apint one = Apint.ONES[z.radix()];
@@ -141,7 +228,7 @@ class HypergeometricHelper
             @Override
             public Apcomplex value(Hypergeometric2F1Helper helper)
             {
-                Apint one = Apint.ONES[helper.radix];
+                Apint one = helper.one;
                 Apcomplex a = helper.a,
                           b = helper.b,
                           c = helper.c,
@@ -164,12 +251,6 @@ class HypergeometricHelper
             }
 
             @Override
-            public Apint polynomialTerms(Apcomplex a, Apcomplex b, Apcomplex c)
-            {
-                return null;
-            }
-
-            @Override
             public Apcomplex z(Apcomplex z)
             {
                 Apint one = Apint.ONES[z.radix()];
@@ -179,13 +260,13 @@ class HypergeometricHelper
             @Override
             public Apcomplex value(Hypergeometric2F1Helper helper)
             {
-                adjustEqualAB(helper);
-                Apint one = Apint.ONES[helper.radix];
+                helper.adjustIntegerAB();
+                Apint one = helper.one;
                 Apcomplex a = helper.a,
                           b = helper.b,
                           c = helper.c,
                           z = helper.z;
-                return transform(helper, b.subtract(a), c, z.negate(), a.negate(), b, c.subtract(a), a, a.subtract(c).add(one), a.subtract(b).add(one), z.negate(), b.negate(), one, one, a, c.subtract(b), b, b.subtract(c).add(one), b.subtract(a).add(one), z(z));
+                return helper.transform(b.subtract(a), c, z.negate(), a.negate(), b, c.subtract(a), a, a.subtract(c).add(one), a.subtract(b).add(one), z.negate(), b.negate(), one, one, a, c.subtract(b), b, b.subtract(c).add(one), b.subtract(a).add(one), z(z));
             }
         },
         T3 {
@@ -193,12 +274,6 @@ class HypergeometricHelper
             public boolean isApplicable(Apcomplex z)
             {
                 return !z.equals(Apint.ONES[z.radix()]);
-            }
-
-            @Override
-            public Apint polynomialTerms(Apcomplex a, Apcomplex b, Apcomplex c)
-            {
-                return null;
             }
 
             @Override
@@ -211,13 +286,13 @@ class HypergeometricHelper
             @Override
             public Apcomplex value(Hypergeometric2F1Helper helper)
             {
-                adjustEqualAB(helper);
-                Apint one = Apint.ONES[helper.radix];
+                helper.adjustIntegerAB();
+                Apint one = helper.one;
                 Apcomplex a = helper.a,
                           b = helper.b,
                           c = helper.c,
                           z = helper.z;
-                return transform(helper, b.subtract(a), c, one.subtract(z), a.negate(), b, c.subtract(a), a, c.subtract(b), a.subtract(b).add(one), one.subtract(z), b.negate(), one, one, a, c.subtract(b), b, c.subtract(a), b.subtract(a).add(one), z(z));
+                return helper.transform(b.subtract(a), c, one.subtract(z), a.negate(), b, c.subtract(a), a, c.subtract(b), a.subtract(b).add(one), one.subtract(z), b.negate(), one, one, a, c.subtract(b), b, c.subtract(a), b.subtract(a).add(one), z(z));
             }
         },
         T4 {
@@ -225,12 +300,6 @@ class HypergeometricHelper
             public boolean isApplicable(Apcomplex z)
             {
                 return true;
-            }
-
-            @Override
-            public Apint polynomialTerms(Apcomplex a, Apcomplex b, Apcomplex c)
-            {
-                return null;
             }
 
             @Override
@@ -243,13 +312,13 @@ class HypergeometricHelper
             @Override
             public Apcomplex value(Hypergeometric2F1Helper helper)
             {
-                adjustEqualCAB(helper);
-                Apint one = Apint.ONES[helper.radix];
+                helper.adjustIntegerCAB();
+                Apint one = helper.one;
                 Apcomplex a = helper.a,
                           b = helper.b,
                           c = helper.c,
                           z = helper.z;
-                return transform(helper, c.subtract(b).subtract(a), c, one, one, c.subtract(a), c.subtract(b), a, b, a.add(b).subtract(c).add(one), one.subtract(z), c.subtract(a).subtract(b), one, one, a, b, c.subtract(a), c.subtract(b), c.subtract(a).subtract(b).add(one), z(z));
+                return helper.transform(c.subtract(b).subtract(a), c, one, one, c.subtract(a), c.subtract(b), a, b, a.add(b).subtract(c).add(one), one.subtract(z), c.subtract(a).subtract(b), one, one, a, b, c.subtract(a), c.subtract(b), c.subtract(a).subtract(b).add(one), z(z));
             }
         },
         T5 {
@@ -257,12 +326,6 @@ class HypergeometricHelper
             public boolean isApplicable(Apcomplex z)
             {
                 return z.real().signum() != 0 || z.imag().signum() != 0;
-            }
-
-            @Override
-            public Apint polynomialTerms(Apcomplex a, Apcomplex b, Apcomplex c)
-            {
-                return null;
             }
 
             @Override
@@ -275,78 +338,21 @@ class HypergeometricHelper
             @Override
             public Apcomplex value(Hypergeometric2F1Helper helper)
             {
-                adjustEqualCAB(helper);
-                Apint one = Apint.ONES[helper.radix];
+                helper.adjustIntegerCAB();
+                Apint one = helper.one;
                 Apcomplex a = helper.a,
                           b = helper.b,
                           c = helper.c,
                           z = helper.z;
-                return transform(helper, c.subtract(b).subtract(a), c, z, a.negate(), c.subtract(a), c.subtract(b), a, a.subtract(c).add(one), a.add(b).subtract(c).add(one), one.subtract(z), c.subtract(a).subtract(b), z, a.subtract(c), a, b, c.subtract(a), one.subtract(a), c.subtract(a).subtract(b).add(one), z(z));
+                return helper.transform(c.subtract(b).subtract(a), c, z, a.negate(), c.subtract(a), c.subtract(b), a, a.subtract(c).add(one), a.add(b).subtract(c).add(one), one.subtract(z), c.subtract(a).subtract(b), z, a.subtract(c), a, b, c.subtract(a), one.subtract(a), c.subtract(a).subtract(b).add(one), z(z));
             }
         };
 
         public abstract boolean isApplicable(Apcomplex z);
 
-        public abstract Apint polynomialTerms(Apcomplex a, Apcomplex b, Apcomplex c);
-
         public abstract Apcomplex z(Apcomplex z);
 
         public abstract Apcomplex value(Hypergeometric2F1Helper helper);
-
-        private static Apint minNegativeIntegerNegated(Apcomplex a, Apcomplex b)
-        {
-            return Stream.of(a, b).filter(Apcomplex::isInteger).map(Apcomplex::real).filter(x -> x.signum() <= 0).map(Apfloat::negate).min(Apfloat::compareTo).map(Apfloat::truncate).orElse(null);
-        }
-
-        private static void adjustEqualAB(Hypergeometric2F1Helper helper)
-        {
-            Apcomplex a = helper.a,
-                      b = helper.b;
-            long equalDigits;
-            if (a.equals(b))
-            {
-                helper.a = ApfloatHelper.extendPrecision(a, 1).add(scale(max(ulp(a), ulp(b)), -1));
-                equalDigits = helper.precision;
-            }
-            else
-            {
-                equalDigits = a.equalDigits(b);
-            }
-            if (equalDigits > 0)
-            {
-                long precision = Util.ifFinite(equalDigits, helper.precision + equalDigits);
-                helper.ensurePrecision(precision);
-            }
-        }
-
-        private static void adjustEqualCAB(Hypergeometric2F1Helper helper)
-        {
-            Apcomplex a = helper.a,
-                      b = helper.b,
-                      c = helper.c,
-                      ab = a.add(b);
-            long equalDigits;
-            if (c.equals(ab))
-            {
-                helper.c = ApfloatHelper.extendPrecision(c, 1).add(scale(max(ulp(ab), ulp(c)), 1));
-                equalDigits = helper.precision;
-            }
-            else
-            {
-                equalDigits = c.equalDigits(ab);
-            }
-            if (equalDigits > 0)
-            {
-                long precision = Util.ifFinite(equalDigits, helper.precision + equalDigits);
-                helper.ensurePrecision(precision);
-            }
-        }
-
-        private static Apcomplex transform(Hypergeometric2F1Helper helper, Apcomplex s, Apcomplex c, Apcomplex base1, Apcomplex exp1, Apcomplex g1, Apcomplex g2, Apcomplex a1, Apcomplex b1, Apcomplex c1, Apcomplex base2, Apcomplex exp2, Apcomplex base3, Apcomplex exp3, Apcomplex g3, Apcomplex g4, Apcomplex a2, Apcomplex b2, Apcomplex c2, Apcomplex z)
-        {
-            Apfloat pi = pi(helper.precision, helper.radix);
-            return gamma(c).multiply(pi).divide(sin(pi.multiply(s))).multiply(pow(base1, exp1).divide(gamma(g1).multiply(gamma(g2)).multiply(gamma(c1))).multiply(helper.evaluate(a1, b1, c1, z)).subtract(pow(base2, exp2).multiply(pow(base3, exp3)).divide(gamma(g3).multiply(gamma(g4)).multiply(gamma(c2))).multiply(helper.evaluate(a2, b2, c2, z))));
-        }
     }
 
     /**
@@ -449,18 +455,23 @@ class HypergeometricHelper
             s = ApfloatHelper.ensurePrecision(s, precision);
             t = ApfloatHelper.ensurePrecision(t, precision);
             cab = ApfloatHelper.ensurePrecision(cab, precision);
-            return gamma(c).multiply(gamma(cab)).divide(gamma(s).multiply(gamma(t)));
+            return ApcomplexMath.gamma(c).multiply(ApcomplexMath.gamma(cab)).divide(ApcomplexMath.gamma(s).multiply(ApcomplexMath.gamma(t)));
         }
         Apcomplex zDoublePrecision = z.precision(ApfloatHelper.getDoublePrecision(radix));
         // Does it make any sense to check first if the transform results in a polynomial? The polynomial could potentially be of huge degree anyways
         Transformation transformation = Arrays.stream(Transformation.values()).filter(t -> t.isApplicable(z)).min(comparing(t -> abs(t.z(zDoublePrecision)))).get();
+        Apcomplex result;
+        long resultPrecision = precision;   // the transformation can change the precision
         if (abs(transformation.z(zDoublePrecision)).doubleValue() > 0.8)
         {
             // Use alternative algorithm as none of the transforms is very good
-            return alternative(a, b, c, z);
+            result = alternative(a, b, c, z);
         }
-
-        return transformation.value(new Hypergeometric2F1Helper());
+        else
+        {
+            result = transformation.value(new Hypergeometric2F1Helper());
+        }
+        return ApfloatHelper.limitPrecision(result, resultPrecision);
     }
 
     private static long precision(Apcomplex[] z0, Apcomplex[] z1, Apcomplex z2)
@@ -499,38 +510,74 @@ class HypergeometricHelper
         return Arrays.stream(a).filter(Apcomplex::isInteger).map(Apcomplex::real).filter(x -> x.signum() <= 0).min(Apfloat::compareTo).orElse(null);
     }
 
+    // It could be that the terms initially grow for a long time, until they start getting smaller
+    // Also it could be that the sum similarly grows first, but then starts also getting significantly smaller (by many orders of magnitude) -> this causes a precision loss, which needs to be detected, and handled by retrying with increased precision
     private Apcomplex evaluate(Apcomplex[] a, Apcomplex[] b, Apcomplex z, Apint minN)
     {
-        long maxTScale = Long.MIN_VALUE;
-        Apint one = Apint.ONES[radix],
-              i = Apint.ZEROS[radix];
-        Apcomplex numerator = one,
-                  denominator = one,
-                  s = one,
-                  t;
+        Apcomplex[] aOrig = a.clone(),
+                    bOrig = b.clone();
+        Apcomplex s;
+        long precisionLoss = 0,
+             extraPrecision,
+             extendedPrecision = precision;
+
         do
         {
-            i = i.add(one);
-            for (int j = 0; j < a.length; j++)
+            long maxSScale = Long.MIN_VALUE;
+            Apint one = Apint.ONES[radix],
+                  i = Apint.ZEROS[radix];
+            Apcomplex numerator = one,
+                      denominator = one,
+                      t;
+
+            extraPrecision = precisionLoss;
+            s = one;
+
+            do
             {
-                numerator = numerator.multiply(a[j]);
-                a[j] = a[j].add(one);
-            }
-            if (numerator.real().signum() == 0 && numerator.imag().signum() == 0)
+                i = i.add(one);
+                for (int j = 0; j < a.length; j++)
+                {
+                    numerator = numerator.multiply(a[j]);
+                    a[j] = a[j].add(one);
+                }
+                if (numerator.real().signum() == 0 && numerator.imag().signum() == 0)
+                {
+                    return s;   // It was a polynomial
+                }
+                numerator = numerator.multiply(z);
+                for (int j = 0; j < b.length; j++)
+                {
+                    denominator = denominator.multiply(b[j]);
+                    b[j] = b[j].add(one);
+                }
+                denominator = denominator.multiply(i);
+                t = numerator.divide(denominator);
+                s = s.add(t);
+                maxSScale = Math.max(maxSScale, s.scale());
+            } while (i.compareTo(minN) <= 0 || s.real().signum() == 0 && s.imag().signum() == 0 || s.scale() - t.scale() <= precision); // Subtraction might overflow
+
+            precisionLoss = (s.real().signum() == 0 && s.imag().signum() == 0 ? extendedPrecision : maxSScale - s.scale()); // Loss due to scale of s reduced from its peak (loss off most significant digits)
+            if (precision - s.precision() > 1)  // Of then the precision is reduced by 1
             {
-                break;
+                precisionLoss = Util.ifFinite(precisionLoss, precisionLoss + precision - s.precision()); // Loss due to accumulation (loss off least significant digits)
             }
-            numerator = numerator.multiply(z);
-            for (int j = 0; j < b.length; j++)
+            if (precisionLoss > extraPrecision)
             {
-                denominator = denominator.multiply(b[j]);
-                b[j] = b[j].add(one);
+                a = a.clone();
+                b = b.clone();
+                extendedPrecision = Util.ifFinite(precision, precision + precisionLoss);
+                for (int j = 0; j < a.length; j++)
+                {
+                    a[j] = ApfloatHelper.ensurePrecision(aOrig[j], extendedPrecision);
+                }
+                for (int j = 0; j < b.length; j++)
+                {
+                    b[j] = ApfloatHelper.ensurePrecision(bOrig[j], extendedPrecision);
+                }
+                z = ApfloatHelper.ensurePrecision(z, extendedPrecision);
             }
-            denominator = denominator.multiply(i);
-            t = numerator.divide(denominator);
-            s = s.add(t);
-            maxTScale = Math.max(maxTScale, t.scale());
-        } while (i.compareTo(minN) <= 0 || t.scale() >= maxTScale - precision); // Subtraction might overflow
+        } while (precisionLoss > extraPrecision);
         return s;
     }
 
@@ -545,13 +592,13 @@ class HypergeometricHelper
         Apcomplex d = zero,
                   e = one,
                   f = zero,
-                  z1 = one.subtract(z),
+                  z1 = ensurePrecision(one.subtract(z)),
                   z12 = two.multiply(z1),
-                  z2 = z.subtract(two),
+                  z2 = ensurePrecision(z.subtract(two)),
                   abz = a.multiply(b).multiply(z),
                   c2 = c.divide(two),
-                  c12 = c.add(one).divide(two),
-                  cba = c.subtract(b).subtract(a);
+                  c12 = ensurePrecision(c.add(one)).divide(two),
+                  cba = ensurePrecision(c.subtract(b).subtract(a));
         do
         {
             Apcomplex kc2 = k.add(c2),
@@ -560,12 +607,17 @@ class HypergeometricHelper
                       d1 = kakbz.multiply(e.subtract(k.add(cba).multiply(d).multiply(z).divide(z1))).multiply(divisor),
                       e1 = kakbz.multiply(abz.multiply(d).divide(z1).add(k.add(c).multiply(e))).multiply(divisor),
                       f1 = f.subtract(d.multiply(k.multiply(cba.multiply(z).add(k.multiply(z2)).subtract(c)).subtract(abz)).divide(kc2.multiply(z12))).add(e);
-            d = d1;
-            e = e1;
-            f = f1;
+            d = ensurePrecision(d1);
+            e = ensurePrecision(e1);
+            f = ensurePrecision(f1);
             k = k.add(one);
         } while (d.scale() >= -precision || e.scale() >= -precision);
         return f;
+    }
+
+    private Apcomplex ensurePrecision(Apcomplex z)
+    {
+        return ApfloatHelper.ensurePrecision(z, precision);
     }
 
     private long precision;
