@@ -2318,7 +2318,7 @@ public class ApcomplexMath
     public static Apcomplex hypergeometric0F1(Apcomplex a, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return new HypergeometricHelper(new Apcomplex[] { a }, new Apcomplex[0], z).hypergeometricPFQ();
+        return HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { a }, new Apcomplex[0], z);
     }
 
     /**
@@ -2343,7 +2343,7 @@ public class ApcomplexMath
     public static Apcomplex hypergeometric1F1(Apcomplex a, Apcomplex b, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return new HypergeometricHelper(new Apcomplex[] { a }, new Apcomplex[] { b }, z).hypergeometricPFQ();
+        return HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { a }, new Apcomplex[] { b }, z);
     }
 
     /**
@@ -2369,7 +2369,7 @@ public class ApcomplexMath
     public static Apcomplex hypergeometric2F1(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return new HypergeometricHelper(new Apcomplex[] { a, b }, new Apcomplex[] { c }, z).hypergeometricPFQ();
+        return HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { a, b }, new Apcomplex[] { c }, z);
     }
 
     /**

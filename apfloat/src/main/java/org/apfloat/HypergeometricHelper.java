@@ -367,7 +367,7 @@ class HypergeometricHelper
      * @param z The third argument.
      */
 
-    public HypergeometricHelper(Apcomplex[] a, Apcomplex[] b, Apcomplex z)
+    private HypergeometricHelper(Apcomplex[] a, Apcomplex[] b, Apcomplex z)
     {
         this.a = a;
         this.b = b;
@@ -383,13 +383,22 @@ class HypergeometricHelper
      * It is impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the function.
      *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param z The third argument.
+     *
      * @return <i><sub>p</sub>F<sub>q</sub>(a<sub>1</sub>, …, a<sub>p</sub>; b<sub>1</sub>, …, b<sub>q</sub>; z)</i>
      *
      * @throws ArithmeticException If the series does not converge.
      */
 
-    // Does not work in the general case for all z
-    public Apcomplex hypergeometricPFQ()
+    public static Apcomplex hypergeometricPFQ(Apcomplex[] a, Apcomplex[] b, Apcomplex z)
+    {
+        return new HypergeometricHelper(a, b, z).hypergeometricPFQ();
+    }
+
+    // In the general case (p = q + 1) this works only for |z| < 1
+    private Apcomplex hypergeometricPFQ()
         throws ArithmeticException, ApfloatRuntimeException
     {
         Apcomplex result = checkResult();

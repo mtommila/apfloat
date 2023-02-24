@@ -2671,7 +2671,7 @@ public class ApfloatMath
     public static Apfloat hypergeometric0F1(Apfloat a, Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return new HypergeometricHelper(new Apfloat[] { a }, new Apfloat[0], x).hypergeometricPFQ().real();
+        return HypergeometricHelper.hypergeometricPFQ(new Apfloat[] { a }, new Apfloat[0], x).real();
     }
 
     /**
@@ -2696,7 +2696,7 @@ public class ApfloatMath
     public static Apfloat hypergeometric1F1(Apfloat a, Apfloat b, Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return new HypergeometricHelper(new Apfloat[] { a }, new Apfloat[] { b }, x).hypergeometricPFQ().real();
+        return HypergeometricHelper.hypergeometricPFQ(new Apfloat[] { a }, new Apfloat[] { b }, x).real();
     }
 
     /**
@@ -2727,7 +2727,7 @@ public class ApfloatMath
         {
             throw new ArithmeticException("Result would be complex");
         }
-        return new HypergeometricHelper(new Apfloat[] { a, b }, new Apfloat[] { c }, x).hypergeometricPFQ().real();
+        return HypergeometricHelper.hypergeometricPFQ(new Apfloat[] { a, b }, new Apfloat[] { c }, x).real();
     }
 
     /**
