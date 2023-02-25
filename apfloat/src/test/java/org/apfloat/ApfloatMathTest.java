@@ -2598,9 +2598,10 @@ public class ApfloatMathTest
     public static void testHypergeometric2F1()
     {
         Apfloat a = ApfloatMath.hypergeometric2F1(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("0.100000"));
-        assertEquals("1, 2.2, 3.3, 0.1 precision", 8, a.precision());
-        assertEquals("1, 2.2, 3.3, 0.1 value", new Apfloat("1.0720565"), a, new Apfloat("5e-7"));
+        assertEquals("1, 2.2, 3.3, 0.1 precision", 6, a.precision());
+        assertEquals("1, 2.2, 3.3, 0.1 value", new Apfloat("1.0720565"), a, new Apfloat("5e-6"));
 
+        // x = 1
         a = ApfloatMath.hypergeometric2F1(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("1.000000"));
         assertEquals("1, 2.2, 3.3, 1 precision", 6, a.precision());
         assertEquals("1, 2.2, 3.3, 1 value", new Apfloat("23.0000"), a, new Apfloat("5e-4"));
@@ -2612,7 +2613,7 @@ public class ApfloatMathTest
         }
         catch (ArithmeticException ae)
         {
-            // OK
+            // OK result would be complex
         }
     }
 

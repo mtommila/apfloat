@@ -24,7 +24,9 @@
 package org.apfloat;
 
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.apfloat.spi.Util;
@@ -388,6 +390,10 @@ class HypergeometricHelper
         {
             return result;
         }
+        // After checking for polynomial case, if any a and b are equal, they can be removed
+        List<Apcomplex> bList = new ArrayList<>(Arrays.asList(b));
+        a = Arrays.stream(a).filter(z -> !bList.remove(z)).toArray(Apcomplex[]::new);
+        b = bList.toArray(new Apcomplex[0]);
         if (a.length == 2 && b.length == 1)
         {
             return hypergeometric2F1(a[0], a[1], b[0], z);
@@ -411,7 +417,9 @@ class HypergeometricHelper
         }
         assert (b.length > 0);
 
-        return evaluate(a, b, z);
+        long resultPrecision = precision;   // The evaluation can change the precision
+        result = evaluate(a, b, z);
+        return ApfloatHelper.limitPrecision(result, resultPrecision);
     }
 
     private Apcomplex hypergeometric2F1(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
@@ -490,7 +498,9 @@ class HypergeometricHelper
         if (minNonPositiveIntegerA != null)
         {
             // Result is a polynomial, we should evaluate here as e.g. a transformation of 2F1 won't work if c is a non-positive integer
-            return evaluate(a, b, z);
+            long resultPrecision = precision;   // The evaluation can change the precision
+            Apcomplex result = evaluate(a, b, z);
+            return ApfloatHelper.limitPrecision(result, resultPrecision);
         }
         return null;
     }
@@ -507,11 +517,15 @@ class HypergeometricHelper
         Apcomplex[] aOrig = a.clone(),
                     bOrig = b.clone();
         Apcomplex s;
-        long precisionLoss = 0,
-             extraPrecision,
-             extendedPrecision = precision;
         Apint one = Apint.ONES[radix],
               minN = ApintMath.max(one, Stream.concat(Arrays.stream(a), Arrays.stream(b)).map(Apcomplex::real).reduce(ApfloatMath::min).get().truncate().negate()).add(one);
+        long precisionLoss = 0,
+             extraPrecision,
+             extendedPrecision = ApfloatHelper.extendPrecision(precision, minN.scale()); // Estimate for accumulated round-off error precision due to repeated multiplication only (not scale based digit loss, see below)
+
+        ensurePrecision(a, a, extendedPrecision);
+        ensurePrecision(b, b, extendedPrecision);
+        z = ApfloatHelper.ensurePrecision(z, extendedPrecision);
 
         do
         {
@@ -556,14 +570,8 @@ class HypergeometricHelper
             if (precisionLoss > extraPrecision)
             {
                 extendedPrecision = Util.ifFinite(precision, precision + precisionLoss);
-                for (int j = 0; j < a.length; j++)
-                {
-                    a[j] = ApfloatHelper.ensurePrecision(aOrig[j], extendedPrecision);
-                }
-                for (int j = 0; j < b.length; j++)
-                {
-                    b[j] = ApfloatHelper.ensurePrecision(bOrig[j], extendedPrecision);
-                }
+                ensurePrecision(aOrig, a, extendedPrecision);
+                ensurePrecision(bOrig, b, extendedPrecision);
                 z = ApfloatHelper.ensurePrecision(z, extendedPrecision);
             }
         } while (precisionLoss > extraPrecision);
@@ -624,6 +632,14 @@ class HypergeometricHelper
     private Apcomplex ensurePrecision(Apcomplex z)
     {
         return ApfloatHelper.ensurePrecision(z, precision);
+    }
+
+    private void ensurePrecision(Apcomplex[] src, Apcomplex[] dest, long extendedPrecision)
+    {
+        for (int i = 0; i < dest.length; i++)
+        {
+            dest[i] = ApfloatHelper.ensurePrecision(src[i], extendedPrecision);
+        }
     }
 
     private long precision;
