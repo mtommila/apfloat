@@ -2722,8 +2722,9 @@ public class ApfloatMath
     public static Apfloat hypergeometric2F1(Apfloat a, Apfloat b, Apfloat c, Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        // With real a, b and c the result is real if z <= 1 except if it's a polynomial, in which case it's always real (nb. additional checks might throw an exception later)
         Apint one = Apint.ONES[x.radix()];
-        if (x.compareTo(one) > 0)
+        if (x.compareTo(one) > 0 && HypergeometricHelper.minNonPositiveInteger(a, b) == null)
         {
             throw new ArithmeticException("Result would be complex");
         }

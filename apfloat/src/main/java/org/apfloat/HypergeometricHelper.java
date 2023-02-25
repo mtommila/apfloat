@@ -32,6 +32,9 @@ import org.apfloat.spi.Util;
 import static java.util.Comparator.comparing;
 
 import static org.apfloat.ApcomplexMath.abs;
+import static org.apfloat.ApcomplexMath.gamma;
+import static org.apfloat.ApcomplexMath.pow;
+import static org.apfloat.ApcomplexMath.sin;
 import static org.apfloat.ApfloatMath.pi;
 import static org.apfloat.ApfloatMath.scale;
 
@@ -59,12 +62,12 @@ class HypergeometricHelper
             this.zero = Apint.ZEROS[radix];
         }
 
-        public void ensurePrecision()
+        public void ensurePrecisions()
         {
-            a = ApfloatHelper.ensurePrecision(a, precision);
-            b = ApfloatHelper.ensurePrecision(b, precision);
-            c = ApfloatHelper.ensurePrecision(c, precision);
-            z = ApfloatHelper.ensurePrecision(z, precision);
+            a = ensurePrecision(a);
+            b = ensurePrecision(b);
+            c = ensurePrecision(c);
+            z = ensurePrecision(z);
         }
 
         public void adjustIntegerAB()
@@ -79,7 +82,7 @@ class HypergeometricHelper
                 Apfloat offset = scale(new Apfloat("0.1", precision, radix), -digitLoss);
                 a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset), a.imag());
                 b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag()); // Could just set the precision but overflow handling is more difficult
-                ensurePrecision();
+                ensurePrecisions();
             }
             else
             {
@@ -92,7 +95,7 @@ class HypergeometricHelper
                     Apfloat offset = scale(new Apfloat("0.1", precision, radix), -digitLoss);
                     a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag());
                     b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag());
-                    ensurePrecision();
+                    ensurePrecisions();
                 }
             }
         }
@@ -109,7 +112,7 @@ class HypergeometricHelper
                 c = new Apcomplex(c.real().precision(Apfloat.INFINITE).add(offset), c.imag());
                 a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag()); // Could just set the precision but overflow handling is more difficult
                 b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag()); // Could just set the precision but overflow handling is more difficult
-                ensurePrecision();
+                ensurePrecisions();
             }
             else
             {
@@ -122,7 +125,7 @@ class HypergeometricHelper
                     c = new Apcomplex(c.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), c.imag());
                     a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag());
                     b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag());
-                    ensurePrecision();
+                    ensurePrecisions();
                 }
             }
         }
@@ -152,30 +155,9 @@ class HypergeometricHelper
             return gamma(c).multiply(pi).divide(sin(pi.multiply(s))).multiply(term1.subtract(term2));
         }
 
-        private Apcomplex gamma(Apcomplex z)
-        {
-//            ApfloatHelper.ensurePrecision(z, precision);
-            return ApcomplexMath.gamma(z);
-        }
-
-        private Apcomplex pow(Apcomplex z, Apcomplex w)
-        {
-//            ApfloatHelper.ensurePrecision(z, precision);
-//            ApfloatHelper.ensurePrecision(w, precision);
-            return ApcomplexMath.pow(z, w);
-        }
-
-        private Apcomplex sin(Apcomplex z)
-        {
-//            ApfloatHelper.ensurePrecision(z, precision);
-            return ApcomplexMath.sin(z);
-        }
-
         private Apcomplex evaluate(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
         {
-            Apint minN = ApintMath.max(one, c.real().truncate().negate()).add(one);
-
-            return HypergeometricHelper.this.evaluate(new Apcomplex[] { a, b }, new Apcomplex[] { c }, z, minN);
+            return HypergeometricHelper.this.evaluate(new Apcomplex[] { a, b }, new Apcomplex[] { c }, z);
         }
 
         public Apint one,
@@ -428,9 +410,8 @@ class HypergeometricHelper
             return ApcomplexMath.pow(one.subtract(z), a[0].negate());
         }
         assert (b.length > 0);
-        Apint minN = ApintMath.max(Apint.ONES[radix], Arrays.stream(b).map(Apcomplex::real).reduce(ApfloatMath::min).get().truncate().negate()).add(one);
 
-        return evaluate(a, b, z, minN);
+        return evaluate(a, b, z);
     }
 
     private Apcomplex hypergeometric2F1(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
@@ -470,7 +451,7 @@ class HypergeometricHelper
         // Does it make any sense to check first if the transform results in a polynomial? The polynomial could potentially be of huge degree anyways
         Transformation transformation = Arrays.stream(Transformation.values()).filter(t -> t.isApplicable(z)).min(comparing(t -> abs(t.z(zDoublePrecision)))).get();
         Apcomplex result;
-        long resultPrecision = precision;   // the transformation can change the precision
+        long resultPrecision = precision;   // The transformation can change the precision
         if (abs(transformation.z(zDoublePrecision)).doubleValue() > 0.8)
         {
             // Use alternative algorithm as none of the transforms is very good
@@ -508,20 +489,20 @@ class HypergeometricHelper
         }
         if (minNonPositiveIntegerA != null)
         {
-            // Result is a polynomial
-            return evaluate(a, b, z, minNonPositiveIntegerA.truncate().negate());
+            // Result is a polynomial, we should evaluate here as e.g. a transformation of 2F1 won't work if c is a non-positive integer
+            return evaluate(a, b, z);
         }
         return null;
     }
 
-    private static Apfloat minNonPositiveInteger(Apcomplex[] a)
+    public static Apfloat minNonPositiveInteger(Apcomplex... a)
     {
-        return Arrays.stream(a).filter(Apcomplex::isInteger).map(Apcomplex::real).filter(x -> x.signum() <= 0).min(Apfloat::compareTo).orElse(null);
+        return Arrays.stream(a).filter(Apcomplex::isInteger).map(Apcomplex::real).filter(x -> x.signum() <= 0).reduce(ApfloatMath::min).orElse(null);
     }
 
     // It could be that the terms initially grow for a long time, until they start getting smaller
     // Also it could be that the sum similarly grows first, but then starts also getting significantly smaller (by many orders of magnitude) -> this causes a precision loss, which needs to be detected, and handled by retrying with increased precision
-    private Apcomplex evaluate(Apcomplex[] a, Apcomplex[] b, Apcomplex z, Apint minN)
+    private Apcomplex evaluate(Apcomplex[] a, Apcomplex[] b, Apcomplex z)
     {
         Apcomplex[] aOrig = a.clone(),
                     bOrig = b.clone();
@@ -529,12 +510,13 @@ class HypergeometricHelper
         long precisionLoss = 0,
              extraPrecision,
              extendedPrecision = precision;
+        Apint one = Apint.ONES[radix],
+              minN = ApintMath.max(one, Stream.concat(Arrays.stream(a), Arrays.stream(b)).map(Apcomplex::real).reduce(ApfloatMath::min).get().truncate().negate()).add(one);
 
         do
         {
-            long maxSScale = Long.MIN_VALUE;
-            Apint one = Apint.ONES[radix],
-                  i = Apint.ZEROS[radix];
+            long maxSScale = 1; // Scale of 1, the initial s
+            Apint i = Apint.ZEROS[radix];
             Apcomplex numerator = one,
                       denominator = one,
                       t;
@@ -567,14 +549,12 @@ class HypergeometricHelper
             } while (i.compareTo(minN) <= 0 || s.real().signum() == 0 && s.imag().signum() == 0 || s.scale() - t.scale() <= precision); // Subtraction might overflow
 
             precisionLoss = (s.real().signum() == 0 && s.imag().signum() == 0 ? extendedPrecision : maxSScale - s.scale()); // Loss due to scale of s reduced from its peak (loss off most significant digits)
-            if (precision - s.precision() > 1)  // Of then the precision is reduced by 1
+            if (precision - s.precision() > 1)  // Often the precision is reduced by 1
             {
                 precisionLoss = Util.ifFinite(precisionLoss, precisionLoss + precision - s.precision()); // Loss due to accumulation (loss off least significant digits)
             }
             if (precisionLoss > extraPrecision)
             {
-                a = a.clone();
-                b = b.clone();
                 extendedPrecision = Util.ifFinite(precision, precision + precisionLoss);
                 for (int j = 0; j < a.length; j++)
                 {
@@ -593,6 +573,20 @@ class HypergeometricHelper
     // See: https://def.fe.up.pt/pipermail/maxima-discuss/2006.txt "Methods for numerically difficult cases of 2F1(a,b;c|z)", alternative algorithm by Bill Gosper
     private Apcomplex alternative(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
     {
+        if (c.real().signum() <= 0)
+        {
+            Apint cRounded = (c.scale() <= 0 ? Apfloat.ZEROS[radix] : ApfloatMath.round(c.real(), c.scale(), RoundingMode.HALF_EVEN)).truncate();
+            long digitLoss = -c.subtract(cRounded).scale();
+            if (digitLoss > 0)
+            {
+                precision = Util.ifFinite(precision, precision + digitLoss);
+                a = ensurePrecision(a);
+                b = ensurePrecision(b);
+                c = ensurePrecision(c);
+                z = ensurePrecision(z);
+            }
+        }
+
         Apint zero = Apint.ZEROS[radix],
               one = Apint.ONES[radix],
               two = new Apint(2, radix),
@@ -608,6 +602,9 @@ class HypergeometricHelper
                   c2 = c.divide(two),
                   c12 = ensurePrecision(c.add(one)).divide(two),
                   cba = ensurePrecision(c.subtract(b).subtract(a));
+
+        assert (c2.real().signum() > 0 || c2.imag().signum() != 0 || !c2.isInteger());  // c2 should not be rounded to negative integer
+
         do
         {
             Apcomplex kc2 = k.add(c2),
