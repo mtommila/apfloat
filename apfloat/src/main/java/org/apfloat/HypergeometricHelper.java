@@ -60,8 +60,7 @@ class HypergeometricHelper
             this.b = HypergeometricHelper.this.a[1];
             this.c = HypergeometricHelper.this.b[0];
             this.z = HypergeometricHelper.this.z;
-            this.one = Apint.ONES[radix];
-            this.zero = Apint.ZEROS[radix];
+            this.one = HypergeometricHelper.this.one;
         }
 
         public void ensurePrecisions()
@@ -74,7 +73,7 @@ class HypergeometricHelper
 
         public void adjustIntegerAB()
         {
-            // Transforms T2 and T3 are of the form factor * (term1 - term2) where term1 and term2 are very close to each other, so overall precision needs to be increased to get the actual result, instead of just zero
+            // Transforms T2 and T3 are of the form factor * (term1 - term2) where term1 and term2 can be very close to each other, so overall precision needs to be increased to get the actual result, instead of just zero
             Apcomplex ab = a.subtract(b);
             long digitLoss;
             if (ab.isInteger())
@@ -104,6 +103,7 @@ class HypergeometricHelper
 
         public void adjustIntegerCAB()
         {
+            // Transforms T4 and T5 are of the form factor * (term1 - term2) where term1 and term2 can be very close to each other, so overall precision needs to be increased to get the actual result, instead of just zero
             Apcomplex cab = c.subtract(a).subtract(b);
             long digitLoss;
             if (cab.isInteger())
@@ -135,7 +135,6 @@ class HypergeometricHelper
         public Apcomplex transform(Apcomplex s, Apcomplex c, Apcomplex base1, Apcomplex exp1, Apcomplex g1, Apcomplex g2, Apcomplex a1, Apcomplex b1, Apcomplex c1, Apcomplex base2, Apcomplex exp2, Apcomplex base3, Apcomplex exp3, Apcomplex g3, Apcomplex g4, Apcomplex a2, Apcomplex b2, Apcomplex c2, Apcomplex z)
         {
             Apfloat pi = pi(precision, radix);
-            Apint zero = Apcomplex.ZEROS[radix];
             Apcomplex term1,
                       term2;
             if (g1.isInteger() && g1.real().signum() <= 0 || g2.isInteger() && g2.real().signum() <= 0)
@@ -162,14 +161,14 @@ class HypergeometricHelper
             return HypergeometricHelper.this.evaluate(new Apcomplex[] { a, b }, new Apcomplex[] { c }, z);
         }
 
-        public Apint one,
-                     zero;
         public Apcomplex a,
                          b,
                          c,
                          z;
+        public Apint one;
     }
 
+    // T0 is the direct evaluation of the series without transformation, T1 - T5 are as per DLMF 15.8.1 - 15.8.5  
     private static enum Transformation
     {
         T0 {
@@ -358,6 +357,8 @@ class HypergeometricHelper
         this.z = z;
         this.precision = precision(a, b, z);
         this.radix = z.radix();
+        this.one = Apint.ONES[radix];
+        this.zero = Apint.ZEROS[radix];
     }
 
     /**
@@ -410,7 +411,6 @@ class HypergeometricHelper
         {
             return ApcomplexMath.exp(z);
         }
-        Apint one = Apint.ONES[radix];
         if (a.length == 1 && b.length == 0)
         {
             return ApcomplexMath.pow(one.subtract(z), a[0].negate());
@@ -433,10 +433,9 @@ class HypergeometricHelper
         // Could also check if c-a or c-b is a nonpositive integer, then use transformation formula and function value is a polynomial
         // If c = a or c = b (and not a nonpositive integer) then it's 1F0
         // Then perform transformation so that transformed z is as small as possible (in absolute value)
-        // If transformed z is too big (i.e. near exp(i pi / 3)) then use alternative algorithm
+        // If transformed z is too big (i.e. near exp(±i pi / 3)) then use alternative algorithm
         // If transformation requires division by possible zero (e.g. b - a), then alter the parameters slightly to be nonzero, e.g. by largest ulp of a or b, ensure the required working precision (nb. probably no point to calculate average of two calls with +-ulp due to shape of function)
-        // Real version is real if z <= 1 (may be infinite if z = 1 depending on a, b and c as said above)
-        Apint one = Apint.ONES[radix];
+        // Real version is real if z <= 1 (may be infinite if z = 1 depending on a, b and c as said above) or in case of polynomial always
         if (z.equals(one))
         {
             if (a.real().add(b.real()).subtract(c.real()).signum() >= 0)
@@ -517,8 +516,7 @@ class HypergeometricHelper
         Apcomplex[] aOrig = a.clone(),
                     bOrig = b.clone();
         Apcomplex s;
-        Apint one = Apint.ONES[radix],
-              minN = ApintMath.max(one, Stream.concat(Arrays.stream(a), Arrays.stream(b)).map(Apcomplex::real).reduce(ApfloatMath::min).get().truncate().negate()).add(one);
+        Apint minN = ApintMath.max(one, Stream.concat(Arrays.stream(a), Arrays.stream(b)).map(Apcomplex::real).reduce(ApfloatMath::min).get().truncate().negate()).add(one);
         long precisionLoss = 0,
              extraPrecision,
              extendedPrecision = ApfloatHelper.extendPrecision(precision, minN.scale()); // Estimate for accumulated round-off error precision due to repeated multiplication only (not scale based digit loss, see below)
@@ -595,9 +593,7 @@ class HypergeometricHelper
             }
         }
 
-        Apint zero = Apint.ZEROS[radix],
-              one = Apint.ONES[radix],
-              two = new Apint(2, radix),
+        Apint two = new Apint(2, radix),
               four = new Apint(4, radix),
               k = zero;
         Apcomplex d = zero,
@@ -647,4 +643,6 @@ class HypergeometricHelper
     private Apcomplex[] a,
                         b;
     private Apcomplex z;
+    private Apint one,
+                  zero;
 }
