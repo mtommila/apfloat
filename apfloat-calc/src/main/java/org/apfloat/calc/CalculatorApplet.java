@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2022 Mikko Tommila
+ * Copyright (c) 2002-2023 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -101,7 +101,7 @@ public class CalculatorApplet
     {
         String lineSeparator = System.lineSeparator();
         return "Calculator applet" + lineSeparator +
-               "Written by Mikko Tommila 2011 - 2022" + lineSeparator +
+               "Written by Mikko Tommila 2011 - 2023" + lineSeparator +
                "Java version: "         + System.getProperty("java.version") + lineSeparator +
                "Java Virtual Machine: " + System.getProperty("java.vm.name");
     }

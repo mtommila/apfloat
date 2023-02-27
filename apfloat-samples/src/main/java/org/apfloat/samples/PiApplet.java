@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2022 Mikko Tommila
+ * Copyright (c) 2002-2023 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -116,7 +116,7 @@ public class PiApplet
 
         String lineSeparator = System.lineSeparator();
         return "Pi calculation applet" + lineSeparator +
-               "Written by Mikko Tommila 2002 - 2022" + lineSeparator +
+               "Written by Mikko Tommila 2002 - 2023" + lineSeparator +
                "Specification-Title: "    + specificationPackage.getSpecificationTitle() + lineSeparator +
                "Specification-Version: "  + specificationPackage.getSpecificationVersion() + lineSeparator +
                "Specification-Vendor: "   + specificationPackage.getSpecificationVendor() + lineSeparator +
