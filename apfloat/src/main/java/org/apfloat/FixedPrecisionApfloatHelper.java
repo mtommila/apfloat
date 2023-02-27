@@ -1055,6 +1055,66 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
+     * Confluent hypergeometric function <i><sub>0</sub>F<sub>1</sub></i>.
+     *
+     * @param a The first argument.
+     * @param x The second argument.
+     *
+     * @return <i><sub>0</sub>F<sub>1</sub>(; a; x)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat hypergeometric0F1(Apfloat a, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.hypergeometric0F1(setPrecision(a), setPrecision(x)));
+    }
+
+    /**
+     * Kummer confluent hypergeometric function <i><sub>1</sub>F<sub>1</sub></i>.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param x The third argument.
+     *
+     * @return <i><sub>1</sub>F<sub>1</sub>(a; b; x)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat hypergeometric1F1(Apfloat a, Apfloat b, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.hypergeometric1F1(setPrecision(a), setPrecision(b), setPrecision(x)));
+    }
+
+    /**
+     * Hypergeometric function <i><sub>2</sub>F<sub>1</sub></i>.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param c The third argument.
+     * @param x The fourth argument.
+     *
+     * @return <i><sub>2</sub>F<sub>1</sub>(a, b; c; x)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite or real.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat hypergeometric2F1(Apfloat a, Apfloat b, Apfloat c, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.hypergeometric2F1(setPrecision(a), setPrecision(b), setPrecision(c), setPrecision(x)));
+    }
+
+    /**
      * Return a uniformly distributed random number <code>0 &le; x &lt; 1</code>.
      *
      * @return A random number.

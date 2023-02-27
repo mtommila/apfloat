@@ -222,6 +222,9 @@ public class CalculatorTest
         assertCalculation("5.0928", "gamma(4.0000, 0, 6.0000)");
         assertCalculation("4.74294943677064514689542753377e1-3.27488916473624576880974867017e1i", "gamma(100.000000000000000000000000000+374.000000000000000000000000000i)");
         assertCalculation("1.282427", "glaisher(7)");
+        assertCalculation("1.453+1.237i", "hypergeometric0F1(3.456+2.890i,0.1234+4.678i)");
+        assertCalculation("-7.477+3.738i", "hypergeometric1F1(3.456+2.890i,3.456+2.890i,2.1234+2.678i)");
+        assertCalculation("-1.478-2.074i", "hypergeometric2F1(9.456+4.890i,3.456+2.890i,1.256+1.390i,0.11234+0.1678i)");
         assertCalculation("2", "fmod(5, 3)");
         assertCalculation("5", "hypot(3, 4)");
         assertCalculation("5e-1", "hypot(0.3, 0.4)");
@@ -361,6 +364,15 @@ public class CalculatorTest
         assertCalculationFailure("glaisher(-1)");
         assertCalculationFailure("glaisher(0.5)");
         assertCalculationFailure("glaisher(i)");
+        assertCalculationFailure("hypergeometric0F1(0)");
+        assertCalculationFailure("hypergeometric0F1(0,0)");
+        assertCalculationFailure("hypergeometric0F1(0,0,0)");
+        assertCalculationFailure("hypergeometric1F1(0,0)");
+        assertCalculationFailure("hypergeometric1F1(1,0,0)");
+        assertCalculationFailure("hypergeometric1F1(0,0,0,0)");
+        assertCalculationFailure("hypergeometric2F1(0,0,0)");
+        assertCalculationFailure("hypergeometric2F1(1,2,0,0)");
+        assertCalculationFailure("hypergeometric2F1(0,0,0,0,0)");
         assertCalculationFailure("fmod(2, i)");
         assertCalculationFailure("fmod(2)");
         assertCalculationFailure("fmod(2, 2, 2)");

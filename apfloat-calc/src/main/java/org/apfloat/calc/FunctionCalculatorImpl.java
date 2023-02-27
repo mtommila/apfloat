@@ -171,6 +171,9 @@ public abstract class FunctionCalculatorImpl
         public Number gamma(Number x);
         public Number gamma(Number x, Number y);
         public Number gamma(Number x, Number y, Number z);
+        public Number hypergeometric0F1(Number a, Number z);
+        public Number hypergeometric1F1(Number a, Number b, Number z);
+        public Number hypergeometric2F1(Number a, Number b, Number c, Number z);
         public Number glaisher(Number x);
         public Number khinchin(Number x);
         public Number log(Number x);
@@ -253,6 +256,9 @@ public abstract class FunctionCalculatorImpl
         setFunction("frac", fixedFunction("frac", 1, (functions, arguments) -> functions.frac(arguments.get(0))));
         setFunction("gamma", fixedFunction("gamma", 1, 3, (functions, arguments) -> (arguments.size() == 1 ? functions.gamma(arguments.get(0)) : arguments.size() == 2 ? functions.gamma(arguments.get(0), arguments.get(1)): functions.gamma(arguments.get(0), arguments.get(1), arguments.get(2)))));
         setFunction("glaisher", fixedFunction("glaisher", 1, (functions, arguments) -> functions.glaisher(arguments.get(0))));
+        setFunction("hypergeometric0F1", fixedFunction("hypergeometric0F1", 2, (functions, arguments) -> functions.hypergeometric0F1(arguments.get(0), arguments.get(1))));
+        setFunction("hypergeometric1F1", fixedFunction("hypergeometric1F1", 3, (functions, arguments) -> functions.hypergeometric1F1(arguments.get(0), arguments.get(1), arguments.get(2))));
+        setFunction("hypergeometric2F1", fixedFunction("hypergeometric2F1", 4, (functions, arguments) -> functions.hypergeometric2F1(arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3))));
         setFunction("khinchin", fixedFunction("khinchin", 1, (functions, arguments) -> functions.khinchin(arguments.get(0))));
         setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
         setFunction("logGamma", fixedFunction("logGamma", 1, (functions, arguments) -> functions.logGamma(arguments.get(0))));

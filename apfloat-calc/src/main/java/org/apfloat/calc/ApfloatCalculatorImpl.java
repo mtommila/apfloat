@@ -313,6 +313,24 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number hypergeometric0F1(Number a, Number z)
+        {
+            return ApcomplexMath.hypergeometric0F1((Apcomplex) a, (Apcomplex) z);
+        }
+
+        @Override
+        public Number hypergeometric1F1(Number a, Number b, Number z)
+        {
+            return ApcomplexMath.hypergeometric1F1((Apcomplex) a, (Apcomplex) b, (Apcomplex) z);
+        }
+
+        @Override
+        public Number hypergeometric2F1(Number a, Number b, Number c, Number z)
+        {
+            return ApcomplexMath.hypergeometric2F1((Apcomplex) a, (Apcomplex) b, (Apcomplex) c, (Apcomplex) z);
+        }
+
+        @Override
         public Number khinchin(Number x)
         {
             if (!isLong(x))

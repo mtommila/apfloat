@@ -94,6 +94,9 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testBinomial"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testZeta"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testZetaHurwitz"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testHypergeometric0F1"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testHypergeometric1F1"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testHypergeometric2F1"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testUlp"));
 
         return suite;
@@ -732,6 +735,39 @@ public class FixedPrecisionApcomplexHelperTest
                   a = new Apcomplex("(1.5,2.5)");
         Apcomplex result = helper.zeta(s, a);
         assertEquals("value", new Apcomplex("(0.00199905,0.163402)"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHypergeometric0F1()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex a = new Apcomplex("(-1.5,-2.5)"),
+                  z = new Apcomplex("(1.5,2.5)");
+        Apcomplex result = helper.hypergeometric0F1(a, z);
+        assertEquals("value", new Apcomplex("(0.414184,-0.0472966)"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHypergeometric1F1()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex a = new Apcomplex("(-1.5,-2.5)"),
+                  b = new Apcomplex("(-2.5,-3.5)"),
+                  z = new Apcomplex("(1.5,2.5)");
+        Apcomplex result = helper.hypergeometric1F1(a, b, z);
+        assertEquals("value", new Apcomplex("(0.0471755,1.98433)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHypergeometric2F1()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex a = new Apcomplex("(-1.5,-2.5)"),
+                  b = new Apcomplex("(-2.5,-3.5)"),
+                  c = new Apcomplex("(-4.5,-5.5)"),
+                  z = new Apcomplex("(1.5,2.5)");
+        Apcomplex result = helper.hypergeometric2F1(a, b, c, z);
+        assertEquals("value", new Apcomplex("(27.9682,-33.1208)"), result, new Apfloat("5e-3"));    // Note that result isn't that accurate
         assertEquals("precision", 6, result.precision());
     }
 

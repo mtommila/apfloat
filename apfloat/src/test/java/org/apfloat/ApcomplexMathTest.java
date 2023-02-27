@@ -2846,6 +2846,15 @@ public class ApcomplexMathTest
         {
             // OK, result is infinite
         }
+        try
+        {
+            ApcomplexMath.hypergeometric0F1(new Apcomplex("0.00000"), new Apcomplex("0.00000"));
+            fail("0, 0 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
     }
 
     public static void testHypergeometric1F1()
@@ -2887,6 +2896,15 @@ public class ApcomplexMathTest
         catch (ArithmeticException ae)
         {
             // OK, result is infinite
+        }
+        try
+        {
+            ApcomplexMath.hypergeometric1F1(new Apcomplex("1.00000"), new Apcomplex("0"), new Apcomplex("0"));
+            fail("1, 0, 0 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is indeterminate
         }
     }
 
@@ -3238,6 +3256,15 @@ public class ApcomplexMathTest
         {
             ApcomplexMath.hypergeometric2F1(new Apcomplex("(-1.10000)"), new Apcomplex("(4.40001)"), new Apcomplex("(3.30000)"), new Apcomplex("1.00000")); // re(a + b - c) > 0
             fail("-1.1, 4.40001, 3.3, 1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
+        try
+        {
+            ApcomplexMath.hypergeometric2F1(new Apcomplex("1.00000"), new Apcomplex("2.00000"), new Apcomplex("0"), new Apcomplex("0"));
+            fail("1, 2, 0, 0 accepted");
         }
         catch (ArithmeticException ae)
         {

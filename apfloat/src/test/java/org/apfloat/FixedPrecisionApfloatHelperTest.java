@@ -113,6 +113,9 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBernoulli"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testZeta"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testZetaHurwitz"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testHypergeometric0F1"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testHypergeometric1F1"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testHypergeometric2F1"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testMax"));
@@ -1181,6 +1184,39 @@ public class FixedPrecisionApfloatHelperTest
                 a = new Apfloat("1.5");
         Apfloat result = helper.zeta(s, a);
         assertEquals("value", new Apfloat("-0.337079"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHypergeometric0F1()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat a = new Apfloat("-1.5"),
+                x = new Apfloat("1.5");
+        Apfloat result = helper.hypergeometric0F1(a, x);
+        assertEquals("value", new Apfloat("3.42337"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHypergeometric1F1()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat a = new Apfloat("-1.5"),
+                b = new Apfloat("-2.5"),
+                x = new Apfloat("1.5");
+        Apfloat result = helper.hypergeometric1F1(a, b, x);
+        assertEquals("value", new Apfloat("1.79268"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHypergeometric2F1()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat a = new Apfloat("-1.5"),
+                b = new Apfloat("-2.5"),
+                c = new Apfloat("-4.5"),
+                x = new Apfloat("0.5");
+        Apfloat result = helper.hypergeometric2F1(a, b, c, x);
+        assertEquals("value", new Apfloat("0.606092"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
     }
 

@@ -1125,6 +1125,66 @@ public class FixedPrecisionApcomplexHelper
     }
 
     /**
+     * Confluent hypergeometric function <i><sub>0</sub>F<sub>1</sub></i>.
+     *
+     * @param a The first argument.
+     * @param z The second argument.
+     *
+     * @return <i><sub>0</sub>F<sub>1</sub>(; a; z)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite.
+     *
+     * @since 1.11.0
+     */
+
+    public Apcomplex hypergeometric0F1(Apcomplex a, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.hypergeometric0F1(setPrecision(a), setPrecision(z)));
+    }
+
+    /**
+     * Kummer confluent hypergeometric function <i><sub>1</sub>F<sub>1</sub></i>.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param z The third argument.
+     *
+     * @return <i><sub>1</sub>F<sub>1</sub>(a; b; z)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite.
+     *
+     * @since 1.11.0
+     */
+
+    public Apcomplex hypergeometric1F1(Apcomplex a, Apcomplex b, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.hypergeometric1F1(setPrecision(a), setPrecision(b), setPrecision(z)));
+    }
+
+    /**
+     * Hypergeometric function <i><sub>2</sub>F<sub>1</sub></i>.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param c The third argument.
+     * @param z The fourth argument.
+     *
+     * @return <i><sub>2</sub>F<sub>1</sub>(a, b; c; z)</i>
+     *
+     * @throws ArithmeticException If the function value is not finite.
+     *
+     * @since 1.11.0
+     */
+
+    public Apcomplex hypergeometric2F1(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.hypergeometric2F1(setPrecision(a), setPrecision(b), setPrecision(c), setPrecision(z)));
+    }
+
+    /**
      * Unit in the last place.
      *
      * @param z The operand.

@@ -518,15 +518,15 @@ class HypergeometricHelper
 
     private Apcomplex checkResult()
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
-        {
-            return new Apfloat(1, targetPrecision, radix);
-        }
         Apfloat minNonPositiveIntegerA = minNonPositiveInteger(a),
                 minNonPositiveIntegerB = minNonPositiveInteger(b);
         if (minNonPositiveIntegerB != null && (minNonPositiveIntegerA == null || minNonPositiveIntegerA.compareTo(minNonPositiveIntegerB) < 0))
         {
             throw new ArithmeticException("Division by zero");
+        }
+        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        {
+            return new Apfloat(1, targetPrecision, radix);
         }
         if (minNonPositiveIntegerA != null)
         {
