@@ -579,7 +579,7 @@ class HypergeometricHelper
                 }
                 if (numerator.real().signum() == 0 && numerator.imag().signum() == 0)
                 {
-                    return s;   // It was a polynomial
+                    break;  // It was a polynomial
                 }
                 numerator = numerator.multiply(z);
                 for (int j = 0; j < b.length; j++)

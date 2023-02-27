@@ -2671,7 +2671,7 @@ public class ApfloatMath
     public static Apfloat hypergeometric0F1(Apfloat a, Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { a }, new Apcomplex[0], x).real();
+        return HypergeometricHelper.hypergeometricPFQ(new Apcomplex[0], new Apcomplex[] { a }, x).real();
     }
 
     /**

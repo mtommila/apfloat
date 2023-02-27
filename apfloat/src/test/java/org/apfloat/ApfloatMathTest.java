@@ -2589,10 +2589,26 @@ public class ApfloatMathTest
 
     public static void testHypergeometric0F1()
     {
+        Apfloat a = ApfloatMath.hypergeometric0F1(new Apfloat("2.00000"), new Apfloat("3.00000"));
+        assertEquals("2, 3 precision", 6, a.precision());
+        assertEquals("2, 3 value", new Apfloat("3.46865"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.hypergeometric0F1(new Apfloat(2, 60, 2), new Apfloat(3, 60, 2));
+        assertEquals("2, 3 radix 2 precision", 60, a.precision());
+        assertEquals("2, 3 radix 2 radix", 2, a.radix());
+        assertEquals("2, 3 radix 2 value", new Apfloat("11.0111011111111001011010111110000111011011111111101110000100", 60, 2), a, new Apfloat("1e-58", 1, 2));
     }
 
     public static void testHypergeometric1F1()
     {
+        Apfloat a = ApfloatMath.hypergeometric1F1(new Apfloat("2.00000"), new Apfloat("3.00000"), new Apfloat("4.00000"));
+        assertEquals("2, 3, 4 precision", 6, a.precision());
+        assertEquals("2, 3, 4 value", new Apfloat("20.5993"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.hypergeometric1F1(new Apfloat(2, 60, 2), new Apfloat(3, 60, 2), new Apfloat(4, 60, 2));
+        assertEquals("2, 3, 4 radix 2 precision", 60, a.precision());
+        assertEquals("2, 3, 4 radix 2 radix", 2, a.radix());
+        assertEquals("2, 3, 4 radix 2 value", new Apfloat("10100.1001100101101100001000101001110101101011110000100100110", 60, 2), a, new Apfloat("1e-55", 1, 2));
     }
 
     public static void testHypergeometric2F1()

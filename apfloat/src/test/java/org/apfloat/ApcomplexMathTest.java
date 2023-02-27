@@ -2822,11 +2822,72 @@ public class ApcomplexMathTest
 
     public static void testHypergeometric0F1()
     {
+        Apcomplex a = ApcomplexMath.hypergeometric0F1(new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(3.00000,4.00000)"));
+        assertEquals("1+2i, 3+4i precision", 6, a.precision());
+        assertEquals("1+2i, 3+4i value", new Apcomplex("(6.24111,0.025037)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.hypergeometric0F1(new Apcomplex(new Apfloat(2, 12, 36), new Apfloat(3, 12, 36)), new Apcomplex(new Apfloat(4, 12, 36), new Apfloat(5, 12, 36)));
+        assertEquals("2+3i, 4+5i radix 36 precision", 12, a.precision());
+        assertEquals("2+3i, 4+5i radix 36 radix", 36, a.radix());
+        assertEquals("2+3i, 4+5i radix 36 value", new Apcomplex(new Apfloat("4.st9rbd539a0", 12, 36), new Apfloat("0.5oqplurvcpbq", 12, 36)), a, new Apfloat("0.00000000000g", 1, 36));
+
+        // z = 0
+        a = ApcomplexMath.hypergeometric0F1(new Apcomplex("(1.00000,2.00000)"), new Apcomplex("0"));
+        assertEquals("1+2i, 0 precision", 6, a.precision());
+        assertEquals("1+2i, 0 value", new Apcomplex("1.00000"), a);
+
+        // Non converging cases
+        try
+        {
+            ApcomplexMath.hypergeometric0F1(new Apcomplex("-42.00000"), new Apcomplex("(2.00000,3.00000)"));
+            fail("-42, 2+3i accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
     }
 
     public static void testHypergeometric1F1()
     {
+        Apcomplex a = ApcomplexMath.hypergeometric1F1(new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("1+2i, 3+4i, 5+6i precision", 6, a.precision());
+        assertEquals("1+2i, 3+4i, 5+6i value", new Apcomplex("(-8.28601,-9.84438)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.hypergeometric1F1(new Apcomplex(new Apfloat(2, 13, 35), new Apfloat(3, 13, 35)), new Apcomplex(new Apfloat(4, 13, 35), new Apfloat(5, 13, 35)), new Apcomplex(new Apfloat(6, 13, 35), new Apfloat(7, 13, 35)));
+        assertEquals("2+3i, 4+5i, 6+7i radix 35 precision", 13, a.precision());
+        assertEquals("2+3i, 4+5i, 6+7i radix 35 radix", 35, a.radix());
+        assertEquals("2+3i, 4+5i, 6+7i radix 35 value", new Apcomplex(new Apfloat("i.hqetnbmwn38j", 13, 35), new Apfloat("-18.bk1aevn10od1", 13, 35)), a, new Apfloat("0.00000000000f", 1, 35));
+
+        // z = 0
+        a = ApcomplexMath.hypergeometric1F1(new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(3.00000,4.00000)"), new Apcomplex("0"));
+        assertEquals("1+2i, 3+4i, 0 precision", 6, a.precision());
+        assertEquals("1+2i, 3+4i, 0 value", new Apcomplex("1.00000"), a);
+
+        // Polynomial cases
+        a = ApcomplexMath.hypergeometric1F1(new Apcomplex("0"), new Apcomplex("1.0"), new Apcomplex("1.0"));
+        assertEquals("0, 1, 1 precision", 2, a.precision());
+        assertEquals("0, 1, 1 value", new Apcomplex("1.0"), a);
+ 
+        a = ApcomplexMath.hypergeometric1F1(new Apcomplex("-42.00000"), new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("-42, 3+4i, 5+6i precision", 6, a.precision());
+        assertEquals("-42, 3+4i, 5+6i value", new Apcomplex("(-56.0081,-31.8473)"), a, new Apfloat("5e-4"));
+
         // Reduction to 0F0
+        a = ApcomplexMath.hypergeometric1F1(new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("1+2i, 1+2i, 5+6i precision", 6, a.precision());
+        assertEquals("1+2i, 1+2i, 5+6i value", new Apcomplex("(142.502,-41.4689)"), a, new Apfloat("5e-4"));
+ 
+        // Non converging cases
+        try
+        {
+            ApcomplexMath.hypergeometric1F1(new Apcomplex("(1.00000,2.00000)"), new Apcomplex("0"), new Apcomplex("(5.00000,6.00000)"));
+            fail("1+2i, 0, 5+6i accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
     }
 
     public static void testHypergeometric2F1()
