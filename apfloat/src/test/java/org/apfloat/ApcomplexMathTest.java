@@ -2885,12 +2885,12 @@ public class ApcomplexMathTest
         assertEquals("1, 2.00001, 3.3, 5 value", new Apcomplex("(-0.561371,-0.351398)"), a, new Apfloat("5e-5"));
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex("12345.000000000000000"), new Apcomplex("23456.000000000000000"), new Apcomplex("3.3000000000000000000"), new Apcomplex("5.0000000000000000000"));    // a - b is very large integer
-        assertEquals("12345, 23456, 3.3, 5 precision", 16, a.precision());  // FIXME This should be 14
-        assertEquals("12345, 23456, 3.3, 5 value", new Apcomplex("(5.209970266373108e-4961,7.170908880828330e-4961)"), a, new Apfloat("5e-4974"));
+        assertEquals("12345, 23456, 3.3, 5 precision", 20, a.precision());
+        assertEquals("12345, 23456, 3.3, 5 value", new Apcomplex("(5.2099702663731078027e-4961,7.1709088808283296782e-4961)"), a, new Apfloat("5e-4980"));
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex("12345.000000000000001"), new Apcomplex("23456.000000000000000"), new Apcomplex("3.3000000000000000000"), new Apcomplex("5.0000000000000000000"));    // a - b is very large almost integer
-        assertEquals("12345.000000000000001, 23456, 3.3, 5 precision", 16, a.precision());
-        assertEquals("12345.000000000000001, 23456, 3.3, 5 value", new Apcomplex("(5.209970266373133e-4961,7.170908880828317e-4961)"), a, new Apfloat("5e-4976"));
+        assertEquals("12345.000000000000001, 23456, 3.3, 5 precision", 20, a.precision());
+        assertEquals("12345.000000000000001, 23456, 3.3, 5 value", new Apcomplex("(5.2099702663731332954e-4961,7.1709088808283173911e-4961)"), a, new Apfloat("5e-4980"));
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex("12345.000000000000000"), new Apcomplex("2.0000000000000000000"), new Apcomplex("3.3000000000000000000"), new Apcomplex("5.0000000000000000000"));    // a - b is very large integer but different scales
         assertEquals("12345, 2, 3.3, 5 precision", 16, a.precision());
@@ -2949,12 +2949,12 @@ public class ApcomplexMathTest
         */
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex("123.00000000000000000"), new Apcomplex("234.00000000000000000"), new Apcomplex("3.3000000000000000000"), new Apcomplex("-5.0000000000000000000"));    // a - b is very large integer
-        assertEquals("123, 234, 3.3, -5 precision", 17, a.precision());
-        assertEquals("123, 234, 3.3, -5 value", new Apcomplex("-1.62442712686835613e-145"), a, new Apfloat("5e-161"));
+        assertEquals("123, 234, 3.3, -5 precision", 20, a.precision());
+        assertEquals("123, 234, 3.3, -5 value", new Apcomplex("-1.6244271268683561270e-145"), a, new Apfloat("5e-164"));
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex("123.00000000000000001"), new Apcomplex("234.00000000000000000"), new Apcomplex("3.3000000000000000000"), new Apcomplex("-5.0000000000000000000"));    // a - b is very large almost integer
-        assertEquals("123.00000000000000001, 234, 3.3, -5 precision", 17, a.precision());
-        assertEquals("123.00000000000000001, 234, 3.3, -5 value", new Apcomplex("-1.6244271268683562e-145"), a, new Apfloat("5e-161"));
+        assertEquals("123.00000000000000001, 234, 3.3, -5 precision", 20, a.precision());
+        assertEquals("123.00000000000000001, 234, 3.3, -5 value", new Apcomplex("-1.6244271268683561596e-145"), a, new Apfloat("5e-164"));
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex("12345.000000000000000"), new Apcomplex("2.0000000000000000000"), new Apcomplex("3.3000000000000000000"), new Apcomplex("-5.0000000000000000000"));    // a - b is very large integer but different scales
         assertEquals("12345, 2, 3.3, -5 precision", 16, a.precision());
@@ -3019,9 +3019,9 @@ public class ApcomplexMathTest
         assertEquals("1+2i, 3+4i, 5+6i, 0.8-0.2i value", new Apcomplex("(1.33313,3.65726)"), a, new Apfloat("5e-5"));
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex(new Apfloat(1, 11, 7), new Apfloat(2, 11, 7)), new Apcomplex(new Apfloat(3, 11, 7), new Apfloat(4, 11, 7)), new Apcomplex(new Apfloat(5, 11, 7), new Apfloat(6, 11, 7)), new Apcomplex(new Apfloat("0.6", 11, 7), new Apfloat("0.2", 11, 7)));
-        assertEquals("1+2i, 3+4i, 5+6i, 0.6+0.2i radix 7 precision", 5, a.precision()); // FIXME too low precision
+        assertEquals("1+2i, 3+4i, 5+6i, 0.6+0.2i radix 7 precision", 11, a.precision());
         assertEquals("1+2i, 3+4i, 5+6i, 0.6+0.2i radix 7 radix", 7, a.radix());
-        assertEquals("1+2i, 3+4i, 5+6i, 0.6+0.2i radix 7 value", new Apcomplex(new Apfloat("-0.1346012", 7, 7), new Apfloat("0.4256356", 7, 7)), a, new Apfloat("3e-6", 1, 7));
+        assertEquals("1+2i, 3+4i, 5+6i, 0.6+0.2i radix 7 value", new Apcomplex(new Apfloat("-0.13460121301", 11, 7), new Apfloat("0.42563562524", 11, 7)), a, new Apfloat("3e-11", 1, 7));
 
         // T5
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex("1.00000"), new Apcomplex("2.20000"), new Apcomplex("3.30000"), new Apcomplex("1.10000"));

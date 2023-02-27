@@ -52,15 +52,34 @@ class HypergeometricHelper
 {
     // See: Computing hypergeometric functions rigorously by Fredrik Johansson, https://arxiv.org/pdf/1606.06977.pdf
 
+    private static class RetryException
+        extends RuntimeException
+    {
+        public RetryException(long precisionLoss)
+        {
+            this.precisionLoss = precisionLoss;
+        }
+
+        public long getPrecisionLoss()
+        {
+            return precisionLoss;
+        }
+
+        private static final long serialVersionUID = 1L;
+
+        private long precisionLoss;
+    }
+
     private class Hypergeometric2F1Helper
     {
-        public Hypergeometric2F1Helper()
+        public Hypergeometric2F1Helper(boolean retry)
         {
             this.a = HypergeometricHelper.this.a[0];
             this.b = HypergeometricHelper.this.a[1];
             this.c = HypergeometricHelper.this.b[0];
             this.z = HypergeometricHelper.this.z;
             this.one = HypergeometricHelper.this.one;
+            this.retry = retry;
         }
 
         public void ensurePrecisions()
@@ -78,9 +97,9 @@ class HypergeometricHelper
             long digitLoss;
             if (ab.isInteger())
             {
-                digitLoss = precision;
-                precision = Util.ifFinite(precision, precision + digitLoss);
-                Apfloat offset = scale(new Apfloat("0.1", precision, radix), -digitLoss);
+                digitLoss = workingPrecision;
+                workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
+                Apfloat offset = scale(new Apfloat("0.1", workingPrecision, radix), -digitLoss);
                 a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset), a.imag());
                 b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag()); // Could just set the precision but overflow handling is more difficult
                 ensurePrecisions();
@@ -91,9 +110,9 @@ class HypergeometricHelper
                 digitLoss = -ab.subtract(abRounded).scale();
                 if (digitLoss > 0)
                 {
-                    precision = Util.ifFinite(precision, precision + digitLoss);
+                    workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
                     // Set precision of a and b so that after computing a - b the difference still has the required precision
-                    Apfloat offset = scale(new Apfloat("0.1", precision, radix), -digitLoss);
+                    Apfloat offset = scale(new Apfloat("0.1", workingPrecision, radix), -digitLoss);
                     a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag());
                     b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag());
                     ensurePrecisions();
@@ -108,9 +127,9 @@ class HypergeometricHelper
             long digitLoss;
             if (cab.isInteger())
             {
-                digitLoss = precision;
-                precision = Util.ifFinite(precision, precision + digitLoss);
-                Apfloat offset = scale(new Apfloat("0.1", precision, radix), -digitLoss);
+                digitLoss = workingPrecision;
+                workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
+                Apfloat offset = scale(new Apfloat("0.1", workingPrecision, radix), -digitLoss);
                 c = new Apcomplex(c.real().precision(Apfloat.INFINITE).add(offset), c.imag());
                 a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag()); // Could just set the precision but overflow handling is more difficult
                 b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag()); // Could just set the precision but overflow handling is more difficult
@@ -122,8 +141,8 @@ class HypergeometricHelper
                 digitLoss = -cab.subtract(cabRounded).scale();
                 if (digitLoss > 0)
                 {
-                    precision = Util.ifFinite(precision, precision + digitLoss);
-                    Apfloat offset = scale(new Apfloat("0.1", precision, radix), -digitLoss);
+                    workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
+                    Apfloat offset = scale(new Apfloat("0.1", workingPrecision, radix), -digitLoss);
                     c = new Apcomplex(c.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), c.imag());
                     a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag());
                     b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag());
@@ -134,7 +153,6 @@ class HypergeometricHelper
 
         public Apcomplex transform(Apcomplex s, Apcomplex c, Apcomplex base1, Apcomplex exp1, Apcomplex g1, Apcomplex g2, Apcomplex a1, Apcomplex b1, Apcomplex c1, Apcomplex base2, Apcomplex exp2, Apcomplex base3, Apcomplex exp3, Apcomplex g3, Apcomplex g4, Apcomplex a2, Apcomplex b2, Apcomplex c2, Apcomplex z)
         {
-            Apfloat pi = pi(precision, radix);
             Apcomplex term1,
                       term2;
             if (g1.isInteger() && g1.real().signum() <= 0 || g2.isInteger() && g2.real().signum() <= 0)
@@ -153,7 +171,14 @@ class HypergeometricHelper
             {
                 term2 = pow(base2, exp2).multiply(pow(base3, exp3)).divide(gamma(g3).multiply(gamma(g4)).multiply(gamma(c2))).multiply(evaluate(a2, b2, c2, z));
             }
-            return gamma(c).multiply(pi).divide(sin(pi.multiply(s))).multiply(term1.subtract(term2));
+            Apcomplex d = term1.subtract(term2);
+            long precisionLoss = (d.real().signum() == 0 && d.imag().signum() == 0 ? workingPrecision : targetPrecision - d.precision());
+            if (retry && precisionLoss > 1) // Allow a precision loss of 1 (which happens often), otherwise retry with increased precision
+            {
+                throw new RetryException(precisionLoss);
+            }
+            Apfloat pi = pi(workingPrecision, radix);
+            return gamma(c).multiply(pi).divide(sin(pi.multiply(s))).multiply(d);
         }
 
         private Apcomplex evaluate(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
@@ -166,6 +191,7 @@ class HypergeometricHelper
                          c,
                          z;
         public Apint one;
+        private boolean retry;
     }
 
     // T0 is the direct evaluation of the series without transformation, T1 - T5 are as per DLMF 15.8.1 - 15.8.5  
@@ -355,7 +381,8 @@ class HypergeometricHelper
         this.a = a;
         this.b = b;
         this.z = z;
-        this.precision = precision(a, b, z);
+        this.targetPrecision = precision(a, b, z);
+        this.workingPrecision = targetPrecision;
         this.radix = z.radix();
         this.one = Apint.ONES[radix];
         this.zero = Apint.ZEROS[radix];
@@ -403,7 +430,7 @@ class HypergeometricHelper
         {
             if (z.real().signum() == 0 && z.imag().signum() == 0)
             {
-                return new Apfloat(1, precision, radix);
+                return new Apfloat(1, targetPrecision, radix);
             }
             throw new ArithmeticException("Series does not converge");
         }
@@ -417,9 +444,8 @@ class HypergeometricHelper
         }
         assert (b.length > 0);
 
-        long resultPrecision = precision;   // The evaluation can change the precision
         result = evaluate(a, b, z);
-        return ApfloatHelper.limitPrecision(result, resultPrecision);
+        return ApfloatHelper.limitPrecision(result, targetPrecision);
     }
 
     private Apcomplex hypergeometric2F1(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
@@ -449,16 +475,15 @@ class HypergeometricHelper
                 return Apint.ZEROS[radix];
             }
             Apcomplex cab = s.subtract(b);
-            s = ApfloatHelper.ensurePrecision(s, precision);
-            t = ApfloatHelper.ensurePrecision(t, precision);
-            cab = ApfloatHelper.ensurePrecision(cab, precision);
+            s = ApfloatHelper.ensurePrecision(s, workingPrecision);
+            t = ApfloatHelper.ensurePrecision(t, workingPrecision);
+            cab = ApfloatHelper.ensurePrecision(cab, workingPrecision);
             return ApcomplexMath.gamma(c).multiply(ApcomplexMath.gamma(cab)).divide(ApcomplexMath.gamma(s).multiply(ApcomplexMath.gamma(t)));
         }
         Apcomplex zDoublePrecision = z.precision(ApfloatHelper.getDoublePrecision(radix));
         // Does it make any sense to check first if the transform results in a polynomial? The polynomial could potentially be of huge degree anyways
         Transformation transformation = Arrays.stream(Transformation.values()).filter(t -> t.isApplicable(z)).min(comparing(t -> abs(t.z(zDoublePrecision)))).get();
         Apcomplex result;
-        long resultPrecision = precision;   // The transformation can change the precision
         if (abs(transformation.z(zDoublePrecision)).doubleValue() > 0.8)
         {
             // Use alternative algorithm as none of the transforms is very good
@@ -466,9 +491,18 @@ class HypergeometricHelper
         }
         else
         {
-            result = transformation.value(new Hypergeometric2F1Helper());
+            result = null;
+            try
+            {
+                result = transformation.value(new Hypergeometric2F1Helper(true));
+            }
+            catch (RetryException re)
+            {
+                workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + re.getPrecisionLoss());
+                result = transformation.value(new Hypergeometric2F1Helper(false));  // Retry once if there is unexpected precision loss
+            }
         }
-        return ApfloatHelper.limitPrecision(result, resultPrecision);
+        return ApfloatHelper.limitPrecision(result, targetPrecision);
     }
 
     private static long precision(Apcomplex[] z0, Apcomplex[] z1, Apcomplex z2)
@@ -486,7 +520,7 @@ class HypergeometricHelper
     {
         if (z.real().signum() == 0 && z.imag().signum() == 0)
         {
-            return new Apfloat(1, precision, radix);
+            return new Apfloat(1, targetPrecision, radix);
         }
         Apfloat minNonPositiveIntegerA = minNonPositiveInteger(a),
                 minNonPositiveIntegerB = minNonPositiveInteger(b);
@@ -497,9 +531,8 @@ class HypergeometricHelper
         if (minNonPositiveIntegerA != null)
         {
             // Result is a polynomial, we should evaluate here as e.g. a transformation of 2F1 won't work if c is a non-positive integer
-            long resultPrecision = precision;   // The evaluation can change the precision
             Apcomplex result = evaluate(a, b, z);
-            return ApfloatHelper.limitPrecision(result, resultPrecision);
+            return ApfloatHelper.limitPrecision(result, targetPrecision);
         }
         return null;
     }
@@ -519,7 +552,7 @@ class HypergeometricHelper
         Apint minN = ApintMath.max(one, Stream.concat(Arrays.stream(a), Arrays.stream(b)).map(Apcomplex::real).reduce(ApfloatMath::min).get().truncate().negate()).add(one);
         long precisionLoss = 0,
              extraPrecision,
-             extendedPrecision = ApfloatHelper.extendPrecision(precision, minN.scale()); // Estimate for accumulated round-off error precision due to repeated multiplication only (not scale based digit loss, see below)
+             extendedPrecision = ApfloatHelper.extendPrecision(workingPrecision, minN.scale()); // Estimate for accumulated round-off error precision due to repeated multiplication only (not scale based digit loss, see below)
 
         ensurePrecision(a, a, extendedPrecision);
         ensurePrecision(b, b, extendedPrecision);
@@ -558,16 +591,16 @@ class HypergeometricHelper
                 t = numerator.divide(denominator);
                 s = s.add(t);
                 maxSScale = Math.max(maxSScale, s.scale());
-            } while (i.compareTo(minN) <= 0 || s.real().signum() == 0 && s.imag().signum() == 0 || s.scale() - t.scale() <= precision); // Subtraction might overflow
+            } while (i.compareTo(minN) <= 0 || s.real().signum() == 0 && s.imag().signum() == 0 || s.scale() - t.scale() <= workingPrecision); // Subtraction might overflow
 
             precisionLoss = (s.real().signum() == 0 && s.imag().signum() == 0 ? extendedPrecision : maxSScale - s.scale()); // Loss due to scale of s reduced from its peak (loss off most significant digits)
-            if (precision - s.precision() > 1)  // Often the precision is reduced by 1
+            if (workingPrecision - s.precision() > 1)  // Often the precision is reduced by 1
             {
-                precisionLoss = Util.ifFinite(precisionLoss, precisionLoss + precision - s.precision()); // Loss due to accumulation (loss off least significant digits)
+                precisionLoss = Util.ifFinite(precisionLoss, precisionLoss + workingPrecision - s.precision()); // Loss due to accumulation (loss off least significant digits)
             }
             if (precisionLoss > extraPrecision)
             {
-                extendedPrecision = Util.ifFinite(precision, precision + precisionLoss);
+                extendedPrecision = Util.ifFinite(workingPrecision, workingPrecision + precisionLoss);
                 ensurePrecision(aOrig, a, extendedPrecision);
                 ensurePrecision(bOrig, b, extendedPrecision);
                 z = ApfloatHelper.ensurePrecision(z, extendedPrecision);
@@ -585,7 +618,7 @@ class HypergeometricHelper
             long digitLoss = -c.subtract(cRounded).scale();
             if (digitLoss > 0)
             {
-                precision = Util.ifFinite(precision, precision + digitLoss);
+                workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
                 a = ensurePrecision(a);
                 b = ensurePrecision(b);
                 c = ensurePrecision(c);
@@ -621,13 +654,13 @@ class HypergeometricHelper
             e = ensurePrecision(e1);
             f = ensurePrecision(f1);
             k = k.add(one);
-        } while (d.scale() >= -precision || e.scale() >= -precision);
+        } while (d.scale() >= -workingPrecision || e.scale() >= -workingPrecision);
         return f;
     }
 
     private Apcomplex ensurePrecision(Apcomplex z)
     {
-        return ApfloatHelper.ensurePrecision(z, precision);
+        return ApfloatHelper.ensurePrecision(z, workingPrecision);
     }
 
     private void ensurePrecision(Apcomplex[] src, Apcomplex[] dest, long extendedPrecision)
@@ -638,7 +671,8 @@ class HypergeometricHelper
         }
     }
 
-    private long precision;
+    private long targetPrecision,
+                 workingPrecision;
     private int radix;
     private Apcomplex[] a,
                         b;
