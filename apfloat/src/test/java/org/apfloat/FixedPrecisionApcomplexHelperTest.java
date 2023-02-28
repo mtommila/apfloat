@@ -345,6 +345,11 @@ public class FixedPrecisionApcomplexHelperTest
         result = helper.exp(z);
         assertEquals("big value", new Apcomplex("-1.816093715813449977121047779023089136641e2171472409516"), result, new Apfloat("5e2171472409477"));
         assertEquals("big precision", 40, result.precision());
+
+        z = new Apcomplex(new Apfloat("1e-1000000000000000"));
+        result = helper.exp(z);
+        assertEquals("small value", new Apcomplex("1"), result, new Apfloat("5e-39"));
+        assertEquals("small precision", 40, result.precision());
     }
 
     public static void testPow()
