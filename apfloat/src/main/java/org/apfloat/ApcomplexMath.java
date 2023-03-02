@@ -2163,6 +2163,10 @@ public class ApcomplexMath
             {
                 throw new ArithmeticException("Digamma of nonpositive integer");
             }
+            if (precision == Apfloat.INFINITE)
+            {
+                throw new InfiniteExpansionException("Cannot calculate digamma function to infinite precision");
+            }
             Apfloat pi = ApfloatMath.pi(precision, radix);
             // Use reflection formula, see e.g. https://functions.wolfram.com/GammaBetaErf/PolyGamma/16/01/01/
             if (z.scale() < -precision)
@@ -2170,6 +2174,10 @@ public class ApcomplexMath
                 return digamma(z.negate()).subtract(pi.multiply(cot(pi.multiply(z)))).subtract(one.divide(z));
             }
             return digamma(one.subtract(z)).subtract(pi.multiply(cot(pi.multiply(z))));
+        }
+        if (precision == Apfloat.INFINITE)
+        {
+            throw new InfiniteExpansionException("Cannot calculate digamma function to infinite precision");
         }
 
         double adjust = Math.log(precision) + 1,    // Adjustment for the sqrt(n) factor in bernoulli numbers

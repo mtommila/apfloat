@@ -2855,6 +2855,16 @@ public class ApcomplexMathTest
         {
             // OK, result is infinite
         }
+
+        try
+        {
+            ApcomplexMath.hypergeometric0F1(new Apcomplex(new Apfloat(3), new Apfloat(4)), new Apcomplex(new Apfloat(5), new Apfloat(6)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testHypergeometric1F1()
@@ -2905,6 +2915,16 @@ public class ApcomplexMathTest
         catch (ArithmeticException ae)
         {
             // OK, result is indeterminate
+        }
+
+        try
+        {
+            ApcomplexMath.hypergeometric1F1(new Apcomplex(new Apfloat(3), new Apfloat(4)), new Apcomplex(new Apfloat(5), new Apfloat(6)), new Apcomplex(new Apfloat(7), new Apfloat(8)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
         }
     }
 
@@ -3269,6 +3289,16 @@ public class ApcomplexMathTest
         catch (ArithmeticException ae)
         {
             // OK, result is infinite
+        }
+
+        try
+        {
+            ApcomplexMath.hypergeometric2F1(new Apcomplex(new Apfloat(1), new Apfloat(2)), new Apcomplex(new Apfloat(3), new Apfloat(4)), new Apcomplex(new Apfloat(5), new Apfloat(6)), new Apcomplex(new Apfloat(7), new Apfloat(8)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
         }
     }
 

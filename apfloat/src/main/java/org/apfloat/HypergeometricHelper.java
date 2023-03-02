@@ -528,6 +528,10 @@ class HypergeometricHelper
         {
             return new Apfloat(1, targetPrecision, radix);
         }
+        if (targetPrecision == Apfloat.INFINITE)
+        {
+            throw new InfiniteExpansionException("Cannot calculate hypergeometric function to infinite precision");
+        }
         if (minNonPositiveIntegerA != null)
         {
             // Result is a polynomial, we should evaluate here as e.g. a transformation of 2F1 won't work if c is a non-positive integer

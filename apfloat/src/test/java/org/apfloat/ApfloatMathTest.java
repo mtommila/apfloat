@@ -2597,6 +2597,16 @@ public class ApfloatMathTest
         assertEquals("2, 3 radix 2 precision", 60, a.precision());
         assertEquals("2, 3 radix 2 radix", 2, a.radix());
         assertEquals("2, 3 radix 2 value", new Apfloat("11.0111011111111001011010111110000111011011111111101110000100", 60, 2), a, new Apfloat("1e-58", 1, 2));
+
+        try
+        {
+            ApfloatMath.hypergeometric0F1(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testHypergeometric1F1()
@@ -2609,6 +2619,16 @@ public class ApfloatMathTest
         assertEquals("2, 3, 4 radix 2 precision", 60, a.precision());
         assertEquals("2, 3, 4 radix 2 radix", 2, a.radix());
         assertEquals("2, 3, 4 radix 2 value", new Apfloat("10100.1001100101101100001000101001110101101011110000100100110", 60, 2), a, new Apfloat("1e-55", 1, 2));
+
+        try
+        {
+            ApfloatMath.hypergeometric1F1(new Apfloat(3), new Apfloat(4), new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testHypergeometric2F1()
@@ -2638,12 +2658,31 @@ public class ApfloatMathTest
         }
         try
         {
-            ApfloatMath.hypergeometric2F1(new Apfloat("-2.00000"), new Apfloat("2.20000"), new Apfloat("-1.00000"), new Apfloat("1.000001"));
+            ApfloatMath.hypergeometric2F1(new Apfloat(1), new Apfloat(2), new Apfloat(4), new Apfloat(2));
+            fail("2F1 of x > 1 with infinite precision");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK result would be complex
+        }
+        try
+        {
+            ApfloatMath.hypergeometric2F1(new Apfloat("-2.00000"), new Apfloat("2.20000"), new Apfloat("-1.00000"), new Apfloat("0.000001"));
             fail("Infinite accepted");
         }
         catch (ArithmeticException ae)
         {
             // OK result would be infinite
+        }
+
+        try
+        {
+            ApfloatMath.hypergeometric2F1(new Apfloat(2), new Apfloat(3), new Apfloat(6), new Apfloat(1));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
         }
     }
 
