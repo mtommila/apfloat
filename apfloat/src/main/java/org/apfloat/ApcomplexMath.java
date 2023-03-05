@@ -1692,6 +1692,7 @@ public class ApcomplexMath
     /**
      * Gamma function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
@@ -1800,6 +1801,7 @@ public class ApcomplexMath
     /**
      * Incomplete gamma function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
@@ -1828,6 +1830,7 @@ public class ApcomplexMath
      *
      * The lower gamma function can be calculated with: <code>&gamma;(a, z) = &Gamma;(a, 0, z)</code><p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
@@ -1854,6 +1857,7 @@ public class ApcomplexMath
      * Logarithm of the gamma function. Note that this function has a different branch
      * structure than <code>log(gamma(z))</code>.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
@@ -2085,6 +2089,7 @@ public class ApcomplexMath
     /**
      * Digamma function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
@@ -2264,6 +2269,7 @@ public class ApcomplexMath
     /**
      * Riemann zeta function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few hundred digits. At the time of
      * implementation no generic fast algorithm is known for the zeta function.
@@ -2286,6 +2292,7 @@ public class ApcomplexMath
     /**
      * Hurwitz zeta function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few hundred digits. At the time of
      * implementation no generic fast algorithm is known for the zeta function.
@@ -2309,6 +2316,7 @@ public class ApcomplexMath
     /**
      * Confluent hypergeometric function <i><sub>0</sub>F<sub>1</sub></i>.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the function.
@@ -2333,6 +2341,7 @@ public class ApcomplexMath
      * Kummer confluent hypergeometric function <i><sub>1</sub>F<sub>1</sub></i>.
      * Also known as the confluent hypergeometric function of the first kind.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the function.
@@ -2358,6 +2367,7 @@ public class ApcomplexMath
      * Hypergeometric function <i><sub>2</sub>F<sub>1</sub></i>.
      * Also known as the Gaussian or ordinary hypergeometric function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the function.

@@ -2207,6 +2207,7 @@ public class ApfloatMath
     /**
      * Calculates Catalan's constant, <i>G</i>. Uses the default radix.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>.
      *
      * @param precision Number of digits of <i>G</i> to calculate.
@@ -2231,6 +2232,7 @@ public class ApfloatMath
     /**
      * Calculates Catalan's constant, <i>G</i>. Uses the specified radix.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>.
      *
      * @param precision Number of digits of <i>G</i> to calculate.
@@ -2267,6 +2269,7 @@ public class ApfloatMath
     /**
      * Calculates the Glaisher‐Kinkelin constant, <i>A</i>. Uses the default radix.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>. At the time of implementation no
      * efficient algorithm is known for the Glaisher‐Kinkelin constant.
      *
@@ -2292,6 +2295,7 @@ public class ApfloatMath
     /**
      * Calculates the Glaisher‐Kinkelin constant, <i>A</i>. Uses the specified radix.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>. At the time of implementation no
      * efficient algorithm is known for the Glaisher‐Kinkelin constant.
      *
@@ -2348,6 +2352,7 @@ public class ApfloatMath
     /**
      * Calculates Khinchin's constant, <i>K</i>.Uses the default radix.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>. At the time of implementation no
      * efficient algorithm is known for Khinchin's constant.
      *
@@ -2373,6 +2378,7 @@ public class ApfloatMath
     /**
      * Calculates Khinchin's constant, <i>K</i>. Uses the specified radix.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>. At the time of implementation no
      * efficient algorithm is known for Khinchin's constant.
      *
@@ -2429,6 +2435,7 @@ public class ApfloatMath
     /**
      * Gamma function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
@@ -2452,6 +2459,7 @@ public class ApfloatMath
     /**
      * Incomplete gamma function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
@@ -2485,6 +2493,7 @@ public class ApfloatMath
      *
      * The lower gamma function can be calculated with: <code>&gamma;(a, x) = &Gamma;(a, 0, x)</code><p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
@@ -2515,6 +2524,7 @@ public class ApfloatMath
     /**
      * Logarithm of the gamma function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
@@ -2542,6 +2552,7 @@ public class ApfloatMath
     /**
      * Digamma function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
      * impractically slow beyond a precision of a few thousand digits. At the time of
@@ -2605,6 +2616,7 @@ public class ApfloatMath
     /**
      * Riemann zeta function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few hundred digits. At the time of
      * implementation no generic fast algorithm is known for the zeta function.
@@ -2627,6 +2639,7 @@ public class ApfloatMath
     /**
      * Hurwitz zeta function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few hundred digits. At the time of
      * implementation no generic fast algorithm is known for the zeta function.
@@ -2654,6 +2667,7 @@ public class ApfloatMath
     /**
      * Confluent hypergeometric function <i><sub>0</sub>F<sub>1</sub></i>.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the function.
@@ -2678,6 +2692,7 @@ public class ApfloatMath
      * Kummer confluent hypergeometric function <i><sub>1</sub>F<sub>1</sub></i>.
      * Also known as the confluent hypergeometric function of the first kind.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the function.
@@ -2703,6 +2718,7 @@ public class ApfloatMath
      * Hypergeometric function <i><sub>2</sub>F<sub>1</sub></i>.
      * Also known as the Gaussian or ordinary hypergeometric function.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the function.

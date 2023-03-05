@@ -367,6 +367,7 @@ class HypergeometricHelper
     /**
      * Helper for the generalized hypergeometric function <i><sub>p</sub>F<sub>q</sub></i>.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the function.
@@ -391,6 +392,7 @@ class HypergeometricHelper
     /**
      * Generalized hypergeometric function <i><sub>p</sub>F<sub>q</sub></i>.<p>
      *
+     * @implNote
      * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
      * It is impractically slow beyond a precision of a few thousand digits. At the time of
      * implementation no generic fast algorithm is known for the function.

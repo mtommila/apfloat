@@ -154,6 +154,13 @@
               <exclude>apfloat.java</exclude>
             </sourceFileExcludes>
             <source>1.8</source>
+            <tags>
+              <tag>
+                <name>implNote</name>
+                <placement>a</placement>
+                <head>Implementation notes:</head>
+              </tag>
+            </tags>
           </configuration>
         </plugin>
         <plugin>
