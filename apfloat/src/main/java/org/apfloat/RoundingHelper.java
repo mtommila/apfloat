@@ -29,7 +29,7 @@ import java.math.RoundingMode;
  * Helper class for rounding functions.
  *
  * @since 1.7.0
- * @version 1.7.0
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -64,6 +64,25 @@ class RoundingHelper
         {
             x = x.scale(precision - scale);
         }
+
+        x = roundToInteger(x, roundingMode);
+
+        if (overflow)
+        {
+            // Avoid overflow of longs, do scaling in two parts
+            x = ApfloatMath.scale(x, -precision);
+            x = ApfloatMath.scale(x, scale);
+        }
+        else
+        {
+            x = ApfloatMath.scale(x, scale - precision);
+        }
+        return x.precision(precision);
+    }
+
+    public static Apfloat roundToInteger(Apfloat x, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
         switch (roundingMode)
         {
             case UP:
@@ -106,17 +125,7 @@ class RoundingHelper
             default:
                 throw new IllegalArgumentException("Unknown rounding mode: " + roundingMode);
         }
-        if (overflow)
-        {
-            // Avoid overflow of longs, do scaling in two parts
-            x = ApfloatMath.scale(x, -precision);
-            x = ApfloatMath.scale(x, scale);
-        }
-        else
-        {
-            x = ApfloatMath.scale(x, scale - precision);
-        }
-        return x.precision(precision);
+        return x;
     }
 
     public static int compareToHalf(Apfloat x)

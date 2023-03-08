@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.7.0
- * @version 1.7.0
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -52,6 +52,7 @@ public class RoundingHelperTest
         TestSuite suite = new TestSuite();
 
         suite.addTest(new RoundingHelperTest("testRound"));
+        suite.addTest(new RoundingHelperTest("testRoundToInteger"));
         suite.addTest(new RoundingHelperTest("testCompareToHalf"));
 
         return suite;
@@ -60,6 +61,11 @@ public class RoundingHelperTest
     public static void testRound()
     {
         assertEquals("round", new Apfloat("1.0"), RoundingHelper.round(new Apfloat("1.1"), 1, RoundingMode.DOWN));
+    }
+
+    public static void testRoundToInteger()
+    {
+        assertEquals("roundToInteger", new Apfloat(12346), RoundingHelper.roundToInteger(new Apfloat("12345.67"), RoundingMode.HALF_EVEN));
     }
 
     public static void testCompareToHalf()

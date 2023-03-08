@@ -97,24 +97,26 @@ class HypergeometricHelper
             long digitLoss;
             if (ab.isInteger())
             {
+                // Adjust the one which has larger magnitude in real part
+                swapLargerAB();
                 digitLoss = workingPrecision;
                 workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
-                Apfloat offset = scale(new Apfloat("0.1", workingPrecision, radix), -digitLoss);
+                Apfloat offset = offset(-digitLoss);
                 a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset), a.imag());
-                b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag()); // Could just set the precision but overflow handling is more difficult
+                b = new Apcomplex(adjustOffset(b.real(), offset), b.imag());
                 ensurePrecisions();
             }
             else
             {
-                Apint abRounded = (ab.scale() <= 0 ? zero : ApfloatMath.round(ab.real(), ab.scale(), RoundingMode.HALF_EVEN).truncate());
+                Apint abRounded = RoundingHelper.roundToInteger(ab.real(), RoundingMode.HALF_EVEN).truncate();
                 digitLoss = -ab.subtract(abRounded).scale();
                 if (digitLoss > 0)
                 {
                     workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
                     // Set precision of a and b so that after computing a - b the difference still has the required precision
-                    Apfloat offset = scale(new Apfloat("0.1", workingPrecision, radix), -digitLoss);
-                    a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag());
-                    b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag());
+                    Apfloat offset = offset(-digitLoss);
+                    a = new Apcomplex(adjustOffset(a.real(), offset), a.imag());
+                    b = new Apcomplex(adjustOffset(b.real(), offset), b.imag());
                     ensurePrecisions();
                 }
             }
@@ -127,28 +129,64 @@ class HypergeometricHelper
             long digitLoss;
             if (cab.isInteger())
             {
+                // Adjust the one which has largest magnitude in real part
+                swapLargerAB();
                 digitLoss = workingPrecision;
                 workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
-                Apfloat offset = scale(new Apfloat("0.1", workingPrecision, radix), -digitLoss);
-                c = new Apcomplex(c.real().precision(Apfloat.INFINITE).add(offset), c.imag());
-                a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag()); // Could just set the precision but overflow handling is more difficult
-                b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag()); // Could just set the precision but overflow handling is more difficult
+                Apfloat offset = offset(-digitLoss);
+                if (c.real().scale() > a.real().scale())
+                {
+                    c = new Apcomplex(c.real().precision(Apfloat.INFINITE).add(offset), c.imag());
+                    a = new Apcomplex(adjustOffset(a.real(), offset), a.imag());
+                }
+                else
+                {
+                    c = new Apcomplex(adjustOffset(c.real(), offset), c.imag());
+                    a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset), a.imag());
+                }
+                b = new Apcomplex(adjustOffset(b.real(), offset), b.imag());
                 ensurePrecisions();
             }
             else
             {
-                Apint cabRounded = (cab.scale() <= 0 ? Apfloat.ZEROS[radix] : ApfloatMath.round(cab.real(), cab.scale(), RoundingMode.HALF_EVEN)).truncate();
+                Apint cabRounded = RoundingHelper.roundToInteger(cab.real(), RoundingMode.HALF_EVEN).truncate();
                 digitLoss = -cab.subtract(cabRounded).scale();
                 if (digitLoss > 0)
                 {
                     workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
-                    Apfloat offset = scale(new Apfloat("0.1", workingPrecision, radix), -digitLoss);
-                    c = new Apcomplex(c.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), c.imag());
-                    a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), a.imag());
-                    b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset).subtract(offset), b.imag());
+                    Apfloat offset = offset(-digitLoss);
+                    a = new Apcomplex(adjustOffset(a.real(), offset), a.imag());
+                    b = new Apcomplex(adjustOffset(b.real(), offset), b.imag());
+                    c = new Apcomplex(adjustOffset(c.real(), offset), c.imag());
                     ensurePrecisions();
                 }
             }
+        }
+
+        private void swapLargerAB()
+        {
+            if (a.real().scale() < b.real().scale())
+            {
+                // a is always the one that has larger magnitude in real part
+                Apcomplex tmp = a;
+                a = b;
+                b = tmp;
+            }
+        }
+
+        private Apfloat offset(long scale)
+        {
+            Apfloat offset = scale(new Apfloat("0.1", workingPrecision, radix), scale);
+            return offset;
+        }
+
+        private Apfloat adjustOffset(Apfloat x, Apfloat offset)
+        {
+            if (x.scale() <= offset.scale())
+            {
+                return x;
+            }
+            return x.precision(Apfloat.INFINITE).add(offset).subtract(offset);
         }
 
         public Apcomplex transform(Apcomplex s, Apcomplex c, Apcomplex base1, Apcomplex exp1, Apcomplex g1, Apcomplex g2, Apcomplex a1, Apcomplex b1, Apcomplex c1, Apcomplex base2, Apcomplex exp2, Apcomplex base3, Apcomplex exp3, Apcomplex g3, Apcomplex g4, Apcomplex a2, Apcomplex b2, Apcomplex c2, Apcomplex z)
@@ -474,7 +512,7 @@ class HypergeometricHelper
                       t = c.subtract(b);
             if (s.isInteger() && s.real().signum() <= 0 || t.isInteger() && t.real().signum() <= 0)
             {
-                return Apint.ZEROS[radix];
+                return zero;
             }
             Apcomplex cab = s.subtract(b);
             s = ApfloatHelper.ensurePrecision(s, workingPrecision);
@@ -567,7 +605,7 @@ class HypergeometricHelper
         do
         {
             long maxSScale = 1; // Scale of 1, the initial s
-            Apint i = Apint.ZEROS[radix];
+            Apint i = zero;
             Apcomplex numerator = one,
                       denominator = one,
                       t;
@@ -620,7 +658,7 @@ class HypergeometricHelper
     {
         if (c.real().signum() <= 0)
         {
-            Apint cRounded = (c.scale() <= 0 ? Apfloat.ZEROS[radix] : ApfloatMath.round(c.real(), c.scale(), RoundingMode.HALF_EVEN)).truncate();
+            Apint cRounded = RoundingHelper.roundToInteger(c.real(), RoundingMode.HALF_EVEN).truncate();
             long digitLoss = -c.subtract(cRounded).scale();
             if (digitLoss > 0)
             {
