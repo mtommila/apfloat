@@ -445,6 +445,29 @@ public class ApfloatMathTest
         assertEquals(new Apfloat("1.1e9223372036853775808"), ApfloatMath.round(new Apfloat("1.1e9223372036853775808"), 100000000000L, RoundingMode.HALF_EVEN));
         assertEquals(new Apfloat("1.1e-9223372036853775808"), ApfloatMath.round(new Apfloat("1.1e-9223372036853775808"), 100000000000L, RoundingMode.HALF_EVEN));
 
+        assertEquals(new Apfloat(0), ApfloatMath.round(new Apfloat(0), 1, RoundingMode.UNNECESSARY));
+        assertEquals(new Apfloat(0), ApfloatMath.round(new Apfloat(0), Apfloat.INFINITE, RoundingMode.UNNECESSARY));
+
+        Apfloat a = ApfloatMath.round(new Apfloat(1), Apfloat.INFINITE, RoundingMode.UNNECESSARY);
+        assertEquals("1, infinite precision", Apfloat.INFINITE, a.precision());
+        assertEquals("1, infinite value", new Apfloat(1), a);
+        a = ApfloatMath.round(new Apfloat(1), 1, RoundingMode.UNNECESSARY);
+        assertEquals("1, 1 precision", 1, a.precision());
+        assertEquals("1, 1 value", new Apfloat(1), a);
+
+        a = ApfloatMath.round(new Apfloat(12345, 4), 4, RoundingMode.UNNECESSARY);
+        assertEquals("12345, 4 precision ", 4, a.precision());
+        assertEquals("12345, 4 value", new Apfloat(12340), a.precision(5));
+        a = ApfloatMath.round(new Apfloat(12345).precision(4), 4, RoundingMode.UNNECESSARY);
+        assertEquals("12345, inifite/4 precision", 4, a.precision());
+        assertEquals("12345, inifite/4 value", new Apfloat(12340), a.precision(5));
+        a = ApfloatMath.round(new Apfloat(12345, 4), 5, RoundingMode.UNNECESSARY);
+        assertEquals("12345, 5 precision", 5, a.precision());
+        assertEquals("12345, 5 value", new Apfloat(12340), a);
+        a = ApfloatMath.round(new Apfloat(12345).precision(4), 5, RoundingMode.UNNECESSARY);
+        assertEquals("12345, inifite/5 precision", 5, a.precision());
+        assertEquals("12345, inifite/5 value", new Apfloat(12340), a);
+
         try
         {
             ApfloatMath.round(new Apfloat(1000), 0, RoundingMode.HALF_EVEN);

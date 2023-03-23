@@ -48,8 +48,11 @@ class RoundingHelper
         }
         if (x.signum() == 0 || precision == Apfloat.INFINITE)
         {
-            return x;
+            return x.precision(precision);
         }
+
+        long targetPrecision = precision;
+        precision = Math.min(precision, x.size());  // To get rid of any residual digits
 
         // Can't optimize by checking x.size() <= precision as the number might have hidden residual digits
         long scale = x.scale();
@@ -77,7 +80,7 @@ class RoundingHelper
         {
             x = ApfloatMath.scale(x, scale - precision);
         }
-        return x.precision(precision);
+        return x.precision(targetPrecision);
     }
 
     public static Apfloat roundToInteger(Apfloat x, RoundingMode roundingMode)
@@ -121,6 +124,7 @@ class RoundingHelper
                 {
                     throw new ArithmeticException("Rounding necessary");
                 }
+                x = x.truncate();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown rounding mode: " + roundingMode);
