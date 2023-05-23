@@ -25,6 +25,8 @@ package org.apfloat;
 
 import java.math.RoundingMode;
 
+import static org.apfloat.ApfloatMath.abs;
+
 /**
  * Helper class for rounding functions.
  *
@@ -39,7 +41,109 @@ class RoundingHelper
     {
     }
 
-    public static Apfloat round(Apfloat x, long precision, RoundingMode roundingMode)
+    public static Apfloat roundToMultiple(Apfloat x, Apfloat y, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() == 0)
+        {
+            return x;
+        }
+        else if (y.signum() == 0)
+        {
+            throw new ArithmeticException("Non-zero as multiple of zero");
+        }
+
+        // Get rid of residual digits
+        int signum = x.signum();
+        x = roundToPrecision(abs(x), x.precision(), RoundingMode.UNNECESSARY);
+        y = roundToPrecision(abs(y), y.precision(), RoundingMode.UNNECESSARY);
+
+        long precision;
+        if (x.compareTo(y) < 0)
+        {
+            precision = Apfloat.EXTRA_PRECISION;                                // abs(x) < abs(y)
+        }
+        else
+        {
+            long scaleDiff = x.scale() - y.scale();                             // We now know that x.scale() >= y.scale()
+            scaleDiff = (scaleDiff < 0 ? Apfloat.INFINITE : scaleDiff);         // Check for overflow
+            precision = ApfloatHelper.extendPrecision(scaleDiff);               // Some extra precision to avoid round-off errors
+        }
+
+        Apfloat i = x.precision(precision).divide(y.precision(precision));
+        Apint r = roundToInteger(i, RoundingMode.HALF_UP),
+              two = new Apint(2, x.radix());
+        if (r.multiply(y.precision(Apfloat.INFINITE)).equals(x.precision(Apfloat.INFINITE)))
+        {
+            // x / y is an integer
+            i = r;
+        }
+        else if ((r = roundToInteger(i.multiply(two), RoundingMode.HALF_UP)).multiply(y.precision(Apfloat.INFINITE)).equals(x.precision(Apfloat.INFINITE).multiply(two)))
+        {
+            // x / y is a half-integer
+            i = new Aprational(r, two); // In an odd radix you can't represent half with an exact expansion like 0.5 in decimal
+        }
+
+        i = (signum < 0 ? i.negate() : i);
+        i = roundToInteger(i, roundingMode);
+
+        i = i.multiply(y);
+
+        return i;
+    }
+
+    public static Aprational roundToMultiple(Aprational x, Aprational y, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() == 0)
+        {
+            return x;
+        }
+        else if (y.signum() == 0)
+        {
+            throw new ArithmeticException("Non-zero as multiple of zero");
+        }
+
+        y = AprationalMath.abs(y);
+
+        Aprational i = roundToInteger(x.divide(y), roundingMode);
+
+        i = i.multiply(y);
+
+        return i;
+    }
+
+    public static Apfloat roundToPlaces(Apfloat x, long places, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() == 0)
+        {
+            return x;
+        }
+
+        x = x.scale(places);
+
+        if (x.signum() == 0)
+        {
+            // Underflow now, and might overflow later
+            throw new OverflowException("Underflow / overflow");
+        }
+
+        x = roundToInteger(x, roundingMode);
+
+        if (places == Long.MIN_VALUE)
+        {
+            x = ApfloatMath.scale(x, Long.MIN_VALUE >>> 1);
+            x = ApfloatMath.scale(x, Long.MIN_VALUE >>> 1);
+        }
+        else
+        {
+            x = ApfloatMath.scale(x, -places);
+        }
+        return x;
+    }
+
+    public static Apfloat roundToPrecision(Apfloat x, long precision, RoundingMode roundingMode)
         throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
     {
         if (precision <= 0)
@@ -83,22 +187,23 @@ class RoundingHelper
         return x.precision(targetPrecision);
     }
 
-    public static Apfloat roundToInteger(Apfloat x, RoundingMode roundingMode)
+    public static Apint roundToInteger(Apfloat x, RoundingMode roundingMode)
         throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
     {
+        Apint i;
         switch (roundingMode)
         {
             case UP:
-                x = x.roundAway();
+                i = x.roundAway();
                 break;
             case DOWN:
-                x = x.truncate();
+                i = x.truncate();
                 break;
             case CEILING:
-                x = x.ceil();
+                i = x.ceil();
                 break;
             case FLOOR:
-                x = x.floor();
+                i = x.floor();
                 break;
             case HALF_UP:
             case HALF_DOWN:
@@ -108,15 +213,15 @@ class RoundingHelper
                 int comparison = fraction.compareToHalf();
                 if (comparison < 0 || comparison == 0 && roundingMode.equals(RoundingMode.HALF_DOWN))
                 {
-                    x = x.truncate();
+                    i = x.truncate();
                 }
                 else if (comparison > 0 || comparison == 0 && roundingMode.equals(RoundingMode.HALF_UP))
                 {
-                    x = x.roundAway();
+                    i = x.roundAway();
                 }
                 else
                 {
-                    x = (isEven(whole) ? x.truncate() : x.roundAway());
+                    i = (isEven(whole) ? x.truncate() : x.roundAway());
                 }
                 break;
             case UNNECESSARY:
@@ -124,12 +229,12 @@ class RoundingHelper
                 {
                     throw new ArithmeticException("Rounding necessary");
                 }
-                x = x.truncate();
+                i = x.truncate();   // To get rid of any residual digits
                 break;
             default:
                 throw new IllegalArgumentException("Unknown rounding mode: " + roundingMode);
         }
-        return x;
+        return i;
     }
 
     public static int compareToHalf(Apfloat x)

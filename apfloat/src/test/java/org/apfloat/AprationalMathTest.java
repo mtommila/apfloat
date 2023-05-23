@@ -55,6 +55,10 @@ public class AprationalMathTest
         suite.addTest(new AprationalMathTest("testScale"));
         suite.addTest(new AprationalMathTest("testAbs"));
         suite.addTest(new AprationalMathTest("testRound"));
+        suite.addTest(new AprationalMathTest("testRoundToPrecision"));
+        suite.addTest(new AprationalMathTest("testRoundToInteger"));
+        suite.addTest(new AprationalMathTest("testRoundToPlaces"));
+        suite.addTest(new AprationalMathTest("testRoundToMultiple"));
         suite.addTest(new AprationalMathTest("testCopySign"));
         suite.addTest(new AprationalMathTest("testNegate"));
         suite.addTest(new AprationalMathTest("testProduct"));
@@ -99,6 +103,7 @@ public class AprationalMathTest
         assertEquals("scale min", new Apfloat("1e-" + 0x4000000000000000L, 1, 2), x);
     }
 
+    @SuppressWarnings("deprecation")
     public static void testRound()
     {
         Apfloat x = AprationalMath.round(new Aprational("3/2"), 1, RoundingMode.UP);
@@ -118,6 +123,199 @@ public class AprationalMathTest
 
         x = AprationalMath.round(new Aprational("-12/2", 3), 1, RoundingMode.HALF_EVEN);
         assertEquals("-5/2 base 3 EVEN", "-2", x.toString());
+    }
+
+    public static void testRoundToPrecision()
+    {
+        Apfloat x = AprationalMath.roundToPrecision(new Aprational("7/3"), 3, RoundingMode.UP);
+        assertEquals("7/3 UP", "2.34", x.toString());
+
+        x = AprationalMath.roundToPrecision(new Aprational("1/2"), 1, RoundingMode.UNNECESSARY);
+        assertEquals("1/2 UNNECESSARY", "0.5", x.toString(true));
+
+        try
+        {
+            AprationalMath.roundToPrecision(new Aprational(1000), 0, RoundingMode.HALF_EVEN);
+            fail("precision 0 accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK; invalid precision
+        }
+
+        try
+        {
+            AprationalMath.roundToPrecision(new Aprational("1/3"), 1000, RoundingMode.UNNECESSARY);
+            fail("rounding accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; rounding needed
+        }
+    }
+
+    public static void testRoundToInteger()
+    {
+        Apint x = AprationalMath.roundToInteger(new Aprational("3/2"), RoundingMode.UP);
+        assertEquals("3/2 UP", "2", x.toString());
+
+        x = AprationalMath.roundToInteger(new Aprational("3/2"), RoundingMode.DOWN);
+        assertEquals("3/2 DOWN", "1", x.toString());
+
+        x = AprationalMath.roundToInteger(new Aprational("10/2", 3), RoundingMode.HALF_EVEN);
+        assertEquals("3/2 base 3 EVEN", "2", x.toString());
+
+        x = AprationalMath.roundToInteger(new Aprational("12/2", 3), RoundingMode.HALF_EVEN);
+        assertEquals("5/2 base 3 EVEN", "2", x.toString());
+
+        x = AprationalMath.roundToInteger(new Aprational("-10/2", 3), RoundingMode.HALF_EVEN);
+        assertEquals("-3/2 base 3 EVEN", "-2", x.toString());
+
+        x = AprationalMath.roundToInteger(new Aprational("-12/2", 3), RoundingMode.HALF_EVEN);
+        assertEquals("-5/2 base 3 EVEN", "-2", x.toString());
+
+        try
+        {
+            AprationalMath.roundToInteger(new Aprational("1/2"), RoundingMode.UNNECESSARY);
+            fail("rounding accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; rounding needed
+        }
+    }
+
+    public static void testRoundToPlaces()
+    {
+        Apfloat x = AprationalMath.roundToPlaces(new Aprational("4/3"), 1, RoundingMode.UP);
+        assertEquals("4/3 UP", "1.4", x.toString());
+
+        x = AprationalMath.roundToPlaces(new Aprational("4/3"), 1, RoundingMode.DOWN);
+        assertEquals("4/3 DOWN", "1.3", x.toString());
+
+        x = AprationalMath.roundToPlaces(new Aprational("10/2", 3), 1, RoundingMode.HALF_EVEN);
+        assertEquals("3/2 base 3 EVEN", "1.1", x.toString());
+
+        x = AprationalMath.roundToPlaces(new Aprational("12/2", 3), 1, RoundingMode.HALF_EVEN);
+        assertEquals("5/2 base 3 EVEN", "2.2", x.toString());
+
+        x = AprationalMath.roundToPlaces(new Aprational("-10/2", 3), 1, RoundingMode.HALF_EVEN);
+        assertEquals("-3/2 base 3 EVEN", "-1.1", x.toString());
+
+        x = AprationalMath.roundToPlaces(new Aprational("-12/2", 3), 1, RoundingMode.HALF_EVEN);
+        assertEquals("-5/2 base 3 EVEN", "-2.2", x.toString());
+
+        x = AprationalMath.roundToPlaces(new Aprational("7/3"), 3, RoundingMode.UP);
+        assertEquals("7/3 UP", "2.334", x.toString());
+
+        x = AprationalMath.roundToPlaces(new Aprational("16/3"), 0, RoundingMode.UP);
+        assertEquals("16/3 UP integer", "6", x.toString());
+
+        x = AprationalMath.roundToPlaces(new Aprational("16/3"), -1, RoundingMode.UP);
+        assertEquals("16/3 UP -1", "10", x.toString(true));
+
+        x = AprationalMath.roundToPlaces(new Aprational("16/3"), -2, RoundingMode.UP);
+        assertEquals("16/3 UP -2", "100", x.toString(true));
+
+        x = AprationalMath.roundToPlaces(new Aprational("1/2"), 1, RoundingMode.UNNECESSARY);
+        assertEquals("1/2 UNNECESSARY", "0.5", x.toString(true));
+
+        try
+        {
+            AprationalMath.roundToPlaces(new Aprational("4/3"), Long.MIN_VALUE, RoundingMode.DOWN);
+            fail("no overflow");
+        }
+        catch (OverflowException oe)
+        {
+            // OK; should overflow
+        }
+
+        try
+        {
+            AprationalMath.roundToPlaces(new Aprational("1/3"), 1000, RoundingMode.UNNECESSARY);
+            fail("rounding accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; rounding needed
+        }
+    }
+
+    public static void testRoundToMultiple()
+    {
+        Aprational x = AprationalMath.roundToMultiple(new Aprational("4/3"), new Aprational("3/2"), RoundingMode.UP);
+        assertEquals("4/3 3/2 UP", "3/2", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("5/3"), new Aprational("3/2"), RoundingMode.UP);
+        assertEquals("5/3 3/2 UP", "3", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("5/3"), new Aprational("3/2"), RoundingMode.DOWN);
+        assertEquals("5/3 3/2 DOWN", "3/2", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("3/4"), new Aprational("1/2"), RoundingMode.HALF_DOWN);
+        assertEquals("3/4 1/2 HALF_DOWN", "1/2", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("3/4"), new Aprational("1/2"), RoundingMode.HALF_UP);
+        assertEquals("3/4 1/2 HALF_UP", "1", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("-3/4"), new Aprational("1/2"), RoundingMode.HALF_DOWN);
+        assertEquals("-3/4 1/2 HALF_DOWN", "-1/2", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("-3/4"), new Aprational("1/2"), RoundingMode.HALF_UP);
+        assertEquals("-3/4 1/2 HALF_UP", "-1", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("-3/4"), new Aprational("-1/2"), RoundingMode.HALF_DOWN);
+        assertEquals("-3/4 -1/2 HALF_DOWN", "-1/2", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("-3/4"), new Aprational("-1/2"), RoundingMode.HALF_UP);
+        assertEquals("-3/4 -1/2 HALF_UP", "-1", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("1/3"), new Aprational("2/3"), RoundingMode.HALF_EVEN);
+        assertEquals("1/3 2/3 HALF_EVEN", "0", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("1"), new Aprational("2/3"), RoundingMode.HALF_EVEN);
+        assertEquals("1 2/3 HALF_EVEN", "4/3", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("-1"), new Aprational("2/3"), RoundingMode.HALF_EVEN);
+        assertEquals("-1 2/3 HALF_EVEN", "-4/3", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("7/6"), new Aprational("5/6"), RoundingMode.CEILING);
+        assertEquals("7/6 5/6 CEILING", "5/3", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("-7/6"), new Aprational("5/6"), RoundingMode.CEILING);
+        assertEquals("-7/6 5/6 CEILING", "-5/6", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("7/6"), new Aprational("5/6"), RoundingMode.FLOOR);
+        assertEquals("7/6 5/6 FLOOR", "5/6", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("-7/6"), new Aprational("5/6"), RoundingMode.FLOOR);
+        assertEquals("-7/6 5/6 FLOOR", "-5/3", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("1/2"), new Aprational("1/4"), RoundingMode.UNNECESSARY);
+        assertEquals("1/2 UNNECESSARY", "1/2", x.toString());
+
+        x = AprationalMath.roundToMultiple(new Aprational("0"), new Aprational("1/4"), RoundingMode.UNNECESSARY);
+        assertEquals("0 UNNECESSARY", "0", x.toString());
+
+        try
+        {
+            AprationalMath.roundToMultiple(new Aprational("1/3"), new Aprational("1/2"), RoundingMode.UNNECESSARY);
+            fail("rounding accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; rounding needed
+        }
+
+        try
+        {
+            AprationalMath.roundToMultiple(new Aprational("1/3"), new Aprational("0"), RoundingMode.UP);
+            fail("Non-zero as multiple of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; impossible
+        }
     }
 
     public static void testAbs()

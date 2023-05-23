@@ -51,21 +51,34 @@ public class RoundingHelperTest
     {
         TestSuite suite = new TestSuite();
 
-        suite.addTest(new RoundingHelperTest("testRound"));
+        suite.addTest(new RoundingHelperTest("testRoundToPrecision"));
         suite.addTest(new RoundingHelperTest("testRoundToInteger"));
+        suite.addTest(new RoundingHelperTest("testRoundToPlaces"));
+        suite.addTest(new RoundingHelperTest("testRoundToMultiple"));
         suite.addTest(new RoundingHelperTest("testCompareToHalf"));
 
         return suite;
     }
 
-    public static void testRound()
+    public static void testRoundToPrecision()
     {
-        assertEquals("round", new Apfloat("1.0"), RoundingHelper.round(new Apfloat("1.1"), 1, RoundingMode.DOWN));
+        assertEquals("roundToPrecision", new Apfloat("1.0"), RoundingHelper.roundToPrecision(new Apfloat("1.1"), 1, RoundingMode.DOWN));
     }
 
     public static void testRoundToInteger()
     {
         assertEquals("roundToInteger", new Apfloat(12346), RoundingHelper.roundToInteger(new Apfloat("12345.67"), RoundingMode.HALF_EVEN));
+    }
+
+    public static void testRoundToPlaces()
+    {
+        assertEquals("roundToPlaces", new Apfloat("12345.6"), RoundingHelper.roundToPlaces(new Apfloat("12345.65"), 1, RoundingMode.HALF_EVEN));
+    }
+
+    public static void testRoundToMultiple()
+    {
+        assertEquals("roundToMultiple float", new Apfloat("6.6"), RoundingHelper.roundToMultiple(new Apfloat("5.5"), new Apfloat("2.2"), RoundingMode.HALF_UP));
+        assertEquals("roundToMultiple rational", new Aprational("4/5"), RoundingHelper.roundToMultiple(new Apint(1), new Aprational("2/5"), RoundingMode.HALF_DOWN));
     }
 
     public static void testCompareToHalf()

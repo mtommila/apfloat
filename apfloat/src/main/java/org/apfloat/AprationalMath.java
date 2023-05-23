@@ -201,6 +201,8 @@ public class AprationalMath
     /**
      * Rounds the given number to the specified precision with the specified rounding mode.
      *
+     * @deprecated Use {@link #roundToPrecision(Aprational,long,RoundingMode)}.
+     *
      * @param x The number to round.
      * @param precision The precision to round to.
      * @param roundingMode The rounding mode to use.
@@ -216,7 +218,87 @@ public class AprationalMath
     public static Apfloat round(Aprational x, long precision, RoundingMode roundingMode)
         throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
     {
-        return RoundingHelper.round(x, precision, roundingMode);
+        return roundToPrecision(x, precision, roundingMode);
+    }
+
+    /**
+     * Rounds the given number to the specified precision with the specified rounding mode.
+     *
+     * @param x The number to round.
+     * @param precision The precision to round to.
+     * @param roundingMode The rounding mode to use.
+     *
+     * @return The rounded number.
+     *
+     * @exception java.lang.IllegalArgumentException If <code>precision</code> is less than zero or zero.
+     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat roundToPrecision(Aprational x, long precision, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
+        return RoundingHelper.roundToPrecision(x, precision, roundingMode);
+    }
+
+    /**
+     * Rounds <code>x</code> to integer using the specified rounding mode.
+     *
+     * @param x The number to round.
+     * @param roundingMode The rounding mode to use.
+     *
+     * @return The rounded number.
+     *
+     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apint roundToInteger(Aprational x, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
+        return RoundingHelper.roundToInteger(x, roundingMode);
+    }
+
+    /**
+     * Rounds <code>x</code> to the specified number of places using the specified rounding mode.
+     *
+     * @param x The number to round.
+     * @param places The number of places to round to (in base 10, the number of decimal places).
+     * @param roundingMode The rounding mode to use.
+     *
+     * @return The rounded number.
+     *
+     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat roundToPlaces(Aprational x, long places, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
+        return RoundingHelper.roundToPlaces(x, places, roundingMode);
+    }
+
+    /**
+     * Rounds <code>x</code> to the nearest multiple of <code>y</code> using the specified rounding mode.
+     *
+     * @param x The number to round.
+     * @param y The integer multiple to round to.
+     * @param roundingMode The rounding mode to use.
+     *
+     * @return The rounded number.
+     *
+     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @since 1.11.0
+     */
+
+    public static Aprational roundToMultiple(Aprational x, Aprational y, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
+        return RoundingHelper.roundToMultiple(x, y, roundingMode);
     }
 
     /**

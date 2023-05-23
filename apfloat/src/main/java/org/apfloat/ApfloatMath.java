@@ -454,6 +454,8 @@ public class ApfloatMath
     /**
      * Rounds the given number to the specified precision with the specified rounding mode.
      *
+     * @deprecated Use {@link #roundToPrecision(Apfloat,long,RoundingMode)}.
+     *
      * @param x The number to round.
      * @param precision The precision to round to.
      * @param roundingMode The rounding mode to use.
@@ -469,7 +471,87 @@ public class ApfloatMath
     public static Apfloat round(Apfloat x, long precision, RoundingMode roundingMode)
         throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
     {
-        return RoundingHelper.round(x, precision, roundingMode);
+        return roundToPrecision(x, precision, roundingMode);
+    }
+
+    /**
+     * Rounds the given number to the specified precision with the specified rounding mode.
+     *
+     * @param x The number to round.
+     * @param precision The precision to round to.
+     * @param roundingMode The rounding mode to use.
+     *
+     * @return The rounded number.
+     *
+     * @exception java.lang.IllegalArgumentException If <code>precision</code> is less than zero or zero.
+     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat roundToPrecision(Apfloat x, long precision, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
+        return RoundingHelper.roundToPrecision(x, precision, roundingMode);
+    }
+
+    /**
+     * Rounds <code>x</code> to integer using the specified rounding mode.
+     *
+     * @param x The number to round.
+     * @param roundingMode The rounding mode to use.
+     *
+     * @return The rounded number.
+     *
+     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apint roundToInteger(Apfloat x, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
+        return RoundingHelper.roundToInteger(x, roundingMode);
+    }
+
+    /**
+     * Rounds <code>x</code> to the specified number of places using the specified rounding mode.
+     *
+     * @param x The number to round.
+     * @param places The number of places to round to (in base 10, the number of decimal places).
+     * @param roundingMode The rounding mode to use.
+     *
+     * @return The rounded number.
+     *
+     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat roundToPlaces(Apfloat x, long places, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
+        return RoundingHelper.roundToPlaces(x, places, roundingMode);
+    }
+
+    /**
+     * Rounds <code>x</code> to the nearest multiple of <code>y</code> using the specified rounding mode.
+     *
+     * @param x The number to round.
+     * @param y The integer multiple to round to.
+     * @param roundingMode The rounding mode to use.
+     *
+     * @return The rounded number.
+     *
+     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @since 1.11.0
+     */
+
+    public static Apfloat roundToMultiple(Apfloat x, Apfloat y, RoundingMode roundingMode)
+        throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
+    {
+        return RoundingHelper.roundToMultiple(x, y, roundingMode);
     }
 
     /**
@@ -642,13 +724,15 @@ public class ApfloatMath
         {
             return x;                           // abs(x) < abs(y)
         }
-        else if (x.precision() <= x.scale() - y.scale())                        // We now know that x.scale() >= y.scale()
+        long scaleDiff = x.scale() - y.scale();                                 // We now know that x.scale() >= y.scale()
+        scaleDiff = (scaleDiff < 0 ? Apfloat.INFINITE : scaleDiff);             // Check for overflow
+        if (x.precision() <= scaleDiff)                                         // We now know that scaleDiff >= 0
         {
             return Apfloat.ZEROS[x.radix()];    // Degenerate case; not enough precision to make any sense
         }
         else
         {
-            precision = x.scale() - y.scale() + Apfloat.EXTRA_PRECISION;        // Some extra precision to avoid round-off errors
+            precision = ApfloatHelper.extendPrecision(scaleDiff);               // Some extra precision to avoid round-off errors
         }
 
         tx = x.precision(precision);

@@ -61,6 +61,10 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testTruncate"));
         suite.addTest(new ApfloatMathTest("testFrac"));
         suite.addTest(new ApfloatMathTest("testRound"));
+        suite.addTest(new ApfloatMathTest("testRoundToPrecision"));
+        suite.addTest(new ApfloatMathTest("testRoundToInteger"));
+        suite.addTest(new ApfloatMathTest("testRoundToPlaces"));
+        suite.addTest(new ApfloatMathTest("testRoundToMultiple"));
         suite.addTest(new ApfloatMathTest("testNegate"));
         suite.addTest(new ApfloatMathTest("testModf"));
         suite.addTest(new ApfloatMathTest("testFmod"));
@@ -381,6 +385,7 @@ public class ApfloatMathTest
         assertEquals("-1.1", new Apfloat("-0.1"), ApfloatMath.frac(x));
     }
 
+    @SuppressWarnings("deprecation")
     public static void testRound()
     {
         Apfloat[] inputs = { new Apfloat("5.5"),
@@ -496,6 +501,187 @@ public class ApfloatMathTest
         catch (IllegalArgumentException iae)
         {
             // OK; invalid precision
+        }
+    }
+
+    public static void testRoundToPrecision()
+    {
+        Apfloat a = ApfloatMath.roundToPrecision(new Apfloat(4), 2, RoundingMode.UNNECESSARY);
+        assertEquals("4, 2, infinite precision", 2, a.precision());
+        assertEquals("4, 2, infinite value", new Apfloat(4), a);
+    }
+
+    public static void testRoundToInteger()
+    {
+        Apint a = ApfloatMath.roundToInteger(new Apfloat(40), RoundingMode.UNNECESSARY);
+        assertEquals("40", new Apfloat(40), a);
+
+        a = ApfloatMath.roundToInteger(new Apfloat("4.1"), RoundingMode.UP);
+        assertEquals("4.1 UP", new Apfloat(5), a);
+
+        a = ApfloatMath.roundToInteger(new Apfloat("4.9"), RoundingMode.DOWN);
+        assertEquals("4.9 DOWN", new Apfloat(4), a);
+
+        a = ApfloatMath.roundToInteger(new Apfloat("-4.9"), RoundingMode.CEILING);
+        assertEquals("-4.9 CEILING", new Apfloat(-4), a);
+
+        a = ApfloatMath.roundToInteger(new Apfloat("-4.1"), RoundingMode.FLOOR);
+        assertEquals("-4.1 FLOOR", new Apfloat(-5), a);
+
+        a = ApfloatMath.roundToInteger(new Apfloat("5.5"), RoundingMode.HALF_UP);
+        assertEquals("5.5 HALF_UP", new Apfloat(6), a);
+
+        a = ApfloatMath.roundToInteger(new Apfloat("5.5"), RoundingMode.HALF_DOWN);
+        assertEquals("5.5 HALF_DOWN", new Apfloat(5), a);
+
+        a = ApfloatMath.roundToInteger(new Apfloat("-5.5"), RoundingMode.HALF_EVEN);
+        assertEquals("-5.5 HALF_EVEN", new Apfloat(-6), a);
+
+        a = ApfloatMath.roundToInteger(new Apfloat("1e-1000000000000000"), RoundingMode.UP);
+        assertEquals("1e-1000000000000000 UP", new Apfloat(1), a);
+
+        try
+        {
+            ApfloatMath.roundToInteger(new Apfloat("1.1"), RoundingMode.UNNECESSARY);
+            fail("rounding accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; rounding necessary
+        }
+    }
+
+    public static void testRoundToPlaces()
+    {
+        Apfloat a = ApfloatMath.roundToPlaces(new Apfloat("1.2345", Apfloat.INFINITE), 4, RoundingMode.UNNECESSARY);
+        assertEquals("1.2345, 4, infinite precision", Apfloat.INFINITE, a.precision());
+        assertEquals("1.2345, 4, infinite value", new Apfloat("1.2345"), a);
+
+        a = ApfloatMath.roundToPlaces(new Apfloat(0), Long.MIN_VALUE, RoundingMode.UNNECESSARY);
+        assertEquals("0, MIN_VALUE precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0, MIN_VALUE value", new Apfloat(0), a);
+
+        a = ApfloatMath.roundToPlaces(new Apfloat("1.2345"), 2, RoundingMode.DOWN);
+        assertEquals("1.2345, 2, DOWN precision", Apfloat.INFINITE, a.precision());
+        assertEquals("1.2345, 2, DOWN value", new Apfloat("1.23"), a);
+
+        a = ApfloatMath.roundToPlaces(new Apfloat("1.2345"), 2, RoundingMode.UP);
+        assertEquals("1.2345, 2, UP precision", Apfloat.INFINITE, a.precision());
+        assertEquals("1.2345, 2, UP value", new Apfloat("1.24"), a);
+
+        a = ApfloatMath.roundToPlaces(new Apfloat("123.45"), -2, RoundingMode.CEILING);
+        assertEquals("123.45, -2, CEILING precision", Apfloat.INFINITE, a.precision());
+        assertEquals("123.45, -2, CEILING value", new Apfloat("200"), a);
+
+        a = ApfloatMath.roundToPlaces(new Apfloat("-123.45"), -4, RoundingMode.FLOOR);
+        assertEquals("-123.45, -4, FLOOR precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-123.45, -4, FLOOR value", new Apfloat("-10000"), a);
+
+        a = ApfloatMath.roundToPlaces(new Apfloat("-123.45"), 1, RoundingMode.HALF_UP);
+        assertEquals("-123.45, 1, HALF_UP precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-123.45, 1, HALF_UP value", new Apfloat("-123.5"), a);
+
+        a = ApfloatMath.roundToPlaces(new Apfloat("-123.45"), 1, RoundingMode.HALF_DOWN);
+        assertEquals("-123.45, 1, HALF_DOWN precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-123.45, 1, HALF_DOWN value", new Apfloat("-123.4"), a);
+
+        a = ApfloatMath.roundToPlaces(new Apfloat("123.45"), 1, RoundingMode.HALF_EVEN);
+        assertEquals("123.45, 1, HALF_EVEN precision", Apfloat.INFINITE, a.precision());
+        assertEquals("123.45, 1, HALF_EVEN value", new Apfloat("123.4"), a);
+
+        try
+        {
+            ApfloatMath.roundToPlaces(new Apfloat("1.1"), Long.MIN_VALUE, RoundingMode.DOWN);
+            fail("Should underflow or overflow");
+        }
+        catch (OverflowException oe)
+        {
+            // OK; underflow / overflow
+        }
+
+        try
+        {
+            ApfloatMath.roundToPlaces(new Apfloat("1.1"), Long.MIN_VALUE, RoundingMode.UP);
+            fail("Should underflow or overflow");
+        }
+        catch (OverflowException oe)
+        {
+            // OK; underflow / overflow
+        }
+
+        try
+        {
+            ApfloatMath.roundToPlaces(new Apfloat("1.2345"), 2, RoundingMode.UNNECESSARY);
+            fail("rounding accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; rounding necessary
+        }
+    }
+
+    public static void testRoundToMultiple()
+    {
+        Apfloat a = ApfloatMath.roundToMultiple(new Apfloat(4), new Apfloat(2), RoundingMode.UNNECESSARY);
+        assertEquals("4, 2, infinite precision", Apfloat.INFINITE, a.precision());
+        assertEquals("4, 2, infinite value", new Apfloat(4), a);
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("1.3"), new Apfloat("0.3"), RoundingMode.UP);
+        assertEquals("1.3, 0.3, UP precision", 1, a.precision());
+        assertEquals("1.3, 0.3, UP value", new Apfloat("1.5", 1), a);   // Highly questionable if this is meaningful at all
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("1.3"), new Apfloat("0.30"), RoundingMode.UP);
+        assertEquals("1.3, 0.30, UP precision", 2, a.precision());
+        assertEquals("1.3, 0.30, UP value", new Apfloat("1.5"), a);
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("2.3"), new Apfloat("1.1"), RoundingMode.DOWN);
+        assertEquals("2.3, 1.1, DOWN precision", 2, a.precision());
+        assertEquals("2.3, 1.1, DOWN value", new Apfloat("2.2"), a);
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("2.2"), new Apfloat("1.1"), RoundingMode.UNNECESSARY);
+        assertEquals("2.2, 1.1, UNNECESSARY precision", 2, a.precision());
+        assertEquals("2.2, 1.1, UNNECESSARY value", new Apfloat("2.2"), a);
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("3.3"), new Apfloat("2.2"), RoundingMode.HALF_DOWN);
+        assertEquals("3.3, 2.2, HALF_DOWN precision", 2, a.precision());
+        assertEquals("3.3, 2.2, HALF_DOWN value", new Apfloat("2.2"), a);
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("3.3"), new Apfloat("2.2"), RoundingMode.HALF_UP);
+        assertEquals("3.3, 2.2, HALF_UP precision", 2, a.precision());
+        assertEquals("3.3, 2.2, HALF_UP value", new Apfloat("4.4"), a);
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("5.5"), new Apfloat("2.2"), RoundingMode.HALF_EVEN);
+        assertEquals("5.5, 2.2, HALF_EVEN precision", 2, a.precision());
+        assertEquals("5.5, 2.2, HALF_EVEN value", new Apfloat("4.4"), a);
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("-2.9"), new Apfloat("1.1"), RoundingMode.CEILING);
+        assertEquals("-2.9, 1.1, CEILING precision", 2, a.precision());
+        assertEquals("-2.9, 1.1, CEILING value", new Apfloat("-2.2"), a);
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("-2.3"), new Apfloat("1.1"), RoundingMode.FLOOR);
+        assertEquals("-2.3, 1.1, FLOOR precision", 2, a.precision());
+        assertEquals("-2.3, 1.1, FLOOR value", new Apfloat("-3.3"), a);
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("123456.7"), new Apfloat("0.3"), RoundingMode.UP);
+        assertEquals("123456.7, 0.3, UP precision", 1, a.precision());
+        assertEquals("123456.7, 0.3, UP value", new Apfloat("123456.9", 1), a); // Highly questionable if this is meaningful at all
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("0.3"), new Apfloat("123456.7"), RoundingMode.UP);
+        assertEquals("0.3, 123456.7, UP precision", 7, a.precision());
+        assertEquals("0.3, 123456.7, UP value", new Apfloat("123456.7"), a);
+
+        a = ApfloatMath.roundToMultiple(new Apfloat("0"), new Apfloat("123456.7"), RoundingMode.UP);
+        assertEquals("0, 123456.7, UP precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0, 123456.7, UP value", new Apfloat(0), a);
+
+        try
+        {
+            ApfloatMath.roundToMultiple(new Apfloat("1.2345"), new Apfloat(0), RoundingMode.UP);
+            fail("Non-zero as multiple of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; impossible
         }
     }
 
