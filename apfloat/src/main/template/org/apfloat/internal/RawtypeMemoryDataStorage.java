@@ -99,7 +99,7 @@ public class RawtypeMemoryDataStorage
         ApfloatContext ctx = ApfloatContext.getContext();
         int readSize = (int) Math.min(size, dataStorage.getSize()),
             position = 0,
-            bufferSize = ctx.getBlockSize() / sizeof(rawtype);
+            bufferSize = ctx.getBlockSize() / RawType.BYTES;
 
         while (readSize > 0)
         {

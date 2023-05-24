@@ -69,7 +69,7 @@ public class RawtypeBuilderFactoryTest
 
         assertEquals("getElementType()", RawType.TYPE, builderFactory.getElementType());
         assertEquals("getElementArrayType()", rawtype[].class, builderFactory.getElementArrayType());
-        assertEquals("getElementSize()", sizeof(rawtype), builderFactory.getElementSize());
+        assertEquals("getElementSize()", RawType.BYTES, builderFactory.getElementSize());
 
         Class<?>[] types = { Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE };
         for (Class<?> type : types)

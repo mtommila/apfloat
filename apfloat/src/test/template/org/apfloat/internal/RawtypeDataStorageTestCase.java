@@ -320,7 +320,7 @@ public abstract class RawtypeDataStorageTestCase
     public void testCopyFromBig()
     {
         ApfloatContext ctx = ApfloatContext.getContext();
-        int size = ctx.getBlockSize() / sizeof(rawtype) * 7 / 2;
+        int size = ctx.getBlockSize() / RawType.BYTES * 7 / 2;
         DataStorage dataStorage = createDataStorage();
         dataStorage.setSize(size);
 
@@ -331,7 +331,7 @@ public abstract class RawtypeDataStorageTestCase
         }
         arrayAccess.close();
 
-        size = ctx.getBlockSize() / sizeof(rawtype) * 5 / 2;
+        size = ctx.getBlockSize() / RawType.BYTES * 5 / 2;
         DataStorage newDataStorage = createDataStorage();
         newDataStorage.copyFrom(dataStorage, size);
 
@@ -438,7 +438,7 @@ public abstract class RawtypeDataStorageTestCase
     public void testIteratorBig()
     {
         ApfloatContext ctx = ApfloatContext.getContext();
-        int size = ctx.getBlockSize() / sizeof(rawtype) * 7 / 2;
+        int size = ctx.getBlockSize() / RawType.BYTES * 7 / 2;
         DataStorage dataStorage = createDataStorage();
         dataStorage.setSize(size);
 
@@ -450,7 +450,7 @@ public abstract class RawtypeDataStorageTestCase
         }
         assertEquals("write iterator end", false, iterator.hasNext());
 
-        size = ctx.getBlockSize() / sizeof(rawtype) * 2;
+        size = ctx.getBlockSize() / RawType.BYTES * 2;
 
         iterator = dataStorage.iterator(DataStorage.READ, 0, size);
         for (int i = 0; i < size; i++)

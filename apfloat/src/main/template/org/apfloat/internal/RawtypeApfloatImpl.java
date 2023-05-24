@@ -674,7 +674,7 @@ public class RawtypeApfloatImpl
                         if (actualSize == initialSize)
                         {
                             // Initial memory block size exceeded; prepare to allocate anything
-                            DataStorage dataStorage = createDataStorage(Long.MAX_VALUE / sizeof(rawtype));
+                            DataStorage dataStorage = createDataStorage(Long.MAX_VALUE / RawType.BYTES);
                             dataStorage.copyFrom(this.dataStorage, actualSize);
                             this.dataStorage = dataStorage;
                         }
@@ -2454,14 +2454,14 @@ public class RawtypeApfloatImpl
     {
         ApfloatContext ctx = ApfloatContext.getContext();
         DataStorageBuilder dataStorageBuilder = ctx.getBuilderFactory().getDataStorageBuilder();
-        return dataStorageBuilder.createDataStorage(size * sizeof(rawtype));
+        return dataStorageBuilder.createDataStorage(size * RawType.BYTES);
     }
 
     // Gets I/O block size in rawtypes
     private static int getBlockSize()
     {
         ApfloatContext ctx = ApfloatContext.getContext();
-        return ctx.getBlockSize() / sizeof(rawtype);
+        return ctx.getBlockSize() / RawType.BYTES;
     }
 
     private static final DataStorage.Iterator ZERO_ITERATOR =

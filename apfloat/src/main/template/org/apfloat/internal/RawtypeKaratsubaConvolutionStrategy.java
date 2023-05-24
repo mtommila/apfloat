@@ -101,7 +101,7 @@ public class RawtypeKaratsubaConvolutionStrategy
 
         ApfloatContext ctx = ApfloatContext.getContext();
         DataStorageBuilder dataStorageBuilder = ctx.getBuilderFactory().getDataStorageBuilder();
-        DataStorage resultStorage = dataStorageBuilder.createDataStorage(size * sizeof(rawtype));
+        DataStorage resultStorage = dataStorageBuilder.createDataStorage(size * RawType.BYTES);
         resultStorage.setSize(size);
 
         if (y1size <= 0)
@@ -213,7 +213,7 @@ public class RawtypeKaratsubaConvolutionStrategy
 
         ApfloatContext ctx = ApfloatContext.getContext();
         DataStorageBuilder dataStorageBuilder = ctx.getBuilderFactory().getDataStorageBuilder();
-        DataStorage resultStorage = dataStorageBuilder.createDataStorage(size * sizeof(rawtype));
+        DataStorage resultStorage = dataStorageBuilder.createDataStorage(size * RawType.BYTES);
         resultStorage.setSize(size);
 
         // Calculate x1 + x2

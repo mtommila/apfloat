@@ -131,7 +131,7 @@ public class RawtypeBuilderFactory
     @Override
     public int getElementSize()
     {
-        return sizeof(rawtype);
+        return RawType.BYTES;
     }
 
     @Override

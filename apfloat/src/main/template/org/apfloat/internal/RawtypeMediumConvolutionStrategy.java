@@ -86,7 +86,7 @@ public class RawtypeMediumConvolutionStrategy
 
         ApfloatContext ctx = ApfloatContext.getContext();
         DataStorageBuilder dataStorageBuilder = ctx.getBuilderFactory().getDataStorageBuilder();
-        DataStorage resultStorage = dataStorageBuilder.createDataStorage(size * sizeof(rawtype));
+        DataStorage resultStorage = dataStorageBuilder.createDataStorage(size * RawType.BYTES);
         resultStorage.setSize(size);
 
         DataStorage.Iterator src = longStorage.iterator(DataStorage.READ, longSize, 0),

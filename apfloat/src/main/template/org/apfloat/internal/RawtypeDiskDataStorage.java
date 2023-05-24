@@ -96,9 +96,9 @@ public class RawtypeDiskDataStorage
                         src.get(array, this.readPosition, readLength);
 
                         this.readPosition += readLength;
-                        buffer.position(buffer.position() + readLength * sizeof(rawtype));
+                        buffer.position(buffer.position() + readLength * RawType.BYTES);
 
-                        return readLength * sizeof(rawtype);
+                        return readLength * RawType.BYTES;
                     }
 
                     @Override public void close() {}
@@ -107,7 +107,7 @@ public class RawtypeDiskDataStorage
                     private int readPosition = 0;
                 };
 
-                transferTo(out, fileOffset * sizeof(rawtype), (long) length * sizeof(rawtype));
+                transferTo(out, fileOffset * RawType.BYTES, (long) length * RawType.BYTES);
             }
         }
 
@@ -129,9 +129,9 @@ public class RawtypeDiskDataStorage
                         dst.put(array, this.writePosition, writeLength);
 
                         this.writePosition += writeLength;
-                        buffer.position(buffer.position() + writeLength * sizeof(rawtype));
+                        buffer.position(buffer.position() + writeLength * RawType.BYTES);
 
-                        return writeLength * sizeof(rawtype);
+                        return writeLength * RawType.BYTES;
                     }
 
                     @Override public void close() {}
@@ -140,7 +140,7 @@ public class RawtypeDiskDataStorage
                     private int writePosition = 0;
                 };
 
-                transferFrom(in, this.fileOffset * sizeof(rawtype), (long) array.length * sizeof(rawtype));
+                transferFrom(in, this.fileOffset * RawType.BYTES, (long) array.length * RawType.BYTES);
             }
 
             super.close();
@@ -334,7 +334,7 @@ public class RawtypeDiskDataStorage
             if (this.arrayAccess == null)
             {
                 boolean isForward = (getIncrement() > 0);
-                int length = (int) Math.min(getLength(), getBlockSize() / sizeof(rawtype));
+                int length = (int) Math.min(getLength(), getBlockSize() / RawType.BYTES);
                 long offset = (isForward ? getPosition() : getPosition() - length + 1);
 
                 this.arrayAccess = getArray(getMode(), offset, length);
@@ -366,7 +366,7 @@ public class RawtypeDiskDataStorage
     @Override
     protected int getUnitSize()
     {
-        return sizeof(rawtype);
+        return RawType.BYTES;
     }
 
     private static final long serialVersionUID = ${org.apfloat.internal.RawtypeDiskDataStorage.serialVersionUID};

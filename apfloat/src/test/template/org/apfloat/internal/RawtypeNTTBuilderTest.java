@@ -59,8 +59,8 @@ public class RawtypeNTTBuilderTest
     {
         NTTBuilder nttBuilder = new RawtypeNTTBuilder();
         ApfloatContext ctx = ApfloatContext.getContext();
-        int cacheSize = ctx.getCacheL1Size() / sizeof(rawtype);
-        long maxMemoryBlockSize = ctx.getMaxMemoryBlockSize() / sizeof(rawtype);
+        int cacheSize = ctx.getCacheL1Size() / RawType.BYTES;
+        long maxMemoryBlockSize = ctx.getMaxMemoryBlockSize() / RawType.BYTES;
 
         assertTrue("Fits in cache", nttBuilder.createNTT(cacheSize / 2) instanceof RawtypeTableFNTStrategy);
         assertTrue("Fits in memory", nttBuilder.createNTT(Util.round2down(Math.min(maxMemoryBlockSize, Integer.MAX_VALUE))) instanceof SixStepFNTStrategy);
@@ -71,8 +71,8 @@ public class RawtypeNTTBuilderTest
         assertTrue("NTTConvolutionStepStrategy", nttBuilder.createNTTConvolutionSteps() instanceof NTTConvolutionStepStrategy);
         assertTrue("Factor3NTTStepStrategy", nttBuilder.createFactor3NTTSteps() instanceof Factor3NTTStepStrategy);
 
-        ctx.setMaxMemoryBlockSize(0x80000000L * sizeof(rawtype));
+        ctx.setMaxMemoryBlockSize(0x80000000L * RawType.BYTES);
         assertTrue("Does not fit in array", nttBuilder.createNTT(0x80000000L) instanceof TwoPassFNTStrategy);
-        ctx.setMaxMemoryBlockSize(maxMemoryBlockSize * sizeof(rawtype));
+        ctx.setMaxMemoryBlockSize(maxMemoryBlockSize * RawType.BYTES);
     }
 }

@@ -43,7 +43,6 @@
                   <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Int\2" />
                   <filterchain>
                     <tokenfilter>
-                      <replacestring from="sizeof(rawtype)" to="4" />
                       <replacestring from="rawtype" to="int" />
                       <replacestring from="Rawtype" to="Int" />
                       <replacestring from="RawType" to="Integer" />
@@ -55,7 +54,6 @@
                   <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Long\2" />
                   <filterchain>
                     <tokenfilter>
-                      <replacestring from="sizeof(rawtype)" to="8" />
                       <replacestring from="rawtype" to="long" />
                       <replacestring from="Rawtype" to="Long" />
                       <replacestring from="RawType" to="Long" />
@@ -67,7 +65,6 @@
                   <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Float\2" />
                   <filterchain>
                     <tokenfilter>
-                      <replacestring from="sizeof(rawtype)" to="4" />
                       <replacestring from="rawtype" to="float" />
                       <replacestring from="Rawtype" to="Float" />
                       <replacestring from="RawType" to="Float" />
@@ -79,7 +76,6 @@
                   <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Double\2" />
                   <filterchain>
                     <tokenfilter>
-                      <replacestring from="sizeof(rawtype)" to="8" />
                       <replacestring from="rawtype" to="double" />
                       <replacestring from="Rawtype" to="Double" />
                       <replacestring from="RawType" to="Double" />

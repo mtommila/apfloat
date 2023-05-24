@@ -101,9 +101,9 @@ public class RawtypeMatrixStrategyTest
         }
 
         ApfloatContext ctx = ApfloatContext.getContext();
-        int cacheBurstBlockSize = Util.round2down(ctx.getCacheBurst() / sizeof(rawtype)),   // Cache burst in rawtypes
-            cacheL1Size = Util.sqrt4down(ctx.getCacheL1Size() / sizeof(rawtype)),           // To fit in processor L1 cache
-            cacheL2Size = Util.sqrt4down(ctx.getCacheL2Size() / sizeof(rawtype)),           // To fit in processor L2 cache
+        int cacheBurstBlockSize = Util.round2down(ctx.getCacheBurst() / RawType.BYTES),   // Cache burst in rawtypes
+            cacheL1Size = Util.sqrt4down(ctx.getCacheL1Size() / RawType.BYTES),           // To fit in processor L1 cache
+            cacheL2Size = Util.sqrt4down(ctx.getCacheL2Size() / RawType.BYTES),           // To fit in processor L2 cache
             bigSize = cacheL2Size * 2;                                                      // To not fit in processor L2 cache
 
         arrayAccess = getArray(cacheBurstBlockSize * cacheBurstBlockSize);
@@ -193,7 +193,7 @@ public class RawtypeMatrixStrategyTest
     public static void testTransposeWide()
     {
         ApfloatContext ctx = ApfloatContext.getContext();
-        int cacheL2Size = Util.sqrt4down(ctx.getCacheL2Size() / sizeof(rawtype)),           // To fit in processor L2 cache
+        int cacheL2Size = Util.sqrt4down(ctx.getCacheL2Size() / RawType.BYTES),           // To fit in processor L2 cache
             bigSize = cacheL2Size * 2;                                                      // To not fit in processor L2 cache
 
         ArrayAccess arrayAccess = getArray(2 * bigSize * bigSize + 5).subsequence(5, 2 * bigSize * bigSize);
@@ -212,7 +212,7 @@ public class RawtypeMatrixStrategyTest
     public static void testTransposeTall()
     {
         ApfloatContext ctx = ApfloatContext.getContext();
-        int cacheL2Size = Util.sqrt4down(ctx.getCacheL2Size() / sizeof(rawtype)),           // To fit in processor L2 cache
+        int cacheL2Size = Util.sqrt4down(ctx.getCacheL2Size() / RawType.BYTES),           // To fit in processor L2 cache
             bigSize = cacheL2Size * 2;                                                      // To not fit in processor L2 cache
 
         ArrayAccess arrayAccess = getArray(2 * bigSize * bigSize + 5).subsequence(5, 2 * bigSize * bigSize);

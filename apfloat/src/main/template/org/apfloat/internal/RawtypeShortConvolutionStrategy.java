@@ -86,7 +86,7 @@ public class RawtypeShortConvolutionStrategy
 
         ApfloatContext ctx = ApfloatContext.getContext();
         DataStorageBuilder dataStorageBuilder = ctx.getBuilderFactory().getDataStorageBuilder();
-        resultStorage = dataStorageBuilder.createDataStorage(size * sizeof(rawtype));
+        resultStorage = dataStorageBuilder.createDataStorage(size * RawType.BYTES);
         resultStorage.setSize(size);
 
         DataStorage.Iterator src = longStorage.iterator(DataStorage.READ, size - 1, 0);

@@ -50,7 +50,7 @@ public class RawtypeDataStorageBuilder
     @Override
     protected long getMaxCachedSize()
     {
-        return (long) sizeof(rawtype) * Integer.MAX_VALUE;
+        return (long) RawType.BYTES * Integer.MAX_VALUE;
     }
 
     @Override

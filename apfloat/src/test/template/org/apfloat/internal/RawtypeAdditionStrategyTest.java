@@ -64,7 +64,7 @@ public class RawtypeAdditionStrategyTest
         int size = data.length;
         ApfloatContext ctx = ApfloatContext.getContext();
         DataStorageBuilder dataStorageBuilder = ctx.getBuilderFactory().getDataStorageBuilder();
-        DataStorage dataStorage = dataStorageBuilder.createDataStorage(size * sizeof(rawtype));
+        DataStorage dataStorage = dataStorageBuilder.createDataStorage(size * RawType.BYTES);
         dataStorage.setSize(size);
 
         try (ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.WRITE, 0, size))
