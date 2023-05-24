@@ -48,7 +48,7 @@ public interface ApfloatBuilder
      *
      * @return A new <code>ApfloatImpl</code>.
      *
-     * @exception java.lang.NumberFormatException If the number is not valid.
+     * @exception NumberFormatException If the number is not valid.
      */
 
     public ApfloatImpl createApfloat(String value, long precision, int radix, boolean isInteger)
@@ -63,7 +63,7 @@ public interface ApfloatBuilder
      *
      * @return A new <code>ApfloatImpl</code>.
      *
-     * @exception java.lang.NumberFormatException If the number is not valid.
+     * @exception NumberFormatException If the number is not valid.
      */
 
     public ApfloatImpl createApfloat(long value, long precision, int radix)
@@ -78,7 +78,7 @@ public interface ApfloatBuilder
      *
      * @return A new <code>ApfloatImpl</code>.
      *
-     * @exception java.lang.NumberFormatException If the number is not valid.
+     * @exception NumberFormatException If the number is not valid.
      */
 
     public ApfloatImpl createApfloat(double value, long precision, int radix)
@@ -94,8 +94,8 @@ public interface ApfloatBuilder
      *
      * @return A new <code>ApfloatImpl</code>.
      *
-     * @exception java.io.IOException If an I/O error occurs accessing the stream.
-     * @exception java.lang.NumberFormatException If the number is not valid.
+     * @exception IOException If an I/O error occurs accessing the stream.
+     * @exception NumberFormatException If the number is not valid.
      */
 
     public ApfloatImpl createApfloat(PushbackReader in, long precision, int radix, boolean isInteger)

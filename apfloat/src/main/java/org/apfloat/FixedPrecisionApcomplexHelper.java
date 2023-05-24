@@ -47,7 +47,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @param precision The precision of the results.
      *
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public FixedPrecisionApcomplexHelper(long precision)
@@ -152,7 +152,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return <code>z / w</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>w</code> is zero.
+     * @exception ArithmeticException If <code>w</code> is zero.
      */
 
     public Apcomplex divide(Apcomplex z, Apcomplex w)
@@ -169,7 +169,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return <code>z<sup>w</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> and <code>w</code> are zero.
+     * @exception ArithmeticException If <code>z</code> and <code>w</code> are zero.
      */
 
     public Apcomplex pow(Apcomplex z, Apcomplex w)
@@ -191,7 +191,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return <code>z<sup>n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> and <code>n</code> are zero, or <code>z</code> is zero and <code>n</code> is negative.
+     * @exception ArithmeticException If <code>z</code> and <code>n</code> are zero, or <code>z</code> is zero and <code>n</code> is negative.
      */
 
     public Apcomplex pow(Apcomplex z, long n)
@@ -207,7 +207,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return The angle of <code>z</code> on the complex plane.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is zero.
+     * @exception ArithmeticException If <code>z</code> is zero.
      */
 
     public Apfloat arg(Apcomplex z)
@@ -343,7 +343,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return The arc tangent of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is <code>i</code>.
+     * @exception ArithmeticException If <code>z</code> is <code>i</code>.
      */
 
     public Apcomplex atan(Apcomplex z)
@@ -359,7 +359,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return The hyperbolic arc tangent of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is 1 or -1.
+     * @exception ArithmeticException If <code>z</code> is 1 or -1.
      */
 
     public Apcomplex atanh(Apcomplex z)
@@ -431,7 +431,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return The natural logarithm of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is zero.
+     * @exception ArithmeticException If <code>z</code> is zero.
      */
 
     public Apcomplex log(Apcomplex z)
@@ -448,7 +448,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return The base-<code>w</code> logarithm of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> or <code>w</code> is zero.
+     * @exception ArithmeticException If <code>z</code> or <code>w</code> is zero.
      *
      * @since 1.6
      */
@@ -518,7 +518,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return The tangent of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is &pi;/2 + n &pi; where n is an integer.
+     * @exception ArithmeticException If <code>z</code> is &pi;/2 + n &pi; where n is an integer.
      */
 
     public Apcomplex tan(Apcomplex z)
@@ -539,7 +539,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return The hyperbolic tangent of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is i (&pi;/2 + n &pi;) where n is an integer.
+     * @exception ArithmeticException If <code>z</code> is i (&pi;/2 + n &pi;) where n is an integer.
      */
 
     public Apcomplex tanh(Apcomplex z)
@@ -576,7 +576,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return <code>z<sup>-1/n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> or <code>n</code> is zero.
+     * @exception ArithmeticException If <code>z</code> or <code>n</code> is zero.
      */
 
     public Apcomplex inverseRoot(Apcomplex z, long n)
@@ -594,7 +594,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return <code>z<sup>-1/n</sup>e<sup>-i2&pi;k/n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> or <code>n</code> is zero.
+     * @exception ArithmeticException If <code>z</code> or <code>n</code> is zero.
      */
 
     public Apcomplex inverseRoot(Apcomplex z, long n, long k)
@@ -611,7 +611,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return <code>z<sup>1/n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>n</code> is zero, or <code>z</code> is zero and <code>n</code> is negative.
+     * @exception ArithmeticException If <code>n</code> is zero, or <code>z</code> is zero and <code>n</code> is negative.
      */
 
     public Apcomplex root(Apcomplex z, long n)
@@ -629,7 +629,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return <code>z<sup>1/n</sup>e<sup>i2&pi;sk/n</sup></code> where <code>s</code> is the signum of the imaginary part of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>n</code> is zero, or <code>z</code> is zero and <code>n</code> is negative.
+     * @exception ArithmeticException If <code>n</code> is zero, or <code>z</code> is zero and <code>n</code> is negative.
      */
 
     public Apcomplex root(Apcomplex z, long n, long k)
@@ -646,7 +646,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return <code>z<sup>1/n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>n</code> is zero, or <code>z</code> is zero and <code>n</code> is negative.
+     * @exception ArithmeticException If <code>n</code> is zero, or <code>z</code> is zero and <code>n</code> is negative.
      */
 
     public Apcomplex[] allRoots(Apcomplex z, int n)

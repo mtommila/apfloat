@@ -49,7 +49,7 @@ public class ApintMath
      *
      * @return <code>x</code> to the <code>n</code>:th power, that is <code>x<sup>n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If both <code>x</code> and <code>n</code> are zero.
+     * @exception ArithmeticException If both <code>x</code> and <code>n</code> are zero.
      */
 
     public static Apint pow(Apint x, long n)
@@ -104,7 +104,7 @@ public class ApintMath
      *
      * @return An array of two apints: <code>[q, r]</code>, where <code>q<sup>2</sup> + r = x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> is negative.
+     * @exception ArithmeticException If <code>x</code> is negative.
      */
 
     public static Apint[] sqrt(Apint x)
@@ -138,7 +138,7 @@ public class ApintMath
      *
      * @return An array of two apints: <code>[q, r]</code>, where <code>q<sup>n</sup> + r = x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>n</code> and <code>x</code> are zero, or <code>x</code> is negative and <code>n</code> is even.
+     * @exception ArithmeticException If <code>n</code> and <code>x</code> are zero, or <code>x</code> is negative and <code>n</code> is even.
      */
 
     public static Apint[] root(Apint x, long n)
@@ -341,7 +341,7 @@ public class ApintMath
      *
      * @return An array of two apints: <code>[quotient, remainder]</code>, that is <code>[x / y, x % y]</code>.
      *
-     * @exception java.lang.ArithmeticException In case the divisor is zero.
+     * @exception ArithmeticException In case the divisor is zero.
      */
 
     public static Apint[] div(Apint x, Apint y)
@@ -507,7 +507,7 @@ public class ApintMath
      *
      * @return <code>a<sup>b</sup> mod m</code>
      *
-     * @exception java.lang.ArithmeticException If the exponent is negative but the GCD of <code>a</code> and <code>m</code> is not 1 and the modular inverse does not exist.
+     * @exception ArithmeticException If the exponent is negative but the GCD of <code>a</code> and <code>m</code> is not 1 and the modular inverse does not exist.
      */
 
     public static Apint modPow(Apint a, Apint b, Apint m)
@@ -615,8 +615,8 @@ public class ApintMath
      *
      * @return <code>n!</code>
      *
-     * @exception java.lang.ArithmeticException If <code>n</code> is negative.
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
+     * @exception ArithmeticException If <code>n</code> is negative.
+     * @exception NumberFormatException If the default radix is not valid.
      *
      * @since 1.1
      */
@@ -635,8 +635,8 @@ public class ApintMath
      *
      * @return <code>n!</code>
      *
-     * @exception java.lang.ArithmeticException If <code>n</code> is negative.
-     * @exception java.lang.NumberFormatException If the radix is not valid.
+     * @exception ArithmeticException If <code>n</code> is negative.
+     * @exception NumberFormatException If the radix is not valid.
      *
      * @since 1.1
      */
@@ -889,8 +889,8 @@ public class ApintMath
      *
      * @return A random number, uniformly distributed between <code>0 &le; x &lt; radix<sup>digits</sup></code>.
      *
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
+     * @exception NumberFormatException If the default radix is not valid.
+     * @exception IllegalArgumentException In case the number of specified digits is invalid.
      *
      * @since 1.9.0
      */
@@ -915,8 +915,8 @@ public class ApintMath
      *
      * @return A random number, uniformly distributed between <code>0 &le; x &lt; radix<sup>digits</sup></code>, in base <code>radix</code>.
      *
-     * @exception java.lang.NumberFormatException If the radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
+     * @exception NumberFormatException If the radix is not valid.
+     * @exception IllegalArgumentException In case the number of specified digits is invalid.
      *
      * @since 1.9.0
      */

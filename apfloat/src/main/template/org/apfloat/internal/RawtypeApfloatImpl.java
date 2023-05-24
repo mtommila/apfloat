@@ -99,7 +99,7 @@ public class RawtypeApfloatImpl
      * @param radix The radix in which the number is created.
      * @param isInteger Specifies if the number to be parsed from the string is to be treated as an integer or not.
      *
-     * @exception java.lang.NumberFormatException If the number is not valid.
+     * @exception NumberFormatException If the number is not valid.
      */
 
     public RawtypeApfloatImpl(String value, long precision, int radix, boolean isInteger)
@@ -344,7 +344,7 @@ public class RawtypeApfloatImpl
      * @param precision The precision of the number (in digits of the radix).
      * @param radix The radix in which the number is created.
      *
-     * @exception java.lang.NumberFormatException If the number is not valid.
+     * @exception NumberFormatException If the number is not valid.
      */
 
     public RawtypeApfloatImpl(long value, long precision, int radix)
@@ -434,7 +434,7 @@ public class RawtypeApfloatImpl
      * @param precision The precision of the number (in digits of the radix).
      * @param radix The radix in which the number is created.
      *
-     * @exception java.lang.NumberFormatException If the number is not valid.
+     * @exception NumberFormatException If the number is not valid.
      */
 
     public RawtypeApfloatImpl(double value, long precision, int radix)
@@ -578,8 +578,8 @@ public class RawtypeApfloatImpl
      * @param radix The radix in which the number is created.
      * @param isInteger Specifies if the number to be parsed from the stream is to be treated as an integer or not.
      *
-     * @exception java.io.IOException If an I/O error occurs accessing the stream.
-     * @exception java.lang.NumberFormatException If the number is not valid.
+     * @exception IOException If an I/O error occurs accessing the stream.
+     * @exception NumberFormatException If the number is not valid.
      */
 
     public RawtypeApfloatImpl(PushbackReader in, long precision, int radix, boolean isInteger)

@@ -52,7 +52,7 @@ public class AprationalMath
      *
      * @return <code>x</code> to the <code>n</code>:th power, that is <code>x<sup>n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If both <code>x</code> and <code>n</code> are zero.
+     * @exception ArithmeticException If both <code>x</code> and <code>n</code> are zero.
      */
 
     public static Aprational pow(Aprational x, long n)
@@ -209,8 +209,8 @@ public class AprationalMath
      *
      * @return The rounded number.
      *
-     * @exception java.lang.IllegalArgumentException If <code>precision</code> is less than zero or zero.
-     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     * @exception IllegalArgumentException If <code>precision</code> is less than zero or zero.
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
      *
      * @since 1.7.0
      */
@@ -231,8 +231,8 @@ public class AprationalMath
      *
      * @return The rounded number.
      *
-     * @exception java.lang.IllegalArgumentException If <code>precision</code> is less than zero or zero.
-     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     * @exception IllegalArgumentException If <code>precision</code> is less than zero or zero.
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
      *
      * @since 1.11.0
      */
@@ -251,7 +251,7 @@ public class AprationalMath
      *
      * @return The rounded number.
      *
-     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
      *
      * @since 1.11.0
      */
@@ -271,7 +271,7 @@ public class AprationalMath
      *
      * @return The rounded number.
      *
-     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
      *
      * @since 1.11.0
      */
@@ -291,7 +291,7 @@ public class AprationalMath
      *
      * @return The rounded number.
      *
-     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
      *
      * @since 1.11.0
      */

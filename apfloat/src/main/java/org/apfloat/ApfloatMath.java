@@ -66,7 +66,7 @@ public class ApfloatMath
      *
      * @return <code>x</code> to the <code>n</code>:th power, that is <code>x<sup>n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If both <code>x</code> and <code>n</code> are zero.
+     * @exception ArithmeticException If both <code>x</code> and <code>n</code> are zero.
      */
 
     public static Apfloat pow(Apfloat x, long n)
@@ -125,7 +125,7 @@ public class ApfloatMath
      *
      * @return Square root of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> is negative.
+     * @exception ArithmeticException If <code>x</code> is negative.
      */
 
     public static Apfloat sqrt(Apfloat x)
@@ -156,7 +156,7 @@ public class ApfloatMath
      *
      * @return <code>n</code>:th root of <code>x</code>, that is <code>x<sup>1/n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
+     * @exception ArithmeticException If <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
      */
 
     public static Apfloat root(Apfloat x, long n)
@@ -206,7 +206,7 @@ public class ApfloatMath
      *
      * @return Inverse <code>n</code>:th root of <code>x</code>, that is <code>x<sup>-1/n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> or <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
+     * @exception ArithmeticException If <code>x</code> or <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
      */
 
     public static Apfloat inverseRoot(Apfloat x, long n)
@@ -224,8 +224,8 @@ public class ApfloatMath
      *
      * @return Inverse <code>n</code>:th root of <code>x</code>, that is <code>x<sup>-1/n</sup></code>.
      *
-     * @exception java.lang.IllegalArgumentException If <code>targetPrecision &lt;= 0</code>.
-     * @exception java.lang.ArithmeticException If <code>x</code> or <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
+     * @exception IllegalArgumentException If <code>targetPrecision &lt;= 0</code>.
+     * @exception ArithmeticException If <code>x</code> or <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
      */
 
     public static Apfloat inverseRoot(Apfloat x, long n, long targetPrecision)
@@ -244,8 +244,8 @@ public class ApfloatMath
      *
      * @return Inverse <code>n</code>:th root of <code>x</code>, that is <code>x<sup>-1/n</sup></code>.
      *
-     * @exception java.lang.IllegalArgumentException If <code>targetPrecision &lt;= 0</code>.
-     * @exception java.lang.ArithmeticException If <code>x</code> or <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
+     * @exception IllegalArgumentException If <code>targetPrecision &lt;= 0</code>.
+     * @exception ArithmeticException If <code>x</code> or <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
      */
 
     public static Apfloat inverseRoot(Apfloat x, long n, long targetPrecision, Apfloat initialGuess)
@@ -269,8 +269,8 @@ public class ApfloatMath
      *
      * @return Inverse <code>n</code>:th root of <code>x</code>, that is <code>x<sup>-1/n</sup></code>.
      *
-     * @exception java.lang.IllegalArgumentException If <code>targetPrecision &lt;= 0</code> or <code>initialPrecision &lt;= 0</code>.
-     * @exception java.lang.ArithmeticException If <code>x</code> or <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
+     * @exception IllegalArgumentException If <code>targetPrecision &lt;= 0</code> or <code>initialPrecision &lt;= 0</code>.
+     * @exception ArithmeticException If <code>x</code> or <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
      */
 
     public static Apfloat inverseRoot(Apfloat x, long n, long targetPrecision, Apfloat initialGuess, long initialPrecision)
@@ -462,8 +462,8 @@ public class ApfloatMath
      *
      * @return The rounded number.
      *
-     * @exception java.lang.IllegalArgumentException If <code>precision</code> is less than zero or zero.
-     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     * @exception IllegalArgumentException If <code>precision</code> is less than zero or zero.
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
      *
      * @since 1.7.0
      */
@@ -484,8 +484,8 @@ public class ApfloatMath
      *
      * @return The rounded number.
      *
-     * @exception java.lang.IllegalArgumentException If <code>precision</code> is less than zero or zero.
-     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     * @exception IllegalArgumentException If <code>precision</code> is less than zero or zero.
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
      *
      * @since 1.11.0
      */
@@ -504,7 +504,7 @@ public class ApfloatMath
      *
      * @return The rounded number.
      *
-     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
      *
      * @since 1.11.0
      */
@@ -524,7 +524,7 @@ public class ApfloatMath
      *
      * @return The rounded number.
      *
-     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
      *
      * @since 1.11.0
      */
@@ -544,7 +544,7 @@ public class ApfloatMath
      *
      * @return The rounded number.
      *
-     * @exception java.lang.ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
      *
      * @since 1.11.0
      */
@@ -927,8 +927,8 @@ public class ApfloatMath
      *
      * @return &pi; accurate to <code>precision</code> digits, in the default radix.
      *
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the default radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public static Apfloat pi(long precision)
@@ -948,8 +948,8 @@ public class ApfloatMath
      *
      * @return &pi; accurate to <code>precision</code> digits, in base <code>radix</code>.
      *
-     * @exception java.lang.NumberFormatException If the radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public static Apfloat pi(long precision, int radix)
@@ -1215,7 +1215,7 @@ public class ApfloatMath
      *
      * @return Natural logarithm of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x &lt;= 0</code>.
+     * @exception ArithmeticException If <code>x &lt;= 0</code>.
      */
 
     public static Apfloat log(Apfloat x)
@@ -1235,7 +1235,7 @@ public class ApfloatMath
      *
      * @return Base-<code>b</code> logarithm of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x &lt;= 0</code> or <code>b &lt;= 0</code>.
+     * @exception ArithmeticException If <code>x &lt;= 0</code> or <code>b &lt;= 0</code>.
      *
      * @since 1.6
      */
@@ -1348,7 +1348,7 @@ public class ApfloatMath
      *
      * @return Natural logarithm of <code>radix</code> to the specified precision.
      *
-     * @exception java.lang.NumberFormatException If the radix is invalid.
+     * @exception NumberFormatException If the radix is invalid.
      */
 
     public static Apfloat logRadix(long precision, int radix)
@@ -1602,7 +1602,7 @@ public class ApfloatMath
      *
      * @return Inverse hyperbolic cosine of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x &lt; 1</code>.
+     * @exception ArithmeticException If <code>x &lt; 1</code>.
      */
 
     public static Apfloat acosh(Apfloat x)
@@ -1643,7 +1643,7 @@ public class ApfloatMath
      *
      * @return Inverse hyperbolic tangent of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>abs(x) &gt;= 1</code>.
+     * @exception ArithmeticException If <code>abs(x) &gt;= 1</code>.
      */
 
     public static Apfloat atanh(Apfloat x)
@@ -1732,7 +1732,7 @@ public class ApfloatMath
      *
      * @return Inverse cosine of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>abs(x) &gt; 1</code>.
+     * @exception ArithmeticException If <code>abs(x) &gt; 1</code>.
      */
 
     public static Apfloat acos(Apfloat x)
@@ -1751,7 +1751,7 @@ public class ApfloatMath
      *
      * @return Inverse sine of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>abs(x) &gt; 1</code>.
+     * @exception ArithmeticException If <code>abs(x) &gt; 1</code>.
      */
 
     public static Apfloat asin(Apfloat x)
@@ -1791,7 +1791,7 @@ public class ApfloatMath
      *
      * @return The angle of the point <code>(x, y)</code> in the plane.
      *
-     * @exception java.lang.ArithmeticException If <code>y</code> and <code>x</code> are both zero.
+     * @exception ArithmeticException If <code>y</code> and <code>x</code> are both zero.
      */
 
     public static Apfloat atan2(Apfloat y, Apfloat x)
@@ -1873,7 +1873,7 @@ public class ApfloatMath
      *
      * @return Tangent of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> is &pi;/2 + n &pi; where n is an integer.
+     * @exception ArithmeticException If <code>x</code> is &pi;/2 + n &pi; where n is an integer.
      */
 
     public static Apfloat tan(Apfloat x)
@@ -1895,7 +1895,7 @@ public class ApfloatMath
      *
      * @return <code>W<sub>0</sub>(x)</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> is less than -1/e.
+     * @exception ArithmeticException If <code>x</code> is less than -1/e.
      *
      * @since 1.8.0
      */
@@ -2214,8 +2214,8 @@ public class ApfloatMath
      *
      * @return &gamma; accurate to <code>precision</code> digits, in the default radix.
      *
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the default radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      *
      * @since 1.10.0
      */
@@ -2237,8 +2237,8 @@ public class ApfloatMath
      *
      * @return &gamma; accurate to <code>precision</code> digits, in base <code>radix</code>.
      *
-     * @exception java.lang.NumberFormatException If the radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      *
      * @since 1.10.0
      */
@@ -2299,8 +2299,8 @@ public class ApfloatMath
      *
      * @return <i>G</i> accurate to <code>precision</code> digits, in the default radix.
      *
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the default radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      *
      * @since 1.11.0
      */
@@ -2325,8 +2325,8 @@ public class ApfloatMath
      *
      * @return <i>G</i> accurate to <code>precision</code> digits, in base <code>radix</code>.
      *
-     * @exception java.lang.NumberFormatException If the radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      *
      * @since 1.11.0
      */
@@ -2362,8 +2362,8 @@ public class ApfloatMath
      *
      * @return <i>A</i> accurate to <code>precision</code> digits, in the default radix.
      *
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the default radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      *
      * @since 1.11.0
      */
@@ -2389,8 +2389,8 @@ public class ApfloatMath
      *
      * @return <i>A</i> accurate to <code>precision</code> digits, in base <code>radix</code>.
      *
-     * @exception java.lang.NumberFormatException If the radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      *
      * @since 1.11.0
      */
@@ -2445,8 +2445,8 @@ public class ApfloatMath
      *
      * @return <i>K</i> accurate to <code>precision</code> digits, in the default radix.
      *
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the default radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      *
      * @since 1.11.0
      */
@@ -2472,8 +2472,8 @@ public class ApfloatMath
      *
      * @return <i>K</i> accurate to <code>precision</code> digits, in base <code>radix</code>.
      *
-     * @exception java.lang.NumberFormatException If the radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      *
      * @since 1.11.0
      */
@@ -2845,8 +2845,8 @@ public class ApfloatMath
      *
      * @return A random number, uniformly distributed between <code>0 &le; x &lt; 1</code>.
      *
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
+     * @exception NumberFormatException If the default radix is not valid.
+     * @exception IllegalArgumentException In case the number of specified digits is invalid.
      *
      * @since 1.9.0
      */
@@ -2873,8 +2873,8 @@ public class ApfloatMath
      *
      * @return A random number, uniformly distributed between <code>0 &le; x &lt; 1</code>, in base <code>radix</code>.
      *
-     * @exception java.lang.NumberFormatException If the radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
+     * @exception NumberFormatException If the radix is not valid.
+     * @exception IllegalArgumentException In case the number of specified digits is invalid.
      *
      * @since 1.9.0
      */
@@ -2898,8 +2898,8 @@ public class ApfloatMath
      *
      * @return A random number, Gaussian ("normally") distributed with mean 0 and standard deviation 1.
      *
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
+     * @exception NumberFormatException If the default radix is not valid.
+     * @exception IllegalArgumentException In case the number of specified digits is invalid.
      *
      * @since 1.9.0
      */
@@ -2922,8 +2922,8 @@ public class ApfloatMath
      *
      * @return A random number, Gaussian ("normally") distributed with mean 0 and standard deviation 1.
      *
-     * @exception java.lang.NumberFormatException If the radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the number of specified digits is invalid.
+     * @exception NumberFormatException If the radix is not valid.
+     * @exception IllegalArgumentException In case the number of specified digits is invalid.
      *
      * @since 1.9.0
      */

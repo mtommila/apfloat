@@ -75,7 +75,7 @@ public class Aprational
      * @param numerator The numerator.
      * @param denominator The denominator.
      *
-     * @exception java.lang.IllegalArgumentException In case the denominator is zero, or if the denominator is not one or the numerator is not zero, and the radix of the numerator and denominator are different.
+     * @exception IllegalArgumentException In case the denominator is zero, or if the denominator is not one or the numerator is not zero, and the radix of the numerator and denominator are different.
      */
 
     public Aprational(Apint numerator, Apint denominator)
@@ -99,8 +99,8 @@ public class Aprational
      *
      * @param value The input string.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the denominator is zero.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the denominator is zero.
      */
 
     public Aprational(String value)
@@ -120,8 +120,8 @@ public class Aprational
      * @param value The input string.
      * @param radix The radix to be used.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the denominator is zero.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the denominator is zero.
      */
 
     public Aprational(String value, int radix)
@@ -156,9 +156,9 @@ public class Aprational
      *
      * @param in The input stream.
      *
-     * @exception java.io.IOException In case of I/O error reading the stream.
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the denominator is zero.
+     * @exception IOException In case of I/O error reading the stream.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the denominator is zero.
      */
 
     public Aprational(PushbackReader in)
@@ -173,9 +173,9 @@ public class Aprational
      * @param in The input stream.
      * @param radix The radix to be used.
      *
-     * @exception java.io.IOException In case of I/O error reading the stream.
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the denominator is zero.
+     * @exception IOException In case of I/O error reading the stream.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the denominator is zero.
      *
      * @see #Aprational(PushbackReader)
      */
@@ -578,7 +578,7 @@ public class Aprational
      *
      * @return <code>this / x</code>.
      *
-     * @exception java.lang.ArithmeticException In case the divisor is zero.
+     * @exception ArithmeticException In case the divisor is zero.
      */
 
     public Aprational divide(Aprational x)
@@ -705,7 +705,7 @@ public class Aprational
      *
      * @param radix The radix.
      *
-     * @exception java.lang.NumberFormatException If the radix is invalid.
+     * @exception NumberFormatException If the radix is invalid.
      *
      * @since 1.2
      */
@@ -884,7 +884,7 @@ public class Aprational
      *
      * @param out The output <code>Writer</code>.
      *
-     * @exception java.io.IOException In case of I/O error writing to the stream.
+     * @exception IOException In case of I/O error writing to the stream.
      */
 
     @Override
@@ -900,7 +900,7 @@ public class Aprational
      * @param out The output <code>Writer</code>.
      * @param pretty <code>true</code> to use a fixed-point notation, <code>false</code> to use an exponential notation.
      *
-     * @exception java.io.IOException In case of I/O error writing to the stream.
+     * @exception IOException In case of I/O error writing to the stream.
      */
 
     @Override

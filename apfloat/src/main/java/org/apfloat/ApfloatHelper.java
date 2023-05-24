@@ -251,7 +251,7 @@ class ApfloatHelper
      *
      * @return <code>true</code> if the specified character was extracted from the stream, <code>false</code> otherwise.
      *
-     * @exception java.io.IOException In case of read error in the stream.
+     * @exception IOException In case of read error in the stream.
      */
 
     public static boolean readMatch(PushbackReader in, int c)
@@ -276,7 +276,7 @@ class ApfloatHelper
      *
      * @param in The input.
      *
-     * @exception java.io.IOException In case of read error in the stream.
+     * @exception IOException In case of read error in the stream.
      */
 
     public static void extractWhitespace(PushbackReader in)

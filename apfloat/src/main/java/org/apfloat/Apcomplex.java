@@ -125,7 +125,7 @@ public class Apcomplex
      * @param real The real part of the number.
      * @param imag The imaginary part of the number.
      *
-     * @exception java.lang.IllegalArgumentException If the real part and imaginary part are not zero but have different radixes.
+     * @exception IllegalArgumentException If the real part and imaginary part are not zero but have different radixes.
      */
 
     public Apcomplex(Apfloat real, Apfloat imag)
@@ -151,7 +151,7 @@ public class Apcomplex
      *
      * @param value The input string.
      *
-     * @exception java.lang.NumberFormatException If the number is invalid.
+     * @exception NumberFormatException If the number is invalid.
      */
 
     public Apcomplex(String value)
@@ -194,8 +194,8 @@ public class Apcomplex
      *
      * @param in The input stream.
      *
-     * @exception java.io.IOException In case of I/O error reading from the stream.
-     * @exception java.lang.NumberFormatException If the number is invalid.
+     * @exception IOException In case of I/O error reading from the stream.
+     * @exception NumberFormatException If the number is invalid.
      */
 
     public Apcomplex(PushbackReader in)
@@ -319,7 +319,7 @@ public class Apcomplex
      *
      * @return An apcomplex with the specified precision and same value as this apcomplex.
      *
-     * @exception java.lang.IllegalArgumentException If <code>precision</code> is &lt;= 0.
+     * @exception IllegalArgumentException If <code>precision</code> is &lt;= 0.
      *
      * @since 1.2
      */
@@ -462,7 +462,7 @@ public class Apcomplex
      *
      * @return <code>this / z</code>.
      *
-     * @exception java.lang.ArithmeticException In case the divisor is zero.
+     * @exception ArithmeticException In case the divisor is zero.
      */
 
     public Apcomplex divide(Apcomplex z)
@@ -774,7 +774,7 @@ public class Apcomplex
      *
      * @return This number in the specified radix.
      *
-     * @exception java.lang.NumberFormatException If the radix is invalid.
+     * @exception NumberFormatException If the radix is invalid.
      *
      * @since 1.2
      */
@@ -888,7 +888,7 @@ public class Apcomplex
      *
      * @param out The output <code>Writer</code>.
      *
-     * @exception java.io.IOException In case of I/O error writing to the stream.
+     * @exception IOException In case of I/O error writing to the stream.
      */
 
     public void writeTo(Writer out)
@@ -903,7 +903,7 @@ public class Apcomplex
      * @param out The output <code>Writer</code>.
      * @param pretty <code>true</code> to use a fixed-point notation, <code>false</code> to use an exponential notation.
      *
-     * @exception java.io.IOException In case of I/O error writing to the stream.
+     * @exception IOException In case of I/O error writing to the stream.
      */
 
     public void writeTo(Writer out, boolean pretty)

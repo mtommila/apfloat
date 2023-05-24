@@ -284,7 +284,7 @@ public interface ApfloatImpl
      * @param out The stream to write to.
      * @param pretty Flag for formatting.
      *
-     * @exception java.io.IOException In case of I/O error writing to the stream.
+     * @exception IOException In case of I/O error writing to the stream.
      *
      * @see org.apfloat.Apfloat#writeTo(Writer,boolean)
      */

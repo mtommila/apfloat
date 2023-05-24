@@ -50,7 +50,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @param precision The precision of the results.
      *
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public FixedPrecisionApfloatHelper(long precision)
@@ -140,7 +140,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <code>x / y</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>y</code> is zero.
+     * @exception ArithmeticException If <code>y</code> is zero.
      */
 
     public Apfloat divide(Apfloat x, Apfloat y)
@@ -183,7 +183,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <code>x<sup>n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> and <code>n</code> are zero, or <code>x</code> is zero and <code>n</code> is negative.
+     * @exception ArithmeticException If <code>x</code> and <code>n</code> are zero, or <code>x</code> is zero and <code>n</code> is negative.
      */
 
     public Apfloat pow(Apfloat x, long n)
@@ -213,7 +213,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return The arc cosine of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If the absolute value of <code>x</code> is more than one.
+     * @exception ArithmeticException If the absolute value of <code>x</code> is more than one.
      */
 
     public Apfloat acos(Apfloat x)
@@ -234,7 +234,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return The hyperbolic arc cosine of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If the <code>x</code> is less than one.
+     * @exception ArithmeticException If the <code>x</code> is less than one.
      */
 
     public Apfloat acosh(Apfloat x)
@@ -250,7 +250,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return The arc sine of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If the absolute value of <code>x</code> is more than one.
+     * @exception ArithmeticException If the absolute value of <code>x</code> is more than one.
      */
 
     public Apfloat asin(Apfloat x)
@@ -294,7 +294,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return The hyperbolic arc tangent of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If the absolute value of <code>x</code> is equal to or more than one.
+     * @exception ArithmeticException If the absolute value of <code>x</code> is equal to or more than one.
      */
 
     public Apfloat atanh(Apfloat x)
@@ -366,7 +366,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return The natural logarithm of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> is less than or equal to zero.
+     * @exception ArithmeticException If <code>x</code> is less than or equal to zero.
      */
 
     public Apfloat log(Apfloat x)
@@ -383,7 +383,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return The base-<code>b</code> logarithm of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> or <code>b</code> is less than or equal to zero.
+     * @exception ArithmeticException If <code>x</code> or <code>b</code> is less than or equal to zero.
      *
      * @since 1.6
      */
@@ -442,7 +442,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return The square root of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> is negative.
+     * @exception ArithmeticException If <code>x</code> is negative.
      */
 
     public Apfloat sqrt(Apfloat x)
@@ -458,7 +458,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return The tangent of <code>x</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> is &pi;/2 + n &pi; where n is an integer.
+     * @exception ArithmeticException If <code>x</code> is &pi;/2 + n &pi; where n is an integer.
      */
 
     public Apfloat tan(Apfloat x)
@@ -514,7 +514,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <code>x<sup>-1/n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> or <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
+     * @exception ArithmeticException If <code>x</code> or <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
      */
 
     public Apfloat inverseRoot(Apfloat x, long n)
@@ -531,7 +531,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <code>x<sup>1/n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
+     * @exception ArithmeticException If <code>n</code> is zero, or <code>x</code> is negative and <code>n</code> is even.
      */
 
     public Apfloat root(Apfloat x, long n)
@@ -782,7 +782,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return The angle of the point <code>(y, x)</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>x</code> and <code>y</code> are zero.
+     * @exception ArithmeticException If <code>x</code> and <code>y</code> are zero.
      */
 
     public Apfloat atan2(Apfloat x, Apfloat y)
@@ -898,7 +898,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <code>&pi;</code>.
      *
-     * @exception java.lang.NumberFormatException If the radix is invalid.
+     * @exception NumberFormatException If the radix is invalid.
      */
 
     @Override
@@ -915,7 +915,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <code>log(radix)</code>.
      *
-     * @exception java.lang.NumberFormatException If the radix is invalid.
+     * @exception NumberFormatException If the radix is invalid.
      */
 
     public Apfloat logRadix(int radix)
@@ -1216,7 +1216,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return A random number.
      *
-     * @exception java.lang.NumberFormatException If the radix is invalid.
+     * @exception NumberFormatException If the radix is invalid.
      *
      * @since 1.9.0
      */
@@ -1248,7 +1248,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return A random number.
      *
-     * @exception java.lang.NumberFormatException If the radix is invalid.
+     * @exception NumberFormatException If the radix is invalid.
      *
      * @since 1.9.0
      */

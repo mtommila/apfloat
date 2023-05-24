@@ -97,7 +97,7 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
      *
      * @return <code>1 / this</code>
      *
-     * @exception java.lang.ArithmeticException If the divisor is zero.
+     * @exception ArithmeticException If the divisor is zero.
      */
 
     @Override

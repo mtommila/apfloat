@@ -98,7 +98,7 @@ public class Apfloat
      *
      * @param value The string representing the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
+     * @exception NumberFormatException In case the number is invalid.
      */
 
     public Apfloat(String value)
@@ -114,8 +114,8 @@ public class Apfloat
      * @param value The string representing the number.
      * @param precision The precision of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public Apfloat(String value, long precision)
@@ -138,8 +138,8 @@ public class Apfloat
      * @param precision The precision of the number.
      * @param radix The radix of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public Apfloat(String value, long precision, int radix)
@@ -155,7 +155,7 @@ public class Apfloat
      *
      * @param value The value of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
+     * @exception NumberFormatException In case the number is invalid.
      */
 
     public Apfloat(long value)
@@ -171,8 +171,8 @@ public class Apfloat
      * @param value The value of the number.
      * @param precision The precision of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public Apfloat(long value, long precision)
@@ -189,8 +189,8 @@ public class Apfloat
      * @param precision The precision of the number.
      * @param radix The radix of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public Apfloat(long value, long precision, int radix)
@@ -207,7 +207,7 @@ public class Apfloat
      *
      * @param value The value of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
+     * @exception NumberFormatException In case the number is invalid.
      */
 
     public Apfloat(float value)
@@ -229,8 +229,8 @@ public class Apfloat
      * @param value The value of the number.
      * @param precision The precision of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public Apfloat(float value, long precision)
@@ -253,8 +253,8 @@ public class Apfloat
      * @param precision The precision of the number.
      * @param radix The radix of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public Apfloat(float value, long precision, int radix)
@@ -271,7 +271,7 @@ public class Apfloat
      *
      * @param value The value of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
+     * @exception NumberFormatException In case the number is invalid.
      */
 
     public Apfloat(double value)
@@ -298,8 +298,8 @@ public class Apfloat
      * @param value The value of the number.
      * @param precision The precision of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public Apfloat(double value, long precision)
@@ -327,8 +327,8 @@ public class Apfloat
      * @param precision The precision of the number.
      * @param radix The radix of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException In case the number is invalid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public Apfloat(double value, long precision, int radix)
@@ -353,8 +353,8 @@ public class Apfloat
      *
      * @param in The stream to read from
      *
-     * @exception java.io.IOException If an I/O error occurs accessing the stream.
-     * @exception java.lang.NumberFormatException If the number is not valid.
+     * @exception IOException If an I/O error occurs accessing the stream.
+     * @exception NumberFormatException If the number is not valid.
      */
 
     public Apfloat(PushbackReader in)
@@ -370,9 +370,9 @@ public class Apfloat
      * @param in The stream to read from
      * @param precision The precision of the number.
      *
-     * @exception java.io.IOException If an I/O error occurs accessing the stream.
-     * @exception java.lang.NumberFormatException If the number is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception IOException If an I/O error occurs accessing the stream.
+     * @exception NumberFormatException If the number is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      *
      * @see #Apfloat(PushbackReader)
      */
@@ -391,9 +391,9 @@ public class Apfloat
      * @param precision The precision of the number.
      * @param radix The radix of the number.
      *
-     * @exception java.io.IOException If an I/O error occurs accessing the stream.
-     * @exception java.lang.NumberFormatException If the number is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception IOException If an I/O error occurs accessing the stream.
+     * @exception NumberFormatException If the number is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      *
      * @see #Apfloat(PushbackReader)
      */
@@ -411,7 +411,7 @@ public class Apfloat
      *
      * @param value The value of the number.
      *
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
+     * @exception NumberFormatException If the default radix is not valid.
      */
 
     public Apfloat(BigInteger value)
@@ -427,8 +427,8 @@ public class Apfloat
      * @param value The value of the number.
      * @param precision The precision of the number.
      *
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the default radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public Apfloat(BigInteger value, long precision)
@@ -445,8 +445,8 @@ public class Apfloat
      * @param precision The precision of the number.
      * @param radix The radix of the number.
      *
-     * @exception java.lang.NumberFormatException If the radix is not valid.
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception NumberFormatException If the radix is not valid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public Apfloat(BigInteger value, long precision, int radix)
@@ -475,7 +475,7 @@ public class Apfloat
      * @param value The value to use.
      * @param precision The precision to use, in decimal digits.
      *
-     * @exception java.lang.IllegalArgumentException In case the precision is invalid.
+     * @exception IllegalArgumentException In case the precision is invalid.
      */
 
     public Apfloat(BigDecimal value, long precision)
@@ -556,7 +556,7 @@ public class Apfloat
      *
      * @return An apfloat with the specified precision and same value as this apfloat.
      *
-     * @exception java.lang.IllegalArgumentException If <code>precision</code> is &lt;= 0.
+     * @exception IllegalArgumentException If <code>precision</code> is &lt;= 0.
      */
 
     @Override
@@ -827,7 +827,7 @@ public class Apfloat
      *
      * @return <code>this / x</code>.
      *
-     * @exception java.lang.ArithmeticException In case the divisor is zero.
+     * @exception ArithmeticException In case the divisor is zero.
      */
 
     public Apfloat divide(Apfloat x)
@@ -1104,7 +1104,7 @@ public class Apfloat
      *
      * @param radix The radix.
      *
-     * @exception java.lang.NumberFormatException If the radix is invalid.
+     * @exception NumberFormatException If the radix is invalid.
      *
      * @since 1.2
      */
@@ -1268,7 +1268,7 @@ public class Apfloat
      * @param out The output <code>Writer</code>.
      * @param pretty <code>true</code> to use a fixed-point notation, <code>false</code> to use an exponential notation.
      *
-     * @exception java.io.IOException In case of I/O error writing to the stream.
+     * @exception IOException In case of I/O error writing to the stream.
      */
 
     @Override

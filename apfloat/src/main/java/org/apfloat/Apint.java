@@ -72,7 +72,7 @@ public class Apint
      *
      * @param value The string representing the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
+     * @exception NumberFormatException In case the number is invalid.
      */
 
     public Apint(String value)
@@ -87,7 +87,7 @@ public class Apint
      * @param value The string representing the number.
      * @param radix The radix of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
+     * @exception NumberFormatException In case the number is invalid.
      */
 
     public Apint(String value, int radix)
@@ -102,7 +102,7 @@ public class Apint
      *
      * @param value The value of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
+     * @exception NumberFormatException In case the number is invalid.
      */
 
     public Apint(long value)
@@ -118,7 +118,7 @@ public class Apint
      * @param value The value of the number.
      * @param radix The radix of the number.
      *
-     * @exception java.lang.NumberFormatException In case the number is invalid.
+     * @exception NumberFormatException In case the number is invalid.
      */
 
     public Apint(long value, int radix)
@@ -132,8 +132,8 @@ public class Apint
      *
      * @param in The stream to read from
      *
-     * @exception java.io.IOException If an I/O error occurs accessing the stream.
-     * @exception java.lang.NumberFormatException If the number is not valid.
+     * @exception IOException If an I/O error occurs accessing the stream.
+     * @exception NumberFormatException If the number is not valid.
      */
 
     public Apint(PushbackReader in)
@@ -148,8 +148,8 @@ public class Apint
      * @param in The stream to read from
      * @param radix The radix of the number.
      *
-     * @exception java.io.IOException If an I/O error occurs accessing the stream.
-     * @exception java.lang.NumberFormatException If the number is not valid.
+     * @exception IOException If an I/O error occurs accessing the stream.
+     * @exception NumberFormatException If the number is not valid.
      */
 
     public Apint(PushbackReader in, int radix)
@@ -163,7 +163,7 @@ public class Apint
      *
      * @param value The value of the number.
      *
-     * @exception java.lang.NumberFormatException If the default radix is not valid.
+     * @exception NumberFormatException If the default radix is not valid.
      */
 
     public Apint(BigInteger value)
@@ -178,7 +178,7 @@ public class Apint
      * @param value The value of the number.
      * @param radix The radix of the number.
      *
-     * @exception java.lang.NumberFormatException If the radix is not valid.
+     * @exception NumberFormatException If the radix is not valid.
      */
 
     public Apint(BigInteger value, int radix)
@@ -368,7 +368,7 @@ public class Apint
      *
      * @return <code>this / x</code>.
      *
-     * @exception java.lang.ArithmeticException In case the divisor is zero.
+     * @exception ArithmeticException In case the divisor is zero.
      */
 
     public Apint divide(Apint x)
@@ -502,7 +502,7 @@ public class Apint
      *
      * @return This apint converted to a <code>BigInteger</code>.
      *
-     * @exception java.lang.IllegalArgumentException If this number is too big to fit in a <code>BigInteger</code>.
+     * @exception IllegalArgumentException If this number is too big to fit in a <code>BigInteger</code>.
      *
      * @since 1.6
      */
@@ -523,7 +523,7 @@ public class Apint
      *
      * @param radix The radix.
      *
-     * @exception java.lang.NumberFormatException If the radix is invalid.
+     * @exception NumberFormatException If the radix is invalid.
      *
      * @since 1.2
      */
@@ -703,7 +703,7 @@ public class Apint
      * @param out The output <code>Writer</code>.
      * @param pretty <code>true</code> to use a fixed-point notation, <code>false</code> to use an exponential notation.
      *
-     * @exception java.io.IOException In case of I/O error writing to the stream.
+     * @exception IOException In case of I/O error writing to the stream.
      */
 
     @Override

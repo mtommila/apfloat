@@ -109,7 +109,7 @@ public class ApcomplexMath
      *
      * @return <code>arctan(y / x)</code> from the appropriate branch, where <code>z = x + <i>i</i> y</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is zero.
+     * @exception ArithmeticException If <code>z</code> is zero.
      */
 
     public static Apfloat arg(Apcomplex z)
@@ -142,7 +142,7 @@ public class ApcomplexMath
      *
      * @return <code>z</code> to the <code>n</code>:th power, that is <code>z<sup>n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If both <code>z</code> and <code>n</code> are zero.
+     * @exception ArithmeticException If both <code>z</code> and <code>n</code> are zero.
      */
 
     public static Apcomplex pow(Apcomplex z, long n)
@@ -238,7 +238,7 @@ public class ApcomplexMath
      *
      * @return <code>n</code>:th root of <code>z</code>, that is <code>z<sup>1/n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>n</code> is zero.
+     * @exception ArithmeticException If <code>n</code> is zero.
      */
 
     public static Apcomplex root(Apcomplex z, long n)
@@ -257,7 +257,7 @@ public class ApcomplexMath
      *
      * @return <code>n</code>:th root of <code>z</code>, that is <code>z<sup>1/n</sup>e<sup>i2&pi;sk/n</sup></code> where <code>s</code> is the signum of the imaginary part of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>n</code> is zero.
+     * @exception ArithmeticException If <code>n</code> is zero.
      *
      * @since 1.5
      */
@@ -324,7 +324,7 @@ public class ApcomplexMath
      *
      * @return Inverse <code>n</code>:th root of <code>z</code>, that is <code>z<sup>-1/n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> or <code>n</code> is zero.
+     * @exception ArithmeticException If <code>z</code> or <code>n</code> is zero.
      */
 
     public static Apcomplex inverseRoot(Apcomplex z, long n)
@@ -343,7 +343,7 @@ public class ApcomplexMath
      *
      * @return Inverse <code>n</code>:th root of <code>z</code>, that is <code>z<sup>-1/n</sup>e<sup>-i2&pi;k/n</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> or <code>n</code> is zero.
+     * @exception ArithmeticException If <code>z</code> or <code>n</code> is zero.
      */
 
     public static Apcomplex inverseRoot(Apcomplex z, long n, long k)
@@ -592,7 +592,7 @@ public class ApcomplexMath
      *
      * @return All values of the <code>n</code>:th root of <code>z</code>, that is <code>z<sup>1/n</sup></code>, in the order of the angle.
      *
-     * @exception java.lang.ArithmeticException If <code>n</code> is zero.
+     * @exception ArithmeticException If <code>n</code> is zero.
      *
      * @since 1.5
      */
@@ -767,7 +767,7 @@ public class ApcomplexMath
      *
      * @return Natural logarithm of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is zero.
+     * @exception ArithmeticException If <code>z</code> is zero.
      */
 
     public static Apcomplex log(Apcomplex z)
@@ -861,7 +861,7 @@ public class ApcomplexMath
      *
      * @return Base-<code>w</code> logarithm of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> or <code>w</code> is zero.
+     * @exception ArithmeticException If <code>z</code> or <code>w</code> is zero.
      *
      * @since 1.6
      */
@@ -1157,7 +1157,7 @@ public class ApcomplexMath
      *
      * @return <code>z<sup>w</sup></code>.
      *
-     * @exception java.lang.ArithmeticException If both <code>z</code> and <code>w</code> are zero.
+     * @exception ArithmeticException If both <code>z</code> and <code>w</code> are zero.
      */
 
     public static Apcomplex pow(Apcomplex z, Apcomplex w)
@@ -1306,7 +1306,7 @@ public class ApcomplexMath
      *
      * @return Inverse tangent of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z == <i>i</i></code>.
+     * @exception ArithmeticException If <code>z == <i>i</i></code>.
      */
 
     public static Apcomplex atan(Apcomplex z)
@@ -1339,7 +1339,7 @@ public class ApcomplexMath
      *
      * @return Inverse hyperbolic tangent of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is 1 or -1.
+     * @exception ArithmeticException If <code>z</code> is 1 or -1.
      */
 
     public static Apcomplex atanh(Apcomplex z)
@@ -1460,7 +1460,7 @@ public class ApcomplexMath
      *
      * @return Tangent of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is &pi;/2 + n &pi; where n is an integer.
+     * @exception ArithmeticException If <code>z</code> is &pi;/2 + n &pi; where n is an integer.
      */
 
     public static Apcomplex tan(Apcomplex z)
@@ -1502,7 +1502,7 @@ public class ApcomplexMath
      *
      * @return Hyperbolic tangent of <code>z</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is <i>i</i> (&pi;/2 + n &pi;) where n is an integer.
+     * @exception ArithmeticException If <code>z</code> is <i>i</i> (&pi;/2 + n &pi;) where n is an integer.
      */
 
     public static Apcomplex tanh(Apcomplex z)
@@ -1579,7 +1579,7 @@ public class ApcomplexMath
      *
      * @return <code>W<sub>k</sub>(z)</code>.
      *
-     * @exception java.lang.ArithmeticException If <code>z</code> is zero and <code>k</code> is not zero.
+     * @exception ArithmeticException If <code>z</code> is zero and <code>k</code> is not zero.
      *
      * @see #w(Apcomplex)
      *
