@@ -631,6 +631,8 @@ public class FixedPrecisionApfloatHelper
     /**
      * Round with specified rounding mode.
      *
+     * @deprecated Use {@link #roundToPrecision(Apfloat,RoundingMode)}.
+     *
      * @param x The operand.
      * @param roundingMode The rounding mode.
      *
@@ -639,10 +641,89 @@ public class FixedPrecisionApfloatHelper
      * @since 1.7.0
      */
 
+    @Deprecated
     public Apfloat round(Apfloat x, RoundingMode roundingMode)
         throws ApfloatRuntimeException
     {
-        return ApfloatMath.round(x, precision(), roundingMode);
+        return roundToPrecision(x, roundingMode);
+    }
+
+    /**
+     * Round to precision with specified rounding mode.
+     *
+     * @param x The operand.
+     * @param roundingMode The rounding mode.
+     *
+     * @return <code>x</code> rounded to the precision of this helper with the specified rounding mode.
+     *
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat roundToPrecision(Apfloat x, RoundingMode roundingMode)
+        throws ApfloatRuntimeException
+    {
+        return ApfloatMath.roundToPrecision(x, precision(), roundingMode);
+    }
+
+    /**
+     * Round to integer with specified rounding mode.
+     *
+     * @param x The operand.
+     * @param roundingMode The rounding mode.
+     *
+     * @return <code>x</code> rounded to integer with the specified rounding mode.
+     *
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat roundToInteger(Apfloat x, RoundingMode roundingMode)
+        throws ApfloatRuntimeException, ArithmeticException
+    {
+        return valueOf(ApfloatMath.roundToInteger(x, roundingMode));
+    }
+
+    /**
+     * Round to specified number of places with specified rounding mode.
+     *
+     * @param x The operand.
+     * @param places The number of places.
+     * @param roundingMode The rounding mode.
+     *
+     * @return <code>x</code> rounded to the specified number of places with the specified rounding mode.
+     *
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat roundToPlaces(Apfloat x, long places, RoundingMode roundingMode)
+        throws ApfloatRuntimeException, ArithmeticException
+    {
+        return valueOf(ApfloatMath.roundToPlaces(x, places, roundingMode));
+    }
+
+    /**
+     * Round to multiple with specified rounding mode.
+     *
+     * @param x The number to round.
+     * @param y The integer multiple to round to.
+     * @param roundingMode The rounding mode.
+     *
+     * @exception ArithmeticException If rounding is necessary (result is not exact) and rounding mode is {@link RoundingMode#UNNECESSARY}.
+     *
+     * @return <code>x</code> rounded to the nearest multiple of <code>y</code> with the specified rounding mode.
+     *
+     * @since 1.11.0
+     */
+
+    public Apfloat roundToMultiple(Apfloat x, Apfloat y, RoundingMode roundingMode)
+        throws ApfloatRuntimeException, ArithmeticException
+    {
+        return valueOf(ApfloatMath.roundToMultiple(x, y, roundingMode));
     }
 
     /**

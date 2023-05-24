@@ -425,7 +425,31 @@ public class ApfloatCalculatorImpl
         @Override
         public Number round(Number x, Number y)
         {
-            throw new IllegalArgumentException("Round can only be used with scalar values");
+            return roundToPrecision(x, y);
+        }
+
+        @Override
+        public Number roundToPrecision(Number x, Number y)
+        {
+            throw new IllegalArgumentException("Rounding can only be used with scalar values");
+        }
+
+        @Override
+        public Number roundToInteger(Number x)
+        {
+            throw new IllegalArgumentException("Rounding can only be used with scalar values");
+        }
+
+        @Override
+        public Number roundToPlaces(Number x, Number y)
+        {
+            throw new IllegalArgumentException("Rounding can only be used with scalar values");
+        }
+
+        @Override
+        public Number roundToMultiple(Number x, Number y)
+        {
+            throw new IllegalArgumentException("Rounding can only be used with scalar values");
         }
 
         @Override
@@ -748,18 +772,45 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
-        public Number round(Number x, Number y)
+        public Number roundToPrecision(Number x, Number y)
         {
             if (!isLong(y))
             {
-                throw new IllegalArgumentException("Round can only be used with a valid integer argument");
+                throw new IllegalArgumentException("Rounding can only be used with a valid integer argument");
             }
-            return round(x, y.longValue());
+            return roundToPrecision(x, y.longValue());
         }
 
-        protected Number round(Number x, long precision)
+        protected Number roundToPrecision(Number x, long precision)
         {
-            return ApfloatMath.round((Apfloat) x, precision, RoundingMode.HALF_UP);
+            return ApfloatMath.roundToPrecision((Apfloat) x, precision, RoundingMode.HALF_UP);
+        }
+
+        @Override
+        public Number roundToInteger(Number x)
+        {
+            return ApfloatMath.roundToInteger((Apfloat) x, RoundingMode.HALF_UP);
+        }
+
+        @Override
+        public Number roundToPlaces(Number x, Number y)
+        {
+            if (!isLong(y))
+            {
+                throw new IllegalArgumentException("Rounding can only be used with a valid integer argument");
+            }
+            return roundToPlaces(x, y.longValue());
+        }
+
+        protected Number roundToPlaces(Number x, long precision)
+        {
+            return ApfloatMath.roundToPlaces((Apfloat) x, precision, RoundingMode.HALF_UP);
+        }
+
+        @Override
+        public Number roundToMultiple(Number x, Number y)
+        {
+            return ApfloatMath.roundToMultiple((Apfloat) x, (Apfloat) y, RoundingMode.HALF_UP);
         }
     }
 
@@ -831,9 +882,27 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
-        protected Number round(Number x, long precision)
+        protected Number roundToPrecision(Number x, long precision)
         {
-            return AprationalMath.round((Aprational) x, precision, RoundingMode.HALF_EVEN);
+            return AprationalMath.roundToPrecision((Aprational) x, precision, RoundingMode.HALF_UP);
+        }
+
+        @Override
+        public Number roundToInteger(Number x)
+        {
+            return AprationalMath.roundToInteger((Aprational) x, RoundingMode.HALF_UP);
+        }
+
+        @Override
+        protected Number roundToPlaces(Number x, long places)
+        {
+            return AprationalMath.roundToPlaces((Aprational) x, places, RoundingMode.HALF_UP);
+        }
+
+        @Override
+        public Number roundToMultiple(Number x, Number y)
+        {
+            return AprationalMath.roundToMultiple((Aprational) x, (Aprational) y, RoundingMode.HALF_UP);
         }
 
         @Override
@@ -937,7 +1006,7 @@ public class ApfloatCalculatorImpl
         else if (x instanceof Apfloat)
         {
             Apfloat a = (Apfloat) x;
-            a = ApfloatMath.round(a.precision(Util.ifFinite(a.precision(), a.precision() + 1)), a.precision(), RoundingMode.HALF_UP);
+            a = ApfloatMath.roundToPrecision(a.precision(Util.ifFinite(a.precision(), a.precision() + 1)), a.precision(), RoundingMode.HALF_UP);
             text = a.toString(pretty);
         }
         else

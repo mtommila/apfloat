@@ -187,7 +187,12 @@ public abstract class FunctionCalculatorImpl
         public Number pi(Number x);
         public Number random(Number x);
         public Number randomGaussian(Number x);
+        @Deprecated
         public Number round(Number x, Number y);
+        public Number roundToPrecision(Number x, Number y);
+        public Number roundToInteger(Number x);
+        public Number roundToPlaces(Number x, Number y);
+        public Number roundToMultiple(Number x, Number y);
         public Number sin(Number x);
         public Number sinh(Number x);
         public Number sqrt(Number x);
@@ -271,6 +276,10 @@ public abstract class FunctionCalculatorImpl
         setFunction("random", fixedFunction("random", 1, (functions, arguments) -> functions.random(arguments.get(0))));
         setFunction("randomGaussian", fixedFunction("randomGaussian", 1, (functions, arguments) -> functions.randomGaussian(arguments.get(0))));
         setFunction("round", fixedFunction("round", 2, (functions, arguments) -> functions.round(arguments.get(0), arguments.get(1))));
+        setFunction("roundToPrecision", fixedFunction("roundToPrecision", 2, (functions, arguments) -> functions.roundToPrecision(arguments.get(0), arguments.get(1))));
+        setFunction("roundToInteger", fixedFunction("roundToInteger", 1, (functions, arguments) -> functions.roundToInteger(arguments.get(0))));
+        setFunction("roundToPlaces", fixedFunction("roundToPlaces", 2, (functions, arguments) -> functions.roundToPlaces(arguments.get(0), arguments.get(1))));
+        setFunction("roundToMultiple", fixedFunction("roundToMultiple", 2, (functions, arguments) -> functions.roundToMultiple(arguments.get(0), arguments.get(1))));
         setFunction("sin", fixedFunction("sin", 1, (functions, arguments) -> functions.sin(arguments.get(0))));
         setFunction("sinh", fixedFunction("sinh", 1, (functions, arguments) -> functions.sinh(arguments.get(0))));
         setFunction("sqrt", fixedFunction("sqrt", 1, (functions, arguments) -> functions.sqrt(arguments.get(0))));

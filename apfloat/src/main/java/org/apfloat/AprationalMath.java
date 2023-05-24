@@ -215,6 +215,7 @@ public class AprationalMath
      * @since 1.7.0
      */
 
+    @Deprecated
     public static Apfloat round(Aprational x, long precision, RoundingMode roundingMode)
         throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
     {

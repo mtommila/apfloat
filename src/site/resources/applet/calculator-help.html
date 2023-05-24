@@ -132,7 +132,10 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>randomGaussian(x)</code></td><td>Pseudorandom number with <code>x</code> digits and a normal distribution with mean 0 and standard deviation 1. Parameter <code>x</code> must be an integer.</td></tr>
 <tr><td><code>root(x, y)</code></td><td>Equivalent to <code>x<sup>1/y</sup></code>. Parameter <code>y</code> must be an integer.</td></tr>
 <tr><td><code>root(x, y, z)</code></td><td><code>y</code>:th root of <code>x</code>, <code>z</code>:th branch. Parameters <code>y</code> and <code>z</code> must be integers.</td></tr>
-<tr><td><code>round(x, y)</code><td>Round <code>x</code> to <code>y</code> digits of precision. Parameter <code>x</code> must be real and <code>y</code> must be an integer. Any exactly half-way values are rounded up.</tr>
+<tr><td><code>roundToPrecision(x, y)</code><td>Round <code>x</code> to <code>y</code> digits of precision. Parameter <code>x</code> must be real and <code>y</code> must be an integer. Any exactly half-way values are rounded up.</tr>
+<tr><td><code>roundToInteger(x)</code><td>Round <code>x</code> to nearest integer. Parameter <code>x</code> must be real. Any exactly half-way values are rounded up.</tr>
+<tr><td><code>roundToPlaces(x, y)</code><td>Round <code>x</code> to <code>y</code> decimal places. Parameter <code>x</code> must be real and <code>y</code> must be an integer. Any exactly half-way values are rounded up.</tr>
+<tr><td><code>roundToMultiple(x, y)</code><td>Round <code>x</code> to the nearest integer multiple of <code>y</code>. Parameters <code>x</code> and <code>y</code> must be real. Any exactly half-way values are rounded up.</tr>
 <tr><td><code>scale(x, y)</code></td><td>Equivalent to <code>x * 10<sup>y</sup></code>. Parameter <code>y</code> must be an integer.</td></tr>
 <tr><td><code>sqrt(x)</code></td><td>Square root of <code>x</code>.</td></tr>
 <tr><td><code>truncate(x)</code></td><td>Nearest integer rounded towards zero of <code>x</code>. Parameter <code>x</code> must be real.</td></tr>
@@ -325,7 +328,7 @@ behaves around <code>1</code>.
 
 <p>Bug reports, questions and comments should be sent to <a href="mailto:Mikko.Tommila@apfloat.org">the author</a>.</p>
 
-<p>Last updated: February 28th, 2023</p>
+<p>Last updated: May 24th, 2023</p>
 
 </div>
 

@@ -468,6 +468,7 @@ public class ApfloatMath
      * @since 1.7.0
      */
 
+    @Deprecated
     public static Apfloat round(Apfloat x, long precision, RoundingMode roundingMode)
         throws IllegalArgumentException, ArithmeticException, ApfloatRuntimeException
     {

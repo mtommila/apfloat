@@ -67,6 +67,10 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testTruncate"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testFrac"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRound"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testRoundToPrecision"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testRoundToInteger"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testRoundToPlaces"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testRoundToMultiple"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testNegate"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testModf"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testMod"));
@@ -356,6 +360,7 @@ public class FixedPrecisionApfloatHelperTest
         assertEquals("precision", 30, result.precision());
     }
 
+    @SuppressWarnings("deprecation")
     public static void testRound()
     {
         FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(1);
@@ -363,6 +368,43 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.round(x, RoundingMode.DOWN);
         assertEquals("value", new Apfloat("1.0"), result);
         assertEquals("precision", 1, result.precision());
+    }
+
+    public static void testRoundToPrecision()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(1);
+        Apfloat x = new Apfloat("1.1");
+        Apfloat result = helper.roundToPrecision(x, RoundingMode.DOWN);
+        assertEquals("value", new Apfloat("1.0"), result);
+        assertEquals("precision", 1, result.precision());
+    }
+
+    public static void testRoundToInteger()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(1);
+        Apfloat x = new Apfloat("1.1");
+        Apfloat result = helper.roundToInteger(x, RoundingMode.DOWN);
+        assertEquals("value", new Apfloat("1.0"), result);
+        assertEquals("precision", 1, result.precision());
+    }
+
+    public static void testRoundToPlaces()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("1.19");
+        Apfloat result = helper.roundToPlaces(x, 1, RoundingMode.DOWN);
+        assertEquals("value", new Apfloat("1.1"), result);
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testRoundToMultiple()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(5);
+        Apfloat x = new Apfloat("3.1"),
+                y = new Apfloat("1.1");
+        Apfloat result = helper.roundToMultiple(x, y, RoundingMode.DOWN);
+        assertEquals("value", new Apfloat("2.2"), result);
+        assertEquals("precision", 5, result.precision());
     }
 
     public static void testNegate()
