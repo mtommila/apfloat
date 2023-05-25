@@ -98,7 +98,7 @@ public class LongAparapiMatrixStrategy
         kernel.setArrayAccess(arrayAccess);
         kernel.setN2(n2);
 
-        Range range = Range.create2D(n1, n1);
+        Range range = RangeHelper.create2D(n1, n1);
         kernel.execute(range);
     }
 
@@ -161,7 +161,7 @@ public class LongAparapiMatrixStrategy
 
         kernel.put(index);
 
-        Range range = Range.create(n2 / 2);
+        Range range = RangeHelper.create(n2 / 2);
         kernel.execute(range);
     }
 
@@ -228,7 +228,7 @@ public class LongAparapiMatrixStrategy
 
         kernel.put(index);
 
-        Range range = Range.create(n2);
+        Range range = RangeHelper.create(n2);
         kernel.execute(range);
     }
 }

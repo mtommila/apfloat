@@ -25,6 +25,9 @@ package org.apfloat.aparapi;
 
 import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.ArrayAccess;
+
+import com.aparapi.Range;
+
 import org.apfloat.internal.IntNTTStepStrategy;
 import org.apfloat.internal.IntWTables;
 import org.apfloat.internal.Scramble;
@@ -73,7 +76,8 @@ public class IntAparapiNTTStepStrategy
         kernel.setScaleFactor(scaleFactor);
         kernel.setModulus(MODULUS[modulus]);
 
-        kernel.execute(columns);
+        Range range = RangeHelper.create(columns);
+        kernel.execute(range);
     }
 
     /**
@@ -113,6 +117,7 @@ public class IntAparapiNTTStepStrategy
             kernel.put(permutationTable);
         }
 
-        kernel.execute(count);
+        Range range = RangeHelper.create(count);
+        kernel.execute(range);
     }
 }

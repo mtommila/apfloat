@@ -94,6 +94,6 @@ public class IntAparapiFactor3NTTStrategy
 
         IntKernel kernel = IntKernel.getInstance();
         kernel.get(arrayAccess.getIntData());
-        //kernel.cleanUpArrays(); // FIXME needs to be fixed in aparapi
+        kernel.cleanUpArrays();
     }
 }

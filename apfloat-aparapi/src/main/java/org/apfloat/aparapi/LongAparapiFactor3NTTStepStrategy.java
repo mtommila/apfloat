@@ -26,6 +26,9 @@ package org.apfloat.aparapi;
 import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.ArrayAccess;
 import org.apfloat.spi.DataStorage;
+
+import com.aparapi.Range;
+
 import org.apfloat.internal.ApfloatInternalException;
 import org.apfloat.internal.LongFactor3NTTStepStrategy;
 import static org.apfloat.internal.LongModConstants.*;
@@ -85,6 +88,7 @@ public class LongAparapiFactor3NTTStepStrategy
         kernel.setW2(w2);
         kernel.setModulus(MODULUS[modulus]);
 
-        kernel.execute((int) columns);
+        Range range = RangeHelper.create((int) columns);
+        kernel.execute(range);
     }
 }

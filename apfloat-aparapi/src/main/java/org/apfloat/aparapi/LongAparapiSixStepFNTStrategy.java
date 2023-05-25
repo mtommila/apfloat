@@ -62,6 +62,6 @@ public class LongAparapiSixStepFNTStrategy
 
         LongKernel kernel = LongKernel.getInstance();
         kernel.get(arrayAccess.getLongData());
-        //kernel.cleanUpArrays(); // FIXME needs to be fixed in aparapi
+        kernel.cleanUpArrays();
     }
 }
