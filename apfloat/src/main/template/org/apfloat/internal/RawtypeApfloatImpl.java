@@ -58,7 +58,7 @@ import static org.apfloat.internal.RawtypeRadixConstants.*;
  * This implementation doesn't necessarily store any extra digits for added
  * precision, so the last digit of any operation may be inaccurate.
  *
- * @version 1.9.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -2424,7 +2424,7 @@ public class RawtypeApfloatImpl
         }
         else
         {
-            return (precision + BASE_DIGITS[this.radix] - mswDigits - 1) / BASE_DIGITS[this.radix] + 1;
+            return Long.divideUnsigned(precision + BASE_DIGITS[this.radix] - mswDigits - 1, BASE_DIGITS[this.radix]) + 1;
         }
     }
 

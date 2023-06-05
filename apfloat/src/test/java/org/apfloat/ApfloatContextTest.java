@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -75,7 +75,7 @@ public class ApfloatContextTest
 
         Properties properties = new Properties();
 
-        properties.setProperty(ApfloatContext.BUILDER_FACTORY, "org.apfloat.internal.LongBuilderFactory");
+        properties.setProperty(ApfloatContext.BUILDER_FACTORY, "org.apfloat.internal.DoubleBuilderFactory");
         properties.setProperty(ApfloatContext.DEFAULT_RADIX, "11");
         properties.setProperty(ApfloatContext.MAX_MEMORY_BLOCK_SIZE, "1048576");
         properties.setProperty(ApfloatContext.CACHE_L1_SIZE, "16384");
@@ -94,7 +94,7 @@ public class ApfloatContextTest
         properties = ctx.getProperties();
 
         assertEquals("size", 15, properties.size());
-        assertEquals("ApfloatContext.BUILDER_FACTORY", "org.apfloat.internal.LongBuilderFactory", ctx.getProperty(ApfloatContext.BUILDER_FACTORY));
+        assertEquals("ApfloatContext.BUILDER_FACTORY", "org.apfloat.internal.DoubleBuilderFactory", ctx.getProperty(ApfloatContext.BUILDER_FACTORY));
         assertEquals("ApfloatContext.DEFAULT_RADIX", "11", ctx.getProperty(ApfloatContext.DEFAULT_RADIX));
         assertEquals("ApfloatContext.MAX_MEMORY_BLOCK_SIZE", "1048576", ctx.getProperty(ApfloatContext.MAX_MEMORY_BLOCK_SIZE));
         assertEquals("ApfloatContext.CACHE_L1_SIZE", "16384", ctx.getProperty(ApfloatContext.CACHE_L1_SIZE));
@@ -110,7 +110,7 @@ public class ApfloatContextTest
         assertEquals("ApfloatContext.FILE_SUFFIX", ".dat", ctx.getProperty(ApfloatContext.FILE_SUFFIX));
         assertEquals("ApfloatContext.CLEANUP_AT_EXIT", "false", ctx.getProperty(ApfloatContext.CLEANUP_AT_EXIT));
 
-        assertEquals("ApfloatContext.BUILDER_FACTORY", "org.apfloat.internal.LongBuilderFactory", ctx.getBuilderFactory().getClass().getName());
+        assertEquals("ApfloatContext.BUILDER_FACTORY", "org.apfloat.internal.DoubleBuilderFactory", ctx.getBuilderFactory().getClass().getName());
         assertEquals("ApfloatContext.DEFAULT_RADIX", 11, ctx.getDefaultRadix());
         assertEquals("ApfloatContext.MAX_MEMORY_BLOCK_SIZE", 1048576, ctx.getMaxMemoryBlockSize());
         assertEquals("ApfloatContext.CACHE_L1_SIZE", 16384, ctx.getCacheL1Size());

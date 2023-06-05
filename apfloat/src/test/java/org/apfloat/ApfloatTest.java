@@ -40,7 +40,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.1
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -369,6 +369,28 @@ public class ApfloatTest
         {
             // OK: invalid precision
         }
+
+        try
+        {
+            in = new PushbackReader(new StringReader("9.9e9223372036854775807"));
+            new Apfloat(in);
+            fail("Overflow allowed");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK: should overflow
+        }
+
+        try
+        {
+            in = new PushbackReader(new StringReader("9.9e9223372036854775707"));
+            new Apfloat(in);
+            fail("Overflow allowed");
+        }
+        catch (NumberFormatException | OverflowException e)
+        {
+            // OK: should overflow
+        }
     }
 
     public static void testBigIntegerConstructor()
@@ -626,6 +648,8 @@ public class ApfloatTest
         assertEquals("900000000000000 size", 1, a.size());
         a = new Apfloat(0);
         assertEquals("0 size", 0, a.size());
+        a = new Apfloat("1.1e-1000000", Apfloat.INFINITE - 1);
+        assertEquals("1.1e-1000000 precision infinite-1 size", 2, a.size());
 
         a = new Apfloat("1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001");
         assertEquals("1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001 size", 100, a.size());
@@ -1012,6 +1036,10 @@ public class ApfloatTest
         b = new Apfloat(6);
         assertEquals("6 == 6", true, a.equals(b));
 
+        a = new Apfloat("1.1e-1000000");
+        b = new Apfloat("1.1e-1000000", Apfloat.INFINITE - 1);
+        assertEquals("1.1e-1000000 == 1.1e-1000000 different precision", true, a.equals(b));
+
         assertEquals("6 == something else", false, a.equals("bogus"));
 
         a = new Apfloat(0, 1, 10);
@@ -1024,7 +1052,7 @@ public class ApfloatTest
         ApfloatContext ctx = (ApfloatContext) ApfloatContext.getGlobalContext().clone();
         a = new Apfloat(0);
         b = new Apfloat(1);
-        ctx.setBuilderFactory(new org.apfloat.internal.LongBuilderFactory());
+        ctx.setBuilderFactory(new org.apfloat.internal.DoubleBuilderFactory());
         ApfloatContext.setThreadContext(ctx);
         assertEquals("0 == 0 different implementations", true, a.equals(new Apfloat(0)));
         assertEquals("1 == 1 different implementations", true, b.equals(new Apfloat(1)));
@@ -1094,6 +1122,8 @@ public class ApfloatTest
         assertEquals("123456789", "1.23456789e8", "" + a);
         a = new Apfloat(123456789, 9);
         assertEquals("123456789 pretty", "123456789", a.toString(true));
+        a = new Apfloat("1.1e-1000000", Apfloat.INFINITE - 1);
+        assertEquals("1.1e-1000000 infinite-1 precision", "1.1e-1000000", a.toString());
     }
 
     public static void testWriteTo()

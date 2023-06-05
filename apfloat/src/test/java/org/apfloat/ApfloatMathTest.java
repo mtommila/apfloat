@@ -509,6 +509,10 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.roundToPrecision(new Apfloat(4), 2, RoundingMode.UNNECESSARY);
         assertEquals("4, 2, infinite precision", 2, a.precision());
         assertEquals("4, 2, infinite value", new Apfloat(4), a);
+
+        a = ApfloatMath.roundToPrecision(new Apfloat("1.1e-1000000", Apfloat.INFINITE), Apfloat.INFINITE - 1, RoundingMode.UNNECESSARY);
+        assertEquals("1.1e-1000000, infinite-1 precision", Apfloat.INFINITE - 1, a.precision());
+        assertEquals("1.1e-1000000, infinite-1 value", new Apfloat("1.1e-1000000"), a);
     }
 
     public static void testRoundToInteger()
@@ -528,14 +532,26 @@ public class ApfloatMathTest
         a = ApfloatMath.roundToInteger(new Apfloat("-4.1"), RoundingMode.FLOOR);
         assertEquals("-4.1 FLOOR", new Apfloat(-5), a);
 
+        a = ApfloatMath.roundToInteger(new Apfloat("5.4"), RoundingMode.HALF_UP);
+        assertEquals("5.4 HALF_UP", new Apfloat(5), a);
         a = ApfloatMath.roundToInteger(new Apfloat("5.5"), RoundingMode.HALF_UP);
         assertEquals("5.5 HALF_UP", new Apfloat(6), a);
+        a = ApfloatMath.roundToInteger(new Apfloat("5.6"), RoundingMode.HALF_UP);
+        assertEquals("5.6 HALF_UP", new Apfloat(6), a);
 
+        a = ApfloatMath.roundToInteger(new Apfloat("5.4"), RoundingMode.HALF_DOWN);
+        assertEquals("5.4 HALF_DOWN", new Apfloat(5), a);
         a = ApfloatMath.roundToInteger(new Apfloat("5.5"), RoundingMode.HALF_DOWN);
         assertEquals("5.5 HALF_DOWN", new Apfloat(5), a);
+        a = ApfloatMath.roundToInteger(new Apfloat("5.6"), RoundingMode.HALF_DOWN);
+        assertEquals("5.6 HALF_DOWN", new Apfloat(6), a);
 
+        a = ApfloatMath.roundToInteger(new Apfloat("-5.4"), RoundingMode.HALF_EVEN);
+        assertEquals("-5.4 HALF_EVEN", new Apfloat(-5), a);
         a = ApfloatMath.roundToInteger(new Apfloat("-5.5"), RoundingMode.HALF_EVEN);
         assertEquals("-5.5 HALF_EVEN", new Apfloat(-6), a);
+        a = ApfloatMath.roundToInteger(new Apfloat("-5.6"), RoundingMode.HALF_EVEN);
+        assertEquals("-5.6 HALF_EVEN", new Apfloat(-6), a);
 
         a = ApfloatMath.roundToInteger(new Apfloat("1e-1000000000000000"), RoundingMode.UP);
         assertEquals("1e-1000000000000000 UP", new Apfloat(1), a);
@@ -588,6 +604,10 @@ public class ApfloatMathTest
         a = ApfloatMath.roundToPlaces(new Apfloat("123.45"), 1, RoundingMode.HALF_EVEN);
         assertEquals("123.45, 1, HALF_EVEN precision", Apfloat.INFINITE, a.precision());
         assertEquals("123.45, 1, HALF_EVEN value", new Apfloat("123.4"), a);
+
+        a = ApfloatMath.roundToPlaces(new Apfloat("123.45e1000000"), Long.MIN_VALUE, RoundingMode.DOWN);
+        assertEquals("123.45e1000000, MIN_VALUE, UP precision", Apfloat.INFINITE, a.precision());
+        assertEquals("123.45e1000000, MIN_VALUE, UP value", new Apfloat(0), a);
 
         try
         {
@@ -682,6 +702,16 @@ public class ApfloatMathTest
         catch (ArithmeticException ae)
         {
             // OK; impossible
+        }
+
+        try
+        {
+            ApfloatMath.roundToMultiple(new Apfloat("2.3e8999999999999999999"), new Apfloat("1.1e-8999999999999999999"), RoundingMode.UP);
+            fail("Too big scale difference");
+        }
+        catch (OverflowException oe)
+        {
+            // OK; too big scale difference
         }
     }
 
@@ -788,6 +818,10 @@ public class ApfloatMathTest
         assertEquals("very long, -very long", new Apfloat("6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057150"), ApfloatMath.fmod(new Apfloat("610195307303654352666518121441737650909904045487886269771428999892641560353287146586044778246190438153093623532301738649952435264069156612677948549906937800453397951028502213195775639617773794408985442106591307693813584425141736150542412855661591984057451813085814343390198354303417947862296970200397097469208547"), new Apfloat("-6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151")));
         assertEquals("-very long, very long", new Apfloat("-6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057150"), ApfloatMath.fmod(new Apfloat("-610195307303654352666518121441737650909904045487886269771428999892641560353287146586044778246190438153093623532301738649952435264069156612677948549906937800453397951028502213195775639617773794408985442106591307693813584425141736150542412855661591984057451813085814343390198354303417947862296970200397097469208547"), new Apfloat("6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151")));
         assertEquals("-very long, -very long", new Apfloat("-6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057150"), ApfloatMath.fmod(new Apfloat("-610195307303654352666518121441737650909904045487886269771428999892641560353287146586044778246190438153093623532301738649952435264069156612677948549906937800453397951028502213195775639617773794408985442106591307693813584425141736150542412855661591984057451813085814343390198354303417947862296970200397097469208547"), new Apfloat("-6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151")));
+
+        a = ApfloatMath.fmod(new Apfloat("2.3e9000000000000000000"), new Apfloat("1.1e-9000000000000000000"));
+        assertEquals("1.1e9000000000000000000, 1.1e-9000000000000000000, precision", Apfloat.INFINITE, a.precision());
+        assertEquals("1.1e9000000000000000000, 1.1e-9000000000000000000, value", new Apfloat(0), a);
     }
 
     public static void testMultiplyAdd()
