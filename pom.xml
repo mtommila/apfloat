@@ -113,6 +113,19 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>
           <version>3.1.0</version>
+          <dependencies>
+            <dependency>
+              <groupId>ant-contrib</groupId>
+              <artifactId>ant-contrib</artifactId>
+              <version>1.0b3</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>ant</groupId>
+                  <artifactId>ant</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -255,10 +268,31 @@
             </goals>
             <configuration>
               <target>
+                <ac:for param="filename" xmlns:ac="antlib:net.sf.antcontrib">
+                  <path>
+                    <fileset dir="${project.build.directory}/site/apidocs" />
+                  </path>
+                  <sequential>
+                    <local name="filename"/>
+                    <local name="tofilename"/>
+                    <property name="filename" value="@{filename}"/>
+                    <pathconvert property="tofilename" targetos="unix">
+                      <path path="${filename}" />
+                      <map from="${project.build.directory}${file.separator}site${file.separator}apidocs${file.separator}" to="" />
+                    </pathconvert>
+                    <copy file="${filename}" tofile="${project.build.directory}/site/docs/${tofilename}">
+                      <filterchain>
+                        <tokenfilter>
+                          <replacestring from="&lt;/head&gt;" to='&lt;link rel="canonical" href="http://www.apfloat.org/apfloat_java/docs/${tofilename}"&gt;${line.separator}&lt;/head&gt;' />
+                        </tokenfilter>
+                      </filterchain>
+                    </copy>
+                  </sequential>
+                </ac:for>
                 <zip destfile="${project.build.directory}/apfloat-${project.version}.zip">
                   <fileset dir="." includes="readme.html,license.txt" />
                   <fileset dir="src/site/resources" />
-                  <zipfileset dir="${project.build.directory}/site/apidocs" prefix="docs" />
+                  <zipfileset dir="${project.build.directory}/site/docs" prefix="docs" />
                   <zipfileset src="${project.build.directory}/apfloat-parent-${project.version}-sources.jar" prefix="source" excludes="META-INF/" />
                   <zipfileset file="apfloat/target/apfloat.jar" fullpath="lib/apfloat.jar" />
                   <zipfileset file="apfloat-applet/target/applet.jar" fullpath="lib/applet.jar" />
