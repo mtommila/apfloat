@@ -717,6 +717,25 @@ public class ApintMathTest
             }
             assertEquals("All values occurred", radix, counts.size());
         }
+
+        try
+        {
+            ApintMath.random(0);
+            fail("Zero allowed");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK: zero precision
+        }
+        try
+        {
+            ApintMath.random(Apfloat.INFINITE);
+            fail("Infinite allowed");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK: Infinite size
+        }
     }
 
     public static void testMax()

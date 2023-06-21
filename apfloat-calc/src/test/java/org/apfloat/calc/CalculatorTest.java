@@ -55,28 +55,29 @@ public class CalculatorTest
 
         suite.addTest(new CalculatorTest("testOperators"));
         suite.addTest(new CalculatorTest("testFunctions"));
+        suite.addTest(new CalculatorTest("testArguments"));
 
         return suite;
     }
 
-    private static void assertCalculation(String expected, String input)
+    private static void assertCalculation(String expected, String input, String... args)
         throws ParseException
     {
-        String actual = runCalculation(input);
+        String actual = runCalculation(input, args);
         assertEquals(input, expected + NEWLINE, actual);
     }
 
-    private static void assertCalculationMatch(String expectedPattern, String input)
+    private static void assertCalculationMatch(String expectedPattern, String input, String... args)
         throws ParseException
     {
-        String actual = runCalculation(input);
+        String actual = runCalculation(input, args);
         if (!actual.matches('(' + expectedPattern + ')' + NEWLINE))
         {
             assertEquals(input, expectedPattern + NEWLINE, actual);
         }
     }
 
-    private static String runCalculation(String input)
+    private static String runCalculation(String input, String... args)
         throws ParseException
     {
         InputStream oldIn = System.in;
@@ -91,7 +92,7 @@ public class CalculatorTest
             System.setIn(in);
             System.setOut(out);
 
-            Calculator.main(new String[0]);
+            Calculator.main(args);
 
             actual = new String(buffer.toByteArray());
         }
@@ -104,11 +105,11 @@ public class CalculatorTest
         return actual;
     }
 
-    private static void assertCalculationFailure(String input)
+    private static void assertCalculationFailure(String input, String... args)
     {
         try
         {
-            runCalculation(input);
+            runCalculation(input, args);
             fail(input + " accepted");
         }
         catch (ParseException pe)
@@ -197,6 +198,8 @@ public class CalculatorTest
         assertCalculation("6.5625", "binomial(4.5000,3)");
         assertCalculation("45", "binomial(10,2)");
         assertCalculation("366166666666666666665821666666666666666667100000000000000000000", "binomial(1300000000000000000000,3)");
+        assertCalculation("0", "binomial(3,1300000000000000000000)");
+        assertCalculation("1", "binomial(1300000000000000000000,1300000000000000000000)");
         assertCalculation("1040/81", "binomial(16/3,7/3)");
         assertCalculation("-455/81", "binomial(-7/3,-16/3)");
         assertCalculation("-1", "binomial(-1,1)");
@@ -344,6 +347,8 @@ public class CalculatorTest
         assertCalculationFailure("bernoulli()");
         assertCalculationFailure("bernoulli(1,1)");
         assertCalculationFailure("binomial(-3,5i)");
+        assertCalculationFailure("binomial(-3i,5)");
+        assertCalculationFailure("binomial(-3i,5i)");
         assertCalculationFailure("binomial(-3,3.5)");
         assertCalculationFailure("binomial(4/3,3/2)");
         assertCalculationFailure("binomial()");
@@ -525,9 +530,11 @@ public class CalculatorTest
         assertCalculationFailure("max()");
         assertCalculationFailure("max(1)");
         assertCalculationFailure("max(1, 1, 1)");
+        assertCalculationFailure("max(i, i)");
         assertCalculationFailure("min()");
         assertCalculationFailure("min(1)");
         assertCalculationFailure("min(1, 1, 1)");
+        assertCalculationFailure("min(i, i)");
         assertCalculationFailure("nextAfter(1)");
         assertCalculationFailure("nextAfter(1, 2, 3)");
         assertCalculationFailure("nextAfter(1, i)");
@@ -589,6 +596,14 @@ public class CalculatorTest
         assertCalculationFailure("pow(2)");
         assertCalculationFailure("pow(2, 2, 2)");
         assertCalculationFailure("bogusfunc(5)");
+    }
+
+    public static void testArguments()
+        throws ParseException
+    {
+        assertCalculation("1.4142", "sqrt(2.)", "-i", "5");
+        assertCalculation("0.5", "1/2", "-p", "-i", "1");
+        assertCalculation("0.5", "1.0/2.0", "-p");
     }
 
     private static final String NEWLINE = System.lineSeparator();

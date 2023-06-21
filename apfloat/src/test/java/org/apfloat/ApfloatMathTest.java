@@ -2030,6 +2030,9 @@ public class ApfloatMathTest
         a = ApfloatMath.eulerSmall(2000, 10);
         assertEquals("long and short match", EulerHelper.euler(2000, 10), a);
 
+        a = ApfloatMath.euler(2500, 10);
+        assertEquals("short and long match", ApfloatMath.eulerSmall(2500, 10), a);
+
         for (int radix = 2; radix <= 36; radix++)
         {
             a = ApfloatMath.eulerSmall(20, radix);
@@ -2346,6 +2349,9 @@ public class ApfloatMathTest
         a = ApfloatMath.gamma(new Apfloat("4.500000"), new Apfloat("6.500000"));
         assertEquals("4.5,6.5 precision", 6, a.precision());
         assertEquals("4.5,6.5 value", new Apfloat("1.89139"), a, new Apfloat("5e-5"));
+        a = ApfloatMath.gamma(new Apfloat("-0.500000"), new Apfloat("0.500000"));
+        assertEquals("-0.5,0.5 precision", 5, a.precision());
+        assertEquals("-0.5,0.5 value", new Apfloat("0.590691"), a, new Apfloat("5e-5"));
 
         a = ApfloatMath.gamma(new Apfloat(1, 10), new Apfloat(-1, 10));
         assertEquals("1,-1 precision", 10, a.precision());
@@ -2405,6 +2411,15 @@ public class ApfloatMathTest
         {
             ApfloatMath.gamma(Apfloat.ZERO, Apfloat.ZERO);
             fail("Gamma of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.gamma(new Apfloat("-0.500000"), new Apfloat("-0.500000"));
+            fail("Non-real result");
         }
         catch (ArithmeticException ae)
         {

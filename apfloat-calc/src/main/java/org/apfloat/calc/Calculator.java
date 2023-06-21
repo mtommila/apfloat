@@ -26,7 +26,7 @@ package org.apfloat.calc;
 /**
  * Command-line calculator.
  *
- * @version 1.2
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -47,7 +47,36 @@ public class Calculator
     public static void main(String args[])
         throws ParseException
     {
-        CalculatorParser calculatorParser = new CalculatorParser(System.in, System.out, new ApfloatCalculatorImpl());
+        boolean pretty = false;
+        Long inputPrecision = null;
+        for (int i = 0; i < args.length; i++)
+        {
+            switch (args[i])
+            {
+                case "-p":
+                    pretty = true;
+                    break;
+                case "-i":
+                    try
+                    {
+                        i++;
+                        inputPrecision = Long.valueOf(args[i]);
+                        break;
+                    }
+                    catch (NumberFormatException | ArrayIndexOutOfBoundsException e)
+                    {
+                        // Fall through to usage
+                    }
+                default:
+                    System.err.println("Usage: calculator [-p] [-i inputPrecision]");
+                    System.exit(1);
+            }
+        }
+        
+        CalculatorImpl calculatorImpl = new ApfloatCalculatorImpl();
+        calculatorImpl.setFormat(pretty);
+        calculatorImpl.setInputPrecision(inputPrecision);
+        CalculatorParser calculatorParser = new CalculatorParser(System.in, System.out, calculatorImpl);
         while (calculatorParser.parseOneLine())
         {
             // Loop until input ends or exception is thrown

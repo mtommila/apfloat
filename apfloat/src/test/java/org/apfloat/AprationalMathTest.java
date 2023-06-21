@@ -76,6 +76,7 @@ public class AprationalMathTest
         Aprational x = new Aprational("2");
         assertEquals("2^30", new Aprational(new Apint(1 << 30)), AprationalMath.pow(x, 30));
         assertEquals("2^60", new Aprational(new Apint(1L << 60)), AprationalMath.pow(x, 60));
+        assertEquals("2^5", new Aprational(new Apint(1L << 5)), AprationalMath.pow(x, 5));
         assertEquals("2^-1", new Aprational("1/2"), AprationalMath.pow(x, -1));
         assertEquals("2^-3", new Aprational("1/8"), AprationalMath.pow(x, -3));
         assertEquals("2^0", new Aprational("1"), AprationalMath.pow(x, 0));
@@ -603,6 +604,9 @@ public class AprationalMathTest
 
         a = AprationalMath.bernoulli(6, 7);
         assertEquals("6 value", new Aprational("1/60", 7), a);
+
+        // This is *extremely* time-consuming
+        //assertEquals("Big equals small", AprationalMath.bernoulliSmall(2001, 10), AprationalMath.bernoulli(2001));
 
         Iterator<Aprational> iterator = AprationalMath.bernoullis(4, 10);
         assertEquals("iterator hasNext", true, iterator.hasNext());

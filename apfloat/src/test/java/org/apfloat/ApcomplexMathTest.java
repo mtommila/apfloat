@@ -74,6 +74,7 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testSin"));
         suite.addTest(new ApcomplexMathTest("testTan"));
         suite.addTest(new ApcomplexMathTest("testCot"));
+        suite.addTest(new ApcomplexMathTest("testW"));
         suite.addTest(new ApcomplexMathTest("testProduct"));
         suite.addTest(new ApcomplexMathTest("testSum"));
         suite.addTest(new ApcomplexMathTest("testGamma"));
@@ -706,7 +707,7 @@ public class ApcomplexMathTest
 
         try
         {
-            ApcomplexMath.agm(new Apcomplex(new Apfloat(1)), new Apcomplex(new Apfloat(2)));
+            ApcomplexMath.agm(new Apcomplex(new Apfloat(1)), new Apcomplex(new Apfloat(2), new Apfloat(3)));
             fail("AGM to infinite precision accepted");
         }
         catch (InfiniteExpansionException iee)
@@ -774,6 +775,10 @@ public class ApcomplexMathTest
         a = ApcomplexMath.log(new Apcomplex("(1.01,0.01)"));
         assertEquals("(1.01,0.01), precision", 1, a.precision());
 
+        a = ApcomplexMath.log(new Apcomplex("(0.100000,0.100000)"));
+        assertEquals("(0.1,0.1) precision", 6, a.precision());
+        assertEquals("(0.1,0.1) value", new Apcomplex("(-1.95601,0.785398)"), a, new Apfloat("5e-5"));
+
         a = ApcomplexMath.log(new Apcomplex(Apfloat.ZERO, new Apfloat("2.567534329783818000500533029709932117494558299117260796421579784603311989535237879614227625064708170e2171472", 100)));
         assertEquals("(0,e^5000000), 100 precision", 106, a.precision());
         assertEquals("(0,e^5000000), 100 value", new Apcomplex(new Apfloat(5000000), new Apfloat("1.570796326794896619231321691639751442098584699687552910487472296153908203143104499314017412671058534")), a, new Apfloat("5e-99"));
@@ -785,6 +790,10 @@ public class ApcomplexMathTest
         a = ApcomplexMath.log(new Apcomplex(new Apfloat(-2, 100, 2)));
         assertEquals("-2, 100 radix 2 precision", 100, a.precision());
         assertEquals("-2, 100 radix 2 value", new Apcomplex(new Apfloat("0.10110001011100100001011111110111110100011100111101111001101010111100100111100011101100111001100000000011111100101111011010101111010000001111001101000011001001100111001010011000101101100010110110001010000011010001011101011011100010111010101011111010001010111110011110111000011101100010000001101101111010111010110010011000010101011001", Apfloat.DEFAULT, 2), new Apfloat("11.001001000011111101101010100010001000010110100011000010001101001100010011000110011000101000101110000000110111000001110011010001001010010000001001001110000010001000101001100111110011000111010000000010000010111011111010100110001110110001001110011011001000100101000101001010000010000111100110001110001101000000010011011101111011111001", Apfloat.DEFAULT, 2)), a, new Apfloat("1e-99", 1, 2));
+
+        a = ApcomplexMath.log(new Apcomplex(new Apfloat(-2, 100, 2), new Apfloat(-2, 100, 2)));
+        assertEquals("-2-2i, 100 radix 2 precision", 101, a.precision());
+        assertEquals("-2-2i, 100 radix 2 value", new Apcomplex(new Apfloat("1.0000101000101011001000111111001110111010101101110011011010000001101011101101010110001101011001000000", Apfloat.DEFAULT, 2), new Apfloat("-10.010110110010111110001111111001100110010000111010010001101001111001001110010100110010011110100010100", Apfloat.DEFAULT, 2)), a, new Apfloat("1e-99", 1, 2));
 
         a = ApcomplexMath.log(new Apcomplex(Apfloat.ZERO, new Apfloat(-2, 100, 11)));
         assertEquals("-2, 100 radix 11 precision", 100, a.precision());
@@ -1633,6 +1642,13 @@ public class ApcomplexMathTest
         assertEquals("value", new Apcomplex(new Apfloat("-0.731b614b3b95524effd3f81d9be7b8c8e1d21e69264d", 45, 16), new Apfloat("-3.7a03f382c1f5dd2df77921934d2d67941431ed093840", 45, 16)), w, new Apfloat("5", 1, 16).scale(-44));
         assertEquals("radix", 16, w.radix());
         assertEquals("precision", 45, w.precision());
+
+        a = new Apcomplex(new Apfloat(1, 45), new Apfloat(2, 45));
+        w = ApcomplexMath.w(a);
+        assertEquals("value", new Apcomplex("(0.823771216709230498962714234680902867860235005,0.532928986795441605088201422572330085339330393)"), w, new Apfloat("5e-45"));
+        assertEquals("radix", 10, w.radix());
+        assertEquals("precision", 45, w.precision());
+
     }
 
     public static void testProduct()
@@ -2453,6 +2469,16 @@ public class ApcomplexMathTest
         try
         {
             ApcomplexMath.digamma(new Apcomplex(Apfloat.ZERO, new Apfloat(4)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+
+        try
+        {
+            ApcomplexMath.digamma(new Apcomplex(Apfloat.ONE, new Apfloat(4)));
             fail("Infinite expansion");
         }
         catch (InfiniteExpansionException iee)
