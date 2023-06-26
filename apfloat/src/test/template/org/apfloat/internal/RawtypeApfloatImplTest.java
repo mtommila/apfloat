@@ -40,7 +40,7 @@ import org.apfloat.spi.*;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.11.0
  * @author Mikko Tommila
  */
 
@@ -885,12 +885,12 @@ public class RawtypeApfloatImplTest
         {
             int size = 1 << 7;
             ctx.setMemoryThreshold(size);
-            ctx.setBlockSize(size * 512);
+            ctx.setBlockSize(size);
 
             Random random = new Random();
             StringBuilder buffer = new StringBuilder();
             buffer.append('1');                     // First character(s) should not be zero digits
-            for (int i = 0; i < 2 * size - 1; i++)
+            for (int i = 0; i < 4 * size - 1; i++)
             {
                 buffer.append(Character.forDigit(random.nextInt(16), 16));
             }
@@ -2378,6 +2378,14 @@ public class RawtypeApfloatImplTest
         a = new RawtypeApfloatImpl(10, Apfloat.INFINITE, 10);
         b = new RawtypeApfloatImpl(1, Apfloat.INFINITE, 10);
         assertEquals("10 eqd 1", 0, a.equalDigits(b));
+
+        a = new RawtypeApfloatImpl(1, Apfloat.INFINITE, 10);
+        b = new RawtypeApfloatImpl(100, Apfloat.INFINITE, 10);
+        assertEquals("1 eqd 100", 0, a.equalDigits(b));
+
+        a = new RawtypeApfloatImpl(100, Apfloat.INFINITE, 10);
+        b = new RawtypeApfloatImpl(1, Apfloat.INFINITE, 10);
+        assertEquals("100 eqd 1", 0, a.equalDigits(b));
 
         a = new RawtypeApfloatImpl(1, Apfloat.INFINITE, 10);
         b = new RawtypeApfloatImpl(2, Apfloat.INFINITE, 10);
