@@ -4,7 +4,7 @@
 
   <groupId>org.apfloat</groupId>
   <artifactId>apfloat-parent</artifactId>
-  <version>1.11.0-SNAPSHOT</version>
+  <version>1.11.0</version>
   <packaging>pom</packaging>
 
   <name>apfloat-parent</name>
@@ -23,7 +23,7 @@
     <connection>scm:git:git://github.com/mtommila/apfloat.git</connection>
     <developerConnection>scm:git:ssh://github.com:mtommila/apfloat.git</developerConnection>
     <url>https://github.com/mtommila/apfloat</url>
-    <tag>HEAD</tag>
+    <tag>1.11.0</tag>
   </scm>
 
   <developers>
@@ -268,14 +268,14 @@
             </goals>
             <configuration>
               <target>
-                <ac:for param="filename" xmlns:ac="antlib:net.sf.antcontrib">
+                <ac:for xmlns:ac="antlib:net.sf.antcontrib" param="filename">
                   <path>
                     <fileset dir="${project.build.directory}/site/apidocs" />
                   </path>
                   <sequential>
-                    <local name="filename"/>
-                    <local name="tofilename"/>
-                    <property name="filename" value="@{filename}"/>
+                    <local name="filename" />
+                    <local name="tofilename" />
+                    <property name="filename" value="@{filename}" />
                     <pathconvert property="tofilename" targetos="unix">
                       <path path="${filename}" />
                       <map from="${project.build.directory}${file.separator}site${file.separator}apidocs${file.separator}" to="" />
@@ -283,7 +283,7 @@
                     <copy file="${filename}" tofile="${project.build.directory}/site/docs/${tofilename}">
                       <filterchain>
                         <tokenfilter>
-                          <replacestring from="&lt;/head&gt;" to='&lt;link rel="canonical" href="http://www.apfloat.org/apfloat_java/docs/${tofilename}"&gt;${line.separator}&lt;/head&gt;' />
+                          <replacestring from="&lt;/head&gt;" to="&lt;link rel=&quot;canonical&quot; href=&quot;http://www.apfloat.org/apfloat_java/docs/${tofilename}&quot;&gt;${line.separator}&lt;/head&gt;" />
                         </tokenfilter>
                       </filterchain>
                     </copy>
