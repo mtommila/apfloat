@@ -275,15 +275,17 @@
                   <sequential>
                     <local name="filename" />
                     <local name="tofilename" />
+                    <local name="canonical" />
                     <property name="filename" value="@{filename}" />
                     <pathconvert property="tofilename" targetos="unix">
                       <path path="${filename}" />
                       <map from="${project.build.directory}${file.separator}site${file.separator}apidocs${file.separator}" to="" />
                     </pathconvert>
+                    <ac:propertyregex property="canonical" input="${tofilename}" regexp="^index.html$|(.*)" replace="\1" />
                     <copy file="${filename}" tofile="${project.build.directory}/site/docs/${tofilename}">
                       <filterchain>
                         <tokenfilter>
-                          <replacestring from="&lt;/head&gt;" to="&lt;link rel=&quot;canonical&quot; href=&quot;http://www.apfloat.org/apfloat_java/docs/${tofilename}&quot;&gt;${line.separator}&lt;/head&gt;" />
+                          <replacestring from="&lt;/head&gt;" to="&lt;link rel=&quot;canonical&quot; href=&quot;http://www.apfloat.org/apfloat_java/docs/${canonical}&quot;&gt;${line.separator}&lt;/head&gt;" />
                         </tokenfilter>
                       </filterchain>
                     </copy>
