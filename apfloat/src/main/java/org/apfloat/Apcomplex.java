@@ -43,7 +43,7 @@ import static java.util.FormattableFlags.*;
  * @see Apfloat
  * @see ApcomplexMath
  *
- * @version 1.10.1
+ * @version 1.11.1
  * @author Mikko Tommila
  */
 
@@ -630,7 +630,7 @@ public class Apcomplex
      *
      * @return The numeric value represented by this object after conversion to type <code>byte</code>.
      *
-     * @throws ArithmeticException If the value of <code>this</code> will not exactly fit in a <code>byte</code>.
+     * @throws ArithmeticException If the value of <code>this</code> will not exactly fit in a <code>byte</code> or has a nonzero fractional part.
      *
      * @since  1.9.0
      */
@@ -652,7 +652,7 @@ public class Apcomplex
      * of the <code>short</code> type, then an <code>ArithmeticException</code>
      * is thrown.
      *
-     * @return The numeric value represented by this object after conversion to type <code>short</code>.
+     * @return The numeric value represented by this object after conversion to type <code>short</code> or has a nonzero fractional part.
      *
      * @throws ArithmeticException If the value of <code>this</code> will not exactly fit in a <code>short</code>.
      *
@@ -678,7 +678,7 @@ public class Apcomplex
      *
      * @return The numeric value represented by this object after conversion to type <code>int</code>.
      *
-     * @throws ArithmeticException If the value of <code>this</code> will not exactly fit in an <code>int</code>.
+     * @throws ArithmeticException If the value of <code>this</code> will not exactly fit in an <code>int</code> or has a nonzero fractional part.
      *
      * @since  1.9.0
      */
@@ -702,7 +702,7 @@ public class Apcomplex
      *
      * @return The numeric value represented by this object after conversion to type <code>long</code>.
      *
-     * @throws ArithmeticException If the value of <code>this</code> will not exactly fit in a <code>long</code>.
+     * @throws ArithmeticException If the value of <code>this</code> will not exactly fit in a <code>long</code> or has a nonzero fractional part.
      *
      * @since  1.9.0
      */

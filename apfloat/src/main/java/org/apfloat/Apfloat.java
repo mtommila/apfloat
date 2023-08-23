@@ -55,7 +55,7 @@ import org.apfloat.spi.ApfloatImpl;
  *
  * @see ApfloatMath
  *
- * @version 1.10.1
+ * @version 1.11.1
  * @author Mikko Tommila
  */
 
@@ -1058,6 +1058,11 @@ public class Apfloat
     public long longValueExact()
         throws ArithmeticException
     {
+        if (!isInteger())
+        {
+            throw new ArithmeticException("Rounding necessary");
+        }
+
         long value = longValue();
         if (!new Apint(value, radix()).equals(truncate()))
         {

@@ -31,7 +31,7 @@ import java.util.function.LongFunction;
  * Helper class for the incomplete gamma function.
  *
  * @since 1.10.0
- * @version 1.11.0
+ * @version 1.11.1
  * @author Mikko Tommila
  */
 
@@ -103,7 +103,7 @@ class IncompleteGammaHelper
             @Override
             protected long doGetMinIterations(Apcomplex a, Apcomplex z)
             {
-                return (a.real().signum() >= 0 ? 0 : Math.subtractExact(4, Math.multiplyExact(2, a.real().longValueExact())));
+                return (a.real().signum() >= 0 ? 0 : Math.subtractExact(4, Math.multiplyExact(2, a.real().truncate().longValueExact())));
             }
         },
         LOWER2(ContinuedFractionType.LOWER, IncompleteGammaHelper::lowerGammaSequenceAlternative)
@@ -111,8 +111,8 @@ class IncompleteGammaHelper
             @Override
             protected long doGetMinIterations(Apcomplex a, Apcomplex z)
             {
-                return Math.max(a.real().signum() >= 0 ? 0 : Math.subtractExact(3, a.real().longValueExact()),
-                                Math.subtractExact(2, Math.addExact(a.real().longValueExact(), z.real().longValueExact())));
+                return Math.max(a.real().signum() >= 0 ? 0 : Math.subtractExact(3, a.real().truncate().longValueExact()),
+                                Math.subtractExact(2, Math.addExact(a.real().truncate().longValueExact(), z.real().truncate().longValueExact())));
             }
         },
         UPPER1(ContinuedFractionType.UPPER, IncompleteGammaHelper::upperGammaSequence)
@@ -120,8 +120,8 @@ class IncompleteGammaHelper
             @Override
             protected long doGetMinIterations(Apcomplex a, Apcomplex z)
             {
-                return Math.max(a.real().signum() <= 0 ? 0 : Math.addExact(2, a.real().longValueExact()),
-                                Math.addExact(1, Math.subtractExact(a.real().longValueExact(), z.real().longValueExact()) / 2));
+                return Math.max(a.real().signum() <= 0 ? 0 : Math.addExact(2, a.real().truncate().longValueExact()),
+                                Math.addExact(1, Math.subtractExact(a.real().truncate().longValueExact(), z.real().truncate().longValueExact()) / 2));
             }
         },
         UPPER2(ContinuedFractionType.UPPER, IncompleteGammaHelper::upperGammaSequenceAlternative)
@@ -129,7 +129,7 @@ class IncompleteGammaHelper
             @Override
             protected long doGetMinIterations(Apcomplex a, Apcomplex z)
             {
-                return (a.real().signum() <= 0 ? 0 : Math.addExact(Math.multiplyExact(2, a.real().longValueExact()), 2));
+                return (a.real().signum() <= 0 ? 0 : Math.addExact(Math.multiplyExact(2, a.real().truncate().longValueExact()), 2));
             }
         };
 

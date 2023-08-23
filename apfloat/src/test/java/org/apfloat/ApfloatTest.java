@@ -40,7 +40,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.11.0
+ * @version 1.11.1
  * @author Mikko Tommila
  */
 
@@ -893,11 +893,6 @@ public class ApfloatTest
         assertEquals("5 intValueExact", 5, a.intValueExact());
         assertEquals("5 shortValueExact", 5, a.shortValueExact());
         assertEquals("5 byteValueExact", 5, a.byteValueExact());
-        a = new Apfloat("5.5");
-        assertEquals("5.5 longValueExact", 5, a.longValueExact());
-        assertEquals("5.5 intValueExact", 5, a.intValueExact());
-        assertEquals("5.5 shortValueExact", 5, a.shortValueExact());
-        assertEquals("5.5 byteValueExact", 5, a.byteValueExact());
         assertEquals("MAX_VALUE longValueExact", Long.MAX_VALUE, new Apfloat(Long.MAX_VALUE).longValueExact());
         assertEquals("MIN_VALUE longValueExact", Long.MIN_VALUE, new Apfloat(Long.MIN_VALUE).longValueExact());
         assertEquals("MAX_VALUE intValueExact", Integer.MAX_VALUE, new Apfloat(Integer.MAX_VALUE).intValueExact());
@@ -906,6 +901,44 @@ public class ApfloatTest
         assertEquals("MIN_VALUE shortValueExact", Short.MIN_VALUE, new Apfloat(Short.MIN_VALUE).shortValueExact());
         assertEquals("MAX_VALUE byteValueExact", Byte.MAX_VALUE, new Apfloat(Byte.MAX_VALUE).byteValueExact());
         assertEquals("MIN_VALUE byteValueExact", Byte.MIN_VALUE, new Apfloat(Byte.MIN_VALUE).byteValueExact());
+
+        try
+        {
+            new Apfloat("5.5").longValueExact();
+            fail("Non-integer number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            new Apfloat("5.5").intValueExact();
+            fail("Non-integer number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            new Apfloat("5.5").shortValueExact();
+            fail("Non-integer number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            new Apfloat("5.5").byteValueExact();
+            fail("Non-integer number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
         try
         {
             new Apfloat(Long.MAX_VALUE).add(new Apfloat(1)).longValueExact();

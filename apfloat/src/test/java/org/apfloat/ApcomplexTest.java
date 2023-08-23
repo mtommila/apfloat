@@ -38,7 +38,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.1
+ * @version 1.11.1
  * @author Mikko Tommila
  */
 
@@ -527,17 +527,57 @@ public class ApcomplexTest
 
     public static void testNumberValuesExact()
     {
-        Apcomplex a = new Apcomplex("5.5");
-        assertEquals("5.5 longValueExact", 5, a.longValueExact());
-        assertEquals("5.5 intValueExact", 5, a.intValueExact());
-        assertEquals("5.5 shortValueExact", 5, a.shortValueExact());
-        assertEquals("5.5 byteValueExact", 5, a.byteValueExact());
+        Apcomplex a = new Apcomplex("5");
+        assertEquals("5 longValueExact", 5, a.longValueExact());
+        assertEquals("5 intValueExact", 5, a.intValueExact());
+        assertEquals("5 shortValueExact", 5, a.shortValueExact());
+        assertEquals("5 byteValueExact", 5, a.byteValueExact());
 
-        a = new Apcomplex("-5.5");
-        assertEquals("-5.5 longValueExact", -5, a.longValueExact());
-        assertEquals("-5.5 intValueExact", -5, a.intValueExact());
-        assertEquals("-5.5 shortValueExact", -5, a.shortValueExact());
-        assertEquals("-5.5 byteValueExact", -5, a.byteValueExact());
+        a = new Apcomplex("-5");
+        assertEquals("-5 longValueExact", -5, a.longValueExact());
+        assertEquals("-5 intValueExact", -5, a.intValueExact());
+        assertEquals("-5 shortValueExact", -5, a.shortValueExact());
+        assertEquals("-5 byteValueExact", -5, a.byteValueExact());
+
+        try
+        {
+            new Apcomplex("5.5").longValueExact();
+            fail("Non-integer number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            new Apcomplex("5.5").intValueExact();
+            fail("Non-integer number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            new Apcomplex("5.5").shortValueExact();
+            fail("Non-integer number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            new Apcomplex("5.5").byteValueExact();
+            fail("Non-integer number accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
 
         try
         {
