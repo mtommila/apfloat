@@ -38,7 +38,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.11.1
+ * @version 1.12.0
  * @author Mikko Tommila
  */
 
@@ -59,6 +59,7 @@ public class ApcomplexTest
     {
         TestSuite suite = new TestSuite();
 
+        suite.addTest(new ApcomplexTest("testComparator"));
         suite.addTest(new ApcomplexTest("testConstructor"));
         suite.addTest(new ApcomplexTest("testStringConstructor"));
         suite.addTest(new ApcomplexTest("testStreamConstructor"));
@@ -85,6 +86,29 @@ public class ApcomplexTest
         suite.addTest(new ApcomplexTest("testSerialization"));
 
         return suite;
+    }
+
+    public static void testComparator()
+    {
+        assertEquals("REAL_IMAG 1 compare 2", -1, Apcomplex.REAL_IMAG_ORDER.compare(new Apcomplex("1"), new Apcomplex("2")));
+        assertEquals("REAL_IMAG 2 compare 2", 0, Apcomplex.REAL_IMAG_ORDER.compare(new Apcomplex("2"), new Apcomplex("2")));
+        assertEquals("REAL_IMAG 2 compare 1", 1, Apcomplex.REAL_IMAG_ORDER.compare(new Apcomplex("2"), new Apcomplex("1")));
+        assertEquals("REAL_IMAG (1, 2) compare (2, 1)", -1, Apcomplex.REAL_IMAG_ORDER.compare(new Apcomplex("(1,2)"), new Apcomplex("(2,1)")));
+        assertEquals("REAL_IMAG (2, 1) compare (2, 2)", -1, Apcomplex.REAL_IMAG_ORDER.compare(new Apcomplex("(2,1)"), new Apcomplex("(2,2)")));
+        assertEquals("REAL_IMAG (2, 2) compare (2, 2)", 0, Apcomplex.REAL_IMAG_ORDER.compare(new Apcomplex("(2,2)"), new Apcomplex("(2,2)")));
+        assertEquals("REAL_IMAG (2, 2) compare (2, 1)", 1, Apcomplex.REAL_IMAG_ORDER.compare(new Apcomplex("(2,2)"), new Apcomplex("(2,1)")));
+        assertEquals("REAL_IMAG (2, -2) compare (2, 1)", -1, Apcomplex.REAL_IMAG_ORDER.compare(new Apcomplex("(2,-2)"), new Apcomplex("(2,1)")));
+        assertEquals("REAL_IMAG (2, -2) compare (2, 2)", -1, Apcomplex.REAL_IMAG_ORDER.compare(new Apcomplex("(2,-2)"), new Apcomplex("(2,2)")));
+
+        assertEquals("REAL_ABS_IMAG 1 compare 2", -1, Apcomplex.REAL_ABS_IMAG_ORDER.compare(new Apcomplex("1"), new Apcomplex("2")));
+        assertEquals("REAL_ABS_IMAG 2 compare 2", 0, Apcomplex.REAL_ABS_IMAG_ORDER.compare(new Apcomplex("2"), new Apcomplex("2")));
+        assertEquals("REAL_ABS_IMAG 2 compare 1", 1, Apcomplex.REAL_ABS_IMAG_ORDER.compare(new Apcomplex("2"), new Apcomplex("1")));
+        assertEquals("REAL_ABS_IMAG (1, 2) compare (2, 1)", -1, Apcomplex.REAL_ABS_IMAG_ORDER.compare(new Apcomplex("(1,2)"), new Apcomplex("(2,1)")));
+        assertEquals("REAL_ABS_IMAG (2, 1) compare (2, 2)", -1, Apcomplex.REAL_ABS_IMAG_ORDER.compare(new Apcomplex("(2,1)"), new Apcomplex("(2,2)")));
+        assertEquals("REAL_ABS_IMAG (2, 2) compare (2, 2)", 0, Apcomplex.REAL_ABS_IMAG_ORDER.compare(new Apcomplex("(2,2)"), new Apcomplex("(2,2)")));
+        assertEquals("REAL_ABS_IMAG (2, 2) compare (2, 1)", 1, Apcomplex.REAL_ABS_IMAG_ORDER.compare(new Apcomplex("(2,2)"), new Apcomplex("(2,1)")));
+        assertEquals("REAL_ABS_IMAG (2, -2) compare (2, 1)", 1, Apcomplex.REAL_ABS_IMAG_ORDER.compare(new Apcomplex("(2,-2)"), new Apcomplex("(2,1)")));
+        assertEquals("REAL_ABS_IMAG (2, -2) compare (2, 2)", -1, Apcomplex.REAL_ABS_IMAG_ORDER.compare(new Apcomplex("(2,-2)"), new Apcomplex("(2,2)")));
     }
 
     public static void testConstructor()

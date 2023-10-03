@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.io.PushbackReader;
 import java.io.Writer;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.Formattable;
 import java.util.Formatter;
 import static java.util.FormattableFlags.*;
@@ -43,7 +44,7 @@ import static java.util.FormattableFlags.*;
  * @see Apfloat
  * @see ApcomplexMath
  *
- * @version 1.11.1
+ * @version 1.12.0
  * @author Mikko Tommila
  */
 
@@ -91,6 +92,41 @@ public class Apcomplex
      */
 
     public static final long DEFAULT = 0x8000000000000000L;
+
+    /**
+     * Comparator for ordering by real part, and in case of a tie, by imaginary
+     * part.
+     */
+
+    public static final Comparator<Apcomplex> REAL_IMAG_ORDER = (z, w) ->
+    {
+        int result = z.real().compareTo(w.real());
+        if (result == 0)
+        {
+            result = z.imag().compareTo(w.imag());
+        }
+        return result;
+    };
+
+    /**
+     * Comparator for ordering by real part, and in case of a tie, by the
+     * absolute value of the imaginary part. If a tie persists, order by
+     * imaginary part.
+     */
+
+    public static final Comparator<Apcomplex> REAL_ABS_IMAG_ORDER = (z, w) ->
+    {
+        int result = z.real().compareTo(w.real());
+        if (result == 0)
+        {
+            result = ApfloatMath.abs(z.imag()).compareTo(ApfloatMath.abs(w.imag()));
+        }
+        if (result == 0)
+        {
+            result = Integer.compare(z.imag().signum(), w.imag().signum());
+        }
+        return result;
+    };
 
     /**
      * Extra precision that is added in various apfloat internal
