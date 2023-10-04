@@ -48,7 +48,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApintMath
  *
- * @version 1.11.0
+ * @version 1.12.0
  * @author Mikko Tommila
  */
 
@@ -2959,6 +2959,67 @@ public class ApfloatMath
                 return v1.multiply(multiplier);
             }
         }
+    }
+
+    /**
+     * Generates the first <code>n</code> terms in the continued fraction representation of <code>x</code>.<p>
+     *
+     * Note that the result length might be less than <code>n</code>, depending on the input value and precision.
+     * The last terms could be incorrect due to accumulating round-off errors.
+     *
+     * @param x The number whose continued fraction terms should be generated.
+     * @param n The maximum number of terms to generate.
+     *
+     * @return The continued fraction.
+     *
+     * @exception IllegalArgumentException If <code>n</code> is less than one.
+     *
+     * @since 1.12.0
+     */
+
+    public static Apint[] continuedFraction(Apfloat x, int n)
+    {
+        if (n <= 0)
+        {
+            throw new IllegalArgumentException("Maximum number of terms is not positive");
+        }
+        Apint i = x.truncate();
+        Apfloat f = x.subtract(i);
+        List<Apint> continuedFraction = new ArrayList<>();
+        continuedFraction.add(i);
+        while (f.signum() != 0 && continuedFraction.size() < n) {
+            x = inverseRoot(f, 1);
+            i = x.truncate();
+            f = x.subtract(i);
+            continuedFraction.add(i);
+        }
+        return continuedFraction.toArray(new Apint[continuedFraction.size()]);
+    }
+
+    /**
+     * Generates the first <code>n</code> convergents corresponding to the continued fraction of <code>x</code>.<p>
+     *
+     * Note that the result length might be less than <code>n</code>, depending on the input value and precision.
+     * The last convergents could be incorrect due to accumulating round-off errors.
+     *
+     * @param x The number whose continued fraction convergents should be generated.
+     * @param n The maximum number of convergents to generate.
+     *
+     * @return The convergents.
+     *
+     * @exception IllegalArgumentException If <code>n</code> is less than one.
+     *
+     * @since 1.12.0
+     */
+
+    public static Aprational[] convergents(Apfloat x, int n)
+    {
+        if (n <= 0)
+        {
+            throw new IllegalArgumentException("Maximum number of convergents is not positive");
+        }
+        Apint[] continuedFraction = continuedFraction(x, n);
+        return AprationalMath.convergents(continuedFraction);
     }
 
     /**

@@ -24,13 +24,14 @@
 package org.apfloat;
 
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import junit.framework.TestSuite;
 
 /**
- * @version 1.11.0
+ * @version 1.12.0
  * @author Mikko Tommila
  */
 
@@ -63,6 +64,8 @@ public class AprationalMathTest
         suite.addTest(new AprationalMathTest("testNegate"));
         suite.addTest(new AprationalMathTest("testProduct"));
         suite.addTest(new AprationalMathTest("testSum"));
+        suite.addTest(new AprationalMathTest("testContinuedFraction"));
+        suite.addTest(new AprationalMathTest("testConvergents"));
         suite.addTest(new AprationalMathTest("testMax"));
         suite.addTest(new AprationalMathTest("testMin"));
         suite.addTest(new AprationalMathTest("testBinomial"));
@@ -413,6 +416,76 @@ public class AprationalMathTest
         assertEquals("Array sum 2 [1]", new Aprational("1000000000000"), x[1]);
 
         assertEquals("Empty sum", new Aprational("0"), AprationalMath.sum());
+    }
+
+    public static void testContinuedFraction()
+    {
+        Aprational a = new Aprational("104348/33215");
+        assertEquals("104348/33215, 3", Arrays.asList(new Apint(3), new Apint(7), new Apint(15)), Arrays.asList(AprationalMath.continuedFraction(a, 3)));
+        assertEquals("104348/33215, 30", Arrays.asList(new Apint(3), new Apint(7), new Apint(15), new Apint(1), new Apint(293)), Arrays.asList(AprationalMath.continuedFraction(a, 30)));
+        assertEquals("104348/33215, 1", Arrays.asList(new Apint(3)), Arrays.asList(AprationalMath.continuedFraction(a, 1)));
+
+        a = new Aprational("-104348/33215");
+        assertEquals("-104348/33215, 3", Arrays.asList(new Apint(-3), new Apint(-7), new Apint(-15)), Arrays.asList(AprationalMath.continuedFraction(a, 3)));
+        assertEquals("-104348/33215, 30", Arrays.asList(new Apint(-3), new Apint(-7), new Apint(-15), new Apint(-1), new Apint(-293)), Arrays.asList(AprationalMath.continuedFraction(a, 30)));
+
+        a = new Aprational("7114a/22963", 11);
+        assertEquals("7114a/22963, 3", Arrays.asList(new Apint(3, 11), new Apint(7, 11), new Apint(15, 11)), Arrays.asList(AprationalMath.continuedFraction(a, 3)));
+        assertEquals("7114a/22963, 30", Arrays.asList(new Apint(3, 11), new Apint(7, 11), new Apint(15, 11), new Apint(1, 11), new Apint(292, 11)), Arrays.asList(AprationalMath.continuedFraction(a, 30)));
+
+        try
+        {
+            AprationalMath.continuedFraction(new Aprational(2), 0);
+            fail("Zero n allowed");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK
+        }
+        try
+        {
+            AprationalMath.continuedFraction(new Aprational(2), Integer.MIN_VALUE);
+            fail("Negative n allowed");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK
+        }
+    }
+
+    public static void testConvergents()
+    {
+        Aprational a = new Aprational("104348/33215");
+        assertEquals("104348/33215, 3", Arrays.asList(new Aprational(3), new Aprational("22/7"), new Aprational("333/106")), Arrays.asList(AprationalMath.convergents(a, 3)));
+        assertEquals("104348/33215, 30", Arrays.asList(new Aprational(3), new Aprational("22/7"), new Aprational("333/106"), new Aprational("355/113"), new Aprational("104348/33215")), Arrays.asList(AprationalMath.convergents(a, 30)));
+        assertEquals("104348/33215, 1", Arrays.asList(new Aprational(3)), Arrays.asList(AprationalMath.convergents(a, 1)));
+
+        a = new Aprational("-104348/33215");
+        assertEquals("-104348/33215, 3", Arrays.asList(new Aprational(-3), new Aprational("-22/7"), new Aprational("-333/106")), Arrays.asList(AprationalMath.convergents(a, 3)));
+        assertEquals("-104348/33215, 30", Arrays.asList(new Aprational(-3), new Aprational("-22/7"), new Aprational("-333/106"), new Aprational("-355/113"), new Aprational("-104348/33215")), Arrays.asList(AprationalMath.convergents(a, 30)));
+
+        a = new Aprational("7114a/22963", 11);
+        assertEquals("7114a/22963, 3", Arrays.asList(new Aprational("3", 11), new Aprational("20/7", 11), new Aprational("283/97", 11)), Arrays.asList(AprationalMath.convergents(a, 3)));
+        assertEquals("7114a/22963, 30", Arrays.asList(new Aprational("3", 11), new Aprational("20/7", 11), new Aprational("283/97", 11), new Aprational("2a3/a3", 11), new Aprational("7114a/22963", 11)), Arrays.asList(AprationalMath.convergents(a, 30)));
+
+        try
+        {
+            AprationalMath.convergents(new Aprational(2), 0);
+            fail("Zero n allowed");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK
+        }
+        try
+        {
+            AprationalMath.convergents(new Aprational(2), Integer.MIN_VALUE);
+            fail("Negative n allowed");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK
+        }
     }
 
     public static void testMax()

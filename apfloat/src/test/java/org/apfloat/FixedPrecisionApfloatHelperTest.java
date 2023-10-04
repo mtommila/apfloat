@@ -28,7 +28,7 @@ import java.math.RoundingMode;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.11.0
+ * @version 1.12.0
  * @author Mikko Tommila
  */
 
@@ -122,6 +122,8 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testHypergeometric2F1"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testContinuedFraction"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testConvergents"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testMax"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testMin"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testNextAfter"));
@@ -1311,6 +1313,32 @@ public class FixedPrecisionApfloatHelperTest
         {
             // OK; invalid radix
         }
+    }
+
+    public static void testContinuedFraction()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat[] result = helper.continuedFraction(new Apfloat("3.14159265358979323846264338328"), 3);
+        assertEquals("values", 3, result.length);
+        assertEquals("value[0]", new Apfloat(3), result[0]);
+        assertEquals("precision[0]", 6, result[0].precision());
+        assertEquals("value[1]", new Apfloat(7), result[1]);
+        assertEquals("precision[1]", 6, result[1].precision());
+        assertEquals("value[2]", new Apfloat(15), result[2]);
+        assertEquals("precision[2]", 6, result[2].precision());
+    }
+
+    public static void testConvergents()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat[] result = helper.convergents(new Apfloat("3.14159265358979323846264338328"), 3);
+        assertEquals("values", 3, result.length);
+        assertEquals("value[0]", new Apfloat("3.00000"), result[0]);
+        assertEquals("precision[0]", 6, result[0].precision());
+        assertEquals("value[1]", new Apfloat("3.14286"), result[1], new Apfloat("0.00005"));
+        assertEquals("precision[1]", 6, result[1].precision());
+        assertEquals("value[2]", new Apfloat("3.14151"), result[2], new Apfloat("0.00005"));
+        assertEquals("precision[2]", 6, result[2].precision());
     }
 
     public static void testMax()

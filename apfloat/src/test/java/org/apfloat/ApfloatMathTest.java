@@ -24,12 +24,13 @@
 package org.apfloat;
 
 import java.math.RoundingMode;
+import java.util.Arrays;
 
 import junit.framework.TestSuite;
 import static java.math.RoundingMode.*;
 
 /**
- * @version 1.11.0
+ * @version 1.12.0
  * @author Mikko Tommila
  */
 
@@ -113,6 +114,8 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testHypergeometric2F1"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
+        suite.addTest(new ApfloatMathTest("testContinuedFraction"));
+        suite.addTest(new ApfloatMathTest("testConvergents"));
         suite.addTest(new ApfloatMathTest("testMax"));
         suite.addTest(new ApfloatMathTest("testMin"));
         suite.addTest(new ApfloatMathTest("testNextAfter"));
@@ -3002,6 +3005,68 @@ public class ApfloatMathTest
         assertEquals("precision 3", 100, a.precision(), 7);
         a = ApfloatMath.randomGaussian(200);
         assertEquals("precision 4", 200, a.precision(), 7);
+    }
+
+    public static void testContinuedFraction()
+    {
+        Apfloat a = new Apfloat("3.14159");
+        assertEquals("3.14159, 3", Arrays.asList(new Apint(3), new Apint(7), new Apint(15)), Arrays.asList(ApfloatMath.continuedFraction(a, 3)));
+        assertEquals("3.14159, 30", Arrays.asList(new Apint(3), new Apint(7), new Apint(15), new Apint(1)), Arrays.asList(ApfloatMath.continuedFraction(a, 30)));
+        assertEquals("3.14159, 1", Arrays.asList(new Apint(3)), Arrays.asList(ApfloatMath.continuedFraction(a, 1)));
+
+        a = new Apfloat("-3.14159");
+        assertEquals("-3.14159, 3", Arrays.asList(new Apint(-3), new Apint(-7), new Apint(-15)), Arrays.asList(ApfloatMath.continuedFraction(a, 3)));
+        assertEquals("-3.14159, 30", Arrays.asList(new Apint(-3), new Apint(-7), new Apint(-15), new Apint(-1)), Arrays.asList(ApfloatMath.continuedFraction(a, 30)));
+
+        try
+        {
+            ApfloatMath.continuedFraction(new Apfloat(2), 0);
+            fail("Zero n allowed");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.continuedFraction(new Apfloat(2), Integer.MIN_VALUE);
+            fail("Negative n allowed");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK
+        }
+    }
+
+    public static void testConvergents()
+    {
+        Apfloat a = new Apfloat("3.14159");
+        assertEquals("3.14159, 3", Arrays.asList(new Aprational(3), new Aprational("22/7"), new Aprational("333/106")), Arrays.asList(ApfloatMath.convergents(a, 3)));
+        assertEquals("3.14159, 30", Arrays.asList(new Aprational(3), new Aprational("22/7"), new Aprational("333/106"), new Aprational("355/113")), Arrays.asList(ApfloatMath.convergents(a, 30)));
+        assertEquals("3.14159, 1", Arrays.asList(new Aprational(3)), Arrays.asList(ApfloatMath.convergents(a, 1)));
+
+        a = new Apfloat("-3.14159");
+        assertEquals("-3.14159, 3", Arrays.asList(new Aprational(-3), new Aprational("-22/7"), new Aprational("-333/106")), Arrays.asList(ApfloatMath.convergents(a, 3)));
+        assertEquals("-3.14159, 30", Arrays.asList(new Aprational(-3), new Aprational("-22/7"), new Aprational("-333/106"), new Aprational("-355/113")), Arrays.asList(ApfloatMath.convergents(a, 30)));
+
+        try
+        {
+            ApfloatMath.convergents(new Apfloat(2), 0);
+            fail("Zero n allowed");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.convergents(new Apfloat(2), Integer.MIN_VALUE);
+            fail("Negative n allowed");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK
+        }
     }
 
     public static void testMax()

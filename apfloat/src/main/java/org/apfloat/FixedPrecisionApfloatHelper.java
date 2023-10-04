@@ -24,6 +24,7 @@
 package org.apfloat;
 
 import java.math.RoundingMode;
+import java.util.Arrays;
 
 import org.apfloat.spi.Util;
 
@@ -37,7 +38,7 @@ import org.apfloat.spi.Util;
  * <code>ApfloatMath.acos(Apfloat.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.11.0
+ * @version 1.12.0
  * @author Mikko Tommila
  */
 
@@ -1257,6 +1258,56 @@ public class FixedPrecisionApfloatHelper
         throws NumberFormatException, ApfloatRuntimeException
     {
         return valueOf(ApfloatMath.randomGaussian(precision(), radix));
+    }
+
+    /**
+     * Continued fraction.
+     *
+     * @param x The value.
+     * @param n Maximum number of terms.
+     *
+     * @return The continued fraction.
+     *
+     * @exception IllegalArgumentException If <code>n</code> is less than one.
+     *
+     * @since 1.12.0
+     */
+
+    public Apfloat[] continuedFraction(Apfloat x, int n)
+        throws ApfloatRuntimeException
+    {
+        Apfloat[] continuedFraction = ApfloatMath.continuedFraction(setPrecision(x), n);
+        continuedFraction = Arrays.copyOf(continuedFraction, continuedFraction.length, Apfloat[].class);
+        for (int i = 0; i < continuedFraction.length; i++)
+        {
+            continuedFraction[i] = valueOf(continuedFraction[i]);
+        }
+        return continuedFraction;
+    }
+
+    /**
+     * Convergents.
+     *
+     * @param x The value.
+     * @param n Maximum number of convergents.
+     *
+     * @return The convergents.
+     *
+     * @exception IllegalArgumentException If <code>n</code> is less than one.
+     *
+     * @since 1.12.0
+     */
+
+    public Apfloat[] convergents(Apfloat x, int n)
+        throws ApfloatRuntimeException
+    {
+        Apfloat[] convergents = ApfloatMath.convergents(setPrecision(x), n);
+        convergents = Arrays.copyOf(convergents, convergents.length, Apfloat[].class);
+        for (int i = 0; i < convergents.length; i++)
+        {
+            convergents[i] = valueOf(convergents[i]);
+        }
+        return convergents;
     }
 
     /**

@@ -34,7 +34,7 @@ import java.util.NoSuchElementException;
 /**
  * Various mathematical functions for arbitrary precision rational numbers.
  *
- * @version 1.11.0
+ * @version 1.12.0
  * @author Mikko Tommila
  */
 
@@ -367,6 +367,86 @@ public class AprationalMath
 
         // Recursively add
         return recursiveSum(x, 0, x.length - 1);
+    }
+
+    /**
+     * Generates the first <code>n</code> terms in the continued fraction representation of <code>x</code>.<p>
+     *
+     * Note that the result length might be less than <code>n</code>, depending on the input value.
+     *
+     * @param x The number whose continued fraction terms should be generated.
+     * @param n The maximum number of terms to generate.
+     *
+     * @return The continued fraction.
+     *
+     * @exception IllegalArgumentException If <code>n</code> is less than one.
+     *
+     * @since 1.12.0
+     */
+
+    public static Apint[] continuedFraction(Aprational x, int n)
+    {
+        if (n <= 0)
+        {
+            throw new IllegalArgumentException("Maximum number of terms is not positive");
+        }
+        Apint i = x.truncate();
+        Aprational f = x.subtract(i);
+        List<Apint> continuedFraction = new ArrayList<>();
+        continuedFraction.add(i);
+        while (f.signum() != 0 && continuedFraction.size() < n) {
+            x = Aprational.ONE.divide(f);
+            i = x.truncate();
+            f = x.subtract(i);
+            continuedFraction.add(i);
+        }
+        return continuedFraction.toArray(new Apint[continuedFraction.size()]);
+    }
+
+    /**
+     * Generates the first <code>n</code> convergents corresponding to the continued fraction of <code>x</code>.<p>
+     *
+     * Note that the result length might be less than <code>n</code>, depending on the input value.
+     *
+     * @param x The number whose continued fraction convergents should be generated.
+     * @param n The maximum number of convergents to generate.
+     *
+     * @return The convergents.
+     *
+     * @exception IllegalArgumentException If <code>n</code> is less than one.
+     *
+     * @since 1.12.0
+     */
+
+    public static Aprational[] convergents(Aprational x, int n)
+    {
+        if (n <= 0)
+        {
+            throw new IllegalArgumentException("Maximum number of convergents is not positive");
+        }
+        Apint[] continuedFraction = continuedFraction(x, n);
+        return convergents(continuedFraction);
+    }
+
+    static Aprational[] convergents(Apint[] continuedFraction)
+    {
+        Aprational[] convergents = new Aprational[continuedFraction.length];
+        int radix = continuedFraction[0].radix();
+        Apint h1 = Apint.ONES[radix],
+              h2 = Apint.ZEROS[radix],
+              k1 = h2,
+              k2 = h1;
+        for (int i = 0; i < continuedFraction.length; i++)
+        {
+            Apint numerator = continuedFraction[i].multiply(h1).add(h2),
+                  denominator = continuedFraction[i].multiply(k1).add(k2);
+            convergents[i] = new Aprational(numerator, denominator);
+            h2 = h1;
+            k2 = k1;
+            h1 = numerator;
+            k1 = denominator;
+        }
+        return convergents;
     }
 
     /**
