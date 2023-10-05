@@ -2983,17 +2983,7 @@ public class ApfloatMath
         {
             throw new IllegalArgumentException("Maximum number of terms is not positive");
         }
-        Apint i = x.truncate();
-        Apfloat f = x.subtract(i);
-        List<Apint> continuedFraction = new ArrayList<>();
-        continuedFraction.add(i);
-        while (f.signum() != 0 && continuedFraction.size() < n) {
-            x = inverseRoot(f, 1);
-            i = x.truncate();
-            f = x.subtract(i);
-            continuedFraction.add(i);
-        }
-        return continuedFraction.toArray(new Apint[continuedFraction.size()]);
+        return Util.stream(ContinuedFractionHelper.continuedFraction(x)).limit(n).toArray(Apint[]::new);
     }
 
     /**
@@ -3018,8 +3008,8 @@ public class ApfloatMath
         {
             throw new IllegalArgumentException("Maximum number of convergents is not positive");
         }
-        Apint[] continuedFraction = continuedFraction(x, n);
-        return AprationalMath.convergents(continuedFraction);
+        Iterator<Apint> continuedFraction = ContinuedFractionHelper.continuedFraction(x);
+        return Util.stream(ContinuedFractionHelper.convergents(continuedFraction, x.radix())).limit(n).toArray(Aprational[]::new);
     }
 
     /**

@@ -23,12 +23,16 @@
  */
 package org.apfloat.spi;
 
+import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 import org.apfloat.Apfloat;
 
 /**
  * Miscellaneous utility methods.
  *
- * @version 1.6
+ * @version 1.12.0
  * @author Mikko Tommila
  */
 
@@ -466,5 +470,22 @@ public class Util
     public static long ifFinite(long x, long y)
     {
         return (x == Apfloat.INFINITE || y <= 0 ? Apfloat.INFINITE : y);
+    }
+
+    /**
+     * Convert iterator to stream.
+     *
+     * @param <T> The type.
+     * @param iterator The iterator.
+     *
+     * @return The stream.
+     *
+     * @since 1.12.0
+     */
+
+    public static <T> Stream<T> stream(Iterator<T> iterator)
+    {
+        Iterable<T> iterable = () -> iterator;
+        return StreamSupport.stream(iterable.spliterator(), false);
     }
 }

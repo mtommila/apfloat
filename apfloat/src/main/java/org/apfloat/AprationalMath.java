@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.apfloat.spi.Util;
+
 /**
  * Various mathematical functions for arbitrary precision rational numbers.
  *
@@ -390,17 +392,7 @@ public class AprationalMath
         {
             throw new IllegalArgumentException("Maximum number of terms is not positive");
         }
-        Apint i = x.truncate();
-        Aprational f = x.subtract(i);
-        List<Apint> continuedFraction = new ArrayList<>();
-        continuedFraction.add(i);
-        while (f.signum() != 0 && continuedFraction.size() < n) {
-            x = Aprational.ONE.divide(f);
-            i = x.truncate();
-            f = x.subtract(i);
-            continuedFraction.add(i);
-        }
-        return continuedFraction.toArray(new Apint[continuedFraction.size()]);
+        return Util.stream(ContinuedFractionHelper.continuedFraction(x)).limit(n).toArray(Apint[]::new);
     }
 
     /**
@@ -424,29 +416,8 @@ public class AprationalMath
         {
             throw new IllegalArgumentException("Maximum number of convergents is not positive");
         }
-        Apint[] continuedFraction = continuedFraction(x, n);
-        return convergents(continuedFraction);
-    }
-
-    static Aprational[] convergents(Apint[] continuedFraction)
-    {
-        Aprational[] convergents = new Aprational[continuedFraction.length];
-        int radix = continuedFraction[0].radix();
-        Apint h1 = Apint.ONES[radix],
-              h2 = Apint.ZEROS[radix],
-              k1 = h2,
-              k2 = h1;
-        for (int i = 0; i < continuedFraction.length; i++)
-        {
-            Apint numerator = continuedFraction[i].multiply(h1).add(h2),
-                  denominator = continuedFraction[i].multiply(k1).add(k2);
-            convergents[i] = new Aprational(numerator, denominator);
-            h2 = h1;
-            k2 = k1;
-            h1 = numerator;
-            k1 = denominator;
-        }
-        return convergents;
+        Iterator<Apint> continuedFraction = ContinuedFractionHelper.continuedFraction(x);
+        return Util.stream(ContinuedFractionHelper.convergents(continuedFraction, x.radix())).limit(n).toArray(Aprational[]::new);
     }
 
     /**
