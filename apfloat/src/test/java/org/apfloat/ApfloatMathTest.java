@@ -2908,6 +2908,10 @@ public class ApfloatMathTest
         assertEquals("-1, 2.2, 3.3, 5 precision", 6, a.precision());
         assertEquals("-1, 2.2, 3.3, 5 value", new Apfloat("-2.33333"), a, new Apfloat("5e-5"));
 
+        a = ApfloatMath.hypergeometric2F1(new Apfloat("-3.00000"), new Apfloat("-1.00000"), new Apfloat("-2.00000"), new Apfloat("1.00000"));
+        assertEquals("-3, -1, -2, 1 precision", 6, a.precision());
+        assertEquals("-3, -1, -2, 1 value", new Apfloat("-0.500000"), a, new Apfloat("5e-6"));
+
         try
         {
             ApfloatMath.hypergeometric2F1(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("1.000001"));
@@ -2942,6 +2946,16 @@ public class ApfloatMathTest
             fail("Infinite expansion");
         }
         catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+
+        try
+        {
+            ApfloatMath.hypergeometric2F1(new Apfloat(-3), new Apfloat(-2), new Apfloat(-1), new Apfloat(1));
+            fail("Division by zero accepted");
+        }
+        catch (ArithmeticException ae)
         {
             // OK
         }

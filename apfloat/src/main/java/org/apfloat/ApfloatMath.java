@@ -2825,7 +2825,7 @@ public class ApfloatMath
     {
         // With real a, b and c the result is real if z <= 1 except if it's a polynomial, in which case it's always real (nb. additional checks might throw an exception later)
         Apint one = Apint.ONES[x.radix()];
-        if (x.compareTo(one) > 0 && HypergeometricHelper.minNonPositiveInteger(a, b) == null)
+        if (x.compareTo(one) > 0 && HypergeometricHelper.maxNonPositiveInteger(a, b) == null)
         {
             throw new ArithmeticException("Result would be complex");
         }

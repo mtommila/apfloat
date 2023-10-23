@@ -3337,6 +3337,10 @@ public class ApcomplexMathTest
         assertEquals("-1, 2.2, -2, 5 precision", 6, a.precision());
         assertEquals("-1, 2.2, -2, 5 value", new Apcomplex("6.50000"), a, new Apfloat("5e-5"));
 
+        a = ApcomplexMath.hypergeometric2F1(new Apcomplex("-3.00000"), new Apcomplex("-1.00000"), new Apcomplex("-2.00000"), new Apcomplex("1.00000"));
+        assertEquals("-3, -1, -2, 1 precision", 6, a.precision());
+        assertEquals("-3, -1, -2, 1 value", new Apfloat("-0.500000"), a, new Apfloat("5e-6"));
+
         a = ApcomplexMath.hypergeometric2F1(new Apfloat(-1, 15, 7), new Apcomplex(new Apfloat(3, 15, 7), new Apfloat(4, 15, 7)), new Apcomplex(new Apfloat(5, 15, 7), new Apfloat(6, 15, 7)), new Apcomplex(new Apfloat(1, 15, 7), new Apfloat(2, 15, 7)));
         assertEquals("-1, 3+4i, 5+6i, 1+2i radix 7 precision", 15, a.precision());
         assertEquals("-1, 3+4i, 5+6i, 1+2i radix 7 radix", 7, a.radix());
@@ -3387,6 +3391,15 @@ public class ApcomplexMathTest
         catch (ArithmeticException ae)
         {
             // OK, result is infinite
+        }
+        try
+        {
+            ApcomplexMath.hypergeometric2F1(new Apcomplex(new Apfloat(-3)), new Apcomplex(new Apfloat(-2)), new Apcomplex(new Apfloat(-1)), new Apcomplex(new Apfloat(1)));
+            fail("-3, -1, -2, 1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, division by zero
         }
 
         try

@@ -558,8 +558,8 @@ class HypergeometricHelper
 
     private Apcomplex checkResult()
     {
-        Apfloat minNonPositiveIntegerA = minNonPositiveInteger(a),
-                minNonPositiveIntegerB = minNonPositiveInteger(b);
+        Apfloat minNonPositiveIntegerA = maxNonPositiveInteger(a),
+                minNonPositiveIntegerB = maxNonPositiveInteger(b);
         if (minNonPositiveIntegerB != null && (minNonPositiveIntegerA == null || minNonPositiveIntegerA.compareTo(minNonPositiveIntegerB) < 0))
         {
             throw new ArithmeticException("Division by zero");
@@ -581,9 +581,9 @@ class HypergeometricHelper
         return null;
     }
 
-    public static Apfloat minNonPositiveInteger(Apcomplex... a)
+    public static Apfloat maxNonPositiveInteger(Apcomplex... a)
     {
-        return Arrays.stream(a).filter(Apcomplex::isInteger).map(Apcomplex::real).filter(x -> x.signum() <= 0).reduce(ApfloatMath::min).orElse(null);
+        return Arrays.stream(a).filter(Apcomplex::isInteger).map(Apcomplex::real).filter(x -> x.signum() <= 0).reduce(ApfloatMath::max).orElse(null);
     }
 
     // It could be that the terms initially grow for a long time, until they start getting smaller
