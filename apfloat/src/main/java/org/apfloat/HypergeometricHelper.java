@@ -44,7 +44,7 @@ import static org.apfloat.ApfloatMath.scale;
  * Helper class for hypergeometric functions.
  *
  * @since 1.11.0
- * @version 1.11.0
+ * @version 1.12.0
  * @author Mikko Tommila
  */
 
@@ -623,7 +623,7 @@ class HypergeometricHelper
                 }
                 if (numerator.real().signum() == 0 && numerator.imag().signum() == 0)
                 {
-                    break;  // It was a polynomial
+                    return s;   // It was a polynomial
                 }
                 numerator = numerator.multiply(z);
                 for (int j = 0; j < b.length; j++)

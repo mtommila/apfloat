@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.11.0
+ * @version 1.12.0
  * @author Mikko Tommila
  */
 
@@ -2914,9 +2914,9 @@ public class ApcomplexMathTest
         assertEquals("0, 1, 1 precision", 2, a.precision());
         assertEquals("0, 1, 1 value", new Apcomplex("1.0"), a);
  
-        a = ApcomplexMath.hypergeometric1F1(new Apcomplex("-42.00000"), new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
-        assertEquals("-42, 3+4i, 5+6i precision", 6, a.precision());
-        assertEquals("-42, 3+4i, 5+6i value", new Apcomplex("(-56.0081,-31.8473)"), a, new Apfloat("5e-4"));
+        a = ApcomplexMath.hypergeometric1F1(new Apcomplex("-42.0000000"), new Apcomplex("(3.0000000,4.0000000)"), new Apcomplex("(5.0000000,6.0000000)"));
+        assertEquals("-42, 3+4i, 5+6i precision", 2, a.precision());
+        assertEquals("-42, 3+4i, 5+6i value", new Apcomplex("(-56.0081,-31.8473)"), a, new Apfloat("5e0"));
 
         // Reduction to 0F0
         a = ApcomplexMath.hypergeometric1F1(new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(5.00000,6.00000)"));

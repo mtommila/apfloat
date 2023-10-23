@@ -2903,7 +2903,7 @@ public class ApfloatMathTest
         assertEquals("1, 2.2, 3.3, 1 precision", 6, a.precision());
         assertEquals("1, 2.2, 3.3, 1 value", new Apfloat("23.0000"), a, new Apfloat("5e-4"));
 
-        // Polynomial case
+        // Polynomial cases
         a = ApfloatMath.hypergeometric2F1(new Apfloat("-1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("5.000000"));
         assertEquals("-1, 2.2, 3.3, 5 precision", 6, a.precision());
         assertEquals("-1, 2.2, 3.3, 5 value", new Apfloat("-2.33333"), a, new Apfloat("5e-5"));
@@ -2911,6 +2911,10 @@ public class ApfloatMathTest
         a = ApfloatMath.hypergeometric2F1(new Apfloat("-3.00000"), new Apfloat("-1.00000"), new Apfloat("-2.00000"), new Apfloat("1.00000"));
         assertEquals("-3, -1, -2, 1 precision", 6, a.precision());
         assertEquals("-3, -1, -2, 1 value", new Apfloat("-0.500000"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.hypergeometric2F1(new Apfloat("-3.00000"), new Apfloat("-2.00000"), new Apfloat("-3.00000"), new Apfloat("1.00000"));
+        assertEquals("-3, -2, -3, 1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-3, -2, -3, 1 value", new Apfloat("0"), a);
 
         try
         {
