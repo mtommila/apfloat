@@ -201,6 +201,24 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-osgi-manifest</id>
+            <goals>
+              <goal>bnd-process</goal>
+            </goals>
+            <configuration>
+              <bnd><![CDATA[
+                DynamicImport-Package: org.apfloat.aparapi
+                Multi-Release: true
+              ]]></bnd>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
@@ -212,10 +230,7 @@
         </executions>
         <configuration>
           <archive>
-            <manifestEntries>
-              <Automatic-Module-Name>org.apfloat</Automatic-Module-Name>
-              <Multi-Release>true</Multi-Release>
-            </manifestEntries>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>
         </configuration>
       </plugin>
