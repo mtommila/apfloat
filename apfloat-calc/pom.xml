@@ -47,17 +47,28 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-osgi-manifest</id>
+            <goals>
+              <goal>bnd-process</goal>
+            </goals>
+            <configuration>
+              <bnd><![CDATA[
+                Main-Class: org.apfloat.calc.CalculatorGUI
+              ]]></bnd>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-              <mainClass>org.apfloat.calc.CalculatorGUI</mainClass>
-            </manifest>
-            <manifestEntries>
-              <Automatic-Module-Name>org.apfloat.calc</Automatic-Module-Name>
-            </manifestEntries>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>
         </configuration>
       </plugin>
