@@ -8,13 +8,15 @@ If you have any questions or need a different type of license, please [contact t
 
 ## Building the Library
 
+To build the library quickly, without running unit tests (takes about 10 minutes) and without signing with GPG run:
+
+`mvn clean install -Dgpg.skip -Djarsigner.skip -DskipTests`
+
 To build the signed applet files, you need to first generate a signing key, e.g. with:
 
 `keytool -genkeypair -validity 21915 -dname "cn=Your Name, o=example.com" -storepass password -keypass password -alias mykey`
 
-To build the library quickly, without running unit tests (takes about 10 minutes) and without signing with GPG run:
-
-`mvn clean install -Dgpg.skip=true -DskipTests=true`
+and then build without -Djarsigner.skip.
 
 ## Running the Sample Applications
 
