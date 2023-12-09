@@ -51,7 +51,7 @@ import org.apfloat.spi.MatrixStrategy;
  * Abstract base class for disk-based data storage, containing the common
  * functionality independent of the element type.
  *
- * @version 1.9.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -81,7 +81,7 @@ public abstract class DiskDataStorage
             {
                 if (!this.file.createNewFile())
                 {
-                    throw new BackingStorageException("Failed to create new file \"" + this.filename + '\"');
+                    throw new BackingStorageException("Failed to create new file \"" + this.file.getAbsolutePath() + '\"');
                 }
 
                 // Ensure file is deleted always
@@ -91,7 +91,7 @@ public abstract class DiskDataStorage
             }
             catch (IOException ioe)
             {
-                throw new BackingStorageException("Unable to access file \"" + this.filename + '\"', ioe);
+                throw new BackingStorageException("Unable to access file \"" + this.file.getAbsolutePath() + '\"', ioe);
             }
 
             this.fileChannel = this.randomAccessFile.getChannel();
@@ -157,7 +157,7 @@ public abstract class DiskDataStorage
             }
             catch (IOException ioe)
             {
-                throw new BackingStorageException("Unable to write to file \"" + getFilename() + '\"', ioe);
+                throw new BackingStorageException("Unable to write to file \"" + this.file.getAbsolutePath() + '\"', ioe);
             }
         }
 
@@ -203,7 +203,7 @@ public abstract class DiskDataStorage
             }
             catch (IOException ioe)
             {
-                throw new BackingStorageException("Unable to read from file \"" + getFilename() + '\"', ioe);
+                throw new BackingStorageException("Unable to read from file \"" + this.file.getAbsolutePath() + '\"', ioe);
             }
         }
 
@@ -745,7 +745,7 @@ public abstract class DiskDataStorage
 
     protected final String getFilename()
     {
-        return this.fileStorage.getFilename();
+        return this.fileStorage.getFile().getAbsolutePath();
     }
 
     /**
