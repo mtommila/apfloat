@@ -31,7 +31,7 @@ import org.apfloat.spi.Util;
  * Helper class for the Hurwitz zeta function.
  *
  * @since 1.11.0
- * @version 1.11.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -87,8 +87,8 @@ class HurwitzZetaHelper
               M = N;
         s = ApfloatHelper.extendPrecision(s);
         a = ApfloatHelper.extendPrecision(a);
-        Apcomplex S = S(s, a, N.longValueExact()),
-                  I = I(s, a, N),
+        Apcomplex I = I(s, a, N),
+                  S = S(s, a, N.longValueExact()),
                   T = T(s, a, N, M.longValueExact());
         return ApfloatHelper.reducePrecision(S.add(I).add(T));
     }
@@ -184,14 +184,7 @@ class HurwitzZetaHelper
 
     private static Apcomplex pochhammer(Apcomplex s, long n)
     {
-        Apint one = Apcomplex.ONES[s.radix()];
-        Apcomplex p = one;
-        for (int k = 0; k < n; k++)
-        {
-            p = p.multiply(s);
-            s = s.add(one);
-        }
-        return p;
+        return ApcomplexMath.pochhammer(s, new Apfloat(n, s.precision(), s.radix()));
     }
 
     private static Apcomplex S(Apcomplex s, Apcomplex a, long N)

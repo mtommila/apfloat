@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.11.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -741,6 +741,19 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.zeta(s, a);
         assertEquals("value", new Apcomplex("(0.00199905,0.163402)"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+
+        try
+        {
+            helper = new FixedPrecisionApcomplexHelper(17);
+            s = new Apcomplex("(-8.384883669867978e17, 0.0)");
+            a = new Apcomplex("(-8e-1, 1.199999999999999)");
+            helper.zeta(s, a);
+            fail("No overflow");
+        }
+        catch (OverflowException oe)
+        {
+            // OK
+        }
     }
 
     public static void testHypergeometric0F1()

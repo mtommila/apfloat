@@ -36,7 +36,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApfloatMath
  *
- * @version 1.11.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -1720,6 +1720,11 @@ public class ApcomplexMath
         }
         long precision = z.precision();
         int radix = z.radix();
+        Apint one = new Apint(1, radix);
+        if (z.scale() < -precision)
+        {
+            return one.divide(z);
+        }
         if (z.imag().signum() == 0)
         {
             if (z.real().signum() == 0)
@@ -1741,7 +1746,14 @@ public class ApcomplexMath
                 {
                     throw new OverflowException("Overflow");
                 }
-                return ApfloatMath.factorial(n - 1, precision, radix);
+                // If n is extremely large and precision is relatively low, then computing it as gamma is faster
+                // If n is relatively small compared to precision, then computing it as factorial is faster
+                double gammaEffort = Math.log(precision) * precision * precision;
+                double factorialEffort = Math.log(precision) * precision * Math.log(n) * n / 2e6;
+                if (factorialEffort < gammaEffort)
+                {
+                    return ApfloatMath.factorial(n - 1, precision, radix);
+                }
             }
         }
         if (precision == Apfloat.INFINITE)
@@ -1755,7 +1767,6 @@ public class ApcomplexMath
             Apfloat pi = ApfloatMath.pi(precision, radix);
             return pi.negate().divide(z.multiply(sin(pi.multiply(z))).multiply(gamma(z)));
         }
-        Apint one = new Apint(1, radix);
         long a1 = (long) (precision / Math.log(2 * Math.PI) * Math.log(radix));
         long workingPrecision = ApfloatHelper.extendPrecision(precision, (long) (precision * 0.5) + Apfloat.EXTRA_PRECISION); // increase intermediate precision - ck are large and alternating in sign, lots of precision loss
         z = z.precision(workingPrecision).subtract(one);
@@ -2227,6 +2238,111 @@ public class ApcomplexMath
     }
 
     /**
+     * Polygamma function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the polygamma function.
+     *
+     * @param n The order.
+     * @param z The argument.
+     *
+     * @return <code>&psi;<sup>(n)</sup>(z)</code>
+     *
+     * @throws ArithmeticException If <code>n</code> is negative or <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex polygamma(long n, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (n < 0)
+        {
+            throw new ArithmeticException("Polygamma of negative order");
+        }
+        if (z.isInteger() && z.real().signum() <= 0)
+        {
+            throw new ArithmeticException("Polygamma of nonpositive integer");
+        }
+        if (n == 0)
+        {
+            return digamma(z);
+        }
+        long precision = z.precision();
+        int radix = z.radix();
+        Apint one = Apint.ONES[radix];
+        Apfloat n1 = new Apfloat(n, precision, radix).add(one);
+        Apcomplex result = ApfloatMath.gamma(n1).multiply(zeta(n1, z));
+        return ((n & 1) == 1 ? result : result.negate());
+    }
+
+    /**
+     * Pochhammer symbol.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the pochhammer symbol.
+     *
+     * @param z The first argument.
+     * @param n The second argument.
+     *
+     * @return <code>(z)<sub>n</sub></code>
+     *
+     * @throws ArithmeticException If <code>z + n</code> is a nonpositive integer but <code>z</code> is not.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex pochhammer(Apcomplex z, Apcomplex n)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = Math.min(z.precision(), n.precision());
+        Apint one = Apint.ONES[radix];
+        if (n.real().signum() == 0 && n.imag().signum() == 0)
+        {
+            return one.precision(precision);
+        }
+        Apcomplex zn = ApfloatHelper.extendPrecision(z).add(ApfloatHelper.extendPrecision(n));
+        if (z.isInteger() && z.real().signum() <= 0)    // gamma(z) is infinite
+        {
+            if (zn.isInteger() && zn.real().signum() <= 0) // gamma(z + n) is infinite, too
+            {
+                z = one.subtract(z).subtract(n);
+                Apcomplex result = pochhammer(z, n);
+                Apint two = new Apint(2, radix);
+                return (n.real().truncate().mod(two).signum() == 0 ? result : result.negate());
+            }
+            return Apint.ZEROS[radix];
+        }
+        if (n.isInteger() && n.real().signum() > 0 && n.real().compareTo(new Apint(precision, radix)) <= 0)
+        {
+            // If n is integer and relatively small, just evaluating the multiplication is probably faster
+            return pochhammer(z, n.longValueExact());
+        }
+        return gamma(zn).divide(gamma(z));
+    }
+
+    static Apcomplex pochhammer(Apcomplex z, long n)
+    {
+        z = ApfloatHelper.extendPrecision(z);
+        long precision = z.precision();
+        Apfloat one = Apcomplex.ONES[z.radix()].precision(precision);
+        Apcomplex p = one;
+        for (int k = 0; k < n; k++)
+        {
+            p = ApfloatHelper.ensurePrecision(p.multiply(z), precision);
+            z = ApfloatHelper.ensurePrecision(z.add(one), precision);
+        }
+        return ApfloatHelper.reducePrecision(p);
+    }
+
+    /**
      * Binomial coefficient. Calculated using the {@link #gamma(Apcomplex)} function.
      *
      * @param n The first argument.
@@ -2338,6 +2454,28 @@ public class ApcomplexMath
     }
 
     /**
+     * Regularized confluent hypergeometric function <i><sub>0</sub>F̃<sub>1</sub></i>.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param z The second argument.
+     *
+     * @return <i><sub>0</sub>F̃<sub>1</sub>(; a; z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex hypergeometric0F1Regularized(Apcomplex a, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return HypergeometricHelper.hypergeometricPFQRegularized(new Apcomplex[0], new Apcomplex[] { a }, z);
+    }
+
+    /**
      * Kummer confluent hypergeometric function <i><sub>1</sub>F<sub>1</sub></i>.
      * Also known as the confluent hypergeometric function of the first kind.<p>
      *
@@ -2361,6 +2499,30 @@ public class ApcomplexMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         return HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { a }, new Apcomplex[] { b }, z);
+    }
+
+    /**
+     * Regularized Kummer confluent hypergeometric function <i><sub>1</sub>F̃<sub>1</sub></i>.
+     * Also known as the regularized confluent hypergeometric function of the first kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param z The third argument.
+     *
+     * @return <i><sub>1</sub>F̃<sub>1</sub>(a; b; z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex hypergeometric1F1Regularized(Apcomplex a, Apcomplex b, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return HypergeometricHelper.hypergeometricPFQRegularized(new Apcomplex[] { a }, new Apcomplex[] { b }, z);
     }
 
     /**
@@ -2388,6 +2550,228 @@ public class ApcomplexMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         return HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { a, b }, new Apcomplex[] { c }, z);
+    }
+
+    /**
+     * Regularized hypergeometric function <i><sub>2</sub>F̃<sub>1</sub></i>.
+     * Also known as the regularized Gaussian or ordinary hypergeometric function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param c The third argument.
+     * @param z The fourth argument.
+     *
+     * @return <i><sub>2</sub>F̃<sub>1</sub>(a, b; c; z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex hypergeometric2F1Regularized(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return HypergeometricHelper.hypergeometricPFQRegularized(new Apcomplex[] { a, b }, new Apcomplex[] { c }, z);
+    }
+
+    /**
+     * Error function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return <i>erf(z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex erf(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        if (z.scale() > 0)
+        {
+            // More accurate algorithm for larger values
+            int radix = z.radix();
+            long precision = z.precision();
+            Apint one = Apint.ONES[radix],
+                  two = new Apint(2, radix);
+            Apfloat sqrtPi = ApfloatMath.sqrt(ApfloatMath.pi(precision, radix)),
+                    half = new Aprational(one, two).precision(precision);
+            Apcomplex result = one.subtract(gamma(half, z.multiply(z)).divide(sqrtPi));
+            boolean negate = (z.real().signum() == 0 ? z.imag().signum() < 0 : z.real().signum() < 0);
+            return (negate ? result.negate() : result);
+        }
+        // More accurate algorithm for smaller values
+        return erfFixedPrecision(z);
+    }
+
+    static Apcomplex erfFixedPrecision(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apint one = Apint.ONES[radix],
+              two = new Apint(2, radix),
+              three = new Apint(3, radix);
+        Apfloat sqrtPi = ApfloatMath.sqrt(ApfloatMath.pi(precision, radix)),
+                half = new Aprational(one, two).precision(precision),
+                threeHalfs = new Aprational(three, two).precision(precision);
+        return two.multiply(z).divide(sqrtPi).multiply(hypergeometric1F1(half, threeHalfs, z.multiply(z).negate()));
+    }
+
+    /**
+     * Complementary error function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return <i>erfc(z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex erfc(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        Apint one = Apint.ONES[radix];
+        if (z.scale() > 0 && z.real().signum() > 0)
+        {
+            // More accurate algorithm for larger values
+            long precision = z.precision();
+            Apint two = new Apint(2, radix);
+            Apfloat sqrtPi = ApfloatMath.sqrt(ApfloatMath.pi(precision, radix)),
+                    half = new Aprational(one, two);
+            Apcomplex result = gamma(half, z.multiply(z)).divide(sqrtPi);
+            boolean negate = (z.real().signum() == 0 ? z.imag().signum() < 0 : z.real().signum() < 0);
+            return (negate ? result.negate() : result);
+        }
+        // More accurate algorithm for smaller values
+        return one.subtract(erf(z));
+    }
+
+    /**
+     * Imaginary error function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return <i>erfi(z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex erfi(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        Apcomplex i = new Apcomplex(Apfloat.ZEROS[radix], Apfloat.ONES[radix]);
+        return i.multiply(erf(i.multiply(z))).negate();
+    }
+
+    /**
+     * Fresnel integral S.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return <i>S(z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex fresnelS(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apfloat two = new Apfloat(2, precision, radix),
+                pi = ApfloatMath.pi(precision, radix);
+        if (z.scale() > 0)
+        {
+            Apint one = Apfloat.ONES[radix];
+            Apfloat half = one.divide(two),
+                    invSqrtPi = ApfloatMath.inverseRoot(pi, 2);
+            Apcomplex i = new Apcomplex(Apfloat.ZEROS[radix], one),
+                      z2 = z.multiply(z),
+                      iz2 = i.multiply(z2),
+                      iHalfPiZ2 = iz2.multiply(pi).divide(two);
+            return i.multiply(z).multiply(inverseRoot(two, 2)).divide(two).multiply(fresnelTerm(one, half, invSqrtPi, iz2, iHalfPiZ2).subtract(fresnelTerm(one, half, invSqrtPi, iz2.negate(), iHalfPiZ2.negate())));
+        }
+        Apfloat three = new Apfloat(3, precision, radix),
+                four = new Apfloat(4, precision, radix),
+                six = new Apfloat(6, precision, radix),
+                seven = new Apfloat(7, precision, radix),
+                sixteen = new Apfloat(16, precision, radix);
+        Apcomplex[] a = { three.divide(four) },
+                    b = { three.divide(two), seven.divide(four) };
+        return pi.multiply(pow(z, 3)).divide(six).multiply(HypergeometricHelper.hypergeometricPFQ(a, b, pi.multiply(pi).negate().multiply(pow(z, 4)).divide(sixteen)));
+    }
+
+    /**
+     * Fresnel integral C.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return <i>C(z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex fresnelC(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apfloat two = new Apfloat(2, precision, radix),
+                pi = ApfloatMath.pi(precision, radix);
+        Apint one = Apfloat.ONES[radix];
+        if (z.scale() > 0)
+        {
+            Apfloat half = one.divide(two),
+                    invSqrtPi = ApfloatMath.inverseRoot(pi, 2);
+            Apcomplex i = new Apcomplex(Apfloat.ZEROS[radix], one),
+                      z2 = z.multiply(z),
+                      iz2 = i.multiply(z2),
+                      iHalfPiZ2 = iz2.multiply(pi).divide(two);
+            return z.multiply(inverseRoot(two, 2)).divide(two).multiply(fresnelTerm(one, half, invSqrtPi, iz2, iHalfPiZ2).add(fresnelTerm(one, half, invSqrtPi, iz2.negate(), iHalfPiZ2.negate())));
+        }
+        Apfloat four = new Apfloat(4, precision, radix),
+                five = new Apfloat(5, precision, radix),
+                sixteen = new Apfloat(16, precision, radix);
+        Apcomplex[] a = { one.divide(four) },
+                    b = { one.divide(two), five.divide(four) };
+        return z.multiply(HypergeometricHelper.hypergeometricPFQ(a, b, pi.multiply(pi).negate().multiply(pow(z, 4)).divide(sixteen)));
+    }
+
+    private static Apcomplex fresnelTerm(Apint one, Apfloat half, Apfloat invSqrtPi, Apcomplex iz2, Apcomplex iHalfPiZ2)
+        throws ApfloatRuntimeException
+    {
+        return inverseRoot(iz2, 2).multiply(one.subtract(invSqrtPi.multiply(gamma(half, iHalfPiZ2))));
     }
 
     /**

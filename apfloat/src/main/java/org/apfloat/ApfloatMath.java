@@ -48,7 +48,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApintMath
  *
- * @version 1.12.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -2659,6 +2659,56 @@ public class ApfloatMath
     }
 
     /**
+     * Polygamma function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the polygamma function.
+     *
+     * @param n The order.
+     * @param x The argument.
+     *
+     * @return <code>&psi;<sup>(n)</sup>(x)</code>
+     *
+     * @throws ArithmeticException If <code>n</code> is negative or <code>x</code> is a nonpositive integer.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat polygamma(long n, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.polygamma(n, x).real();
+    }
+
+    /**
+     * Pochhammer symbol.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the pochhammer symbol.
+     *
+     * @param x The first argument.
+     * @param n The second argument.
+     *
+     * @return <code>(x)<sub>n</sub></code>
+     *
+     * @throws ArithmeticException If <code>x + n</code> is a nonpositive integer but <code>x</code> is not.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat pochhammer(Apfloat x, Apfloat n)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.pochhammer(x, n).real();
+    }
+
+    /**
      * Binomial coefficient. Calculated using the {@link #gamma(Apfloat)} function.
      *
      * @param n The first argument.
@@ -2770,7 +2820,29 @@ public class ApfloatMath
     public static Apfloat hypergeometric0F1(Apfloat a, Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return HypergeometricHelper.hypergeometricPFQ(new Apcomplex[0], new Apcomplex[] { a }, x).real();
+        return ApcomplexMath.hypergeometric0F1(a, x).real();
+    }
+
+    /**
+     * Regularized confluent hypergeometric function <i><sub>0</sub>F̃<sub>1</sub></i>.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param x The second argument.
+     *
+     * @return <i><sub>0</sub>F̃<sub>1</sub>(; a; x)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat hypergeometric0F1Regularized(Apfloat a, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.hypergeometric0F1Regularized(a, x).real();
     }
 
     /**
@@ -2796,7 +2868,31 @@ public class ApfloatMath
     public static Apfloat hypergeometric1F1(Apfloat a, Apfloat b, Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { a }, new Apcomplex[] { b }, x).real();
+        return ApcomplexMath.hypergeometric1F1(a, b, x).real();
+    }
+
+    /**
+     * Regularized Kummer confluent hypergeometric function <i><sub>1</sub>F̃<sub>1</sub></i>.
+     * Also known as the regularized confluent hypergeometric function of the first kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param x The third argument.
+     *
+     * @return <i><sub>1</sub>F̃<sub>1</sub>(a; b; x)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat hypergeometric1F1Regularized(Apfloat a, Apfloat b, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.hypergeometric1F1Regularized(a, b, x).real();
     }
 
     /**
@@ -2829,7 +2925,143 @@ public class ApfloatMath
         {
             throw new ArithmeticException("Result would be complex");
         }
-        return HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { a, b }, new Apcomplex[] { c }, x).real();
+        return ApcomplexMath.hypergeometric2F1(a, b, c, x).real();
+    }
+
+    /**
+     * Regularized hypergeometric function <i><sub>2</sub>F̃<sub>1</sub></i>.
+     * Also known as the regularized Gaussian or ordinary hypergeometric function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param c The third argument.
+     * @param x The fourth argument.
+     *
+     * @return <i><sub>2</sub>F̃<sub>1</sub>(a, b; c; x)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat hypergeometric2F1Regularized(Apfloat a, Apfloat b, Apfloat c, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        // With real a, b and c the result is real if z <= 1 except if it's a polynomial, in which case it's always real (nb. additional checks might throw an exception later)
+        Apint one = Apint.ONES[x.radix()];
+        if (x.compareTo(one) > 0 && HypergeometricHelper.maxNonPositiveInteger(a, b) == null)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.hypergeometric2F1Regularized(a, b, c, x).real();
+    }
+
+    /**
+     * Error function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return <i>erf(x)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat erf(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.erf(x).real();
+    }
+
+    /**
+     * Complementary error function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return <i>erfc(x)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat erfc(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.erfc(x).real();
+    }
+
+    /**
+     * Imaginary error function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return <i>erfi(x)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat erfi(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.erfi(x).real();
+    }
+
+    /**
+     * Fresnel integral S.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return <i>S(x)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat fresnelS(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.fresnelS(x).real();
+    }
+
+    /**
+     * Fresnel integral C.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return <i>C(x)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat fresnelC(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.fresnelC(x).real();
     }
 
     /**

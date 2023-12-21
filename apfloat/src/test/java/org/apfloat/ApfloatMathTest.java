@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
 import static java.math.RoundingMode.*;
 
 /**
- * @version 1.12.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -106,12 +106,22 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testGammaIncompleteGeneralized"));
         suite.addTest(new ApfloatMathTest("testLogGamma"));
         suite.addTest(new ApfloatMathTest("testDigamma"));
+        suite.addTest(new ApfloatMathTest("testPolygamma"));
+        suite.addTest(new ApfloatMathTest("testPochhammer"));
         suite.addTest(new ApfloatMathTest("testBinomial"));
         suite.addTest(new ApfloatMathTest("testZeta"));
         suite.addTest(new ApfloatMathTest("testZetaHurwitz"));
         suite.addTest(new ApfloatMathTest("testHypergeometric0F1"));
         suite.addTest(new ApfloatMathTest("testHypergeometric1F1"));
         suite.addTest(new ApfloatMathTest("testHypergeometric2F1"));
+        suite.addTest(new ApfloatMathTest("testHypergeometric0F1Regularized"));
+        suite.addTest(new ApfloatMathTest("testHypergeometric1F1Regularized"));
+        suite.addTest(new ApfloatMathTest("testHypergeometric2F1Regularized"));
+        suite.addTest(new ApfloatMathTest("testErf"));
+        suite.addTest(new ApfloatMathTest("testErfc"));
+        suite.addTest(new ApfloatMathTest("testErfi"));
+        suite.addTest(new ApfloatMathTest("testFresnelS"));
+        suite.addTest(new ApfloatMathTest("testFresnelC"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testContinuedFraction"));
@@ -1295,6 +1305,9 @@ public class ApfloatMathTest
         a = ApfloatMath.pow(new Apfloat(0), new Apfloat(2));
         assertEquals("0^2", new Apfloat(0), a);
 
+        a = ApfloatMath.pow(new Apfloat(0), new Apfloat("0.1"));
+        assertEquals("0^0.1", new Apfloat(0), a);
+
         a = ApfloatMath.pow(new Apfloat(1), new Apfloat(2));
         assertEquals("1^2", new Apfloat(1), a);
 
@@ -1365,6 +1378,33 @@ public class ApfloatMathTest
         {
             ApfloatMath.pow(new Apfloat(0), new Apfloat(0));
             fail("0^0 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result would be undefined
+        }
+        try
+        {
+            ApfloatMath.pow(new Apfloat(0), new Apfloat("-1.0"));
+            fail("0^-1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result would be undefined
+        }
+        try
+        {
+            ApfloatMath.pow(new Apfloat(0), new Apfloat("-1.5"));
+            fail("0^-1.5 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result would be undefined
+        }
+        try
+        {
+            ApfloatMath.pow(new Apfloat(0), new Apfloat("-2.0"));
+            fail("0^-2 accepted");
         }
         catch (ArithmeticException ae)
         {
@@ -2669,6 +2709,38 @@ public class ApfloatMathTest
         }
     }
 
+    public static void testPolygamma()
+    {
+        Apfloat a = ApfloatMath.polygamma(3, new Apfloat(6, 30, 10));
+        assertEquals("3, 6 precision", 30, a.precision(), 1);
+        assertEquals("3, 6 value", new Apfloat("0.0118278281927550750219481051729"), a, new Apfloat("5e-31"));
+    }
+
+    public static void testPochhammer()
+    {
+        Apfloat a = ApfloatMath.pochhammer(new Apfloat("3.10000"), new Apfloat("2.40000"));
+        assertEquals("3.1, 2.4 precision", 6, a.precision(), 1);
+        assertEquals("3.1, 2.4 value", new Apfloat("23.8179"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.pochhammer(new Apfloat("-3.00000"), new Apfloat("2.40000"));
+        assertEquals("-3, 2.4 precision", Apfloat.INFINITE, a.precision(), 1);
+        assertEquals("-3, 2.4 value", new Apfloat(0), a);
+
+        a = ApfloatMath.pochhammer(new Apfloat("-3.00000"), new Apfloat("-2.00000"));
+        assertEquals("-3, -2 precision", 6, a.precision(), 1);
+        assertEquals("-3, -2 value", new Apfloat("0.0500000"), a, new Apfloat("5e-7"));
+
+        try
+        {
+            ApfloatMath.pochhammer(new Apfloat("-3.50000"), new Apfloat("-2.50000"));
+            fail("Infinite allowed");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
     public static void testBinomial()
     {
         Apfloat a = ApfloatMath.binomial(new Apfloat("9.000000000"), new Apfloat("4.000000000"));
@@ -2963,6 +3035,170 @@ public class ApfloatMathTest
         {
             // OK
         }
+    }
+
+    public static void testHypergeometric0F1Regularized()
+    {
+        Apfloat a = ApfloatMath.hypergeometric0F1Regularized(new Apfloat("3.00000"), new Apfloat("4.00000"));
+        assertEquals("3, 4 precision", 6, a.precision());
+        assertEquals("3, 4 value", new Apfloat("1.60555"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.hypergeometric0F1Regularized(new Apfloat("-3.00000"), new Apfloat("-4.00000"));
+        assertEquals("-3, -4 precision", 5, a.precision());
+        assertEquals("-3, -4 value", new Apfloat("4.49807"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.hypergeometric0F1Regularized(new Apfloat(-3, 60, 2), new Apfloat(4, 60, 2));
+        assertEquals("-3, 4 radix 2 precision", 59, a.precision());
+        assertEquals("-3, 4 radix 2 radix", 2, a.radix());
+        assertEquals("-3, 4 radix 2 value", new Apfloat("10110.1010100100010000101101110110011111011100110111001110011", 60, 2), a, new Apfloat("1e-54", 1, 2));
+
+        try
+        {
+            ApfloatMath.hypergeometric0F1Regularized(new Apfloat(-3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testHypergeometric1F1Regularized()
+    {
+        Apfloat a = ApfloatMath.hypergeometric1F1Regularized(new Apfloat("2.00000"), new Apfloat("3.00000"), new Apfloat("4.00000"));
+        assertEquals("2, 3, 4 precision", 6, a.precision());
+        assertEquals("2, 3, 4 value", new Apfloat("10.2996"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.hypergeometric1F1Regularized(new Apfloat("2.00000"), new Apfloat("-3.00000"), new Apfloat("4.00000"));
+        assertEquals("2, -3, 4 precision", 6, a.precision());
+        assertEquals("2, -3, 4 value", new Apfloat("125794"), a, new Apfloat("5e0"));
+
+        a = ApfloatMath.hypergeometric1F1Regularized(new Apfloat(2, 60, 2), new Apfloat(-3, 60, 2), new Apfloat(4, 60, 2));
+        assertEquals("2, -3, 4 radix 2 precision", 59, a.precision());
+        assertEquals("2, -3, 4 radix 2 radix", 2, a.radix());
+        assertEquals("2, -3, 4 radix 2 value", new Apfloat("11110101101100010.0010001100111110110000100001101000110111010", 60, 2), a, new Apfloat("1e-42", 1, 2));
+
+        try
+        {
+            ApfloatMath.hypergeometric1F1Regularized(new Apfloat(3), new Apfloat(-4), new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testHypergeometric2F1Regularized()
+    {
+        Apfloat a = ApfloatMath.hypergeometric2F1Regularized(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("0.100000"));
+        assertEquals("1, 2.2, 3.3, 0.1 precision", 6, a.precision());
+        assertEquals("1, 2.2, 3.3, 0.1 value", new Apfloat("0.399509"), a, new Apfloat("5e-6"));
+
+        // x = 1
+        a = ApfloatMath.hypergeometric2F1Regularized(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("1.000000"));
+        assertEquals("1, 2.2, 3.3, 1 precision", 6, a.precision());
+        assertEquals("1, 2.2, 3.3, 1 value", new Apfloat("8.57110"), a, new Apfloat("5e-5"));
+
+        // Polynomial cases
+        a = ApfloatMath.hypergeometric2F1Regularized(new Apfloat("-1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("5.000000"));
+        assertEquals("-1, 2.2, 3.3, 5 precision", 6, a.precision());
+        assertEquals("-1, 2.2, 3.3, 5 value", new Apfloat("-0.869532"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.hypergeometric2F1Regularized(new Apfloat("-3.00000"), new Apfloat("-1.00000"), new Apfloat("-2.00000"), new Apfloat("1.00000"));
+        assertEquals("-3, -1, -2, 1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-3, -1, -2, 1 value", new Apfloat("0"), a);
+
+        a = ApfloatMath.hypergeometric2F1Regularized(new Apfloat("-3.00000"), new Apfloat("-2.00000"), new Apfloat("-3.00000"), new Apfloat("1.00000"));
+        assertEquals("-3, -2, -3, 1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-3, -2, -3, 1 value", new Apfloat("0"), a);
+
+        // Needs regularization
+        a = ApfloatMath.hypergeometric2F1Regularized(new Apfloat("-2.00000"), new Apfloat("2.20000"), new Apfloat("-1.00000"), new Apfloat("0.100000"));
+        assertEquals("-2, 2.2, -1, 0.1 precision", 6, a.precision());
+        assertEquals("-2, 2.2, -1, 0.1 value", new Apfloat("0.0704000"), a, new Apfloat("5e-7"));
+
+        try
+        {
+            ApfloatMath.hypergeometric2F1Regularized(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("1.000001"));
+            fail("2F1 of x > 1");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK result would be complex
+        }
+        try
+        {
+            ApfloatMath.hypergeometric2F1Regularized(new Apfloat(1), new Apfloat(2), new Apfloat(4), new Apfloat(2));
+            fail("2F1 of x > 1 with infinite precision");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK result would be complex
+        }
+
+        try
+        {
+            ApfloatMath.hypergeometric2F1Regularized(new Apfloat(2), new Apfloat(3), new Apfloat(6), new Apfloat(1));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+
+        try
+        {
+            ApfloatMath.hypergeometric2F1Regularized(new Apfloat(-3), new Apfloat(-2), new Apfloat(-1), new Apfloat(1));    // Needs regularization
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testErf()
+    {
+        Apfloat a = ApfloatMath.erf(new Apfloat("2.00000"));
+        assertEquals("2 precision", 8, a.precision());
+        assertEquals("2 value", new Apfloat("0.99532226"), a, new Apfloat("5e-8"));
+    }
+
+    public static void testErfc()
+    {
+        Apfloat a = ApfloatMath.erfc(new Apfloat("2.00000"));
+        assertEquals("2 precision", 6, a.precision());
+        assertEquals("2 value", new Apfloat("0.00467773"), a, new Apfloat("5e-8"));
+    }
+
+    public static void testErfi()
+    {
+        Apfloat a = ApfloatMath.erfi(new Apfloat("2.00000"));
+        assertEquals("2 precision", 6, a.precision());
+        assertEquals("2 value", new Apfloat("18.5648"), a, new Apfloat("5e-4"));
+    }
+
+    public static void testFresnelS()
+    {
+        Apfloat a = ApfloatMath.fresnelS(new Apfloat("2.00000"));
+        assertEquals("2 precision", 6, a.precision());
+        assertEquals("2 value", new Apfloat("0.343416"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.fresnelS(new Apfloat("200000.00000000000000"));
+        assertEquals("200000 precision", 15, a.precision());
+        assertEquals("200000 value", new Apfloat("0.4999984084505691190421"), a, new Apfloat("5e-15"));
+    }
+
+    public static void testFresnelC()
+    {
+        Apfloat a = ApfloatMath.fresnelC(new Apfloat("2.00000"));
+        assertEquals("2 precision", 6, a.precision());
+        assertEquals("2 value", new Apfloat("0.488253"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.fresnelC(new Apfloat("200000.00000000000000"));
+        assertEquals("200000 precision", 15, a.precision());
+        assertEquals("200000 value", new Apfloat("0.500000000000000"), a, new Apfloat("5e-15"));
     }
 
     public static void testRandom()

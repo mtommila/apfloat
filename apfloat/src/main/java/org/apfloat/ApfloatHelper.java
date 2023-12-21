@@ -421,7 +421,16 @@ class ApfloatHelper
 
             return new Apcomplex(new Apfloat(1, Apfloat.INFINITE, z.radix()));
         }
-        else if (z.real().signum() == 0 && z.imag().signum() == 0 || z.equals(Apcomplex.ONE) || w.equals(Apcomplex.ONE))
+        else if (z.real().signum() == 0 && z.imag().signum() == 0)
+        {
+            if (w.real().signum() <= 0)
+            {
+                throw new ArithmeticException("Zero to power of number with nonpositive real part");
+            }
+
+            return z;
+        }
+        else if (z.equals(Apcomplex.ONE) || w.equals(Apcomplex.ONE))
         {
             return z.precision(targetPrecision);
         }

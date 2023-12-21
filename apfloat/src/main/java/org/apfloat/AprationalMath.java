@@ -36,7 +36,7 @@ import org.apfloat.spi.Util;
 /**
  * Various mathematical functions for arbitrary precision rational numbers.
  *
- * @version 1.12.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -504,22 +504,41 @@ public class AprationalMath
         return pochhammer(n.subtract(k).add(one), k.numerator()).divide(ApintMath.factorial(k.longValueExact(), radix));
     }
 
-    // Product of the numbers n * (n + 1) * (n + 2) * ... * (n + m - 1)
-    private static Aprational pochhammer(Aprational n, Apint m)
+    /**
+     * Pochhammer symbol.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the pochhammer symbol.
+     *
+     * @param x The first argument.
+     * @param n The second argument.
+     *
+     * @return <code>(x)<sub>n</sub></code>
+     *
+     * @since 1.13.0
+     */
+
+    public static Aprational pochhammer(Aprational x, Apint n)
     {
-        assert (m.signum() >= 0);
-        Apint one = Apint.ONES[n.radix()];
-        if (m.signum() == 0)
+        Apint one = Apint.ONES[x.radix()];
+        if (n.signum() == 0)
         {
             return one;
         }
-        if (m.equals(one))
+        if (n.equals(one))
         {
-            return n;
+            return x;
         }
-        Apint two = new Apint(2, n.radix());
-        Apint k = m.divide(two);
-        return pochhammer(n, k).multiply(pochhammer(n.add(k), m.subtract(k)));
+        if (n.signum() < 0)
+        {
+            return one.divide(pochhammer(x.add(n), n.negate()));
+        }
+        Apint two = new Apint(2, x.radix());
+        Apint k = n.divide(two);
+        return pochhammer(x, k).multiply(pochhammer(x.add(k), n.subtract(k)));
     }
 
     /**

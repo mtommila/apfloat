@@ -31,7 +31,7 @@ import java.util.NoSuchElementException;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.12.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -69,6 +69,7 @@ public class AprationalMathTest
         suite.addTest(new AprationalMathTest("testMax"));
         suite.addTest(new AprationalMathTest("testMin"));
         suite.addTest(new AprationalMathTest("testBinomial"));
+        suite.addTest(new AprationalMathTest("testPochhammer"));
         suite.addTest(new AprationalMathTest("testBernoulli"));
 
         return suite;
@@ -656,6 +657,27 @@ public class AprationalMathTest
         {
             // OK; result is not a rational number
         }
+    }
+
+    public static void testPochhammer()
+    {
+        Aprational a = AprationalMath.pochhammer(new Aprational("0"), new Apint("0"));
+        assertEquals("0, 0 value", new Aprational("1"), a);
+
+        a = AprationalMath.pochhammer(new Aprational("2"), new Apint("0"));
+        assertEquals("2, 0 value", new Aprational("1"), a);
+
+        a = AprationalMath.pochhammer(new Aprational("2"), new Apint("1"));
+        assertEquals("2, 1 value", new Aprational("2"), a);
+
+        a = AprationalMath.pochhammer(new Aprational("2/3"), new Apint("4"));
+        assertEquals("2/3, 4 value", new Aprational("880/81"), a);
+
+        a = AprationalMath.pochhammer(new Aprational("2/3"), new Apint("-4"));
+        assertEquals("2/3, -4 value", new Aprational("81/280"), a);
+
+        a = AprationalMath.pochhammer(new Aprational("2/3", 5), new Apint("-4", 5));
+        assertEquals("2/3, -4 radix 5 value", new Aprational("311/2110", 5), a);
     }
 
     public static void testBernoulli()

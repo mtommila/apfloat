@@ -34,9 +34,11 @@ import org.apfloat.spi.Util;
 import static java.util.Comparator.comparing;
 
 import static org.apfloat.ApcomplexMath.abs;
+import static org.apfloat.ApcomplexMath.exp;
 import static org.apfloat.ApcomplexMath.gamma;
 import static org.apfloat.ApcomplexMath.pow;
 import static org.apfloat.ApcomplexMath.sin;
+import static org.apfloat.ApcomplexMath.sqrt;
 import static org.apfloat.ApfloatMath.pi;
 import static org.apfloat.ApfloatMath.scale;
 
@@ -44,7 +46,7 @@ import static org.apfloat.ApfloatMath.scale;
  * Helper class for hypergeometric functions.
  *
  * @since 1.11.0
- * @version 1.12.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -68,6 +70,12 @@ class HypergeometricHelper
         private static final long serialVersionUID = 1L;
 
         private long precisionLoss;
+    }
+
+    private static class NotConvergingException
+        extends RuntimeException
+    {
+            private static final long serialVersionUID = 1L;
     }
 
     private class Hypergeometric2F1Helper
@@ -449,6 +457,75 @@ class HypergeometricHelper
         return new HypergeometricHelper(a, b, z).hypergeometricPFQ();
     }
 
+    /**
+     * Regularized generalized hypergeometric function <i><sub>p</sub>F̃<sub>q</sub></i>.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param z The third argument.
+     *
+     * @return <i><sub>p</sub>F̃<sub>q</sub>(a<sub>1</sub>, …, a<sub>p</sub>; b<sub>1</sub>, …, b<sub>q</sub>; z)</i>
+     *
+     * @throws ArithmeticException If the series does not converge.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex hypergeometricPFQRegularized(Apcomplex[] a, Apcomplex[] b, Apcomplex z)
+    {
+        Apcomplex result;
+        Apfloat n = null;
+        int j = -1;
+        // Find smallest integer from b that is <= 0, if any
+        for (int i = 0; i < b.length; i++)
+        {
+            Apfloat br = b[i].real().negate();
+            if (br.isInteger() && br.signum() >= 0)
+            {
+                if (n == null)
+                {
+                    j = i;
+                    n = br;
+                }
+                else if (br.compareTo(n) > 0)
+                {
+                    j = i;
+                    n = br;
+                }
+            }
+        }
+        if (n == null)
+        {
+            // None of the b is a nonpositive integer, regularization is trivial
+            Apcomplex[] gamma = Arrays.stream(b).map(ApcomplexMath::gamma).toArray(Apcomplex[]::new);
+            result = hypergeometricPFQ(a, b, z).divide(ApcomplexMath.product(gamma));
+        }
+        else
+        {
+            // At least one of the b is a nonpositive integer, regularization needs to be done by omitting the terms where the divisor is infinite
+            int radix = z.radix();
+            Apfloat n1 = n.add(Apint.ONES[radix]);
+            Apcomplex[] pochhammer = Arrays.stream(a).map(ai -> ApcomplexMath.pochhammer(ai, n1)).toArray(Apcomplex[]::new);
+            result = ApcomplexMath.product(pochhammer);
+            if (result.real().signum() != 0 || result.imag().signum() != 0)
+            {
+                Apfloat n2 = n.add(new Apint(2, radix));
+                Apcomplex[] gamma = Arrays.stream(b).map(n1::add).map(ApcomplexMath::gamma).toArray(Apcomplex[]::new);
+                result = result.multiply(ApcomplexMath.pow(z, n1)).divide(ApcomplexMath.gamma(n2).multiply(ApcomplexMath.product(gamma)));
+                a = Arrays.stream(a).map(n1::add).toArray(Apcomplex[]::new);
+                b = Arrays.stream(b).map(n1::add).toArray(Apcomplex[]::new);
+                b[j] = n2;
+                result = result.multiply(hypergeometricPFQ(a, b, z));
+            }
+        }
+        return result;
+    }
+
     // In the general case (p = q + 1) this works only for |z| < 1
     private Apcomplex hypergeometricPFQ()
         throws ArithmeticException, ApfloatRuntimeException
@@ -482,10 +559,78 @@ class HypergeometricHelper
         {
             return ApcomplexMath.pow(one.subtract(z), a[0].negate());
         }
+        if (a.length == 0 && b.length == 1)
+        {
+            return hypergeometric0F1(b[0], z);
+        }
+        if (a.length == 1 && b.length == 1)
+        {
+            return hypergeometric1F1(a[0], b[0], z);
+        }
         assert (b.length > 0);
 
         result = evaluate(a, b, z);
         return ApfloatHelper.limitPrecision(result, targetPrecision);
+    }
+
+    private Apcomplex hypergeometric0F1(Apcomplex b, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (abs(z).doubleValue() > targetPrecision * Math.log(radix))
+        {
+            // Evaluate with 1F1
+            Apcomplex sqrtZ = sqrt(z);
+            Apint two = new Apint(2, radix),
+                  four = new Apint(4, radix);
+            Aprational half = new Aprational(one, two);
+            Apcomplex result = exp(two.negate().multiply(sqrtZ)).multiply(hypergeometric1F1(b.subtract(half), two.multiply(b).subtract(one), four.multiply(sqrtZ)));
+            return ApfloatHelper.limitPrecision(result, targetPrecision);
+        }
+
+        Apcomplex result = evaluate(new Apcomplex[0], new Apcomplex[] { b }, z);
+        return ApfloatHelper.limitPrecision(result, targetPrecision);
+    }
+
+    private Apcomplex hypergeometric1F1(Apcomplex a, Apcomplex b, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (abs(z).doubleValue() > targetPrecision * Math.log(radix))
+        {
+            try
+            {
+                // Evaluate with U*
+                Apcomplex ba = b.subtract(a);
+                Apcomplex result = zero;
+                if (!ba.isInteger() || ba.real().signum() > 0)
+                {
+                    result = pow(z.negate(), a.negate()).divide(gamma(ba)).multiply(hypergeometricUStar(a, b, z));
+                }
+                result = result.add(pow(z, a.subtract(b)).multiply(exp(z)).divide(gamma(a)).multiply(hypergeometricUStar(ba, b, z.negate()))).multiply(gamma(b));
+                return ApfloatHelper.limitPrecision(result, targetPrecision);
+            } catch (NotConvergingException nce)
+            {
+                // Ignore and retry with the (possibly very slow) direct evaluation of the series
+            }
+        }
+
+        Apcomplex factor = one;
+        if (z.real().signum() < 0)
+        {
+            // Kummer transformation
+            factor = ApcomplexMath.exp(z);
+            a = b.subtract(a);
+            z = z.negate();
+        }
+
+        Apcomplex result = evaluate(new Apcomplex[] { a }, new Apcomplex[] { b }, z).multiply(factor);
+        return ApfloatHelper.limitPrecision(result, targetPrecision);
+    }
+
+    private Apcomplex hypergeometricUStar(Apcomplex a, Apcomplex b, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apcomplex result = evaluate(new Apcomplex[] { a, a.subtract(b).add(one) }, new Apcomplex[0], one.divide(z).negate());
+        return result;
     }
 
     private Apcomplex hypergeometric2F1(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
@@ -597,6 +742,7 @@ class HypergeometricHelper
         long precisionLoss = 0,
              extraPrecision,
              extendedPrecision = ApfloatHelper.extendPrecision(workingPrecision, minN.scale()); // Estimate for accumulated round-off error precision due to repeated multiplication only (not scale based digit loss, see below)
+        boolean divergentSeries = a.length - b.length > 1;
 
         ensurePrecision(a, a, extendedPrecision);
         ensurePrecision(b, b, extendedPrecision);
@@ -608,7 +754,8 @@ class HypergeometricHelper
             Apint i = zero;
             Apcomplex numerator = one,
                       denominator = one,
-                      t;
+                      o,
+                      t = null;
 
             extraPrecision = precisionLoss;
             s = one;
@@ -632,10 +779,11 @@ class HypergeometricHelper
                     b[j] = b[j].add(one);
                 }
                 denominator = denominator.multiply(i);
+                o = t;
                 t = numerator.divide(denominator);
                 s = s.add(t);
                 maxSScale = Math.max(maxSScale, s.scale());
-            } while (i.compareTo(minN) <= 0 || s.real().signum() == 0 && s.imag().signum() == 0 || s.scale() - t.scale() <= workingPrecision); // Subtraction might overflow
+            } while (i.compareTo(minN) <= 0 || divergentSeries && checkDivergence(o, t) || s.real().signum() == 0 && s.imag().signum() == 0 || s.scale() - t.scale() <= workingPrecision);  // Subtraction might overflow
 
             precisionLoss = (s.real().signum() == 0 && s.imag().signum() == 0 ? extendedPrecision : maxSScale - s.scale()); // Loss due to scale of s reduced from its peak (loss off most significant digits)
             if (workingPrecision - s.precision() > 1)  // Often the precision is reduced by 1
@@ -651,6 +799,16 @@ class HypergeometricHelper
             }
         } while (precisionLoss > extraPrecision);
         return s;
+    }
+
+    private boolean checkDivergence(Apcomplex old, Apcomplex term)
+    {
+        // Check if the divergent series reached the smallest term already, even though the required precision was not reached
+        if (old != null && abs(old).compareTo(abs(term)) < 0)
+        {
+            throw new NotConvergingException();
+        }
+        return false;
     }
 
     // See: https://def.fe.up.pt/pipermail/maxima-discuss/2006.txt "Methods for numerically difficult cases of 2F1(a,b;c|z)", alternative algorithm by Bill Gosper
