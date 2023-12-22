@@ -2578,6 +2578,30 @@ public class ApcomplexMath
     }
 
     /**
+     * Tricomi's confluent hypergeometric function <i>U</i>.
+     * Also known as the confluent hypergeometric function of the second kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param z The third argument.
+     *
+     * @return <i>U(a, b, z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex hypergeometricU(Apcomplex a, Apcomplex b, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return HypergeometricHelper.hypergeometricU(a, b, z);
+    }
+
+    /**
      * Error function.<p>
      *
      * @implNote

@@ -182,21 +182,6 @@ class HypergeometricHelper
             }
         }
 
-        private Apfloat offset(long scale)
-        {
-            Apfloat offset = scale(new Apfloat("0.1", workingPrecision, radix), scale);
-            return offset;
-        }
-
-        private Apfloat adjustOffset(Apfloat x, Apfloat offset)
-        {
-            if (x.scale() <= offset.scale())
-            {
-                return x;
-            }
-            return x.precision(Apfloat.INFINITE).add(offset).subtract(offset);
-        }
-
         public Apcomplex transform(Apcomplex s, Apcomplex c, Apcomplex base1, Apcomplex exp1, Apcomplex g1, Apcomplex g2, Apcomplex a1, Apcomplex b1, Apcomplex c1, Apcomplex base2, Apcomplex exp2, Apcomplex base3, Apcomplex exp3, Apcomplex g3, Apcomplex g4, Apcomplex a2, Apcomplex b2, Apcomplex c2, Apcomplex z)
         {
             Apcomplex term1,
@@ -526,7 +511,30 @@ class HypergeometricHelper
         return result;
     }
 
-    // In the general case (p = q + 1) this works only for |z| < 1
+    /**
+     * Tricomi's confluent hypergeometric function <i>U</i>.
+     * Also known as the confluent hypergeometric function of the second kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param z The third argument.
+     *
+     * @return <i>U(a, b, z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex hypergeometricU(Apcomplex a, Apcomplex b, Apcomplex z)
+    {
+        return new HypergeometricHelper(new Apcomplex[] { a }, new Apcomplex[] { b }, z).hypergeometricU();
+    }
+
+    // In the general case (p = q + 1) this works only for |z| < 1, and in general, may converge slowly for very large |z|
     private Apcomplex hypergeometricPFQ()
         throws ArithmeticException, ApfloatRuntimeException
     {
@@ -613,6 +621,12 @@ class HypergeometricHelper
             }
         }
 
+        Apcomplex result = hypergeometric1F1series(a, b, z);
+        return ApfloatHelper.limitPrecision(result, targetPrecision);
+    }
+
+    private Apcomplex hypergeometric1F1series(Apcomplex a, Apcomplex b, Apcomplex z)
+    {
         Apcomplex factor = one;
         if (z.real().signum() < 0)
         {
@@ -623,7 +637,7 @@ class HypergeometricHelper
         }
 
         Apcomplex result = evaluate(new Apcomplex[] { a }, new Apcomplex[] { b }, z).multiply(factor);
-        return ApfloatHelper.limitPrecision(result, targetPrecision);
+        return result;
     }
 
     private Apcomplex hypergeometricUStar(Apcomplex a, Apcomplex b, Apcomplex z)
@@ -631,6 +645,75 @@ class HypergeometricHelper
     {
         Apcomplex result = evaluate(new Apcomplex[] { a, a.subtract(b).add(one) }, new Apcomplex[0], one.divide(z).negate());
         return result;
+    }
+
+    private Apcomplex hypergeometricU()
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (abs(z).doubleValue() > targetPrecision * Math.log(radix))
+        {
+            try
+            {
+                // Evaluate with U*
+                Apcomplex result = pow(z, a[0].negate()).multiply(hypergeometricUStar(a[0], b[0], z));
+                return ApfloatHelper.limitPrecision(result, targetPrecision);
+            } catch (NotConvergingException nce)
+            {
+                // Ignore and retry with the (possibly very slow) direct evaluation of the series
+            }
+        }
+
+        // Evaluate two 1F1 functions, this often results in cancellation of significant digits so we may retry with higher precision
+        Apcomplex result;
+        long precisionLoss;
+        do
+        {
+            Apcomplex a = this.a[0],
+                      b = this.b[0];
+            a = ensurePrecision(a);
+            b = ensurePrecision(b);
+            z = ensurePrecision(z);
+
+            // First check if b is an integer or near-integer and adjust if necessary
+            if (b.isInteger())
+            {
+                long digitLoss = workingPrecision;
+                workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
+                Apfloat offset = offset(-digitLoss);
+                b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset), b.imag());
+                a = ensurePrecision(a);
+                b = ensurePrecision(b);
+                z = ensurePrecision(z);
+            }
+            else
+            {
+                Apint bRounded = RoundingHelper.roundToInteger(b.real(), RoundingMode.HALF_EVEN).truncate();
+                long digitLoss = -b.subtract(bRounded).scale();
+                if (digitLoss > 0)
+                {
+                    workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
+                    a = ensurePrecision(a);
+                    b = ensurePrecision(b);
+                    z = ensurePrecision(z);
+                }
+            }
+
+            Apcomplex ab1 = ensurePrecision(a.subtract(b).add(one)),
+                      b1 = ensurePrecision(b.subtract(one));
+            result = zero;
+            if (!ab1.isInteger() || ab1.real().signum() > 0)
+            {
+                result = gamma(b1.negate()).divide(gamma(ab1)).multiply(hypergeometric1F1series(a, b, z));
+            }
+            if (!a.isInteger() || a.real().signum() > 0)
+            {
+                Apint two = new Apint(2, radix);
+                result = result.add(gamma(b1).divide(gamma(a)).multiply(pow(z, b1.negate())).multiply(hypergeometric1F1series(ab1, two.subtract(b), z)));
+            }
+            precisionLoss = targetPrecision - result.precision();
+            workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + precisionLoss);
+        } while (precisionLoss > 0);
+        return ApfloatHelper.limitPrecision(result, targetPrecision);
     }
 
     private Apcomplex hypergeometric2F1(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
@@ -858,6 +941,21 @@ class HypergeometricHelper
             k = k.add(one);
         } while (d.scale() >= -workingPrecision || e.scale() >= -workingPrecision);
         return f;
+    }
+
+    private Apfloat offset(long scale)
+    {
+        Apfloat offset = scale(new Apfloat("0.1", workingPrecision, radix), scale);
+        return offset;
+    }
+
+    private Apfloat adjustOffset(Apfloat x, Apfloat offset)
+    {
+        if (x.scale() <= offset.scale())
+        {
+            return x;
+        }
+        return x.precision(Apfloat.INFINITE).add(offset).subtract(offset);
     }
 
     private Apcomplex ensurePrecision(Apcomplex z)

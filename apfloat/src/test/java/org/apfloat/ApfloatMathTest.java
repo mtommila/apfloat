@@ -117,6 +117,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testHypergeometric0F1Regularized"));
         suite.addTest(new ApfloatMathTest("testHypergeometric1F1Regularized"));
         suite.addTest(new ApfloatMathTest("testHypergeometric2F1Regularized"));
+        suite.addTest(new ApfloatMathTest("testHypergeometricU"));
         suite.addTest(new ApfloatMathTest("testErf"));
         suite.addTest(new ApfloatMathTest("testErfc"));
         suite.addTest(new ApfloatMathTest("testErfi"));
@@ -3150,6 +3151,72 @@ public class ApfloatMathTest
         try
         {
             ApfloatMath.hypergeometric2F1Regularized(new Apfloat(-3), new Apfloat(-2), new Apfloat(-1), new Apfloat(1));    // Needs regularization
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testHypergeometricU()
+    {
+        Apfloat a = ApfloatMath.hypergeometricU(new Apfloat("2.00000"), new Apfloat("3.10000"), new Apfloat("4.00000"));
+        assertEquals("2, 3.1, 4 precision", 6, a.precision());
+        assertEquals("2, 3.1, 4 value", new Apfloat("0.0649421"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat("-2.10000"), new Apfloat("3.30000"), new Apfloat("2.00000"));
+        assertEquals("-2.1, 3.3, 2 precision", 6, a.precision());
+        assertEquals("-2.1, 3.3, 2 value", new Apfloat("2.13433"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat("2.10000"), new Apfloat("3.00000"), new Apfloat("2.00000"));
+        assertEquals("2.1, 3, 2 precision", 6, a.precision());
+        assertEquals("2.1, 3, 2 value", new Apfloat("0.218408"), a, new Apfloat("5e-6"));
+
+        // Polynomial cases
+        a = ApfloatMath.hypergeometricU(new Apfloat(0), new Apfloat("3.10000"), new Apfloat("-2.00000"));
+        assertEquals("0, 3.1, -2 precision", 6, a.precision());
+        assertEquals("0, 3.1, -2 value", new Apfloat("1.00000"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat("-2.00000"), new Apfloat("3.10000"), new Apfloat("-2.00000"));
+        assertEquals("-2, 3.1, -2 precision", 6, a.precision());
+        assertEquals("-2, 3.1, -2 value", new Apfloat("33.1100"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat("2.00000"), new Apfloat("3.00000"), new Apfloat("-2.00000"));
+        assertEquals("2, 3, -2 precision", 6, a.precision());
+        assertEquals("2, 3, -2 value", new Apfloat("0.250000"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.hypergeometricU(new Apfloat("1.1"), new Apfloat("2.1"), new Apfloat("-0.10"));
+            fail("x < 0 and not polynomial");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK result would be complex
+        }
+        try
+        {
+            ApfloatMath.hypergeometricU(new Apfloat("1.0"), new Apfloat("2.1"), new Apfloat("-0.10"));
+            fail("x < 0 and not polynomial");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK result would be complex
+        }
+        try
+        {
+            ApfloatMath.hypergeometricU(new Apfloat("3.0"), new Apfloat("2.0"), new Apfloat("-1.0"));
+            fail("x < 0 and not polynomial");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK result would be complex
+        }
+
+        try
+        {
+            ApfloatMath.hypergeometricU(new Apfloat(3), new Apfloat(4), new Apfloat(5));
             fail("Infinite expansion");
         }
         catch (InfiniteExpansionException iee)
