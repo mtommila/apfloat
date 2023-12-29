@@ -107,6 +107,9 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testLogGamma"));
         suite.addTest(new ApfloatMathTest("testDigamma"));
         suite.addTest(new ApfloatMathTest("testPolygamma"));
+        suite.addTest(new ApfloatMathTest("testBeta"));
+        suite.addTest(new ApfloatMathTest("testBetaIncomplete"));
+        suite.addTest(new ApfloatMathTest("testBetaIncompleteGeneralized"));
         suite.addTest(new ApfloatMathTest("testPochhammer"));
         suite.addTest(new ApfloatMathTest("testBinomial"));
         suite.addTest(new ApfloatMathTest("testZeta"));
@@ -123,6 +126,13 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testErfi"));
         suite.addTest(new ApfloatMathTest("testFresnelS"));
         suite.addTest(new ApfloatMathTest("testFresnelC"));
+        suite.addTest(new ApfloatMathTest("testExpIntegralE"));
+        suite.addTest(new ApfloatMathTest("testExpIntegralEi"));
+        suite.addTest(new ApfloatMathTest("testLogIntegral"));
+        suite.addTest(new ApfloatMathTest("testSinIntegral"));
+        suite.addTest(new ApfloatMathTest("testCosIntegral"));
+        suite.addTest(new ApfloatMathTest("testSinhIntegral"));
+        suite.addTest(new ApfloatMathTest("testCoshIntegral"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testContinuedFraction"));
@@ -2717,6 +2727,152 @@ public class ApfloatMathTest
         assertEquals("3, 6 value", new Apfloat("0.0118278281927550750219481051729"), a, new Apfloat("5e-31"));
     }
 
+    public static void testBeta()
+    {
+        Apfloat a = ApfloatMath.beta(new Apfloat(5, 6), new Apfloat(6, 6));
+        assertEquals("5, 6 precision", 6, a.precision(), 1);
+        assertEquals("5, 6 value", new Apfloat("0.000793651"), a, new Apfloat("5e-9"));
+    }
+
+    public static void testBetaIncomplete()
+    {
+        Apfloat a = ApfloatMath.beta(new Apfloat(4, 6), new Apfloat(5, 6), new Apfloat(6, 6));
+        assertEquals("4, 5, 6 precision", 6, a.precision(), 1);
+        assertEquals("4, 5, 6 value", new Apfloat("-20944.9"), a, new Apfloat("5e-1"));
+
+        a = ApfloatMath.beta(new Apfloat(0), new Apfloat("1.00000"), new Apfloat("6.00000"));
+        assertEquals("0, 1, 6 precision", Apfloat.INFINITE, a.precision(), 1);
+        assertEquals("0, 1, 6 value", new Apfloat(0), a);
+
+        a = ApfloatMath.beta(new Apfloat("-0.100000"), new Apfloat("1.00000"), new Apfloat("6.00000"));
+        assertEquals("-0.1, 1, 6 precision", 6, a.precision(), 1);
+        assertEquals("-0.1, 1, 6 value", new Apfloat("-0.128594"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.beta(new Apfloat("4"), new Apfloat(0), new Apfloat("6"));
+            fail("Beta of 4, 0, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("0"), new Apfloat("-0.1"), new Apfloat("6"));
+            fail("Beta of 0, -0.1, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("0"), new Apfloat("-1"), new Apfloat("6"));
+            fail("Beta of 0, -1, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("-0.1"), new Apfloat("0.1"), new Apfloat("6"));
+            fail("Beta of -0.1, 0.1, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
+    public static void testBetaIncompleteGeneralized()
+    {
+        Apfloat a = ApfloatMath.beta(new Apfloat(3, 6), new Apfloat(4, 6), new Apfloat(5, 6), new Apfloat(6, 6));
+        assertEquals("3, 4, 5, 6 precision", 6, a.precision(), 1);
+        assertEquals("3, 4, 5, 6 value", new Apfloat("-20339.1"), a, new Apfloat("5e-1"));
+
+        a = ApfloatMath.beta(new Apfloat(0), new Apfloat("1.00000"), new Apfloat("2.00000"), new Apfloat("6.00000"));
+        assertEquals("0, 1, 2, 6 precision", 6, a.precision(), 1);
+        assertEquals("0, 1, 2, 6 value", new Apfloat("0.0238095"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.beta(new Apfloat("1.00000"), new Apfloat(0), new Apfloat("2.00000"), new Apfloat("6.00000"));
+        assertEquals("1, 0, 2, 6 precision", 6, a.precision(), 1);
+        assertEquals("1, 0, 2, 6 value", new Apfloat("-0.0238095"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.beta(new Apfloat("-0.100000"), new Apfloat("1.00000"), new Apfloat("2.00000"), new Apfloat("6.00000"));
+        assertEquals("-0.1, 1, 2, 6 precision", 6, a.precision(), 1);
+        assertEquals("-0.1, 1, 2, 6 value", new Apfloat("0.0168720"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.beta(new Apfloat("1.00000"), new Apfloat("-0.100000"), new Apfloat("2.00000"), new Apfloat("6.00000"));
+        assertEquals("1, -0.1, 2, 6 precision", 6, a.precision(), 1);
+        assertEquals("1, -0.1, 2, 6 value", new Apfloat("-0.0168720"), a, new Apfloat("5e-7"));
+
+        try
+        {
+            ApfloatMath.beta(new Apfloat("3"), new Apfloat("4"), new Apfloat(0), new Apfloat("6"));
+            fail("Beta of 3, 4, 0, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("0"), new Apfloat("1"), new Apfloat("-0.1"), new Apfloat("6"));
+            fail("Beta of 0, 1, -0.1, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("1"), new Apfloat("0"), new Apfloat("-0.1"), new Apfloat("6"));
+            fail("Beta of 1, 0, -0.1, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("0"), new Apfloat("1"), new Apfloat("-1"), new Apfloat("6"));
+            fail("Beta of 0, 1, -1, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("1"), new Apfloat("0"), new Apfloat("-1"), new Apfloat("6"));
+            fail("Beta of 1, 0, -1, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("-0.1"), new Apfloat("1"), new Apfloat("0.1"), new Apfloat("6"));
+            fail("Beta of -0.1, 1, 0.1, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("1"), new Apfloat("-0.1"), new Apfloat("0.1"), new Apfloat("6"));
+            fail("Beta of 1, -0.1, 0.1, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
     public static void testPochhammer()
     {
         Apfloat a = ApfloatMath.pochhammer(new Apfloat("3.10000"), new Apfloat("2.40000"));
@@ -3266,6 +3422,167 @@ public class ApfloatMathTest
         a = ApfloatMath.fresnelC(new Apfloat("200000.00000000000000"));
         assertEquals("200000 precision", 15, a.precision());
         assertEquals("200000 value", new Apfloat("0.500000000000000"), a, new Apfloat("5e-15"));
+    }
+
+    public static void testExpIntegralE()
+    {
+        Apfloat a = ApfloatMath.expIntegralE(new Apfloat("2.00000"), new Apfloat("3.00000"));
+        assertEquals("2, 3 precision", 6, a.precision());
+        assertEquals("2, 3 value", new Apfloat("0.0106419"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.expIntegralE(new Apfloat("-0.100000"), new Apfloat("0.100000"));
+        assertEquals("-0.1, 0.1 precision", 6, a.precision());
+        assertEquals("-0.1, 0.1 value", new Apfloat("11.1138"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.expIntegralE(new Apfloat("0"), new Apfloat("-0.100000"));
+        assertEquals("0, -0.1 precision", 6, a.precision());
+        assertEquals("0, -0.1 value", new Apfloat("-11.0517"), a, new Apfloat("5e-4"));
+
+        try
+        {
+            ApfloatMath.expIntegralE(new Apfloat("0"), new Apfloat("0"));
+            fail("0, 0");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            ApfloatMath.expIntegralE(new Apfloat("0.100000"), new Apfloat("-0.100000"));
+            fail("x negative");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
+    public static void testExpIntegralEi()
+    {
+        Apfloat a = ApfloatMath.expIntegralEi(new Apfloat("3.00000"));
+        assertEquals("3 precision", 6, a.precision());
+        assertEquals("3 value", new Apfloat("9.93383"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.expIntegralEi(new Apfloat("-3.00000"));
+        assertEquals("-3 precision", 6, a.precision());
+        assertEquals("-3 value", new Apfloat("-0.0130484"), a, new Apfloat("5e-7"));
+
+        try
+        {
+            ApfloatMath.expIntegralEi(new Apfloat("0"));
+            fail("Ei of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
+    public static void testLogIntegral()
+    {
+        Apfloat a = ApfloatMath.logIntegral(new Apfloat("3.00000"));
+        assertEquals("3 precision", 6, a.precision());
+        assertEquals("3 value", new Apfloat("2.16359"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.logIntegral(new Apfloat("0.0500000"));
+        assertEquals("0.05 precision", 6, a.precision());
+        assertEquals("0.05 value", new Apfloat("-0.0131194"), a, new Apfloat("5e-7"));
+
+        try
+        {
+            ApfloatMath.logIntegral(new Apfloat("1"));
+            fail("li of 1");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.logIntegral(new Apfloat("0"));
+            fail("li of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.logIntegral(new Apfloat("-0.1"));
+            fail("li of negative number");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
+    public static void testSinIntegral()
+    {
+        Apfloat a = ApfloatMath.sinIntegral(new Apfloat("-3.00000"));
+        assertEquals("-3 precision", 6, a.precision());
+        assertEquals("-3 value", new Apfloat("-1.84865"), a, new Apfloat("5e-5"));
+    }
+
+    public static void testCosIntegral()
+    {
+        Apfloat a = ApfloatMath.cosIntegral(new Apfloat("3.00000"));
+        assertEquals("3 precision", 6, a.precision());
+        assertEquals("3 value", new Apfloat("0.119630"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.cosIntegral(new Apfloat("0"));
+            fail("Ci of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.cosIntegral(new Apfloat("-0.1"));
+            fail("Ci of negative number");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
+    public static void testSinhIntegral()
+    {
+        Apfloat a = ApfloatMath.sinhIntegral(new Apfloat("-3.00000"));
+        assertEquals("-3 precision", 6, a.precision());
+        assertEquals("-3 value", new Apfloat("-4.97344"), a, new Apfloat("5e-5"));
+    }
+
+    public static void testCoshIntegral()
+    {
+        Apfloat a = ApfloatMath.coshIntegral(new Apfloat("3.00000"));
+        assertEquals("3 precision", 6, a.precision());
+        assertEquals("3 value", new Apfloat("4.96039"), a, new Apfloat("5e-5"));
+
+        try
+        {
+            ApfloatMath.coshIntegral(new Apfloat("0"));
+            fail("Chi of zero");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.coshIntegral(new Apfloat("-0.1"));
+            fail("Chi of negative number");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
     }
 
     public static void testRandom()

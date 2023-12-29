@@ -2684,6 +2684,94 @@ public class ApfloatMath
     }
 
     /**
+     * Beta function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the beta function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     *
+     * @return B(a, b)
+     *
+     * @throws ArithmeticException If <code>a</code> or <code>b</code> is a nonpositive integer but <code>a + b</code> is not. Also if both <code>a</code> and <code>b</code> are nonpositive integers.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat beta(Apfloat a, Apfloat b)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.beta(a, b).real();
+    }
+
+    /**
+     * Incomplete beta function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The first argument.
+     * @param a The second argument.
+     * @param b The third argument.
+     *
+     * @return B<sub>x</sub>(a, b)
+     *
+     * @throws ArithmeticException If <code>a</code> is a nonpositive integer or <code>x</code> is zero and <code>a</code> is nonpositive or <code>x</code> is negative and <code>a</code> is not an integer. 
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat beta(Apfloat x, Apfloat a, Apfloat b)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() == 0 && a.signum() < 0 && !a.isInteger() ||
+            x.signum() < 0 && !a.isInteger())
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.beta(x, a, b).real();
+    }
+
+    /**
+     * Generalized incomplete beta function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x1 The first argument.
+     * @param x2 The second argument.
+     * @param a The third argument.
+     * @param b The fourth argument.
+     *
+     * @return B<sub>(x1, x2)</sub>(a, b)
+     *
+     * @throws ArithmeticException If <code>a</code> is a nonpositive integer or <code>x1</code> or <code>x2</code> is zero and <code>a</code> is nonpositive or <code>x1</code> or <code>x2</code> is negative and <code>a</code> is not an integer. 
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat beta(Apfloat x1, Apfloat x2, Apfloat a, Apfloat b)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if ((x1.signum() == 0 || x2.signum() == 0) && a.signum() < 0 && !a.isInteger() ||
+            (x1.signum() < 0 || x2.signum() < 0) && !a.isInteger())
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.beta(x1, x2, a, b).real();
+    }
+
+    /**
      * Pochhammer symbol.<p>
      *
      * @implNote
@@ -3092,6 +3180,180 @@ public class ApfloatMath
         throws ApfloatRuntimeException
     {
         return ApcomplexMath.fresnelC(x).real();
+    }
+
+    /**
+     * Exponential integral E.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>E<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is < 0 and <code>x</code> is zero or <code>ν</code> is nonzero and <code>x</code> is negative. 
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat expIntegralE(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (ν.signum() != 0 && x.signum() < 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.expIntegralE(ν, x).real();
+    }
+
+    /**
+     * Exponential integral Ei.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return Ei(x)
+     *
+     * @throws ArithmeticException If <code>z</code> is zero. 
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat expIntegralEi(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.expIntegralEi(x).real();
+    }
+
+    /**
+     * Logarithmic integral.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return li(x)
+     *
+     * @throws ArithmeticException If <code>x</code> is nonpositive or 1.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat logIntegral(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() < 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.logIntegral(x).real();
+    }
+
+    /**
+     * Sine integral.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return Si(x)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat sinIntegral(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.sinIntegral(x).real();
+    }
+
+    /**
+     * Cosine integral.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return Ci(x)
+     *
+     * @throws ArithmeticException If <code>x</code> is nonpositive.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat cosIntegral(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() < 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.cosIntegral(x).real();
+    }
+
+    /**
+     * Hyperbolic sine integral.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return Shi(x)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat sinhIntegral(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.sinhIntegral(x).real();
+    }
+
+    /**
+     * Hyperbolic cosine integral.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return Chi(x)
+     *
+     * @throws ArithmeticException If <code>x</code> is nonpositive.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat coshIntegral(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() < 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.coshIntegral(x).real();
     }
 
     /**

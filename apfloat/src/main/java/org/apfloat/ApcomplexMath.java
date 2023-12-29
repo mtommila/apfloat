@@ -1769,8 +1769,8 @@ public class ApcomplexMath
         }
         long a1 = (long) (precision / Math.log(2 * Math.PI) * Math.log(radix));
         long workingPrecision = ApfloatHelper.extendPrecision(precision, (long) (precision * 0.5) + Apfloat.EXTRA_PRECISION); // increase intermediate precision - ck are large and alternating in sign, lots of precision loss
-        z = z.precision(workingPrecision).subtract(one);
-        Apint a = new Apint(a1 + 1, radix);
+        z = ApfloatHelper.ensurePrecision(z, workingPrecision).subtract(one);
+        Apfloat a = new Apint(a1 + 1, radix);
         Apint two = new Apint(2, radix);
         Apfloat c0 = ApfloatMath.sqrt(ApfloatMath.pi(workingPrecision, radix).multiply(two));
         Apcomplex sum = c0;
@@ -1787,7 +1787,8 @@ public class ApcomplexMath
                 divisor = divisor.multiply(e).multiply(kk).negate();
             }
         }
-        Aprational half = new Aprational(one, two);
+        a = a.precision(workingPrecision);
+        Apfloat half = new Aprational(one, two).precision(workingPrecision);
         Apcomplex result = ApcomplexMath.pow(z.add(a), z.add(half)).multiply(ApcomplexMath.exp(z.negate().subtract(a))).multiply(sum);
         double normalizedScale = result.scale() * Math.log(radix);
         if (normalizedScale > 0 && z.real().scale() > 0)
@@ -2277,6 +2278,129 @@ public class ApcomplexMath
         Apfloat n1 = new Apfloat(n, precision, radix).add(one);
         Apcomplex result = ApfloatMath.gamma(n1).multiply(zeta(n1, z));
         return ((n & 1) == 1 ? result : result.negate());
+    }
+
+    /**
+     * Beta function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the beta function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     *
+     * @return B(a, b)
+     *
+     * @throws ArithmeticException If <code>a</code> or <code>b</code> is a nonpositive integer but <code>a + b</code> is not. Also if both <code>a</code> and <code>b</code> are nonpositive integers.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex beta(Apcomplex a, Apcomplex b)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apcomplex ab = a.add(b);
+        boolean aNonpositiveInteger = a.isInteger() && a.real().signum() <= 0,
+                bNonpositiveInteger = b.isInteger() && b.real().signum() <= 0,
+                abNonpositiveInteger = ab.isInteger() && ab.real().signum() <= 0,
+                aOrBNonpositiveInteger = aNonpositiveInteger || bNonpositiveInteger;
+        if (aOrBNonpositiveInteger && !abNonpositiveInteger ||
+            aNonpositiveInteger && bNonpositiveInteger)
+        {
+            // Infinite divided by finite, or two infinities divided by one infinity
+            throw new ArithmeticException("Beta is infinite");
+        }
+        if (!aOrBNonpositiveInteger && abNonpositiveInteger)
+        {
+            // Finite divided by infinity
+            return Apcomplex.ZEROS[a.radix()];
+        }
+        if (aOrBNonpositiveInteger && abNonpositiveInteger)
+        {
+            // Infinity divided by infinity, needs different algorithm
+            if (aNonpositiveInteger)
+            {
+                // Make b the nonpositive integer always
+                Apcomplex tmp = b;
+                b = a;
+                a = tmp;
+            }
+            return gamma(a).divide(pochhammer(b, a));
+        }
+        // The trivial case
+        return gamma(a).multiply(gamma(b)).divide(gamma(ab));
+    }
+
+    /**
+     * Incomplete beta function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The first argument.
+     * @param a The second argument.
+     * @param b The third argument.
+     *
+     * @return B<sub>z</sub>(a, b)
+     *
+     * @throws ArithmeticException If <code>a</code> is a nonpositive integer or <code>z</code> is zero and <code>a</code> has nonpositive real part.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex beta(Apcomplex z, Apcomplex a, Apcomplex b)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (a.isInteger() && a.real().signum() <= 0)
+        {
+            throw new ArithmeticException("Incomplete beta with a nonpositive integer");
+        }
+        Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(z.precision(), 1), z.radix());
+        return pow(z, a).divide(a).multiply(hypergeometric2F1(a, one.subtract(b), a.add(one), z));
+    }
+
+    /**
+     * Generalized incomplete beta function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * The asymptotic complexity is at least O(n<sup>2</sup>log&nbsp;n) and it is
+     * impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z1 The first argument.
+     * @param z2 The second argument.
+     * @param a The third argument.
+     * @param b The fourth argument.
+     *
+     * @return B<sub>(z1, z2)</sub>(a, b)
+     *
+     * @throws ArithmeticException If <code>a</code> is a nonpositive integer or <code>z1</code> or <code>z2</code> is zero and <code>a</code> has nonpositive real part.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex beta(Apcomplex z1, Apcomplex z2, Apcomplex a, Apcomplex b)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (z1.equals(z2))
+        {
+            return Apint.ZEROS[z1.radix()];
+        }
+        if (a.isInteger() && a.real().signum() <= 0)
+        {
+            throw new ArithmeticException("Generalized incomplete beta with a nonpositive integer");
+        }
+        Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(z1.precision(), 1), z1.radix());
+        Apcomplex a1 = a.add(one),
+                  b1 = one.subtract(b);
+        return pow(z2, a).multiply(hypergeometric2F1(a, b1, a1, z2)).subtract(pow(z1, a).multiply(hypergeometric2F1(a, b1, a1, z1))).divide(a);
     }
 
     /**
@@ -2796,6 +2920,237 @@ public class ApcomplexMath
         throws ApfloatRuntimeException
     {
         return inverseRoot(iz2, 2).multiply(one.subtract(invSqrtPi.multiply(gamma(half, iHalfPiZ2))));
+    }
+
+    /**
+     * Exponential integral E.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>E<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If real part of <code>ν</code> is < 0 and <code>z</code> is zero. 
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex expIntegralE(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apfloat one = Apint.ONES[ν.radix()].precision(ApfloatHelper.extendPrecision(Math.min(ν.precision(), z.precision()), 1));
+        Apcomplex ν1 = ν.subtract(one);
+        return pow(z, ν1).multiply(gamma(ν1.negate(), z));
+    }
+
+    /**
+     * Exponential integral Ei.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return Ei(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is zero. 
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex expIntegralEi(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        Apint zero = Apint.ZEROS[radix];
+        Apfloat adjust;
+        if (z.imag().signum() == 0)
+        {
+            adjust = z.real().signum() > 0 ? ApfloatMath.pi(z.precision(), radix).negate() : zero;
+        }
+        else
+        {
+            Apfloat pi = ApfloatMath.pi(z.precision(), radix);
+            adjust = z.imag().signum() < 0 ? pi.negate() : pi;
+        }
+        return gamma(zero, z.negate()).negate().add(new Apcomplex(zero, adjust));
+    }
+
+    /**
+     * Logarithmic integral.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return li(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is zero. 
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex logIntegral(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return expIntegralEi(log(z));
+    }
+
+    /**
+     * Sine integral.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return Si(z)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex sinIntegral(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apfloat zero = Apint.ZEROS[radix],
+                one = Apint.ONES[radix],
+                two = new Apfloat(2, precision, radix);
+        if (z.scale() > 0)
+        {
+            Apfloat adjust = ApfloatMath.pi(precision, radix);
+            if (z.real().signum() > 0 || z.real().signum() == 0 && z.imag().signum() > 0)
+            {
+                adjust = adjust.negate();
+            }
+            Apcomplex i = new Apcomplex(zero, one),
+                      iz = i.multiply(z);
+            return gamma(zero, iz.negate()).subtract(gamma(zero, iz)).add(new Apcomplex(zero, adjust)).multiply(i).divide(two);
+        }
+        Apfloat three = new Apfloat(3, precision, radix),
+                four = new Apfloat(4, precision, radix);
+        Apcomplex[] a = { one.divide(two) },
+                    b = { three.divide(two), three.divide(two) };
+        return z.multiply(HypergeometricHelper.hypergeometricPFQ(a, b, z.multiply(z).divide(four).negate()));
+    }
+
+    /**
+     * Cosine integral.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return Ci(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is zero. 
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex cosIntegral(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apfloat zero = Apint.ZEROS[radix],
+                one = Apint.ONES[radix],
+                two = new Apfloat(2, precision, radix);
+        if (z.scale() > 0)
+        {
+            Apfloat adjust = zero;
+            if (z.real().signum() < 0 || z.real().signum() == 0 && z.imag().signum() < 0)
+            {
+                adjust = ApfloatMath.pi(precision, radix);
+                adjust = (z.imag().signum() < 0 ? adjust.negate() : adjust);
+            }
+            Apcomplex i = new Apcomplex(zero, one),
+                      iz = i.multiply(z);
+            return gamma(zero, iz.negate()).add(gamma(zero, iz)).divide(two).negate().add(new Apcomplex(zero, adjust));
+        }
+        Apcomplex logz = log(z);
+        Apfloat three = new Apfloat(3, precision, radix),
+                four = new Apfloat(4, precision, radix),
+                euler = ApfloatMath.euler(precision, radix);
+        Apcomplex[] a = { one, one },
+                    b = { two, two, three.divide(two) };
+        Apcomplex z24 = z.multiply(z).divide(four).negate();
+        return z24.multiply(HypergeometricHelper.hypergeometricPFQ(a, b, z24)).add(logz).add(euler);
+    }
+
+    /**
+     * Hyperbolic sine integral.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return Shi(z)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex sinhIntegral(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        Apcomplex i = new Apcomplex(Apint.ZEROS[radix], Apint.ONES[radix]);
+        return i.multiply(sinIntegral(i.multiply(z))).negate();
+    }
+
+    /**
+     * Hyperbolic cosine integral.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return Chi(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is zero. 
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex coshIntegral(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apint zero = Apint.ZEROS[radix],
+              one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        Apcomplex i = new Apcomplex(zero, one),
+                  ci = cosIntegral(i.multiply(z));
+        Apfloat adjust = ApfloatMath.pi(precision, radix).divide(two).negate();
+        if (z.real().signum() < 0 && z.imag().signum() >= 0)
+        {
+            Apint three = new Apint(3, radix);
+            adjust = adjust.multiply(three).negate();
+        }
+        return ci.add(new Apcomplex(zero, adjust));
     }
 
     /**

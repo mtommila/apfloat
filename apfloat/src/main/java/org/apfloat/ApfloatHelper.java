@@ -425,7 +425,7 @@ class ApfloatHelper
         {
             if (w.real().signum() <= 0)
             {
-                throw new ArithmeticException("Zero to power of number with nonpositive real part");
+                throw new ArithmeticException("Zero to power of " + (w.imag().signum() == 0 ? "negative number" : "number with nonpositive real part"));
             }
 
             return z;
