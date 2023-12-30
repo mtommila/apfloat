@@ -3154,6 +3154,130 @@ public class ApcomplexMath
     }
 
     /**
+     * Airy function Ai.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return Ai(z)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex airyAi(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apfloat one = Apint.ONES[radix].precision(precision),
+                two = new Apfloat(2, precision, radix),
+                three = new Apfloat(3, precision, radix),
+                four = new Apfloat(4, precision, radix),
+                nine = new Apfloat(9, precision, radix),
+                twoThirds = two.divide(three),
+                invCube3 = ApfloatMath.inverseRoot(three, 3);
+        Apcomplex z39 = pow(z, 3).divide(nine);
+        return invCube3.multiply(invCube3).divide(gamma(twoThirds)).multiply(hypergeometric0F1(twoThirds, z39)).subtract(z.multiply(invCube3).divide(gamma(one.divide(three))).multiply(hypergeometric0F1(four.divide(three), z39)));
+    }
+
+    /**
+     * Derivative of the Airy function Ai.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return Ai′(z)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex airyAiPrime(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apfloat one = Apint.ONES[radix].precision(precision),
+                two = new Apfloat(2, precision, radix),
+                three = new Apfloat(3, precision, radix),
+                five = new Apfloat(5, precision, radix),
+                nine = new Apfloat(9, precision, radix),
+                oneThird = one.divide(three),
+                invCube3 = ApfloatMath.inverseRoot(three, 3);
+        Apcomplex z39 = pow(z, 3).divide(nine);
+        return z.multiply(z).divide(two).multiply(invCube3).multiply(invCube3).divide(gamma(two.divide(three))).multiply(hypergeometric0F1(five.divide(three), z39)).subtract(invCube3.divide(gamma(oneThird)).multiply(hypergeometric0F1(oneThird, z39)));
+    }
+
+    /**
+     * Airy function Bi.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return Bi(z)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex airyBi(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apfloat one = Apint.ONES[radix].precision(precision),
+                two = new Apfloat(2, precision, radix),
+                three = new Apfloat(3, precision, radix),
+                four = new Apfloat(4, precision, radix),
+                nine = new Apfloat(9, precision, radix),
+                twoThirds = two.divide(three),
+                invSixth3 = ApfloatMath.inverseRoot(three, 6);
+        Apcomplex z39 = pow(z, 3).divide(nine);
+        return invSixth3.divide(gamma(twoThirds)).multiply(hypergeometric0F1(twoThirds, z39)).add(z.divide(invSixth3.multiply(gamma(one.divide(three)))).multiply(hypergeometric0F1(four.divide(three), z39)));
+    }
+
+    /**
+     * Derivative of the Airy function Bi.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return Bi′(z)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex airyBiPrime(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apfloat one = Apint.ONES[radix].precision(precision),
+                two = new Apfloat(2, precision, radix),
+                three = new Apfloat(3, precision, radix),
+                five = new Apfloat(5, precision, radix),
+                nine = new Apfloat(9, precision, radix),
+                oneThird = one.divide(three),
+                invSixth3 = ApfloatMath.inverseRoot(three, 6);
+        Apcomplex z39 = pow(z, 3).divide(nine);
+        return inverseRoot(invSixth3.multiply(gamma(oneThird)), 1).multiply(hypergeometric0F1(oneThird, z39)).add(z.multiply(z).divide(two).multiply(invSixth3).divide(gamma(two.divide(three))).multiply(hypergeometric0F1(five.divide(three), z39)));
+    }
+
+    /**
      * Returns the unit in the last place of the argument, considering the
      * scale and precision. This is maximum of the ulps of the real and
      * imaginary part of the argument.

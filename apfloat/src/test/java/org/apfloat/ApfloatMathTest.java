@@ -133,6 +133,10 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testCosIntegral"));
         suite.addTest(new ApfloatMathTest("testSinhIntegral"));
         suite.addTest(new ApfloatMathTest("testCoshIntegral"));
+        suite.addTest(new ApfloatMathTest("testAiryAi"));
+        suite.addTest(new ApfloatMathTest("testAiryAiPrime"));
+        suite.addTest(new ApfloatMathTest("testAiryBi"));
+        suite.addTest(new ApfloatMathTest("testAiryBiPrime"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testContinuedFraction"));
@@ -3583,6 +3587,34 @@ public class ApfloatMathTest
         {
             // OK
         }
+    }
+
+    public static void testAiryAi()
+    {
+        Apfloat a = ApfloatMath.airyAi(new Apfloat("-3.00000"));
+        assertEquals("-3 precision", 6, a.precision());
+        assertEquals("-3 value", new Apfloat("-0.378814"), a, new Apfloat("5e-6"));
+    }
+
+    public static void testAiryAiPrime()
+    {
+        Apfloat a = ApfloatMath.airyAiPrime(new Apfloat("-3.00000"));
+        assertEquals("-3 precision", 6, a.precision());
+        assertEquals("-3 value", new Apfloat("0.314584"), a, new Apfloat("5e-6"));
+    }
+
+    public static void testAiryBi()
+    {
+        Apfloat a = ApfloatMath.airyBi(new Apfloat("-3.00000"));
+        assertEquals("-3 precision", 6, a.precision());
+        assertEquals("-3 value", new Apfloat("-0.198290"), a, new Apfloat("5e-6"));
+    }
+
+    public static void testAiryBiPrime()
+    {
+        Apfloat a = ApfloatMath.airyBiPrime(new Apfloat("-3.00000"));
+        assertEquals("-3 precision", 6, a.precision());
+        assertEquals("-3 value", new Apfloat("-0.675611"), a, new Apfloat("5e-6"));
     }
 
     public static void testRandom()

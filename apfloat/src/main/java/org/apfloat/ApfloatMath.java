@@ -3357,6 +3357,90 @@ public class ApfloatMath
     }
 
     /**
+     * Airy function Ai.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return Ai(x)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat airyAi(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.airyAi(x).real();
+    }
+
+    /**
+     * Derivative of the Airy function Ai.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return Ai′(x)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat airyAiPrime(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.airyAiPrime(x).real();
+    }
+
+    /**
+     * Airy function Bi.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return Bi(x)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat airyBi(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.airyBi(x).real();
+    }
+
+    /**
+     * Derivative of the Airy function Bi.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return Bi′(x)
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat airyBiPrime(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.airyBiPrime(x).real();
+    }
+
+    /**
      * Generates a random number. Uses the default radix.
      * Returned values are chosen pseudorandomly with (approximately)
      * uniform distribution from the range <code>0 &le; x &lt; 1</code>.

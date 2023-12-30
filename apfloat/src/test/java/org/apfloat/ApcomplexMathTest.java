@@ -109,6 +109,10 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testCosIntegral"));
         suite.addTest(new ApcomplexMathTest("testSinhIntegral"));
         suite.addTest(new ApcomplexMathTest("testCoshIntegral"));
+        suite.addTest(new ApcomplexMathTest("testAiryAi"));
+        suite.addTest(new ApcomplexMathTest("testAiryAiPrime"));
+        suite.addTest(new ApcomplexMathTest("testAiryBi"));
+        suite.addTest(new ApcomplexMathTest("testAiryBiPrime"));
         suite.addTest(new ApcomplexMathTest("testUlp"));
 
         return suite;
@@ -4537,6 +4541,86 @@ public class ApcomplexMathTest
         {
             // OK
         }
+    }
+
+    public static void testAiryAi()
+    {
+        Apcomplex a = ApcomplexMath.airyAi(new Apcomplex("(1.00000,2.00000)"));
+        assertEquals("1 + 2i precision", 6, a.precision());
+        assertEquals("1 + 2i value", new Apcomplex("(-0.219386,-0.175386)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.airyAi(new Apcomplex("(-3.000000,-4.000000)"));
+        assertEquals("-3 - 4i precision", 7, a.precision());
+        assertEquals("-3 - 4i value", new Apcomplex("(207.7347,-204.6056)"), a, new Apfloat("5e-4"));
+
+        a = ApcomplexMath.airyAi(new Apcomplex("(-300.000000000000,400.000000000000)"));
+        assertEquals("-300 + 400i precision", 11, a.precision());
+        assertEquals("-300 + 400i value", new Apcomplex("(2.9404090561e3183,2.7090694495e3183)"), a, new Apfloat("5e3173"));
+
+        a = ApcomplexMath.airyAi(new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)));
+        assertEquals("0.5 + 0.75i precision", 17, a.precision());
+        assertEquals("0.5 + 0.75i radix", 2, a.radix());
+        assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("0.0011000110100010010", 17, 2), new Apfloat("-0.0010110100011100011", 17, 2)), a, new Apfloat("1e-19", 1, 2));
+    }
+
+    public static void testAiryAiPrime()
+    {
+        Apcomplex a = ApcomplexMath.airyAiPrime(new Apcomplex("(1.00000,2.00000)"));
+        assertEquals("1 + 2i precision", 6, a.precision());
+        assertEquals("1 + 2i value", new Apcomplex("(0.170445,0.387622)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.airyAiPrime(new Apcomplex("(-3.000000,-4.000000)"));
+        assertEquals("-3 - 4i precision", 7, a.precision());
+        assertEquals("-3 - 4i value", new Apcomplex("(199.6016,604.6785)"), a, new Apfloat("5e-4"));
+
+        a = ApcomplexMath.airyAiPrime(new Apcomplex("(-300.000000000000,400.000000000000)"));
+        assertEquals("-300 + 400i precision", 11, a.precision());
+        assertEquals("-300 + 400i value", new Apcomplex("(2.477709693e3184,-8.589688662e3184)"), a, new Apfloat("5e3174"));
+
+        a = ApcomplexMath.airyAiPrime(new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)));
+        assertEquals("0.5 + 0.75i precision", 19, a.precision());
+        assertEquals("0.5 + 0.75i radix", 2, a.radix());
+        assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("-0.01000000101011010010", 19, 2), new Apfloat("0.00011101011010111011101", 19, 2)), a, new Apfloat("1e-20", 1, 2));
+    }
+
+    public static void testAiryBi()
+    {
+        Apcomplex a = ApcomplexMath.airyBi(new Apcomplex("(1.00000,2.00000)"));
+        assertEquals("1 + 2i precision", 6, a.precision());
+        assertEquals("1 + 2i value", new Apcomplex("(0.048822,0.133274)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.airyBi(new Apcomplex("(-3.000000,-4.000000)"));
+        assertEquals("-3 - 4i precision", 7, a.precision());
+        assertEquals("-3 - 4i value", new Apcomplex("(-204.6057,-207.7345)"), a, new Apfloat("5e-4"));
+
+        a = ApcomplexMath.airyBi(new Apcomplex("(300.00000000000,-400.00000000000)"));
+        assertEquals("-300 + 400i precision", 11, a.precision());
+        assertEquals("-300 + 400i value", new Apcomplex("(1.1097608159e578,-7.994050161e577)"), a, new Apfloat("5e568"));
+
+        a = ApcomplexMath.airyBi(new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)));
+        assertEquals("0.5 + 0.75i precision", 18, a.precision());
+        assertEquals("0.5 + 0.75i radix", 2, a.radix());
+        assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("0.110000000000010100", 18, 2), new Apfloat("0.01010101001010100101", 18, 2)), a, new Apfloat("1e-18", 1, 2));
+    }
+
+    public static void testAiryBiPrime()
+    {
+        Apcomplex a = ApcomplexMath.airyBiPrime(new Apcomplex("(1.00000,2.00000)"));
+        assertEquals("1 + 2i precision", 6, a.precision());
+        assertEquals("1 + 2i value", new Apcomplex("(-0.857239,0.495506)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.airyBiPrime(new Apcomplex("(-3.000000,-4.000000)"));
+        assertEquals("-3 - 4i precision", 7, a.precision());
+        assertEquals("-3 - 4i value", new Apcomplex("(604.6789,-199.6012)"), a, new Apfloat("5e-4"));
+
+        a = ApcomplexMath.airyBiPrime(new Apcomplex("(300.000000000000,-400.000000000000)"));
+        assertEquals("-300 + 400i precision", 11, a.precision());
+        assertEquals("-300 + 400i value", new Apcomplex("(1.4200513472e579,-2.7085912602e579)"), a, new Apfloat("5e569"));
+
+        a = ApcomplexMath.airyBiPrime(new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)));
+        assertEquals("0.5 + 0.75i precision", 18, a.precision());
+        assertEquals("0.5 + 0.75i radix", 2, a.radix());
+        assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("0.0100000000010011111111", 18, 2), new Apfloat("0.001111010001010101101", 18, 2)), a, new Apfloat("1e-19", 1, 2));
     }
 
     public static void testUlp()
