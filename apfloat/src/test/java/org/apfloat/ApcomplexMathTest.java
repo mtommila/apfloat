@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -113,6 +113,10 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testAiryAiPrime"));
         suite.addTest(new ApcomplexMathTest("testAiryBi"));
         suite.addTest(new ApcomplexMathTest("testAiryBiPrime"));
+        suite.addTest(new ApcomplexMathTest("testBesselJ"));
+        suite.addTest(new ApcomplexMathTest("testBesselI"));
+        suite.addTest(new ApcomplexMathTest("testBesselY"));
+        suite.addTest(new ApcomplexMathTest("testBesselK"));
         suite.addTest(new ApcomplexMathTest("testUlp"));
 
         return suite;
@@ -3855,6 +3859,10 @@ public class ApcomplexMathTest
         assertEquals("1+2i, 3+4i precision", 6, a.precision());
         assertEquals("1+2i, 3+4i value", new Apcomplex("(40.4203,-5.10508)"), a, new Apfloat("5e-5"));
 
+        a = ApcomplexMath.hypergeometric0F1Regularized(new Apcomplex("(-1.00000,-2.00000)"), new Apcomplex("(3.00000,4.00000)"));
+        assertEquals("-1-2i, 3+4i precision", 6, a.precision());
+        assertEquals("-1-2i, 3+4i value", new Apcomplex("(-16.3946,-1.65106)"), a, new Apfloat("5e-4"));
+
         a = ApcomplexMath.hypergeometric0F1Regularized(new Apcomplex("-2.000000"), new Apcomplex("(3.000000,4.000000)"));
         assertEquals("-2, 3+4i precision", 6, a.precision());
         assertEquals("-2, 3+4i value", new Apcomplex("(-39.0633,-21.8202)"), a, new Apfloat("5e-4"));
@@ -4190,6 +4198,10 @@ public class ApcomplexMathTest
         a = ApcomplexMath.expIntegralE(new Apcomplex("(-3.000000,-4.000000)"), new Apcomplex("(-5.000000,-6.000000)"));
         assertEquals("-3 - 4i, -5 - 6i precision", 6, a.precision());
         assertEquals("-3 - 4i, -5 - 6i value", new Apcomplex("(-4.60709,10.3946)"), a, new Apfloat("5e-4"));
+
+        a = ApcomplexMath.expIntegralE(new Apcomplex("0.9999999"), new Apcomplex("(-5.000000,-6.000000)"));
+        assertEquals("0.9999999, -5 - 6i precision", 6, a.precision());
+        assertEquals("0.9999999, -5 - 6i value", new Apcomplex("(-5.79814,19.4725)"), a, new Apfloat("5e-4"));
 
         a = ApcomplexMath.expIntegralE(new Apcomplex("(-300.000000000000000,-400.000000000000000)"), new Apcomplex("(-500.000000000000000,-600.000000000000000)"));
         assertEquals("-300 - 400i, -500 - 600i precision", 15, a.precision());
@@ -4621,6 +4633,34 @@ public class ApcomplexMathTest
         assertEquals("0.5 + 0.75i precision", 18, a.precision());
         assertEquals("0.5 + 0.75i radix", 2, a.radix());
         assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("0.0100000000010011111111", 18, 2), new Apfloat("0.001111010001010101101", 18, 2)), a, new Apfloat("1e-19", 1, 2));
+    }
+
+    public static void testBesselJ()
+    {
+        Apcomplex a = ApcomplexMath.besselJ(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("3 + 4i, 5 + 6i precision", 6, a.precision());
+        assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(0.399827,-0.359635)"), a, new Apfloat("9e-6"));
+    }
+
+    public static void testBesselI()
+    {
+        Apcomplex a = ApcomplexMath.besselI(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("3 + 4i, 5 + 6i precision", 6, a.precision());
+        assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(-3.54535,-7.37327 )"), a, new Apfloat("5e-5"));
+    }
+
+    public static void testBesselY()
+    {
+        Apcomplex a = ApcomplexMath.besselY(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("3 + 4i, 5 + 6i precision", 6, a.precision());
+        assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(0.357553,0.294736)"), a, new Apfloat("5e-6"));
+    }
+
+    public static void testBesselK()
+    {
+        Apcomplex a = ApcomplexMath.besselK(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("3 + 4i, 5 + 6i precision", 6, a.precision());
+        assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(0.00282215,0.00595941)"), a, new Apfloat("5e-8"));
     }
 
     public static void testUlp()

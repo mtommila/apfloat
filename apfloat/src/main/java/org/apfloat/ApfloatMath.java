@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -3438,6 +3438,118 @@ public class ApfloatMath
         throws ApfloatRuntimeException
     {
         return ApcomplexMath.airyBiPrime(x).real();
+    }
+
+    /**
+     * Bessel function of the first kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>J<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is < 0 and <code>ν</code> is not an integer and <code>x</code> is zero. Also if <code>ν</code> is not an integer and <code>x</code> is < 0.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat besselJ(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() < 0 && !ν.isInteger())
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.besselJ(ν, x).real();
+    }
+
+    /**
+     * Modified Bessel function of the first kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>I<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is < 0 and <code>ν</code> is not an integer and <code>x</code> is zero. Also if <code>ν</code> is not an integer and <code>x</code> is < 0.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat besselI(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() < 0 && !ν.isInteger())
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.besselI(ν, x).real();
+    }
+
+    /**
+     * Bessel function of the second kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>Y<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is <= 0.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat besselY(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() < 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.besselY(ν, x).real();
+    }
+
+    /**
+     * Modified Bessel function of the second kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>K<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is <= 0.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat besselK(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() < 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.besselK(ν, x).real();
     }
 
     /**

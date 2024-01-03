@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -137,6 +137,10 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testAiryAiPrime"));
         suite.addTest(new ApfloatMathTest("testAiryBi"));
         suite.addTest(new ApfloatMathTest("testAiryBiPrime"));
+        suite.addTest(new ApfloatMathTest("testBesselJ"));
+        suite.addTest(new ApfloatMathTest("testBesselI"));
+        suite.addTest(new ApfloatMathTest("testBesselY"));
+        suite.addTest(new ApfloatMathTest("testBesselK"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testContinuedFraction"));
@@ -3615,6 +3619,118 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.airyBiPrime(new Apfloat("-3.00000"));
         assertEquals("-3 precision", 6, a.precision());
         assertEquals("-3 value", new Apfloat("-0.675611"), a, new Apfloat("5e-6"));
+    }
+
+    public static void testBesselJ()
+    {
+        Apfloat a = ApfloatMath.besselJ(new Apfloat("-3.00000"), new Apfloat("5.00000"));
+        assertEquals("-3, 5 precision", 6, a.precision());
+        assertEquals("-3, 5 value", new Apfloat("-0.364831"), a, new Apfloat("9e-6"));
+
+        a = ApfloatMath.besselJ(new Apfloat("-1.00000"), new Apfloat("-1.10000"));
+        assertEquals("-1, -1.1 precision", 6, a.precision());
+        assertEquals("-1, -1.1 value", new Apfloat("0.470902"), a, new Apfloat("9e-6"));
+
+        try
+        {
+            ApfloatMath.besselJ(new Apfloat("-0.1"), new Apfloat("0"));
+            fail("-0.1, 0 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
+        try
+        {
+            ApfloatMath.besselJ(new Apfloat("0.1"), new Apfloat("-0.1"));
+            fail("0.1, -0.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testBesselI()
+    {
+        Apfloat a = ApfloatMath.besselI(new Apfloat("-3.00000"), new Apfloat("5.00000"));
+        assertEquals("-3, 5 precision", 6, a.precision());
+        assertEquals("-3, 5 value", new Apfloat("10.3312"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.besselI(new Apfloat("-1.00000"), new Apfloat("-1.10000"));
+        assertEquals("-1, -1.1 precision", 6, a.precision());
+        assertEquals("-1, -1.1 value", new Apfloat("-0.637489"), a, new Apfloat("9e-6"));
+
+        try
+        {
+            ApfloatMath.besselI(new Apfloat("-0.1"), new Apfloat("0"));
+            fail("-0.1, 0 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
+        try
+        {
+            ApfloatMath.besselI(new Apfloat("0.1"), new Apfloat("-0.1"));
+            fail("0.1, -0.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testBesselY()
+    {
+        Apfloat a = ApfloatMath.besselY(new Apfloat("-3.00000"), new Apfloat("5.00000"));
+        assertEquals("-3, 5 precision", 6, a.precision());
+        assertEquals("-3, 5 value", new Apfloat("-0.146267"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.besselY(new Apfloat("1"), new Apfloat("0"));
+            fail("1, 0 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
+        try
+        {
+            ApfloatMath.besselY(new Apfloat("1"), new Apfloat("-0.1"));
+            fail("1, -0.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testBesselK()
+    {
+        Apfloat a = ApfloatMath.besselK(new Apfloat("-3.00000"), new Apfloat("5.00000"));
+        assertEquals("-3, 5 precision", 6, a.precision());
+        assertEquals("-3, 5 value", new Apfloat("0.00829177"), a, new Apfloat("5e-8"));
+
+        try
+        {
+            ApfloatMath.besselK(new Apfloat("1"), new Apfloat("0"));
+            fail("1, 0 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
+        try
+        {
+            ApfloatMath.besselK(new Apfloat("1"), new Apfloat("-0.1"));
+            fail("1, -0.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
     }
 
     public static void testRandom()

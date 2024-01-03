@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -3275,6 +3275,102 @@ public class ApcomplexMath
                 invSixth3 = ApfloatMath.inverseRoot(three, 6);
         Apcomplex z39 = pow(z, 3).divide(nine);
         return inverseRoot(invSixth3.multiply(gamma(oneThird)), 1).multiply(hypergeometric0F1(oneThird, z39)).add(z.multiply(z).divide(two).multiply(invSixth3).divide(gamma(two.divide(three))).multiply(hypergeometric0F1(five.divide(three), z39)));
+    }
+
+    /**
+     * Bessel function of the first kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>J<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If the real part of <code>ν</code> is < 0 and <code>ν</code> is not an integer and <code>z</code> is zero. Also if the real part of <code>ν</code> is zero but the imaginary part is not, and <code>z</code> is zero.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex besselJ(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return BesselHelper.besselJ(ν, z);
+    }
+
+    /**
+     * Modified Bessel function of the first kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>I<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If the real part of <code>ν</code> is < 0 and <code>ν</code> is not an integer and <code>z</code> is zero. Also if the real part of <code>ν</code> is zero but the imaginary part is not, and <code>z</code> is zero.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex besselI(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return BesselHelper.besselI(ν, z);
+    }
+
+    /**
+     * Bessel function of the second kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>Y<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is zero.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex besselY(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return BesselHelper.besselY(ν, z);
+    }
+
+    /**
+     * Modified Bessel function of the second kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>K<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is zero.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex besselK(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return BesselHelper.besselK(ν, z);
     }
 
     /**
