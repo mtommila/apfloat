@@ -2943,8 +2943,9 @@ public class ApcomplexMath
     public static Apcomplex expIntegralE(Apcomplex ν, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        Apfloat one = Apint.ONES[ν.radix()].precision(ApfloatHelper.extendPrecision(Math.min(ν.precision(), z.precision()), 1));
-        Apcomplex ν1 = ν.subtract(one);
+        long precision = Math.min(ν.precision(), z.precision());
+        Apfloat one = Apint.ONES[ν.radix()].precision(ApfloatHelper.extendPrecision(precision, 1));
+        Apcomplex ν1 = ApfloatHelper.ensurePrecision(ν.subtract(one), precision);
         return pow(z, ν1).multiply(gamma(ν1.negate(), z));
     }
 
@@ -3371,6 +3372,59 @@ public class ApcomplexMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         return BesselHelper.besselK(ν, z);
+    }
+
+    /**
+     * Complete elliptic integral of the first kind.<p>
+     *
+     * @param z The argument.
+     *
+     * @return <i>K(z)</i>
+     *
+     * @throws InfiniteExpansionException If <code>z</code> is zero.
+     * @throws ArithmeticException If <code>z</code> is one.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex ellipticK(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        long precision = z.precision();
+        int radix = z.radix();
+        Apfloat one = Apint.ONES[radix],
+                two = new Apfloat(2, precision, radix),
+                pi = ApfloatMath.pi(precision, radix);
+        return pi.divide(two.multiply(agm(one, sqrt(one.subtract(z)))));
+    }
+
+    /**
+     * Complete elliptic integral of the second kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return <i>E(z)</i>
+     *
+     * @throws InfiniteExpansionException If <code>z</code> is zero.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apcomplex ellipticE(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        long precision = z.precision();
+        int radix = z.radix();
+        Apfloat one = Apint.ONES[radix].precision(precision),
+                two = new Apfloat(2, precision, radix),
+                pi = ApfloatMath.pi(precision, radix),
+                half = one.divide(two);
+        return pi.divide(two).multiply(hypergeometric2F1(half.negate(), half, one, z));
     }
 
     /**

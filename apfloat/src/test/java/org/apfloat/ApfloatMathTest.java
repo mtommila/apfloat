@@ -141,6 +141,8 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testBesselI"));
         suite.addTest(new ApfloatMathTest("testBesselY"));
         suite.addTest(new ApfloatMathTest("testBesselK"));
+        suite.addTest(new ApfloatMathTest("testEllipticK"));
+        suite.addTest(new ApfloatMathTest("testEllipticE"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testContinuedFraction"));
@@ -3730,6 +3732,91 @@ public class ApfloatMathTest
         catch (ArithmeticException ae)
         {
             // OK, result would be complex
+        }
+    }
+
+    public static void testEllipticK()
+    {
+        Apfloat a = ApfloatMath.ellipticK(new Apfloat("-3.00000"));
+        assertEquals("-3 precision", 6, a.precision());
+        assertEquals("-3 value", new Apfloat("1.07826"), a, new Apfloat("5e-5"));
+
+        try
+        {
+            ApfloatMath.ellipticK(new Apfloat("1.10000", 6, 2));
+            fail("1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.ellipticK(new Apfloat("1.00000"));
+            fail("1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
+
+        try
+        {
+            ApfloatMath.ellipticK(new Apfloat("0"));
+            fail("Infinite expansion of pi/2");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.ellipticK(new Apfloat(-4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testEllipticE()
+    {
+        Apfloat a = ApfloatMath.ellipticE(new Apfloat("-3.00000"));
+        assertEquals("-3 precision", 6, a.precision());
+        assertEquals("-3 value", new Apfloat("2.42211"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.ellipticE(new Apfloat("1.00000"));
+        assertEquals("1 precision", 6, a.precision());
+        assertEquals("1 value", new Apfloat("1.00000"), a, new Apfloat("5e-5"));
+
+        try
+        {
+            ApfloatMath.ellipticE(new Apfloat("1.10000", 6, 2));
+            fail("1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+
+        try
+        {
+            ApfloatMath.ellipticE(new Apfloat("0"));
+            fail("Infinite expansion of pi/2");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.ellipticE(new Apfloat(-4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
         }
     }
 

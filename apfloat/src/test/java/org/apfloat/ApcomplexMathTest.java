@@ -117,6 +117,8 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testBesselI"));
         suite.addTest(new ApcomplexMathTest("testBesselY"));
         suite.addTest(new ApcomplexMathTest("testBesselK"));
+        suite.addTest(new ApcomplexMathTest("testEllipticK"));
+        suite.addTest(new ApcomplexMathTest("testEllipticE"));
         suite.addTest(new ApcomplexMathTest("testUlp"));
 
         return suite;
@@ -4199,7 +4201,7 @@ public class ApcomplexMathTest
         assertEquals("-3 - 4i, -5 - 6i precision", 6, a.precision());
         assertEquals("-3 - 4i, -5 - 6i value", new Apcomplex("(-4.60709,10.3946)"), a, new Apfloat("5e-4"));
 
-        a = ApcomplexMath.expIntegralE(new Apcomplex("0.9999999"), new Apcomplex("(-5.000000,-6.000000)"));
+        a = ApcomplexMath.expIntegralE(new Apcomplex("0.999999"), new Apcomplex("(-5.00000,-6.00000)"));
         assertEquals("0.9999999, -5 - 6i precision", 6, a.precision());
         assertEquals("0.9999999, -5 - 6i value", new Apcomplex("(-5.79814,19.4725)"), a, new Apfloat("5e-4"));
 
@@ -4661,6 +4663,82 @@ public class ApcomplexMathTest
         Apcomplex a = ApcomplexMath.besselK(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
         assertEquals("3 + 4i, 5 + 6i precision", 6, a.precision());
         assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(0.00282215,0.00595941)"), a, new Apfloat("5e-8"));
+    }
+
+    public static void testEllipticK()
+    {
+        Apcomplex a = ApcomplexMath.ellipticK(new Apcomplex("(3.00000,4.00000)"));
+        assertEquals("3 + 4i precision", 6, a.precision());
+        assertEquals("3 + 4i value", new Apcomplex("(0.911196,0.631334)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.ellipticK(new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)));
+        assertEquals("0.5 + 0.75i precision", 18, a.precision());
+        assertEquals("0.5 + 0.75i radix", 2, a.radix());
+        assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("1.10010110101011111", 18, 2), new Apfloat("0.011001001001011001111", 18, 2)), a, new Apfloat("1e-17", 1, 2));
+
+        try
+        {
+            ApcomplexMath.ellipticK(new Apcomplex("1.00000"));
+            fail("1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
+
+        try
+        {
+            ApcomplexMath.ellipticK(new Apcomplex("0"));
+            fail("Infinite expansion of pi/2");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.ellipticK(new Apcomplex(Apfloat.ONE, new Apfloat(4)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testEllipticE()
+    {
+        Apcomplex a = ApcomplexMath.ellipticE(new Apcomplex("(3.000000,4.000000)"));
+        assertEquals("3 + 4i precision", 6, a.precision());
+        assertEquals("3 + 4i value", new Apcomplex("(1.49955,-1.57788)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.ellipticE(new Apcomplex("1.00000"));
+        assertEquals("1 precision", 6, a.precision());
+        assertEquals("1 value", new Apcomplex("1.00000"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.ellipticE(new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)));
+        assertEquals("0.5 + 0.75i precision", 18, a.precision());
+        assertEquals("0.5 + 0.75i radix", 2, a.radix());
+        assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("1.0110101111110111101", 18, 2), new Apfloat("-0.010101110110101001", 18, 2)), a, new Apfloat("1e-17", 1, 2));
+
+        try
+        {
+            ApcomplexMath.ellipticE(new Apcomplex("0"));
+            fail("Infinite expansion of pi/2");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+        try
+        {
+            ApcomplexMath.ellipticE(new Apcomplex(Apfloat.ONE, new Apfloat(4)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testUlp()

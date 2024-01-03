@@ -3553,6 +3553,57 @@ public class ApfloatMath
     }
 
     /**
+     * Complete elliptic integral of the first kind.<p>
+     *
+     * @param x The argument.
+     *
+     * @return <i>K(x)</i>
+     *
+     * @throws InfiniteExpansionException If <code>x</code> is zero.
+     * @throws ArithmeticException If <code>x</code> is >= 1.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat ellipticK(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.compareTo(Apfloat.ONES[x.radix()]) > 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.ellipticK(x).real();
+    }
+
+    /**
+     * Complete elliptic integral of the second kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return <i>E(x)</i>
+     *
+     * @throws InfiniteExpansionException If <code>x</code> is zero.
+     * @throws ArithmeticException If <code>x</code> is > 1.
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat ellipticE(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.compareTo(Apfloat.ONES[x.radix()]) > 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.ellipticE(x).real();
+    }
+
+    /**
      * Generates a random number. Uses the default radix.
      * Returned values are chosen pseudorandomly with (approximately)
      * uniform distribution from the range <code>0 &le; x &lt; 1</code>.
