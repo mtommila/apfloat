@@ -37,6 +37,7 @@ import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import org.apfloat.spi.Util;
 
@@ -3062,6 +3063,8 @@ public class ApfloatMath
      *
      * @return <i>U(a, b, x)</i>
      *
+     * @throws ArithmeticException If the result would be complex. 
+     *
      * @since 1.13.0
      */
 
@@ -3141,6 +3144,110 @@ public class ApfloatMath
     }
 
     /**
+     * Inverse error function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return erf<sup>−1</sup>(x)
+     *
+     * @throws ArithmeticException If <code>|x|</code> is &ge; 1. 
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat inverseErf(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() == 0)
+        {
+            return x;
+        }
+        if (x.signum() < 0)
+        {
+            return inverseErf(x.negate()).negate();
+        }
+        int radix = x.radix();
+        Apint one = Apint.ONES[radix];
+        if (x.compareTo(one) >= 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        long targetPrecision = x.precision();
+        Apint two = new Apint(2, radix);
+        Apfloat pi = pi(targetPrecision, radix),
+                sqrtPi = sqrt(pi),
+                initialGuess;
+        long doublePrecision = ApfloatHelper.getDoublePrecision(radix);
+        if (x.compareTo(new Apfloat(0.8, Apfloat.DEFAULT, radix)) >= 0)
+        {
+            Apfloat log2pix = log(two.divide(pi.multiply(pow(x.subtract(one), 2))));
+            initialGuess = sqrt(log2pix.subtract(log(log2pix)).divide(two));
+        }
+        else
+        {
+            long precision = doublePrecision;
+            Apint zero = Apfloat.ZEROS[radix];
+            Apfloat xp = x.multiply(sqrtPi.precision(precision)).divide(two),
+                    xp2 = xp.multiply(xp),
+                    s = zero,
+                    t;
+            List<Apfloat> c = new ArrayList<>();
+            int k = 0;
+            do
+            {
+                Apfloat ck = (k == 0 ? one : zero);
+                for (int m = 0; m < k; m++)
+                {
+                    Apfloat m121 = new Apfloat((m + 1) * (2 * m + 1), precision, radix);
+                    ck = ck.add(c.get(m).multiply(c.get(k - 1 - m)).divide(m121));
+                }
+                c.add(ck);
+                Apint k21 = new Apint(2 * k + 1, radix);
+                t = c.get(k).multiply(xp).divide(k21);
+                xp = xp.multiply(xp2);
+                s = s.add(t);
+                k++;
+            } while (s.signum() == 0 || s.scale() - t.scale() <= precision);
+            initialGuess = s;
+        }
+        initialGuess = ApfloatHelper.ensurePrecision(initialGuess, doublePrecision);
+        Function<Apfloat, Apfloat> f = y -> erf(y).subtract(x),
+                                   fp = y -> two.multiply(exp(pow(y, 2).negate())).divide(sqrtPi);
+        Apfloat result = RootFinder.findRoot(f, (y, fy) -> fp.apply(y), initialGuess, targetPrecision);
+        long precisionLoss = x.equalDigits(one);
+        return ApfloatHelper.reducePrecision(result, precisionLoss);
+    }
+
+    /**
+     * Inverse complementary error function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return erfc<sup>−1</sup>(x)
+     *
+     * @throws ArithmeticException If <code>x</code> is &le; 0 or &ge; 2. 
+     *
+     * @since 1.13.0
+     */
+
+    public static Apfloat inverseErfc(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apint one = Apint.ONES[x.radix()];
+        return inverseErf(one.subtract(x));
+    }
+
+    /**
      * Fresnel integral S.<p>
      *
      * @implNote
@@ -3193,7 +3300,7 @@ public class ApfloatMath
      * @param ν The first argument.
      * @param x The second argument.
      *
-     * @return <i>E<sub>ν</sub>(z)</i>
+     * @return <i>E<sub>ν</sub>(x)</i>
      *
      * @throws ArithmeticException If <code>ν</code> is < 0 and <code>x</code> is zero or <code>ν</code> is nonzero and <code>x</code> is negative. 
      *
@@ -3222,7 +3329,7 @@ public class ApfloatMath
      *
      * @return Ei(x)
      *
-     * @throws ArithmeticException If <code>z</code> is zero. 
+     * @throws ArithmeticException If <code>x</code> is zero. 
      *
      * @since 1.13.0
      */
@@ -3509,7 +3616,7 @@ public class ApfloatMath
      *
      * @return <i>Y<sub>ν</sub>(x)</i>
      *
-     * @throws ArithmeticException If <code>x</code> is <= 0.
+     * @throws ArithmeticException If <code>x</code> is &le; 0.
      *
      * @since 1.13.0
      */
@@ -3537,7 +3644,7 @@ public class ApfloatMath
      *
      * @return <i>K<sub>ν</sub>(x)</i>
      *
-     * @throws ArithmeticException If <code>x</code> is <= 0.
+     * @throws ArithmeticException If <code>x</code> is &le; 0.
      *
      * @since 1.13.0
      */
@@ -3560,7 +3667,7 @@ public class ApfloatMath
      * @return <i>K(x)</i>
      *
      * @throws InfiniteExpansionException If <code>x</code> is zero.
-     * @throws ArithmeticException If <code>x</code> is >= 1.
+     * @throws ArithmeticException If <code>x</code> is &ge; 1.
      *
      * @since 1.13.0
      */

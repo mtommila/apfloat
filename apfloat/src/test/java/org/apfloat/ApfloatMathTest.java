@@ -124,6 +124,8 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testErf"));
         suite.addTest(new ApfloatMathTest("testErfc"));
         suite.addTest(new ApfloatMathTest("testErfi"));
+        suite.addTest(new ApfloatMathTest("testInverseErf"));
+        suite.addTest(new ApfloatMathTest("testInverseErfc"));
         suite.addTest(new ApfloatMathTest("testFresnelS"));
         suite.addTest(new ApfloatMathTest("testFresnelC"));
         suite.addTest(new ApfloatMathTest("testExpIntegralE"));
@@ -3410,6 +3412,168 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.erfi(new Apfloat("2.00000"));
         assertEquals("2 precision", 6, a.precision());
         assertEquals("2 value", new Apfloat("18.5648"), a, new Apfloat("5e-4"));
+    }
+
+    public static void testInverseErf()
+    {
+        Apfloat a = ApfloatMath.inverseErf(new Apfloat("0.500000"));
+        assertEquals("0.5 precision", 6, a.precision());
+        assertEquals("0.5 value", new Apfloat("0.476936"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.inverseErf(new Apfloat("-0.0100000"));
+        assertEquals("-0.01 precision", 6, a.precision());
+        assertEquals("-0.01 value", new Apfloat("-0.00886250"), a, new Apfloat("5e-8"));
+
+        a = ApfloatMath.inverseErf(new Apfloat("0.8", 100));
+        assertEquals("0.8 precision", 100, a.precision());
+        assertEquals("0.8 value", new Apfloat("0.9061938024368232200711627030956628666508668747462206614653792171330100552167389208141318241092656917"), a, new Apfloat("5e-100"));
+
+        a = ApfloatMath.inverseErf(new Apfloat("0.99999999999999999999999999999999999999999999999999"));
+        assertEquals("0.99999999999999999999999999999999999999999999999999 precision", 1, a.precision());
+        assertEquals("0.99999999999999999999999999999999999999999999999999 value", new Apfloat("10"), a, new Apfloat("5e1"));
+
+        a = ApfloatMath.inverseErf(new Apfloat("0.99999999999999999999999999999999999999999999999999", 99));
+        assertEquals("0.99999999999999999999999999999999999999999999999999 precision", 50, a.precision());
+        assertEquals("0.99999999999999999999999999999999999999999999999999 value", new Apfloat("10.592090169527365189021663925329799115594206455417"), a, new Apfloat("5e-48"));
+
+        a = ApfloatMath.inverseErf(new Apfloat("0.7", 100, 9));
+        assertEquals("0.7 precision", 100, a.precision());
+        assertEquals("0.7 radix", 9, a.radix());
+        assertEquals("0.7 value", new Apfloat("0.76818487807617820173552655636302134801487816266142015806376400456247340635433763871153387630807580274340", 100, 9), a, new Apfloat("5e-100", 1, 9));
+
+        a = ApfloatMath.inverseErf(new Apfloat("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apfloat("0"), a);
+
+        try
+        {
+            ApfloatMath.inverseErf(new Apfloat("1"));
+            fail("1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.inverseErf(new Apfloat("-1"));
+            fail("-1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.inverseErf(new Apfloat("1.1"));
+            fail("1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.inverseErf(new Apfloat("-1.1"));
+            fail("-1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            ApfloatMath.inverseErf(new Aprational("1/2"));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
+    }
+
+    public static void testInverseErfc()
+    {
+        Apfloat a = ApfloatMath.inverseErfc(new Apfloat("0.500000"));
+        assertEquals("0.5 precision", 6, a.precision());
+        assertEquals("0.5 value", new Apfloat("0.476936"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.inverseErfc(new Apfloat("1.0100000"));
+        assertEquals("1.01 precision", 6, a.precision());
+        assertEquals("1.01 value", new Apfloat("-0.00886250"), a, new Apfloat("5e-8"));
+
+        a = ApfloatMath.inverseErfc(new Apfloat("0.8", 100));
+        assertEquals("0.8 precision", 100, a.precision());
+        assertEquals("0.8 value", new Apfloat("0.1791434546212916764927490166264718703039092770195297157934243908496107231958296585375860598181676620"), a, new Apfloat("5e-100"));
+
+        a = ApfloatMath.inverseErfc(new Apfloat("1.99999999999999999999999999999999999999999999999999"));
+        assertEquals("1.99999999999999999999999999999999999999999999999999 precision", 1, a.precision());
+        assertEquals("1.99999999999999999999999999999999999999999999999999 value", new Apfloat("-10.592090169527365189021663925329799115594206455417"), a, new Apfloat("5e1"));
+
+        a = ApfloatMath.inverseErfc(new Apfloat("1.99999999999999999999999999999999999999999999999999", 100));
+        assertEquals("1.99999999999999999999999999999999999999999999999999 precision", 50, a.precision());
+        assertEquals("1.99999999999999999999999999999999999999999999999999 value", new Apfloat("-10.592090169527365189021663925329799115594206455417"), a, new Apfloat("5e-48"));
+
+        a = ApfloatMath.inverseErfc(new Apfloat("1e-50"));
+        assertEquals("1e-50 precision", 1, a.precision());
+        assertEquals("1e-50 value", new Apfloat("10"), a, new Apfloat("5e1"));
+
+        a = ApfloatMath.inverseErfc(new Apfloat("0.7", 100, 9));
+        assertEquals("0.7 precision", 100, a.precision());
+        assertEquals("0.7 radix", 9, a.radix());
+        assertEquals("0.7 value", new Apfloat("0.171425663605753727353512758150323485886618501752544182326432531337856381220182625185238532254168736114352", 100, 9), a, new Apfloat("5e-100", 1, 9));
+
+        a = ApfloatMath.inverseErfc(new Apfloat("1"));
+        assertEquals("1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("1 value", new Apfloat("0"), a);
+
+        try
+        {
+            ApfloatMath.inverseErfc(new Apfloat("0"));
+            fail("0 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.inverseErfc(new Apfloat("2"));
+            fail("2 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.inverseErfc(new Apfloat("-0.1"));
+            fail("-0.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.inverseErfc(new Apfloat("2.1"));
+            fail("2.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+
+        try
+        {
+            ApfloatMath.inverseErfc(new Aprational("1/2"));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testFresnelS()
