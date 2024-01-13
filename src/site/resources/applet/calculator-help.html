@@ -210,6 +210,7 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>gamma(x)</code></td><td>Gamma function, i.e. <code>&Gamma;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>gamma(a, x)</code></td><td>Incomplete gamma function, i.e. <code>&Gamma;(a, x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>gamma(a, x1, x2)</code></td><td>Generalized incomplete gamma function, i.e. <code>&Gamma;(a, x1, x2)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>gcd(x, y)</code></td><td>Greatest common divisor of <code>x</code> and <code>y</code>. Both <code>x</code> and <code>y</code> must be integers.</td></tr>
 <tr><td><code>glaisher(x)</code></td><td>The Glaisher-Kinkelin constant <i>A</i> calculated to <code>x</code> digits of precision. Parameter <code>x</code> must be an integer.</td></tr>
 <tr><td><code>hypergeometric0F1(a, x)</code></td><td>Hypergeometric function <code><sub>0</sub>F<sub>1</sub>(;a; x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>hypergeometric0F1Regularized(a, x)</code></td><td>Regularized hypergeometric function <code><sub>0</sub>F&#x303;<sub>1</sub></code>. Note that the implementation is <i>slow</i></td></tr>
@@ -221,8 +222,10 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>inverseErf(x)</code></td><td>Inverse error function i.e. <code>erf<sup>&minus;1</sup>(x)</code>. Parameter <code>x</code> must be between (-1, 1). Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>inverseErfc(x)</code></td><td>Inverse complementary error function i.e. <code>erfc<sup>&minus;1</sup>(x)</code>. Parameter <code>x</code> must be between (0, 2). Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>khinchin(x)</code></td><td>Khinchin's constant <i>K</i> calculated to <code>x</code> digits of precision. Parameter <code>x</code> must be an integer.</td></tr>
+<tr><td><code>lcm(x, y)</code></td><td>Least common multiple of <code>x</code> and <code>y</code>. Both <code>x</code> and <code>y</code> must be integers.</td></tr>
 <tr><td><code>logGamma(x)</code></td><td>Logarithm of the gamma function, <code>log&Gamma;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>logIntegral(x)</code></td><td>Logarithmic integral i.e. <code>li(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>pi(x)</code></td><td>&pi; calculated to <code>x</code> digits of precision. Parameter <code>x</code> must be an integer.</td></tr>
 <tr><td><code>pochhammer(x, n)</code></td><td>Pochhammer symbol i.e. <code>(x)<sub>n</sub></code>. Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>polygamma(n, x)</code></td><td>Polygamma function i.e. <code>&psi;<sup>(n)</sup>(x)</code>. Parameter <code>n</code> must be a nonnegative integer. Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>sinIntegral(x)</code></td><td>Sine integral i.e. <code>Si(x)</code>. Note that the implementation is <i>slow</i></td></tr>
@@ -231,9 +234,6 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>w(x, k)</code></td><td>Lambert W function, branch <code>k</code>. Parameter <code>k</code> must be an integer.</td></tr>
 <tr><td><code>zeta(x)</code></td><td>Riemann zeta function, i.e. <code>&zeta;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>zeta(x, y)</code></td><td>Hurwitz zeta function, i.e. <code>&zeta;(x, y)</code>. Note that the implementation is <i>slow</i>.</td></tr>
-<tr><td><code>gcd(x, y)</code></td><td>Greatest common divisor of <code>x</code> and <code>y</code>. Both <code>x</code> and <code>y</code> must be integers.</td></tr>
-<tr><td><code>lcm(x, y)</code></td><td>Least common multiple of <code>x</code> and <code>y</code>. Both <code>x</code> and <code>y</code> must be integers.</td></tr>
-<tr><td><code>pi(x)</code></td><td>&pi; calculated to <code>x</code> digits of precision. Parameter <code>x</code> must be an integer.</td></tr>
 </table>
 
 <h3>Functional equivalents to the basic operators:</h3>
