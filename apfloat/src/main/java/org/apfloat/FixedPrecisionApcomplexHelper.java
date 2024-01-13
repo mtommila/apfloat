@@ -303,7 +303,7 @@ public class FixedPrecisionApcomplexHelper
         if (z.real().signum() == 0 && z.imag().signum() == 0)
         {
             // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
-            return valueOf(new Apcomplex(Apfloat.ZEROS[z.radix()], pi(z.radix()).divide(new Apfloat(2, precision(), z.radix()))));
+            return valueOf(new Apcomplex(Apfloat.ZEROS[z.radix()], halfPi(z.radix())));
         }
         return valueOf(ApcomplexMath.acosh(setPrecision(z)));
     }

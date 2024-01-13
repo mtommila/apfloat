@@ -612,6 +612,8 @@ public class CalculatorTest
         assertCalculation("3.14159", "pi()", "-i", "6");
         assertCalculationMatch("0|[1-9]e-1", "random()", "-i", "1");
         assertCalculationMatch("0|-?([1-5]|[1-9]e-1)", "randomGaussian()", "-i", "1");
+        assertCalculation("1.5708", "acos(0)", "-p", "-i", "6");
+        assertCalculation("1.5708i", "acosh(0)", "-p", "-i", "6");
     }
 
     private static final String NEWLINE = System.lineSeparator();

@@ -33,6 +33,7 @@ import org.apfloat.Apint;
 import org.apfloat.ApintMath;
 import org.apfloat.Aprational;
 import org.apfloat.AprationalMath;
+import org.apfloat.FixedPrecisionApcomplexHelper;
 import org.apfloat.spi.Util;
 
 /**
@@ -47,7 +48,7 @@ public class ApfloatCalculatorImpl
 {
     private static final long serialVersionUID = 1L;
 
-    private static class ApcomplexFunctions
+    private class ApcomplexFunctions
         implements Functions
     {
         @Override
@@ -141,13 +142,13 @@ public class ApfloatCalculatorImpl
         @Override
         public Number acos(Number x)
         {
-            return ApcomplexMath.acos((Apcomplex) x);
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::acos, ApcomplexMath::acos, x);
         }
 
         @Override
         public Number acosh(Number x)
         {
-            return ApcomplexMath.acosh((Apcomplex) x);
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::acosh, ApcomplexMath::acosh, x);
         }
 
         @Override
@@ -672,7 +673,7 @@ public class ApfloatCalculatorImpl
         }
     }
 
-    private static class ApfloatFunctions
+    private class ApfloatFunctions
         extends ApcomplexFunctions
     {
         @Override
@@ -814,7 +815,7 @@ public class ApfloatCalculatorImpl
         }
     }
 
-    private static class AprationalFunctions
+    private class AprationalFunctions
         extends ApfloatFunctions
     {
         @Override
@@ -912,7 +913,7 @@ public class ApfloatCalculatorImpl
         }
     }
 
-    private static class ApintFunctions
+    private class ApintFunctions
         extends AprationalFunctions
     {
         @Override
@@ -1068,4 +1069,18 @@ public class ApfloatCalculatorImpl
         }
         return x;
     }
+
+    @Override
+    public void setInputPrecision(Long inputPrecision)
+    {
+        super.setInputPrecision(inputPrecision);
+        this.fixedPrecisionApcomplexHelper = new FixedPrecisionApcomplexHelper(inputPrecision == null ? Apfloat.INFINITE : inputPrecision);
+    }
+
+    private Number fixedOrArbitraryPrecision(java.util.function.Function<Apcomplex, Apcomplex> fixedPrecisionFunction, java.util.function.Function<Apcomplex, Apcomplex> arbitraryPrecisionFunction, Number x)
+    {
+        return (getInputPrecision() != null ? fixedPrecisionFunction.apply((Apcomplex) x) : arbitraryPrecisionFunction.apply((Apcomplex) x));
+    }
+
+    private FixedPrecisionApcomplexHelper fixedPrecisionApcomplexHelper = new FixedPrecisionApcomplexHelper(Apfloat.INFINITE);
 }
