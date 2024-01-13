@@ -2762,6 +2762,15 @@ public class ApfloatMathTest
 
         try
         {
+            ApfloatMath.beta(new Apfloat("0.1"), new Apfloat(0), new Apfloat("1"));
+            fail("Beta of 0.1, 0, 1");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
             ApfloatMath.beta(new Apfloat("4"), new Apfloat(0), new Apfloat("6"));
             fail("Beta of 4, 0, 6");
         }
@@ -2796,6 +2805,15 @@ public class ApfloatMathTest
         {
             // OK
         }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("1.50000"), new Apfloat("-1.50000"), new Apfloat("2.50000"));
+            fail("Beta of 1.5, -1.5, 2.5");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
     }
 
     public static void testBetaIncompleteGeneralized()
@@ -2820,6 +2838,15 @@ public class ApfloatMathTest
         assertEquals("1, -0.1, 2, 6 precision", 6, a.precision(), 1);
         assertEquals("1, -0.1, 2, 6 value", new Apfloat("-0.0168720"), a, new Apfloat("5e-7"));
 
+        try
+        {
+            ApfloatMath.beta(new Apfloat("0.1"), new Apfloat("0.2"), new Apfloat(0), new Apfloat("1"));
+            fail("Beta of 0.1, 0.2, 0, 1");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
         try
         {
             ApfloatMath.beta(new Apfloat("3"), new Apfloat("4"), new Apfloat(0), new Apfloat("6"));
@@ -2878,6 +2905,24 @@ public class ApfloatMathTest
         {
             ApfloatMath.beta(new Apfloat("1"), new Apfloat("-0.1"), new Apfloat("0.1"), new Apfloat("6"));
             fail("Beta of 1, -0.1, 0.1, 6");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("1.50000"), new Apfloat("0.500000"), new Apfloat("-1.50000"), new Apfloat("2.50000"));
+            fail("Beta of 1.5, 0.5, -1.5, 2.5");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.beta(new Apfloat("0.500000"), new Apfloat("1.50000"), new Apfloat("-1.50000"), new Apfloat("2.50000"));
+            fail("Beta of 0.5, 1.5, -1.5, 2.5");
         }
         catch (ArithmeticException ae)
         {
@@ -3354,6 +3399,18 @@ public class ApfloatMathTest
         assertEquals("2, 3, -2 precision", 6, a.precision());
         assertEquals("2, 3, -2 value", new Apfloat("0.250000"), a, new Apfloat("5e-6"));
 
+        a = ApfloatMath.hypergeometricU(new Apfloat("-1.0"), new Apfloat("-1.5"), new Apfloat("0"));
+        assertEquals("-1, -1.5, 0 precision", 2, a.precision());
+        assertEquals("-1, -1.5, 0 value", new Apcomplex("1.5"), a);
+
+        a = ApfloatMath.hypergeometricU(new Apfloat("1.0"), new Apfloat("-1.5"), new Apfloat("0"));
+        assertEquals("1, -1.5, 0 precision", 2, a.precision());
+        assertEquals("1, -1.5, 0 value", new Apcomplex("0.40"), a, new Apfloat("5e-2"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat("1.0"), new Apfloat("0.50"), new Apfloat("0"));
+        assertEquals("1, 0.5, 0 precision", 2, a.precision());
+        assertEquals("1, 0.5, 0 value", new Apcomplex("2.0"), a, new Apfloat("5e-1"));
+
         try
         {
             ApfloatMath.hypergeometricU(new Apfloat("1.1"), new Apfloat("2.1"), new Apfloat("-0.10"));
@@ -3380,6 +3437,15 @@ public class ApfloatMathTest
         catch (ArithmeticException ae)
         {
             // OK result would be complex
+        }
+        try
+        {
+            ApfloatMath.hypergeometricU(new Apfloat("-0.50"), new Apfloat("1.0"), new Apfloat("0"));
+            fail("x == 0 and not polynomial");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK result would be infinite
         }
 
         try

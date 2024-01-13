@@ -2716,6 +2716,8 @@ public class ApcomplexMath
      *
      * @return <i>U(a, b, z)</i>
      *
+     * @throws ArithmeticException If the result is not finite.
+     *
      * @since 1.13.0
      */
 
@@ -2809,6 +2811,17 @@ public class ApcomplexMath
         return one.subtract(erf(z));
     }
 
+    static Apcomplex erfcFixedPrecision(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        if (z.scale() > 0 && z.real().signum() > 0 && z.real().scale() >= z.imag().scale())
+        {
+            return erfc(z);
+        }
+        Apint one = Apint.ONES[z.radix()];
+        return one.subtract(erfFixedPrecision(z));
+    }
+
     /**
      * Imaginary error function.<p>
      *
@@ -2830,6 +2843,14 @@ public class ApcomplexMath
         int radix = z.radix();
         Apcomplex i = new Apcomplex(Apfloat.ZEROS[radix], Apfloat.ONES[radix]);
         return i.multiply(erf(i.multiply(z))).negate();
+    }
+
+    static Apcomplex erfiFixedPrecision(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        Apcomplex i = new Apcomplex(Apfloat.ZEROS[radix], Apfloat.ONES[radix]);
+        return i.multiply(erfFixedPrecision(i.multiply(z))).negate();
     }
 
     /**

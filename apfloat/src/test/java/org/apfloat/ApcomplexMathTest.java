@@ -3955,7 +3955,11 @@ public class ApcomplexMathTest
         a = ApcomplexMath.hypergeometricU(new Apcomplex("0"), new Apcomplex("1.0"), new Apcomplex("1.0"));
         assertEquals("0, 1, 1 precision", 2, a.precision());
         assertEquals("0, 1, 1 value", new Apcomplex("1.0"), a);
- 
+
+        a = ApcomplexMath.hypergeometricU(new Apcomplex("-1"), new Apcomplex("1.5"), new Apcomplex("0"));
+        assertEquals("-1, 1.5, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-1, 1.5, 0 value", new Apcomplex("0"), a);
+
         a = ApcomplexMath.hypergeometricU(new Apcomplex("-42.00000"), new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
         assertEquals("-42, 3+4i, 5+6i precision", 6, a.precision());
         assertEquals("-42, 3+4i, 5+6i value", new Apcomplex("(2.80183e55,8.28632e56)"), a, new Apfloat("5e51"));

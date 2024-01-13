@@ -2724,7 +2724,7 @@ public class ApfloatMath
      *
      * @return B<sub>x</sub>(a, b)
      *
-     * @throws ArithmeticException If <code>a</code> is a nonpositive integer or <code>x</code> is zero and <code>a</code> is nonpositive or <code>x</code> is negative and <code>a</code> is not an integer. 
+     * @throws ArithmeticException If <code>a</code> is a nonpositive integer or <code>x</code> is zero and <code>a</code> is nonpositive or <code>x</code> is negative and <code>a</code> is not an integer. Also if <code>x</code> &gt; 1 and the result is not a polynomial.
      *
      * @since 1.13.0
      */
@@ -2737,6 +2737,8 @@ public class ApfloatMath
         {
             throw new ArithmeticException("Result would be complex");
         }
+        Apint one = Apint.ONES[x.radix()];
+        checkHypergeometric2F1(a, one.subtract(b), x);
         return ApcomplexMath.beta(x, a, b).real();
     }
 
@@ -2756,7 +2758,7 @@ public class ApfloatMath
      *
      * @return B<sub>(x1, x2)</sub>(a, b)
      *
-     * @throws ArithmeticException If <code>a</code> is a nonpositive integer or <code>x1</code> or <code>x2</code> is zero and <code>a</code> is nonpositive or <code>x1</code> or <code>x2</code> is negative and <code>a</code> is not an integer. 
+     * @throws ArithmeticException If <code>a</code> is a nonpositive integer or <code>x1</code> or <code>x2</code> is zero and <code>a</code> is nonpositive or <code>x1</code> or <code>x2</code> is negative and <code>a</code> is not an integer. Also if <code>x1</code> &gt; 1 or <code>x2</code> &gt; 1 and the result is not a polynomial.
      *
      * @since 1.13.0
      */
@@ -2769,6 +2771,9 @@ public class ApfloatMath
         {
             throw new ArithmeticException("Result would be complex");
         }
+        Apint one = Apint.ONES[x1.radix()];
+        checkHypergeometric2F1(a, one.subtract(b), x1);
+        checkHypergeometric2F1(a, one.subtract(b), x2);
         return ApcomplexMath.beta(x1, x2, a, b).real();
     }
 
@@ -3008,13 +3013,19 @@ public class ApfloatMath
     public static Apfloat hypergeometric2F1(Apfloat a, Apfloat b, Apfloat c, Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        checkHypergeometric2F1(a, b, x);
+        return ApcomplexMath.hypergeometric2F1(a, b, c, x).real();
+    }
+
+    private static void checkHypergeometric2F1(Apfloat a, Apfloat b, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
         // With real a, b and c the result is real if z <= 1 except if it's a polynomial, in which case it's always real (nb. additional checks might throw an exception later)
         Apint one = Apint.ONES[x.radix()];
         if (x.compareTo(one) > 0 && HypergeometricHelper.maxNonPositiveInteger(a, b) == null)
         {
             throw new ArithmeticException("Result would be complex");
         }
-        return ApcomplexMath.hypergeometric2F1(a, b, c, x).real();
     }
 
     /**
@@ -3063,7 +3074,7 @@ public class ApfloatMath
      *
      * @return <i>U(a, b, x)</i>
      *
-     * @throws ArithmeticException If the result would be complex. 
+     * @throws ArithmeticException If the result would be complex or not finite.
      *
      * @since 1.13.0
      */
@@ -3101,6 +3112,12 @@ public class ApfloatMath
         return ApcomplexMath.erf(x).real();
     }
 
+    static Apfloat erfFixedPrecision(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.erfFixedPrecision(x).real();
+    }
+
     /**
      * Complementary error function.<p>
      *
@@ -3122,6 +3139,12 @@ public class ApfloatMath
         return ApcomplexMath.erfc(x).real();
     }
 
+    static Apfloat erfcFixedPrecision(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.erfcFixedPrecision(x).real();
+    }
+
     /**
      * Imaginary error function.<p>
      *
@@ -3141,6 +3164,12 @@ public class ApfloatMath
         throws ApfloatRuntimeException
     {
         return ApcomplexMath.erfi(x).real();
+    }
+
+    static Apfloat erfiFixedPrecision(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.erfiFixedPrecision(x).real();
     }
 
     /**

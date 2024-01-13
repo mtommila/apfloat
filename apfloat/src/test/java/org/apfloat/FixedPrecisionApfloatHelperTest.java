@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import java.math.RoundingMode;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.12.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -113,6 +113,11 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testGammaIncompleteGeneralized"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testLogGamma"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testDigamma"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testPolygamma"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testBeta"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testBetaIncomplete"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testBetaIncompleteGeneralized"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testPochhammer"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBinomial"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBernoulli"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testZeta"));
@@ -120,6 +125,34 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testHypergeometric0F1"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testHypergeometric1F1"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testHypergeometric2F1"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testHypergeometric0F1Regularized"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testHypergeometric1F1Regularized"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testHypergeometric2F1Regularized"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testHypergeometricU"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testErf"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testErfc"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testErfi"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testInverseErf"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testInverseErfc"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testFresnelS"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testFresnelC"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testExpIntegralE"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testExpIntegralEi"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testLogIntegral"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testSinIntegral"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testCosIntegral"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testSinhIntegral"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testCoshIntegral"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testAiryAi"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testAiryAiPrime"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testAiryBi"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testAiryBiPrime"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testBesselJ"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testBesselI"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testBesselY"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testBesselK"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testEllipticK"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testEllipticE"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testContinuedFraction"));
@@ -1156,6 +1189,68 @@ public class FixedPrecisionApfloatHelperTest
         }
     }
 
+    public static void testPolygamma()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("2.5");
+        Apfloat result = helper.polygamma(2, x);
+        assertEquals("value", new Apfloat("-0.236204"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testBeta()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat a = new Apfloat("-1.5"),
+                b = new Apfloat("2.5");
+        Apfloat result = helper.beta(a, b);
+        assertEquals("value", new Apfloat("3.14159"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testBetaIncomplete()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("0.5"),
+                a = new Apfloat("-1.5"),
+                b = new Apfloat("2.5");
+        Apfloat result = helper.beta(x, a, b);
+        assertEquals("value", new Apfloat("2.90413"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        try
+        {
+            helper.beta(new Apfloat("1.5"), new Apfloat("-1.5"), new Apfloat("2.5"));
+            fail("beta(1.5, -1.5, 2.5) accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+    }
+
+    public static void testBetaIncompleteGeneralized()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x1 = new Apfloat("0.5"),
+                x2 = new Apfloat("0.6"),
+                a = new Apfloat("1.5"),
+                b = new Apfloat("2.5");
+        Apfloat result = helper.beta(x1, x2, a, b);
+        assertEquals("value", new Apfloat("0.0223574"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testPochhammer()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5"),
+                n = new Apfloat("2.5");
+        Apfloat result = helper.pochhammer(x, n);
+        assertEquals("value", new Apfloat("0.423142"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
     public static void testBinomial()
     {
         FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
@@ -1262,6 +1357,308 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.hypergeometric2F1(a, b, c, x);
         assertEquals("value", new Apfloat("0.606092"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHypergeometric0F1Regularized()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat a = new Apfloat("-3"),
+                x = new Apfloat("1.5");
+        Apfloat result = helper.hypergeometric0F1Regularized(a, x);
+        assertEquals("value", new Apfloat("0.28272"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHypergeometric1F1Regularized()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat a = new Apfloat("-1.5"),
+                b = new Apfloat("-3"),
+                x = new Apfloat("1.5");
+        Apfloat result = helper.hypergeometric1F1Regularized(a, b, x);
+        assertEquals("value", new Apfloat("0.263170"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHypergeometric2F1Regularized()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat a = new Apfloat("-1.5"),
+                b = new Apfloat("-2.5"),
+                c = new Apfloat("-4"),
+                x = new Apfloat("0.5");
+        Apfloat result = helper.hypergeometric2F1Regularized(a, b, c, x);
+        assertEquals("value", new Apfloat("-0.00131556"), result, new Apfloat("5e-8"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHypergeometricU()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat a = new Apfloat("-1.5"),
+                b = new Apfloat("-3"),
+                x = new Apfloat("1.5");
+        Apfloat result = helper.hypergeometricU(a, b, x);
+        assertEquals("value", new Apfloat("8.44588"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testErf()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.erf(x);
+        assertEquals("value", new Apfloat("-0.966105"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testErfc()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.erfc(x);
+        assertEquals("value", new Apfloat("1.96611"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testErfi()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.erfi(x);
+        assertEquals("value", new Apfloat("-4.58473"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testInverseErf()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-0.5");
+        Apfloat result = helper.inverseErf(x);
+        assertEquals("value", new Apfloat("-0.476936"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("0.999999");
+        result = helper.inverseErf(x);
+        assertEquals("value", new Apfloat("3.45891"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        helper = new FixedPrecisionApfloatHelper(40);
+        x = new Apfloat("0.9999999999999999999999999999999999999999");
+        result = helper.inverseErf(x);
+        assertEquals("value", new Apfloat("9.448789766720858262503185054107090039066"), result, new Apfloat("5e-39"));
+        assertEquals("precision", 40, result.precision());
+    }
+
+    public static void testInverseErfc()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("0.5");
+        Apfloat result = helper.inverseErfc(x);
+        assertEquals("value", new Apfloat("0.476936"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("1.99999");
+        result = helper.inverseErfc(x);
+        assertEquals("value", new Apfloat("-3.12341"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("1e-1000");
+        result = helper.inverseErfc(x);
+        assertEquals("1e-1000 value", new Apfloat("47.9389"), result, new Apfloat("5e-4"));
+        assertEquals("1e-1000 precision", 6, result.precision());
+
+        helper = new FixedPrecisionApfloatHelper(40);
+        x = new Apfloat("1.9999999999999999999999999999999999999999");
+        result = helper.inverseErfc(x);
+        assertEquals("value", new Apfloat("-9.448789766720858262503185054107090039065"), result, new Apfloat("5e-39"));
+        assertEquals("precision", 40, result.precision());
+    }
+
+    public static void testFresnelS()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.fresnelS(x);
+        assertEquals("value", new Apfloat("-0.697505"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testFresnelC()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.fresnelC(x);
+        assertEquals("value", new Apfloat("-0.445261"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testExpIntegralE()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.expIntegralE(ν, x);
+        assertEquals("value", new Apfloat("0.0559441"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testExpIntegralEi()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.expIntegralEi(x);
+        assertEquals("value", new Apfloat("-0.100020"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLogIntegral()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("1.5");
+        Apfloat result = helper.logIntegral(x);
+        assertEquals("value", new Apfloat("0.125065"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testSinIntegral()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.sinIntegral(x);
+        assertEquals("value", new Apfloat("-1.32468"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testCosIntegral()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("1.5");
+        Apfloat result = helper.cosIntegral(x);
+        assertEquals("value", new Apfloat("0.470356"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testSinhIntegral()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.sinhIntegral(x);
+        assertEquals("value", new Apfloat("-1.70065"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testCoshIntegral()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("1.5");
+        Apfloat result = helper.coshIntegral(x);
+        assertEquals("value", new Apfloat("1.60063"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testAiryAi()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.airyAi(x);
+        assertEquals("value", new Apfloat("0.464257"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testAiryAiPrime()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.airyAiPrime(x);
+        assertEquals("value", new Apfloat("0.309187"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testAiryBi()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.airyBi(x);
+        assertEquals("value", new Apfloat("-0.191785"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testAiryBiPrime()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.airyBiPrime(x);
+        assertEquals("value", new Apfloat("0.557908"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testBesselJ()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.besselJ(ν, x);
+        assertEquals("value", new Apfloat("-0.140294"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testBesselI()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.besselI(ν, x);
+        assertEquals("value", new Apfloat("1.81529"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testBesselY()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.besselY(ν, x);
+        assertEquals("value", new Apfloat("-0.525080"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testBesselK()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.besselK(ν, x);
+        assertEquals("value", new Apfloat("0.0910923"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testEllipticK()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.ellipticK(x);
+        assertEquals("value", new Apfloat("1.23301"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("0");
+        result = helper.ellipticK(x);
+        assertEquals("0 value", new Apfloat("1.57080"), result, new Apfloat("5e-5"));
+        assertEquals("0 precision", 6, result.precision());
+    }
+
+    public static void testEllipticE()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.ellipticE(x);
+        assertEquals("value", new Apfloat("2.05299"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("0");
+        result = helper.ellipticE(x);
+        assertEquals("0 value", new Apfloat("1.57080"), result, new Apfloat("5e-5"));
+        assertEquals("0 precision", 6, result.precision());
     }
 
     public static void testRandom()

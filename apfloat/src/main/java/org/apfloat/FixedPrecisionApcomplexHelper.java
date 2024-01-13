@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import org.apfloat.spi.Util;
  * <code>ApcomplexMath.acos(Apcomplex.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.11.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -284,7 +284,7 @@ public class FixedPrecisionApcomplexHelper
         if (z.real().signum() == 0 && z.imag().signum() == 0)
         {
             // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
-            return divide(pi(z.radix()), new Apfloat(2, precision(), z.radix()));
+            return halfPi(z.radix());
         }
         return valueOf(ApcomplexMath.acos(setPrecision(z)));
     }
@@ -991,6 +991,104 @@ public class FixedPrecisionApcomplexHelper
     }
 
     /**
+     * Polygamma function.
+     *
+     * @param n The order.
+     * @param z The argument.
+     *
+     * @return <code>&psi;<sup>(n)</sup>(z)</code>
+     *
+     * @throws ArithmeticException If <code>n</code> is negative or <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex polygamma(long n, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.polygamma(n, setPrecision(z)));
+    }
+
+    /**
+     * Beta function.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     *
+     * @return B(a, b)
+     *
+     * @throws ArithmeticException If <code>a</code> or <code>b</code> is a nonpositive integer but <code>a + b</code> is not. Also if both <code>a</code> and <code>b</code> are nonpositive integers.
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex beta(Apcomplex a, Apcomplex b)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.beta(setPrecision(a), setPrecision(b)));
+    }
+
+    /**
+     * Incomplete beta function.
+     *
+     * @param z The first argument.
+     * @param a The second argument.
+     * @param b The third argument.
+     *
+     * @return B<sub>z</sub>(a, b)
+     *
+     * @throws ArithmeticException If <code>a</code> is a nonpositive integer or <code>z</code> is zero and <code>a</code> has nonpositive real part.
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex beta(Apcomplex z, Apcomplex a, Apcomplex b)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.beta(setPrecision(z), setPrecision(a), setPrecision(b)));
+    }
+
+    /**
+     * Generalized incomplete beta function.
+     *
+     * @param z1 The first argument.
+     * @param z2 The second argument.
+     * @param a The third argument.
+     * @param b The fourth argument.
+     *
+     * @return B<sub>(z1, z2)</sub>(a, b)
+     *
+     * @throws ArithmeticException If <code>a</code> is a nonpositive integer or <code>z1</code> or <code>z2</code> is zero and <code>a</code> has nonpositive real part.
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex beta(Apcomplex z1, Apcomplex z2, Apcomplex a, Apcomplex b)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.beta(setPrecision(z1), setPrecision(z2), setPrecision(a), setPrecision(b)));
+    }
+
+    /**
+     * Pochhammer symbol.
+     *
+     * @param z The first argument.
+     * @param n The second argument.
+     *
+     * @return <code>(z)<sub>n</sub></code>
+     *
+     * @throws ArithmeticException If <code>z + n</code> is a nonpositive integer but <code>z</code> is not.
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex pochhammer(Apcomplex z, Apcomplex n)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.pochhammer(setPrecision(z), setPrecision(n)));
+    }
+
+    /**
      * Binomial coefficient.
      *
      * @param n The argument.
@@ -1144,6 +1242,23 @@ public class FixedPrecisionApcomplexHelper
     }
 
     /**
+     * Regularized confluent hypergeometric function <i><sub>0</sub>F̃<sub>1</sub></i>.
+     *
+     * @param a The first argument.
+     * @param z The second argument.
+     *
+     * @return <i><sub>0</sub>F̃<sub>1</sub>(; a; z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex hypergeometric0F1Regularized(Apcomplex a, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.hypergeometric0F1Regularized(setPrecision(a), setPrecision(z)));
+    }
+
+    /**
      * Kummer confluent hypergeometric function <i><sub>1</sub>F<sub>1</sub></i>.
      *
      * @param a The first argument.
@@ -1161,6 +1276,24 @@ public class FixedPrecisionApcomplexHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApcomplexMath.hypergeometric1F1(setPrecision(a), setPrecision(b), setPrecision(z)));
+    }
+
+    /**
+     * Regularized Kummer confluent hypergeometric function <i><sub>1</sub>F̃<sub>1</sub></i>.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param z The third argument.
+     *
+     * @return <i><sub>1</sub>F̃<sub>1</sub>(a; b; z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex hypergeometric1F1Regularized(Apcomplex a, Apcomplex b, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.hypergeometric1F1Regularized(setPrecision(a), setPrecision(b), setPrecision(z)));
     }
 
     /**
@@ -1182,6 +1315,432 @@ public class FixedPrecisionApcomplexHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApcomplexMath.hypergeometric2F1(setPrecision(a), setPrecision(b), setPrecision(c), setPrecision(z)));
+    }
+
+    /**
+     * Regularized hypergeometric function <i><sub>2</sub>F̃<sub>1</sub></i>.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param c The third argument.
+     * @param z The fourth argument.
+     *
+     * @return <i><sub>2</sub>F̃<sub>1</sub>(a, b; c; z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex hypergeometric2F1Regularized(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.hypergeometric2F1Regularized(setPrecision(a), setPrecision(b), setPrecision(c), setPrecision(z)));
+    }
+
+    /**
+     * Tricomi's confluent hypergeometric function <i>U</i>.
+     *
+     * @param a The first argument.
+     * @param b The second argument.
+     * @param z The third argument.
+     *
+     * @return <i>U(a, b, z)</i>
+     *
+     * @throws ArithmeticException If the result is not finite.
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex hypergeometricU(Apcomplex a, Apcomplex b, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.hypergeometricU(setPrecision(a), setPrecision(b), setPrecision(z)));
+    }
+
+    /**
+     * Error function.
+     *
+     * @param z The argument.
+     *
+     * @return <i>erf(z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex erf(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.erfFixedPrecision(setErfPrecision(z)));
+    }
+
+    /**
+     * Complementary error function.
+     *
+     * @param z The argument.
+     *
+     * @return <i>erfc(z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex erfc(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.erfcFixedPrecision(setErfPrecision(z)));
+    }
+
+    /**
+     * Imaginary error function.
+     *
+     * @param z The argument.
+     *
+     * @return <i>erfi(z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex erfi(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.erfiFixedPrecision(setErfPrecision(z)));
+    }
+
+    /**
+     * Fresnel integral S.
+     *
+     * @param z The argument.
+     *
+     * @return <i>S(z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex fresnelS(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.fresnelS(setPrecision(z)));
+    }
+
+    /**
+     * Fresnel integral C.
+     *
+     * @param z The argument.
+     *
+     * @return <i>C(z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex fresnelC(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.fresnelC(setPrecision(z)));
+    }
+
+    /**
+     * Exponential integral E.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>E<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If real part of <code>ν</code> is < 0 and <code>z</code> is zero. 
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex expIntegralE(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.expIntegralE(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Exponential integral Ei.
+     *
+     * @param z The argument.
+     *
+     * @return Ei(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is zero. 
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex expIntegralEi(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.expIntegralEi(setPrecision(z)));
+    }
+
+    /**
+     * Logarithmic integral.
+     *
+     * @param z The argument.
+     *
+     * @return li(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is zero. 
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex logIntegral(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.logIntegral(setLogarithmicPrecision(z)));
+    }
+
+    /**
+     * Sine integral.
+     *
+     * @param z The argument.
+     *
+     * @return Si(z)
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex sinIntegral(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.sinIntegral(setPrecision(z)));
+    }
+
+    /**
+     * Cosine integral.
+     *
+     * @param z The argument.
+     *
+     * @return Ci(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is zero. 
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex cosIntegral(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.cosIntegral(setPrecision(z)));
+    }
+
+    /**
+     * Hyperbolic sine integral.
+     *
+     * @param z The argument.
+     *
+     * @return Shi(z)
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex sinhIntegral(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.sinhIntegral(setPrecision(z)));
+    }
+
+    /**
+     * Hyperbolic cosine integral.
+     *
+     * @param z The argument.
+     *
+     * @return Chi(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is zero. 
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex coshIntegral(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.coshIntegral(setPrecision(z)));
+    }
+
+    /**
+     * Airy function Ai.
+     *
+     * @param z The argument.
+     *
+     * @return Ai(z)
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex airyAi(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.airyAi(setPrecision(z)));
+    }
+
+    /**
+     * Derivative of the Airy function Ai.
+     *
+     * @param z The argument.
+     *
+     * @return Ai′(z)
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex airyAiPrime(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.airyAiPrime(setPrecision(z)));
+    }
+
+    /**
+     * Airy function Bi.
+     *
+     * @param z The argument.
+     *
+     * @return Bi(z)
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex airyBi(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.airyBi(setPrecision(z)));
+    }
+
+    /**
+     * Derivative of the Airy function Bi.
+     *
+     * @param z The argument.
+     *
+     * @return Bi′(z)
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex airyBiPrime(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.airyBiPrime(setPrecision(z)));
+    }
+
+    /**
+     * Bessel function of the first kind.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>J<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If the real part of <code>ν</code> is < 0 and <code>ν</code> is not an integer and <code>z</code> is zero. Also if the real part of <code>ν</code> is zero but the imaginary part is not, and <code>z</code> is zero.
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex besselJ(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.besselJ(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Modified Bessel function of the first kind.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>I<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If the real part of <code>ν</code> is < 0 and <code>ν</code> is not an integer and <code>z</code> is zero. Also if the real part of <code>ν</code> is zero but the imaginary part is not, and <code>z</code> is zero.
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex besselI(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.besselI(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Bessel function of the second kind.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>Y<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is zero.
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex besselY(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.besselY(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Modified Bessel function of the second kind.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>K<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is zero.
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex besselK(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.besselK(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Complete elliptic integral of the first kind.
+     *
+     * @param z The argument.
+     *
+     * @return <i>K(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is one.
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex ellipticK(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        {
+            // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
+            return halfPi(z.radix());
+        }
+        return valueOf(ApcomplexMath.ellipticK(setPrecision(z)));
+    }
+
+    /**
+     * Complete elliptic integral of the second kind.
+     *
+     * @param z The argument.
+     *
+     * @return <i>E(z)</i>
+     *
+     * @since 1.13.0
+     */
+
+    public Apcomplex ellipticE(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        {
+            // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
+            return halfPi(z.radix());
+        }
+        return valueOf(ApcomplexMath.ellipticE(setPrecision(z)));
     }
 
     /**
@@ -1227,6 +1786,11 @@ public class FixedPrecisionApcomplexHelper
         throws NumberFormatException, ApfloatRuntimeException
     {
         return ApfloatMath.pi(precision(), radix);
+    }
+
+    Apfloat halfPi(int radix)
+    {
+        return pi(radix).divide(new Apfloat(2, precision(), radix));
     }
 
     Apfloat setTrigonometricPrecision(Apfloat x)
@@ -1322,6 +1886,12 @@ public class FixedPrecisionApcomplexHelper
     private Apcomplex setZetaPrecision(Apcomplex z)
     {
         return new Apcomplex(setZetaPrecision(z.real()), setTrigonometricPrecision(z.imag()));
+    }
+
+    private Apcomplex setErfPrecision(Apcomplex z)
+    {
+        long precision = ApfloatHelper.extendPrecision(precision(), Math.max(0, Util.ifFinite(z.scale(), 2 * z.scale())));
+        return z.precision(precision);
     }
 
     private Apcomplex checkSmallLinear(Apcomplex z)
