@@ -2956,7 +2956,7 @@ public class ApcomplexMath
      *
      * @return <i>E<sub>ν</sub>(z)</i>
      *
-     * @throws ArithmeticException If real part of <code>ν</code> is < 0 and <code>z</code> is zero. 
+     * @throws ArithmeticException If real part of <code>ν</code> is &lt; 0 and <code>z</code> is zero. 
      *
      * @since 1.13.0
      */
@@ -3312,7 +3312,7 @@ public class ApcomplexMath
      *
      * @return <i>J<sub>ν</sub>(z)</i>
      *
-     * @throws ArithmeticException If the real part of <code>ν</code> is < 0 and <code>ν</code> is not an integer and <code>z</code> is zero. Also if the real part of <code>ν</code> is zero but the imaginary part is not, and <code>z</code> is zero.
+     * @throws ArithmeticException If the real part of <code>ν</code> is &lt; 0 and <code>ν</code> is not an integer and <code>z</code> is zero. Also if the real part of <code>ν</code> is zero but the imaginary part is not, and <code>z</code> is zero.
      *
      * @since 1.13.0
      */
@@ -3336,7 +3336,7 @@ public class ApcomplexMath
      *
      * @return <i>I<sub>ν</sub>(z)</i>
      *
-     * @throws ArithmeticException If the real part of <code>ν</code> is < 0 and <code>ν</code> is not an integer and <code>z</code> is zero. Also if the real part of <code>ν</code> is zero but the imaginary part is not, and <code>z</code> is zero.
+     * @throws ArithmeticException If the real part of <code>ν</code> is &lt; 0 and <code>ν</code> is not an integer and <code>z</code> is zero. Also if the real part of <code>ν</code> is zero but the imaginary part is not, and <code>z</code> is zero.
      *
      * @since 1.13.0
      */

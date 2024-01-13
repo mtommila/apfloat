@@ -1494,7 +1494,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <i>E<sub>ν</sub>(x)</i>
      *
-     * @throws ArithmeticException If <code>ν</code> is < 0 and <code>x</code> is zero or <code>ν</code> is nonzero and <code>x</code> is negative. 
+     * @throws ArithmeticException If <code>ν</code> is &lt; 0 and <code>x</code> is zero or <code>ν</code> is nonzero and <code>x</code> is negative. 
      *
      * @since 1.13.0
      */
@@ -1681,7 +1681,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <i>J<sub>ν</sub>(x)</i>
      *
-     * @throws ArithmeticException If <code>ν</code> is < 0 and <code>ν</code> is not an integer and <code>x</code> is zero. Also if <code>ν</code> is not an integer and <code>x</code> is < 0.
+     * @throws ArithmeticException If <code>ν</code> is &lt; 0 and <code>ν</code> is not an integer and <code>x</code> is zero. Also if <code>ν</code> is not an integer and <code>x</code> is &lt; 0.
      *
      * @since 1.13.0
      */
@@ -1700,7 +1700,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <i>I<sub>ν</sub>(x)</i>
      *
-     * @throws ArithmeticException If <code>ν</code> is < 0 and <code>ν</code> is not an integer and <code>x</code> is zero. Also if <code>ν</code> is not an integer and <code>x</code> is < 0.
+     * @throws ArithmeticException If <code>ν</code> is &lt; 0 and <code>ν</code> is not an integer and <code>x</code> is zero. Also if <code>ν</code> is not an integer and <code>x</code> is &lt; 0.
      *
      * @since 1.13.0
      */
