@@ -152,6 +152,30 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number airyAi(Number x)
+        {
+            return ApcomplexMath.airyAi((Apcomplex) x);
+        }
+
+        @Override
+        public Number airyAiPrime(Number x)
+        {
+            return ApcomplexMath.airyAiPrime((Apcomplex) x);
+        }
+
+        @Override
+        public Number airyBi(Number x)
+        {
+            return ApcomplexMath.airyBi((Apcomplex) x);
+        }
+
+        @Override
+        public Number airyBiPrime(Number x)
+        {
+            return ApcomplexMath.airyBiPrime((Apcomplex) x);
+        }
+
+        @Override
         public Number asin(Number x)
         {
             return ApcomplexMath.asin((Apcomplex) x);
@@ -184,6 +208,48 @@ public class ApfloatCalculatorImpl
             }
             long n = x.longValue();
             return AprationalMath.bernoulli(n);
+        }
+
+        @Override
+        public Number besselI(Number x, Number y)
+        {
+            return ApcomplexMath.besselI((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number besselJ(Number x, Number y)
+        {
+            return ApcomplexMath.besselJ((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number besselK(Number x, Number y)
+        {
+            return ApcomplexMath.besselK((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number besselY(Number x, Number y)
+        {
+            return ApcomplexMath.besselY((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number beta(Number a, Number b)
+        {
+            return ApcomplexMath.beta((Apcomplex) a, (Apcomplex) b);
+        }
+
+        @Override
+        public Number beta(Number x, Number a, Number b)
+        {
+            return ApcomplexMath.beta((Apcomplex) x, (Apcomplex) a, (Apcomplex) b);
+        }
+
+        @Override
+        public Number beta(Number x1, Number x2, Number a, Number b)
+        {
+            return ApcomplexMath.beta((Apcomplex) x1, (Apcomplex) x2, (Apcomplex) a, (Apcomplex) b);
         }
 
         @Override
@@ -222,9 +288,21 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number cosIntegral(Number x)
+        {
+            return ApcomplexMath.cosIntegral((Apcomplex) x);
+        }
+
+        @Override
         public Number cosh(Number x)
         {
             return ApcomplexMath.cosh((Apcomplex) x);
+        }
+
+        @Override
+        public Number coshIntegral(Number x)
+        {
+            return ApcomplexMath.coshIntegral((Apcomplex) x);
         }
 
         @Override
@@ -245,6 +323,36 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number ellipticE(Number x)
+        {
+            return ApcomplexMath.ellipticE((Apcomplex) x);
+        }
+
+        @Override
+        public Number ellipticK(Number x)
+        {
+            return ApcomplexMath.ellipticK((Apcomplex) x);
+        }
+
+        @Override
+        public Number erf(Number x)
+        {
+            return ApcomplexMath.erf((Apcomplex) x);
+        }
+
+        @Override
+        public Number erfc(Number x)
+        {
+            return ApcomplexMath.erfc((Apcomplex) x);
+        }
+
+        @Override
+        public Number erfi(Number x)
+        {
+            return ApcomplexMath.erfi((Apcomplex) x);
+        }
+
+        @Override
         public Number euler(Number x)
         {
             if (!isLong(x))
@@ -259,6 +367,18 @@ public class ApfloatCalculatorImpl
         public Number exp(Number x)
         {
             return ApcomplexMath.exp((Apcomplex) x);
+        }
+
+        @Override
+        public Number expIntegralE(Number x, Number y)
+        {
+            return ApcomplexMath.expIntegralE((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number expIntegralEi(Number x)
+        {
+            return ApcomplexMath.expIntegralEi((Apcomplex) x);
         }
 
         @Override
@@ -282,6 +402,18 @@ public class ApfloatCalculatorImpl
         public Number frac(Number x)
         {
             throw new IllegalArgumentException("Frac can only be used with scalar values");
+        }
+
+        @Override
+        public Number fresnelC(Number x)
+        {
+            return ApcomplexMath.fresnelC((Apcomplex) x);
+        }
+
+        @Override
+        public Number fresnelS(Number x)
+        {
+            return ApcomplexMath.fresnelS((Apcomplex) x);
         }
 
         @Override
@@ -320,15 +452,51 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number hypergeometric0F1Regularized(Number a, Number z)
+        {
+            return ApcomplexMath.hypergeometric0F1Regularized((Apcomplex) a, (Apcomplex) z);
+        }
+
+        @Override
         public Number hypergeometric1F1(Number a, Number b, Number z)
         {
             return ApcomplexMath.hypergeometric1F1((Apcomplex) a, (Apcomplex) b, (Apcomplex) z);
         }
 
         @Override
+        public Number hypergeometric1F1Regularized(Number a, Number b, Number z)
+        {
+            return ApcomplexMath.hypergeometric1F1Regularized((Apcomplex) a, (Apcomplex) b, (Apcomplex) z);
+        }
+
+        @Override
         public Number hypergeometric2F1(Number a, Number b, Number c, Number z)
         {
             return ApcomplexMath.hypergeometric2F1((Apcomplex) a, (Apcomplex) b, (Apcomplex) c, (Apcomplex) z);
+        }
+
+        @Override
+        public Number hypergeometric2F1Regularized(Number a, Number b, Number c, Number z)
+        {
+            return ApcomplexMath.hypergeometric2F1Regularized((Apcomplex) a, (Apcomplex) b, (Apcomplex) c, (Apcomplex) z);
+        }
+
+        @Override
+        public Number hypergeometricU(Number a, Number b, Number z)
+        {
+            return ApcomplexMath.hypergeometricU((Apcomplex) a, (Apcomplex) b, (Apcomplex) z);
+        }
+
+        @Override
+        public Number inverseErf(Number x)
+        {
+            throw new IllegalArgumentException("Inverse erf can only be used with scalar values");
+        }
+
+        @Override
+        public Number inverseErfc(Number x)
+        {
+            throw new IllegalArgumentException("Inverse erfc can only be used with scalar values");
         }
 
         @Override
@@ -358,6 +526,12 @@ public class ApfloatCalculatorImpl
         public Number logGamma(Number x)
         {
             return ApcomplexMath.logGamma((Apcomplex) x);
+        }
+
+        @Override
+        public Number logIntegral(Number x)
+        {
+            return ApcomplexMath.logIntegral((Apcomplex) x);
         }
 
         @Override
@@ -399,6 +573,23 @@ public class ApfloatCalculatorImpl
             }
             long n = x.longValue();
             return ApfloatMath.pi(n);
+        }
+
+        @Override
+        public Number pochhammer(Number x, Number y)
+        {
+            return ApcomplexMath.pochhammer((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number polygamma(Number x, Number y)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Polygamma can only be used with a valid integer first argument");
+            }
+            long n = x.longValue();
+            return ApcomplexMath.polygamma(n, (Apcomplex) y);
         }
 
         @Override
@@ -460,9 +651,21 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number sinIntegral(Number x)
+        {
+            return ApcomplexMath.sinIntegral((Apcomplex) x);
+        }
+
+        @Override
         public Number sinh(Number x)
         {
             return ApcomplexMath.sinh((Apcomplex) x);
+        }
+
+        @Override
+        public Number sinhIntegral(Number x)
+        {
+            return ApcomplexMath.sinhIntegral((Apcomplex) x);
         }
 
         @Override
@@ -701,6 +904,18 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number inverseErf(Number x)
+        {
+            return ApfloatMath.inverseErf((Apfloat) x);
+        }
+
+        @Override
+        public Number inverseErfc(Number x)
+        {
+            return ApfloatMath.inverseErfc((Apfloat) x);
+        }
+
+        @Override
         public Number max(Number x, Number y)
         {
             return ApfloatMath.max((Apfloat) x, (Apfloat) y);
@@ -846,6 +1061,16 @@ public class ApfloatCalculatorImpl
         public Number mod(Number x, Number y)
         {
             return ((Aprational) x).mod((Aprational) y);
+        }
+
+        @Override
+        public Number pochhammer(Number x, Number y)
+        {
+            if (y instanceof Apint)
+            {
+                return AprationalMath.pochhammer((Aprational) x, (Apint) y);
+            }
+            return super.pochhammer(x, y);
         }
 
         @Override

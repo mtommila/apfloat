@@ -179,21 +179,54 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 
 <table>
 <tr><td><code>agm(x, y)</code></td><td>Arithmetic-geometric mean of <code>x</code> and <code>y</code>.</td></tr>
+<tr><td><code>airyAi(x)</code></td><td>Airy function <code>Ai(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>airyAiPrime(x)</code></td><td>Derivative of the Airy function Ai, i.e. <code>Ai&prime;(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>airyBi(x)</code></td><td>Airy function <code>Bi(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>airyBiPrime(x)</code></td><td>Derivative of the Airy function Bi, i.e. <code>Bi&prime;(x)</code>. Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>bernoulli(x)</code></td><td>Bernoulli number B<sub><i>x</i></sub>.</td></tr>
+<tr><td><code>besselI(&nu;, x)</code></td><td>Bessel function <code>I<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>besselJ(&nu;, x)</code></td><td>Bessel function <code>J<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>besselK(&nu;, x)</code></td><td>Bessel function <code>K<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>besselY(&nu;, x)</code></td><td>Bessel function <code>Y<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>beta(a, b)</code></td><td>Beta function. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>beta(x, a, b)</code></td><td>Incomplete beta function <code>B<sub>x</sub>(a, b)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>beta(x1, x2, a, b)</code></td><td>Generalized incomplete beta function <code>B<sub>(x1, x2)</sub>(a, b)</code>. Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>binomial(x, y)</code></td><td>Binomial coefficient, i.e. <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>(</mo><mfrac linethickness="0"><mi>x</mi><mi>y</mi></mfrac><mo>)</mo></mrow></math>.</td></tr>
 <tr><td><code>catalan(x)</code></td><td>Catalan's constant <i>G</i> calculated to <code>x</code> digits of precision. Parameter <code>x</code> must be an integer.</td></tr>
+<tr><td><code>cosIntegral(x)</code></td><td>Cosine integral i.e. <code>Ci(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>coshIntegral(x)</code></td><td>Hyperbolic cosine integral i.e. <code>Chi(x)</code>. Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>digamma(x)</code></td><td>Digamma function, i.e. <code>&psi;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>e(x)</code></td><td><i>e</i> calculated to <code>x</code> digits of precision. Parameter <code>x</code> must be an integer.</td></tr>
+<tr><td><code>ellipticE(x)</code></td><td>Elliptic integral <code>E(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>ellipticK(x)</code></td><td>Elliptic integral <code>K(x)</code>.</td></tr>
+<tr><td><code>erf(x)</code></td><td>Error function. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>erfc(x)</code></td><td>Complementary error function. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>erfi(x)</code></td><td>Imaginary error function. Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>euler(x)</code></td><td>&gamma; calculated to <code>x</code> digits of precision. Parameter <code>x</code> must be an integer.</td></tr>
+<tr><td><code>expIntegralE(&nu;, x)</code></td><td>Exponential integral <code>E<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>expIntegralEi(x)</code></td><td>Exponential integral <code>Ei(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>fresnelC(x)</code></td><td>Fresnel integral C, i.e. <code>C(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>fresnelS(x)</code></td><td>Fresnel integral S, i.e. <code>S(x)</code>. Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>gamma(x)</code></td><td>Gamma function, i.e. <code>&Gamma;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>gamma(a, x)</code></td><td>Incomplete gamma function, i.e. <code>&Gamma;(a, x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>gamma(a, x1, x2)</code></td><td>Generalized incomplete gamma function, i.e. <code>&Gamma;(a, x1, x2)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>glaisher(x)</code></td><td>The Glaisher-Kinkelin constant <i>A</i> calculated to <code>x</code> digits of precision. Parameter <code>x</code> must be an integer.</td></tr>
 <tr><td><code>hypergeometric0F1(a, x)</code></td><td>Hypergeometric function <code><sub>0</sub>F<sub>1</sub>(;a; x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>hypergeometric0F1Regularized(a, x)</code></td><td>Regularized hypergeometric function <code><sub>0</sub>F&#x303;<sub>1</sub></code>. Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>hypergeometric1F1(a, b, x)</code></td><td>Hypergeometric function <code><sub>1</sub>F<sub>1</sub>(a; b; x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>hypergeometric1F1Regularized(a, b, x)</code></td><td>Regularized hypergeometric function <code><sub>1</sub>F&#x303;<sub>1</sub></code>. Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>hypergeometric2F1(a, b, c, x)</code></td><td>Hypergeometric function <code><sub>2</sub>F<sub>1</sub>(a, b; c; x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>hypergeometric2F1Regularized(a, b, c, x)</code></td><td>Regularized hypergeometric function <code><sub>2</sub>F&#x303;<sub>1</sub></code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>hypergeometricU(a, b, x)</code></td><td>Hypergeometric function <code>U</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>inverseErf(x)</code></td><td>Inverse error function i.e. <code>erf<sup>&minus;1</sup>(x)</code>. Parameter <code>x</code> must be between (-1, 1). Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>inverseErfc(x)</code></td><td>Inverse complementary error function i.e. <code>erfc<sup>&minus;1</sup>(x)</code>. Parameter <code>x</code> must be between (0, 2). Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>khinchin(x)</code></td><td>Khinchin's constant <i>K</i> calculated to <code>x</code> digits of precision. Parameter <code>x</code> must be an integer.</td></tr>
 <tr><td><code>logGamma(x)</code></td><td>Logarithm of the gamma function, <code>log&Gamma;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>logIntegral(x)</code></td><td>Logarithmic integral i.e. <code>li(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>pochhammer(x, n)</code></td><td>Pochhammer symbol i.e. <code>(x)<sub>n</sub></code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>polygamma(n, x)</code></td><td>Polygamma function i.e. <code>&psi;<sup>(n)</sup>(x)</code>. Parameter <code>n</code> must be a nonnegative integer. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>sinIntegral(x)</code></td><td>Sine integral i.e. <code>Si(x)</code>. Note that the implementation is <i>slow</i></td></tr>
+<tr><td><code>sinhIntegral(x)</code></td><td>Hyperbolic sine integral i.e. <code>Shi(x)</code>. Note that the implementation is <i>slow</i></td></tr>
 <tr><td><code>w(x)</code></td><td>Lambert W function, i.e. solution to the equation <code>W e<sup>W</sup> = x</code>.</td></tr>
 <tr><td><code>w(x, k)</code></td><td>Lambert W function, branch <code>k</code>. Parameter <code>k</code> must be an integer.</td></tr>
 <tr><td><code>zeta(x)</code></td><td>Riemann zeta function, i.e. <code>&zeta;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
@@ -329,7 +362,7 @@ behaves around <code>1</code>.
 
 <p>Bug reports, questions and comments should be sent to <a href="mailto:Mikko.Tommila@apfloat.org">the author</a>.</p>
 
-<p>Last updated: May 24th, 2023</p>
+<p>Last updated: January 13th, 2024</p>
 
 </div>
 
