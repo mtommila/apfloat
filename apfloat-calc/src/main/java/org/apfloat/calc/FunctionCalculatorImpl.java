@@ -247,24 +247,24 @@ public abstract class FunctionCalculatorImpl
         setFunction("atanh", fixedFunction("atanh", 1, (functions, arguments) -> functions.atanh(arguments.get(0))));
         setFunction("bernoulli", fixedFunction("bernoulli", 1, (functions, arguments) -> functions.bernoulli(arguments.get(0))));
         setFunction("binomial", fixedFunction("binomial", 2, (functions, arguments) -> functions.binomial(arguments.get(0), arguments.get(1))));
-        setFunction("catalan", fixedFunction("catalan", 1, (functions, arguments) -> functions.catalan(arguments.get(0))));
+        setFunction("catalan", fixedFunction("catalan", 0, 1, (functions, arguments) -> functions.catalan(argumentOrInputPrecision(arguments))));
         setFunction("cbrt", fixedFunction("cbrt", 1, (functions, arguments) -> functions.cbrt(arguments.get(0))));
         setFunction("ceil", fixedFunction("ceil", 1, (functions, arguments) -> functions.ceil(arguments.get(0))));
         setFunction("cos", fixedFunction("cos", 1, (functions, arguments) -> functions.cos(arguments.get(0))));
         setFunction("cosh", fixedFunction("cosh", 1, (functions, arguments) -> functions.cosh(arguments.get(0))));
         setFunction("digamma", fixedFunction("digamma", 1, (functions, arguments) -> functions.digamma(arguments.get(0))));
-        setFunction("e", fixedFunction("e", 1, (functions, arguments) -> functions.e(arguments.get(0))));
-        setFunction("euler", fixedFunction("euler", 1, (functions, arguments) -> functions.euler(arguments.get(0))));
+        setFunction("e", fixedFunction("e", 0, 1, (functions, arguments) -> functions.e(argumentOrInputPrecision(arguments))));
+        setFunction("euler", fixedFunction("euler", 0, 1, (functions, arguments) -> functions.euler(argumentOrInputPrecision(arguments))));
         setFunction("exp", fixedFunction("exp", 1, (functions, arguments) -> functions.exp(arguments.get(0))));
         setFunction("factorial", fixedFunction("factorial", 1, (functions, arguments) -> functions.factorial(arguments.get(0))));
         setFunction("floor", fixedFunction("floor", 1, (functions, arguments) -> functions.floor(arguments.get(0))));
         setFunction("frac", fixedFunction("frac", 1, (functions, arguments) -> functions.frac(arguments.get(0))));
         setFunction("gamma", fixedFunction("gamma", 1, 3, (functions, arguments) -> (arguments.size() == 1 ? functions.gamma(arguments.get(0)) : arguments.size() == 2 ? functions.gamma(arguments.get(0), arguments.get(1)): functions.gamma(arguments.get(0), arguments.get(1), arguments.get(2)))));
-        setFunction("glaisher", fixedFunction("glaisher", 1, (functions, arguments) -> functions.glaisher(arguments.get(0))));
+        setFunction("glaisher", fixedFunction("glaisher", 0, 1, (functions, arguments) -> functions.glaisher(argumentOrInputPrecision(arguments))));
         setFunction("hypergeometric0F1", fixedFunction("hypergeometric0F1", 2, (functions, arguments) -> functions.hypergeometric0F1(arguments.get(0), arguments.get(1))));
         setFunction("hypergeometric1F1", fixedFunction("hypergeometric1F1", 3, (functions, arguments) -> functions.hypergeometric1F1(arguments.get(0), arguments.get(1), arguments.get(2))));
         setFunction("hypergeometric2F1", fixedFunction("hypergeometric2F1", 4, (functions, arguments) -> functions.hypergeometric2F1(arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3))));
-        setFunction("khinchin", fixedFunction("khinchin", 1, (functions, arguments) -> functions.khinchin(arguments.get(0))));
+        setFunction("khinchin", fixedFunction("khinchin", 0, 1, (functions, arguments) -> functions.khinchin(argumentOrInputPrecision(arguments))));
         setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
         setFunction("logGamma", fixedFunction("logGamma", 1, (functions, arguments) -> functions.logGamma(arguments.get(0))));
         setFunction("max", fixedFunction("max", 2, (functions, arguments) -> functions.max(arguments.get(0), arguments.get(1))));
@@ -272,9 +272,9 @@ public abstract class FunctionCalculatorImpl
         setFunction("nextAfter", fixedFunction("nextAfter", 2, (functions, arguments) -> functions.nextAfter(arguments.get(0), arguments.get(1))));
         setFunction("nextDown", fixedFunction("nextDown", 1, (functions, arguments) -> functions.nextDown(arguments.get(0))));
         setFunction("nextUp", fixedFunction("nextUp", 1, (functions, arguments) -> functions.nextUp(arguments.get(0))));
-        setFunction("pi", fixedFunction("pi", 1, (functions, arguments) -> functions.pi(arguments.get(0))));
-        setFunction("random", fixedFunction("random", 1, (functions, arguments) -> functions.random(arguments.get(0))));
-        setFunction("randomGaussian", fixedFunction("randomGaussian", 1, (functions, arguments) -> functions.randomGaussian(arguments.get(0))));
+        setFunction("pi", fixedFunction("pi", 0, 1, (functions, arguments) -> functions.pi(argumentOrInputPrecision(arguments))));
+        setFunction("random", fixedFunction("random", 0, 1, (functions, arguments) -> functions.random(argumentOrInputPrecision(arguments))));
+        setFunction("randomGaussian", fixedFunction("randomGaussian", 0, 1, (functions, arguments) -> functions.randomGaussian(argumentOrInputPrecision(arguments))));
         setFunction("round", fixedFunction("round", 2, (functions, arguments) -> functions.round(arguments.get(0), arguments.get(1))));
         setFunction("roundToPrecision", fixedFunction("roundToPrecision", 2, (functions, arguments) -> functions.roundToPrecision(arguments.get(0), arguments.get(1))));
         setFunction("roundToInteger", fixedFunction("roundToInteger", 1, (functions, arguments) -> functions.roundToInteger(arguments.get(0))));
@@ -324,13 +324,18 @@ public abstract class FunctionCalculatorImpl
 
     private Functions getFunctions(List<Number> arguments)
     {
-        Functions functions = null;
+        Functions functions = (arguments.isEmpty() ? getFunctions((Number) null) : null);
         for (Number argument : arguments)
         {
             Functions functions2 = getFunctions(argument);
             functions = (functions != null && functions.getClass().isAssignableFrom(functions2.getClass()) ? functions : functions2);
         }
         return functions;
+    }
+
+    private Number argumentOrInputPrecision(List<Number> arguments)
+    {
+        return arguments.size() == 0 ? getInputPrecision() : arguments.get(0);
     }
 
     /**

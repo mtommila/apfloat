@@ -668,7 +668,7 @@ public class ApfloatCalculatorImpl
 
         protected boolean isLong(Number value)
         {
-            return new Apint(value.longValue()).equals(value);
+            return value instanceof Long || value != null && new Apint(value.longValue()).equals(value);
         }
     }
 

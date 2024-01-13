@@ -604,6 +604,14 @@ public class CalculatorTest
         assertCalculation("1.4142", "sqrt(2.)", "-i", "5");
         assertCalculation("0.5", "1/2", "-p", "-i", "1");
         assertCalculation("0.5", "1.0/2.0", "-p");
+        assertCalculation("0.915966", "catalan()", "-p", "-i", "6");
+        assertCalculation("2.71828", "e()", "-i", "6");
+        assertCalculation("0.577216", "euler()", "-p", "-i", "6");
+        assertCalculation("1.28243", "glaisher()", "-i", "6");
+        assertCalculation("2.68545", "khinchin()", "-p", "-i", "6");
+        assertCalculation("3.14159", "pi()", "-i", "6");
+        assertCalculationMatch("0|[1-9]e-1", "random()", "-i", "1");
+        assertCalculationMatch("0|-?([1-5]|[1-9]e-1)", "randomGaussian()", "-i", "1");
     }
 
     private static final String NEWLINE = System.lineSeparator();
