@@ -1572,7 +1572,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex airyAi(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        return valueOf(ApcomplexMath.airyAi(setPrecision(z)));
+        return valueOf(ApcomplexMath.airyAi(setPrecision(z), precision()));
     }
 
     /**
@@ -1588,7 +1588,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex airyAiPrime(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        return valueOf(ApcomplexMath.airyAiPrime(setPrecision(z)));
+        return valueOf(ApcomplexMath.airyAiPrime(setPrecision(z), precision()));
     }
 
     /**
@@ -1604,7 +1604,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex airyBi(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        return valueOf(ApcomplexMath.airyBi(setPrecision(z)));
+        return valueOf(ApcomplexMath.airyBi(setPrecision(z), precision()));
     }
 
     /**
@@ -1620,7 +1620,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex airyBiPrime(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        return valueOf(ApcomplexMath.airyBiPrime(setPrecision(z)));
+        return valueOf(ApcomplexMath.airyBiPrime(setPrecision(z), precision()));
     }
 
     /**
@@ -1714,12 +1714,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex ellipticK(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
-        {
-            // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
-            return halfPi(z.radix());
-        }
-        return valueOf(ApcomplexMath.ellipticK(setPrecision(z)));
+        return valueOf(ApcomplexMath.ellipticK(setPrecision(z), precision()));
     }
 
     /**
@@ -1735,12 +1730,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex ellipticE(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
-        {
-            // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
-            return halfPi(z.radix());
-        }
-        return valueOf(ApcomplexMath.ellipticE(setPrecision(z)));
+        return valueOf(ApcomplexMath.ellipticE(setPrecision(z), precision()));
     }
 
     /**

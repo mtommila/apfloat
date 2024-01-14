@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -154,25 +154,25 @@ public class ApfloatCalculatorImpl
         @Override
         public Number airyAi(Number x)
         {
-            return ApcomplexMath.airyAi((Apcomplex) x);
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::airyAi, ApcomplexMath::airyAi, x);
         }
 
         @Override
         public Number airyAiPrime(Number x)
         {
-            return ApcomplexMath.airyAiPrime((Apcomplex) x);
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::airyAiPrime, ApcomplexMath::airyAiPrime, x);
         }
 
         @Override
         public Number airyBi(Number x)
         {
-            return ApcomplexMath.airyBi((Apcomplex) x);
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::airyBi, ApcomplexMath::airyBi, x);
         }
 
         @Override
         public Number airyBiPrime(Number x)
         {
-            return ApcomplexMath.airyBiPrime((Apcomplex) x);
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::airyBiPrime, ApcomplexMath::airyBiPrime, x);
         }
 
         @Override
@@ -325,13 +325,13 @@ public class ApfloatCalculatorImpl
         @Override
         public Number ellipticE(Number x)
         {
-            return ApcomplexMath.ellipticE((Apcomplex) x);
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::ellipticE, ApcomplexMath::ellipticE, x);
         }
 
         @Override
         public Number ellipticK(Number x)
         {
-            return ApcomplexMath.ellipticK((Apcomplex) x);
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::ellipticK, ApcomplexMath::ellipticK, x);
         }
 
         @Override
@@ -1304,7 +1304,8 @@ public class ApfloatCalculatorImpl
 
     private Number fixedOrArbitraryPrecision(java.util.function.Function<Apcomplex, Apcomplex> fixedPrecisionFunction, java.util.function.Function<Apcomplex, Apcomplex> arbitraryPrecisionFunction, Number x)
     {
-        return (getInputPrecision() != null ? fixedPrecisionFunction.apply((Apcomplex) x) : arbitraryPrecisionFunction.apply((Apcomplex) x));
+        Apcomplex z = (Apcomplex) x;
+        return (getInputPrecision() != null && z.real().signum() == 0 && z.imag().signum() == 0 ? fixedPrecisionFunction.apply(z) : arbitraryPrecisionFunction.apply(z));
     }
 
     private FixedPrecisionApcomplexHelper fixedPrecisionApcomplexHelper = new FixedPrecisionApcomplexHelper(Apfloat.INFINITE);

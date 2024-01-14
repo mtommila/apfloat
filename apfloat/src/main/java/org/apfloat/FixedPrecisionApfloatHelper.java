@@ -1622,7 +1622,7 @@ public class FixedPrecisionApfloatHelper
     public Apfloat airyAi(Apfloat x)
         throws ApfloatRuntimeException
     {
-        return valueOf(ApfloatMath.airyAi(setPrecision(x)));
+        return valueOf(ApfloatMath.airyAi(setPrecision(x), precision()));
     }
 
     /**
@@ -1638,7 +1638,7 @@ public class FixedPrecisionApfloatHelper
     public Apfloat airyAiPrime(Apfloat x)
         throws ApfloatRuntimeException
     {
-        return valueOf(ApfloatMath.airyAiPrime(setPrecision(x)));
+        return valueOf(ApfloatMath.airyAiPrime(setPrecision(x), precision()));
     }
 
     /**
@@ -1654,7 +1654,7 @@ public class FixedPrecisionApfloatHelper
     public Apfloat airyBi(Apfloat x)
         throws ApfloatRuntimeException
     {
-        return valueOf(ApfloatMath.airyBi(setPrecision(x)));
+        return valueOf(ApfloatMath.airyBi(setPrecision(x), precision()));
     }
 
     /**
@@ -1670,7 +1670,7 @@ public class FixedPrecisionApfloatHelper
     public Apfloat airyBiPrime(Apfloat x)
         throws ApfloatRuntimeException
     {
-        return valueOf(ApfloatMath.airyBiPrime(setPrecision(x)));
+        return valueOf(ApfloatMath.airyBiPrime(setPrecision(x), precision()));
     }
 
     /**
@@ -1764,12 +1764,7 @@ public class FixedPrecisionApfloatHelper
     public Apfloat ellipticK(Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (x.signum() == 0)
-        {
-            // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
-            return halfPi(x.radix());
-        }
-        return valueOf(ApfloatMath.ellipticK(setPrecision(x)));
+        return valueOf(ApfloatMath.ellipticK(setPrecision(x), precision()));
     }
 
     /**
@@ -1787,12 +1782,7 @@ public class FixedPrecisionApfloatHelper
     public Apfloat ellipticE(Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (x.signum() == 0)
-        {
-            // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
-            return halfPi(x.radix());
-        }
-        return valueOf(ApfloatMath.ellipticE(setPrecision(x)));
+        return valueOf(ApfloatMath.ellipticE(setPrecision(x), precision()));
     }
 
     /**

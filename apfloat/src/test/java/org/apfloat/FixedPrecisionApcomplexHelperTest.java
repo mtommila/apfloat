@@ -1013,6 +1013,11 @@ public class FixedPrecisionApcomplexHelperTest
         result = helper.erf(z);
         assertEquals("-0.1-0.2i value", new Apcomplex("(-0.117021,-0.226384)"), result, new Apfloat("5e-6"));
         assertEquals("-0.1-0.2i precision", 6, result.precision());
+
+        z = new Apcomplex("0");
+        result = helper.erf(z);
+        assertEquals("0 value", new Apfloat("0"), result);
+        assertEquals("0 precision", Apfloat.INFINITE, result.precision());
     }
 
     public static void testErfc()
@@ -1177,6 +1182,11 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.airyAi(z);
         assertEquals("value", new Apcomplex("(0.0504756,0.110807)"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+
+        z = new Apcomplex("0");
+        result = helper.airyAi(z);
+        assertEquals("0 value", new Apcomplex("0.355028"), result, new Apfloat("5e-6"));
+        assertEquals("0 precision", 6, result.precision());
     }
 
     public static void testAiryAiPrime()
@@ -1186,6 +1196,11 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.airyAiPrime(z);
         assertEquals("value", new Apcomplex("(0.0219253,-0.311242)"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+
+        z = new Apcomplex("0");
+        result = helper.airyAiPrime(z);
+        assertEquals("0 value", new Apcomplex("-0.258819"), result, new Apfloat("5e-6"));
+        assertEquals("0 precision", 6, result.precision());
     }
 
     public static void testAiryBi()
@@ -1195,6 +1210,11 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.airyBi(z);
         assertEquals("value", new Apcomplex("(-0.154222,-0.458070)"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+
+        z = new Apcomplex("0");
+        result = helper.airyBi(z);
+        assertEquals("0 value", new Apcomplex("0.614927"), result, new Apfloat("5e-6"));
+        assertEquals("0 precision", 6, result.precision());
     }
 
     public static void testAiryBiPrime()
@@ -1204,6 +1224,11 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.airyBiPrime(z);
         assertEquals("value", new Apcomplex("(0.870487,-1.15895)"), result, new Apfloat("5e-5"));
         assertEquals("precision", 6, result.precision());
+
+        z = new Apcomplex("0");
+        result = helper.airyBiPrime(z);
+        assertEquals("0 value", new Apcomplex("0.448288"), result, new Apfloat("5e-6"));
+        assertEquals("0 precision", 6, result.precision());
     }
 
     public static void testBesselJ()
@@ -1253,6 +1278,11 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.ellipticK(z);
         assertEquals("value", new Apcomplex("(0.825751,0.572097)"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+
+        z = new Apcomplex("0");
+        result = helper.ellipticK(z);
+        assertEquals("0 value", new Apcomplex("1.57080"), result, new Apfloat("5e-5"));
+        assertEquals("0 precision", 6, result.precision());
     }
 
     public static void testEllipticE()
@@ -1262,6 +1292,11 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.ellipticE(z);
         assertEquals("value", new Apcomplex("(1.71210,-1.85499)"), result, new Apfloat("5e-5"));
         assertEquals("precision", 6, result.precision());
+
+        z = new Apcomplex("0");
+        result = helper.ellipticE(z);
+        assertEquals("0 value", new Apcomplex("1.57080"), result, new Apfloat("5e-5"));
+        assertEquals("0 precision", 6, result.precision());
     }
 
     public static void testUlp()

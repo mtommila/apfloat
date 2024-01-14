@@ -1415,6 +1415,11 @@ public class FixedPrecisionApfloatHelperTest
         result = helper.erf(x);
         assertEquals("-0.5 value", new Apfloat("-0.520499"), result, new Apfloat("5e-6"));
         assertEquals("-0.5 precision", 6, result.precision());
+
+        x = new Apfloat("0");
+        result = helper.erf(x);
+        assertEquals("0 value", new Apfloat("0"), result);
+        assertEquals("0 precision", Apfloat.INFINITE, result.precision());
     }
 
     public static void testErfc()
@@ -1462,6 +1467,11 @@ public class FixedPrecisionApfloatHelperTest
         x = new Apfloat("0.9999999999999999999999999999999999999999");
         result = helper.inverseErf(x);
         assertEquals("value", new Apfloat("9.448789766720858262503185054107090039066"), result, new Apfloat("5e-39"));
+        assertEquals("precision", 40, result.precision());
+
+        x = new Apfloat("-0.9999999999999999999999999999999999999999");
+        result = helper.inverseErf(x);
+        assertEquals("value", new Apfloat("-9.448789766720858262503185054107090039066"), result, new Apfloat("5e-39"));
         assertEquals("precision", 40, result.precision());
     }
 
@@ -1579,6 +1589,11 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.airyAi(x);
         assertEquals("value", new Apfloat("0.464257"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("0");
+        result = helper.airyAi(x);
+        assertEquals("0 value", new Apfloat("0.355028"), result, new Apfloat("5e-6"));
+        assertEquals("0 precision", 6, result.precision());
     }
 
     public static void testAiryAiPrime()
@@ -1588,6 +1603,11 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.airyAiPrime(x);
         assertEquals("value", new Apfloat("0.309187"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("0");
+        result = helper.airyAiPrime(x);
+        assertEquals("0 value", new Apfloat("-0.258819"), result, new Apfloat("5e-6"));
+        assertEquals("0 precision", 6, result.precision());
     }
 
     public static void testAiryBi()
@@ -1597,6 +1617,11 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.airyBi(x);
         assertEquals("value", new Apfloat("-0.191785"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("0");
+        result = helper.airyBi(x);
+        assertEquals("0 value", new Apfloat("0.614927"), result, new Apfloat("5e-6"));
+        assertEquals("0 precision", 6, result.precision());
     }
 
     public static void testAiryBiPrime()
@@ -1606,6 +1631,11 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.airyBiPrime(x);
         assertEquals("value", new Apfloat("0.557908"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("0");
+        result = helper.airyBiPrime(x);
+        assertEquals("0 value", new Apfloat("0.448288"), result, new Apfloat("5e-6"));
+        assertEquals("0 precision", 6, result.precision());
     }
 
     public static void testBesselJ()

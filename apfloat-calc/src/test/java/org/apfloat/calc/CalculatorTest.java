@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -720,6 +720,12 @@ public class CalculatorTest
         assertCalculationMatch("0|-?([1-5]|[1-9]e-1)", "randomGaussian()", "-i", "1");
         assertCalculation("1.5708", "acos(0)", "-p", "-i", "6");
         assertCalculation("1.5708i", "acosh(0)", "-p", "-i", "6");
+        assertCalculation("0.355028", "airyAi(0)", "-p", "-i", "6");
+        assertCalculation("-0.258819", "airyAiPrime(0)", "-p", "-i", "6");
+        assertCalculation("0.614927", "airyBi(0)", "-p", "-i", "6");
+        assertCalculation("0.448288", "airyBiPrime(0)", "-p", "-i", "6");
+        assertCalculation("1.5708", "ellipticE(0)", "-p", "-i", "6");
+        assertCalculation("1.5708", "ellipticK(0)", "-p", "-i", "6");
     }
 
     private static final String NEWLINE = System.lineSeparator();

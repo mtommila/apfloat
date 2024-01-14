@@ -2745,6 +2745,10 @@ public class ApcomplexMath
     public static Apcomplex erf(Apcomplex z)
         throws ApfloatRuntimeException
     {
+        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        {
+            return z;
+        }
         if (z.scale() > 0)
         {
             // More accurate algorithm for larger values
@@ -2765,6 +2769,10 @@ public class ApcomplexMath
     static Apcomplex erfFixedPrecision(Apcomplex z)
         throws ApfloatRuntimeException
     {
+        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        {
+            return z;
+        }
         int radix = z.radix();
         long precision = z.precision();
         Apint one = Apint.ONES[radix],
@@ -2804,8 +2812,7 @@ public class ApcomplexMath
             Apfloat sqrtPi = ApfloatMath.sqrt(ApfloatMath.pi(precision, radix)),
                     half = new Aprational(one, two);
             Apcomplex result = gamma(half, z.multiply(z)).divide(sqrtPi);
-            boolean negate = (z.real().signum() == 0 ? z.imag().signum() < 0 : z.real().signum() < 0);
-            return (negate ? result.negate() : result);
+            return result;  // Note that compared to the erf() algorithm, z.real().signum() > 0 always so no need to negate the result ever
         }
         // More accurate algorithm for smaller values
         return one.subtract(erf(z));
@@ -2871,6 +2878,10 @@ public class ApcomplexMath
     public static Apcomplex fresnelS(Apcomplex z)
         throws ApfloatRuntimeException
     {
+        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        {
+            return z;
+        }
         int radix = z.radix();
         long precision = z.precision();
         Apfloat two = new Apfloat(2, precision, radix),
@@ -2914,6 +2925,10 @@ public class ApcomplexMath
     public static Apcomplex fresnelC(Apcomplex z)
         throws ApfloatRuntimeException
     {
+        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        {
+            return z;
+        }
         int radix = z.radix();
         long precision = z.precision();
         Apfloat two = new Apfloat(2, precision, radix),
@@ -2956,7 +2971,7 @@ public class ApcomplexMath
      *
      * @return <i>E<sub>ν</sub>(z)</i>
      *
-     * @throws ArithmeticException If real part of <code>ν</code> is &lt; 0 and <code>z</code> is zero. 
+     * @throws ArithmeticException If real part of <code>ν</code> is &le; 1 and <code>z</code> is zero. 
      *
      * @since 1.13.0
      */
@@ -3025,6 +3040,10 @@ public class ApcomplexMath
     public static Apcomplex logIntegral(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        {
+            return z;
+        }
         return expIntegralEi(log(z));
     }
 
@@ -3187,14 +3206,21 @@ public class ApcomplexMath
      *
      * @return Ai(z)
      *
+     * @throws InfiniteExpansionException If <code>z</code> is zero.
+     *
      * @since 1.13.0
      */
 
     public static Apcomplex airyAi(Apcomplex z)
         throws ApfloatRuntimeException
     {
+        return airyAi(z, z.precision());
+    }
+
+    static Apcomplex airyAi(Apcomplex z, long precision)
+        throws ApfloatRuntimeException
+    {
         int radix = z.radix();
-        long precision = z.precision();
         Apfloat one = Apint.ONES[radix].precision(precision),
                 two = new Apfloat(2, precision, radix),
                 three = new Apfloat(3, precision, radix),
@@ -3218,14 +3244,21 @@ public class ApcomplexMath
      *
      * @return Ai′(z)
      *
+     * @throws InfiniteExpansionException If <code>z</code> is zero.
+     *
      * @since 1.13.0
      */
 
     public static Apcomplex airyAiPrime(Apcomplex z)
         throws ApfloatRuntimeException
     {
+        return airyAiPrime(z, z.precision());
+    }
+
+    static Apcomplex airyAiPrime(Apcomplex z, long precision)
+        throws ApfloatRuntimeException
+    {
         int radix = z.radix();
-        long precision = z.precision();
         Apfloat one = Apint.ONES[radix].precision(precision),
                 two = new Apfloat(2, precision, radix),
                 three = new Apfloat(3, precision, radix),
@@ -3249,14 +3282,21 @@ public class ApcomplexMath
      *
      * @return Bi(z)
      *
+     * @throws InfiniteExpansionException If <code>z</code> is zero.
+     *
      * @since 1.13.0
      */
 
     public static Apcomplex airyBi(Apcomplex z)
         throws ApfloatRuntimeException
     {
+        return airyBi(z, z.precision());
+    }
+
+    static Apcomplex airyBi(Apcomplex z, long precision)
+        throws ApfloatRuntimeException
+    {
         int radix = z.radix();
-        long precision = z.precision();
         Apfloat one = Apint.ONES[radix].precision(precision),
                 two = new Apfloat(2, precision, radix),
                 three = new Apfloat(3, precision, radix),
@@ -3280,14 +3320,21 @@ public class ApcomplexMath
      *
      * @return Bi′(z)
      *
+     * @throws InfiniteExpansionException If <code>z</code> is zero.
+     *
      * @since 1.13.0
      */
 
     public static Apcomplex airyBiPrime(Apcomplex z)
         throws ApfloatRuntimeException
     {
+        return airyBiPrime(z, z.precision());
+    }
+
+    static Apcomplex airyBiPrime(Apcomplex z, long precision)
+        throws ApfloatRuntimeException
+    {
         int radix = z.radix();
-        long precision = z.precision();
         Apfloat one = Apint.ONES[radix].precision(precision),
                 two = new Apfloat(2, precision, radix),
                 three = new Apfloat(3, precision, radix),
@@ -3411,7 +3458,12 @@ public class ApcomplexMath
     public static Apcomplex ellipticK(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        long precision = z.precision();
+        return ellipticK(z, z.precision());
+    }
+
+    static Apcomplex ellipticK(Apcomplex z, long precision)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
         int radix = z.radix();
         Apfloat one = Apint.ONES[radix],
                 two = new Apfloat(2, precision, radix),
@@ -3439,7 +3491,12 @@ public class ApcomplexMath
     public static Apcomplex ellipticE(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        long precision = z.precision();
+        return ellipticE(z, z.precision());
+    }
+
+    static Apcomplex ellipticE(Apcomplex z, long precision)
+        throws ApfloatRuntimeException
+    {
         int radix = z.radix();
         Apfloat one = Apint.ONES[radix].precision(precision),
                 two = new Apfloat(2, precision, radix),

@@ -2576,6 +2576,10 @@ public class ApcomplexMathTest
         assertEquals("3, -2-3i precision", 9, a.precision());
         assertEquals("3, -2-3i value", new Apcomplex("(0.02884298730,0.01752010783)"), a, new Apfloat("5e-10"));
 
+        a = ApcomplexMath.polygamma(2, new Apcomplex("1").precision(6));
+        assertEquals("2, 1 precision", 6, a.precision());
+        assertEquals("2, 1 value", new Apcomplex("-2.40411"), a, new Apfloat("5e-5"));
+
         try
         {
             ApcomplexMath.polygamma(-1, new Apcomplex("(3.00000,4.00000)"));
@@ -2706,6 +2710,10 @@ public class ApcomplexMathTest
         assertEquals("1+2i, 3+4i, 5+6i precision", 29, a.precision());
         assertEquals("1+2i, 3+4i, 5+6i value", new Apcomplex("(-1720.81983111510859046209114724,-1217.54471001550464664125821887)"), a, new Apfloat("5e-25"));
 
+        a = ApcomplexMath.beta(new Apcomplex("(1,2)").precision(30), new Apcomplex("1").precision(30), new Apcomplex("(5,6)").precision(30));
+        assertEquals("1+2i, 1, 5+6i precision", 29, a.precision());
+        assertEquals("1+2i, 1, 5+6i value", new Apcomplex("(7146.750742209233540609443877,-50265.400817471882772163196595)"), a, new Apfloat("5e-24"));
+
         try
         {
             ApcomplexMath.beta(new Apcomplex("1"), new Apcomplex("-4"), new Apcomplex("3.5"));
@@ -2740,6 +2748,10 @@ public class ApcomplexMathTest
         Apcomplex a = ApcomplexMath.beta(new Apcomplex("(1,2)").precision(30), new Apcomplex("(3,4)").precision(30), new Apcomplex("(5,6)").precision(30), new Apcomplex("(7,8)").precision(30));
         assertEquals("1+2i, 3+4i, 5+6i, 7+8i precision", 29, a.precision());
         assertEquals("1+2i, 3+4i, 5+6i, 7+8i value", new Apcomplex("(4.50638342846197639932002079147e10,3.86722680716135531751599616064e10)"), a, new Apfloat("5e-18"));
+
+        a = ApcomplexMath.beta(new Apcomplex("(2.000000,3.000000)"), new Apcomplex("(3.000000,4.000000)"), new Apcomplex("1.000000"), new Apcomplex("(5.000000,6.000000)"));
+        assertEquals("2+3i, 3+4i, 1, 5+6i precision", 6, a.precision());
+        assertEquals("2+3i, 3+4i, 1, 5+6i value", new Apcomplex("(1.82681e7,4.14226e7)"), a, new Apfloat("5e2"));
 
         a = ApcomplexMath.beta(new Apcomplex("2"), new Apcomplex("2"), new Apcomplex("0"), new Apcomplex("3.5"));
         assertEquals("2, 2, 0, 3.5 precision", Apfloat.INFINITE, a.precision());
@@ -4053,6 +4065,14 @@ public class ApcomplexMathTest
         assertEquals("-15i precision", 38, a.precision());
         assertEquals("-15i value", new Apcomplex("(0,-1.96138456386738060348167059391082112595e96)"), a, new Apfloat("5e59"));
 
+        a = ApcomplexMath.erf(new Apcomplex("(0.100000,0.150000)"));
+        assertEquals("0.1+0.15i precision", 6, a.precision());
+        assertEquals("0.1+0.15i value", new Apcomplex("(0.115005,0.168813)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.erf(new Apcomplex("(0,0.150000)"));
+        assertEquals("0.15i precision", 6, a.precision());
+        assertEquals("0.15i value", new Apcomplex("(0,0.170535)"), a, new Apfloat("5e-6"));
+
         a = ApcomplexMath.erf(new Apcomplex("(0.500000,0.750000)"));
         assertEquals("0.5 + 0.75i precision", 6, a.precision());
         assertEquals("0.5 + 0.75i value", new Apcomplex("(0.835592,0.721707)"), a, new Apfloat("5e-6"));
@@ -4073,6 +4093,13 @@ public class ApcomplexMathTest
         assertEquals("-10007 fixed precision", 20, a.precision());
         assertEquals("-10007 fixed value", new Apcomplex("-0.99999999999999999999"), a, new Apfloat("5e-20"));
 
+        a = ApcomplexMath.erf(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apcomplex("0"), a);
+
+        a = ApcomplexMath.erfFixedPrecision(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apcomplex("0"), a);
     }
 
     public static void testErfc()
@@ -4109,6 +4136,18 @@ public class ApcomplexMathTest
         assertEquals("-15i precision", 38, a.precision());
         assertEquals("-15i value", new Apcomplex("(0,1.96138456386738060348167059391082112595e96)"), a, new Apfloat("5e59"));
 
+        a = ApcomplexMath.erfc(new Apcomplex("(0.300000,0.400000)"));
+        assertEquals("0.3 + 0.4i precision", 6, a.precision());
+        assertEquals("0.3 + 0.4i value", new Apcomplex("(0.617957,-0.431252)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.erfc(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apint(1), a);
+
+        a = ApcomplexMath.erfcFixedPrecision(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apint(1), a);
+
         a = ApcomplexMath.erfc(new Apcomplex(new Apfloat(3, 17, 2), new Apfloat(4, 17, 2)));
         assertEquals("3 + 4i radix 2 precision", 13, a.precision());
         assertEquals("3 + 4i radix 2 value", new Apcomplex(new Apfloat("1111001.00101111111", 13, 2), new Apfloat("11011.110000000001011", 13, 2)), a, new Apfloat("1e-6", 1, 2));
@@ -4127,6 +4166,10 @@ public class ApcomplexMathTest
         a = ApcomplexMath.erfi(new Apcomplex("-15").precision(8));
         assertEquals("-15 precision", 6, a.precision());
         assertEquals("-15 value", new Apcomplex("-1.96138e96"), a, new Apfloat("5e91"));
+
+        a = ApcomplexMath.erfi(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apcomplex("0"), a);
 
         a = ApcomplexMath.erfi(new Apcomplex(new Apfloat(3, 17, 2), new Apfloat(4, 17, 2)));
         assertEquals("3 + 4i radix 2 precision", 26, a.precision());
@@ -4154,6 +4197,14 @@ public class ApcomplexMathTest
         a = ApcomplexMath.fresnelS(new Apcomplex("(3.00000e-3,4.00000e-3)"));
         assertEquals("3e-3 + 4e-3i precision", 6, a.precision());
         assertEquals("3e-3 + 4e-3i value", new Apcomplex("(-6.12611e-8,2.30383e-8)"), a, new Apfloat("5e-13"));
+
+        a = ApcomplexMath.fresnelS(new Apcomplex("(0,4.00000)"));
+        assertEquals("4i precision", 6, a.precision());
+        assertEquals("4i value", new Apcomplex("(0,-0.420516)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.fresnelS(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apcomplex("0"), a);
 
         a = ApcomplexMath.fresnelS(new Apcomplex(new Apfloat(1, 21, 2), new Apfloat(2, 21, 2)));
         assertEquals("2 + 1i radix 2 precision", 19, a.precision());
@@ -4185,6 +4236,14 @@ public class ApcomplexMathTest
         a = ApcomplexMath.fresnelC(new Apcomplex("(3.00000000000000000000000000000e-3,4.00000000000000000000000000000e-3)"));
         assertEquals("3e-3 + 4e-3i precision", 30, a.precision());
         assertEquals("3e-3 + 4e-3i value", new Apcomplex("(0.00300000000005847740605046524772,0.00400000000076884218289338981714)"), a, new Apfloat("5e-32"));
+
+        a = ApcomplexMath.fresnelC(new Apcomplex("(0,4.00000)"));
+        assertEquals("4i precision", 6, a.precision());
+        assertEquals("4i value", new Apcomplex("(0,0.498426)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.fresnelC(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apcomplex("0"), a);
 
         a = ApcomplexMath.fresnelC(new Apcomplex(new Apfloat(1, 23, 2), new Apfloat(2, 23, 2)));
         assertEquals("2 + 1i radix 2 precision", 20, a.precision());
@@ -4221,6 +4280,10 @@ public class ApcomplexMathTest
         assertEquals("3e-1000000000000 + 4e-1000000000000i, 5e-1000000000000 + 6e-1000000000000i precision", 6, a.precision());
         assertEquals("3e-1000000000000 + 4e-1000000000000i, 5e-1000000000000 + 6e-1000000000000i value", new Apcomplex("(8.19672e98,-9.83607e98)"), a, new Apfloat("5e93"));
 
+        a = ApcomplexMath.expIntegralE(new Apcomplex("0"), new Apcomplex("-1.00000"));
+        assertEquals("0, -1 precision", 6, a.precision());
+        assertEquals("0, -1 value", new Apcomplex("-2.71828"), a, new Apfloat("5e-5"));
+
         a = ApcomplexMath.expIntegralE(new Apcomplex(new Apfloat(3, 17, 2), new Apfloat(-4, 17, 2)), new Apcomplex(new Apfloat(5, 17, 2), new Apfloat(-6, 17, 2)));
         assertEquals("3 - 4i, 5 - 6i precision", 14, a.precision());
         assertEquals("3 - 4i, 5 - 6i radix", 2, a.radix());
@@ -4248,6 +4311,15 @@ public class ApcomplexMathTest
         {
             ApcomplexMath.expIntegralE(new Apcomplex("1"), new Apcomplex("0"));
             fail("1, 0 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
+        try
+        {
+            ApcomplexMath.expIntegralE(new Apcomplex("(1,1)"), new Apcomplex("0"));
+            fail("1+i, 0 accepted");
         }
         catch (ArithmeticException ae)
         {
@@ -4332,15 +4404,13 @@ public class ApcomplexMathTest
         assertEquals("0.05 precision", 6, a.precision());
         assertEquals("0.05 value", new Apcomplex("-0.0131194"), a, new Apfloat("5e-7"));
 
-        try
-        {
-            ApcomplexMath.logIntegral(new Apcomplex("0"));
-            fail("0 accepted");
-        }
-        catch (ArithmeticException ae)
-        {
-            // OK, result is infinite
-        }
+        a = ApcomplexMath.logIntegral(new Apcomplex("(0,0.0500000)"));
+        assertEquals("0.05i precision", 6, a.precision());
+        assertEquals("0.05i value", new Apcomplex("(0.00469234,3.13052)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.logIntegral(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apcomplex("0"), a);
 
         try
         {
@@ -4378,6 +4448,10 @@ public class ApcomplexMathTest
         a = ApcomplexMath.sinIntegral(new Apcomplex("(0,0.0001)").precision(30));
         assertEquals("0.00001i precision", 30, a.precision());
         assertEquals("0.00001i value", new Apcomplex("(0,0.000100000000055555555572222222225)"), a, new Apfloat("5e-33"));
+
+        a = ApcomplexMath.sinIntegral(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apcomplex("0"), a);
 
         a = ApcomplexMath.sinIntegral(new Apcomplex(new Apfloat(5, 17, 2), new Apfloat(-6, 17, 2)));
         assertEquals("5 - 6i precision", 15, a.precision());
@@ -4495,6 +4569,10 @@ public class ApcomplexMathTest
         assertEquals("-4i precision", 6, a.precision());
         assertEquals("-4i value", new Apcomplex("(0,-1.75820)"), a, new Apfloat("5e-5"));
 
+        a = ApcomplexMath.sinhIntegral(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apcomplex("0"), a);
+
         try
         {
             ApcomplexMath.sinhIntegral(new Apcomplex(Apfloat.ONE, new Apfloat(4)));
@@ -4579,6 +4657,16 @@ public class ApcomplexMathTest
         assertEquals("0.5 + 0.75i precision", 17, a.precision());
         assertEquals("0.5 + 0.75i radix", 2, a.radix());
         assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("0.0011000110100010010", 17, 2), new Apfloat("-0.0010110100011100011", 17, 2)), a, new Apfloat("1e-19", 1, 2));
+
+        try
+        {
+            ApcomplexMath.airyAi(new Apcomplex("0"));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testAiryAiPrime()
@@ -4599,6 +4687,16 @@ public class ApcomplexMathTest
         assertEquals("0.5 + 0.75i precision", 19, a.precision());
         assertEquals("0.5 + 0.75i radix", 2, a.radix());
         assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("-0.01000000101011010010", 19, 2), new Apfloat("0.00011101011010111011101", 19, 2)), a, new Apfloat("1e-20", 1, 2));
+
+        try
+        {
+            ApcomplexMath.airyAiPrime(new Apcomplex("0"));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testAiryBi()
@@ -4619,6 +4717,16 @@ public class ApcomplexMathTest
         assertEquals("0.5 + 0.75i precision", 18, a.precision());
         assertEquals("0.5 + 0.75i radix", 2, a.radix());
         assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("0.110000000000010100", 18, 2), new Apfloat("0.01010101001010100101", 18, 2)), a, new Apfloat("1e-18", 1, 2));
+
+        try
+        {
+            ApcomplexMath.airyBi(new Apcomplex("0"));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testAiryBiPrime()
@@ -4639,6 +4747,16 @@ public class ApcomplexMathTest
         assertEquals("0.5 + 0.75i precision", 18, a.precision());
         assertEquals("0.5 + 0.75i radix", 2, a.radix());
         assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("0.0100000000010011111111", 18, 2), new Apfloat("0.001111010001010101101", 18, 2)), a, new Apfloat("1e-19", 1, 2));
+
+        try
+        {
+            ApcomplexMath.airyBiPrime(new Apcomplex("0"));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+        }
     }
 
     public static void testBesselJ()

@@ -108,6 +108,16 @@ public class BesselHelperTest
         assertEquals("3 - 4i, 5 - 6i radix", 2, a.radix());
         assertEquals("3 - 4i, 5 - 6i value", new Apcomplex(new Apfloat("0.011001100101101100", 17, 2), new Apfloat("0.010111000001000100", 17, 2)), a, new Apfloat("1e-18", 1, 2));
 
+        a = BesselHelper.besselJ(new Apcomplex(new Apint(0, 2)), new Apcomplex(new Apint(0, 2)));
+        assertEquals("0, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0, 0 radix", 2, a.radix());
+        assertEquals("0, 0 value", new Apcomplex("1"), a);
+
+        a = BesselHelper.besselJ(new Apcomplex(new Apint(-1, 2)), new Apcomplex(new Apint(0, 2)));
+        assertEquals("-1, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-1, 0 radix", 2, a.radix());
+        assertEquals("-1, 0 value", new Apcomplex("0"), a);
+
         try
         {
             BesselHelper.besselJ(new Apcomplex("-0.1"), new Apcomplex("0"));
@@ -168,6 +178,16 @@ public class BesselHelperTest
         assertEquals("3 - 4i, 5 - 6i precision", 17, a.precision());
         assertEquals("3 - 4i, 5 - 6i radix", 2, a.radix());
         assertEquals("3 - 4i, 5 - 6i value", new Apcomplex(new Apfloat("-11.100010111001110001", 17, 2), new Apfloat("111.0101111110001111", 17, 2)), a, new Apfloat("1e-16", 1, 2));
+
+        a = BesselHelper.besselI(new Apcomplex(new Apint(0, 2)), new Apcomplex(new Apint(0, 2)));
+        assertEquals("0, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0, 0 radix", 2, a.radix());
+        assertEquals("0, 0 value", new Apcomplex("1"), a);
+
+        a = BesselHelper.besselI(new Apcomplex(new Apint(-1, 2)), new Apcomplex(new Apint(0, 2)));
+        assertEquals("-1, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-1, 0 radix", 2, a.radix());
+        assertEquals("-1, 0 value", new Apcomplex("0"), a);
 
         try
         {

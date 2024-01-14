@@ -3730,19 +3730,14 @@ public class ApfloatMathTest
         assertEquals("0.05 precision", 6, a.precision());
         assertEquals("0.05 value", new Apfloat("-0.0131194"), a, new Apfloat("5e-7"));
 
+        a = ApfloatMath.logIntegral(new Apfloat("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apfloat("0"), a, new Apfloat("5e-7"));
+
         try
         {
             ApfloatMath.logIntegral(new Apfloat("1"));
             fail("li of 1");
-        }
-        catch (ArithmeticException ae)
-        {
-            // OK
-        }
-        try
-        {
-            ApfloatMath.logIntegral(new Apfloat("0"));
-            fail("li of zero");
         }
         catch (ArithmeticException ae)
         {

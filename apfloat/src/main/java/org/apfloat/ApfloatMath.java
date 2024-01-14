@@ -3504,6 +3504,8 @@ public class ApfloatMath
      *
      * @return Ai(x)
      *
+     * @throws InfiniteExpansionException If <code>x</code> is zero.
+     *
      * @since 1.13.0
      */
 
@@ -3511,6 +3513,12 @@ public class ApfloatMath
         throws ApfloatRuntimeException
     {
         return ApcomplexMath.airyAi(x).real();
+    }
+
+    static Apfloat airyAi(Apfloat x, long precision)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.airyAi(x, precision).real();
     }
 
     /**
@@ -3525,6 +3533,8 @@ public class ApfloatMath
      *
      * @return Ai′(x)
      *
+     * @throws InfiniteExpansionException If <code>x</code> is zero.
+     *
      * @since 1.13.0
      */
 
@@ -3532,6 +3542,12 @@ public class ApfloatMath
         throws ApfloatRuntimeException
     {
         return ApcomplexMath.airyAiPrime(x).real();
+    }
+
+    static Apfloat airyAiPrime(Apfloat x, long precision)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.airyAiPrime(x, precision).real();
     }
 
     /**
@@ -3546,6 +3562,8 @@ public class ApfloatMath
      *
      * @return Bi(x)
      *
+     * @throws InfiniteExpansionException If <code>x</code> is zero.
+     *
      * @since 1.13.0
      */
 
@@ -3553,6 +3571,12 @@ public class ApfloatMath
         throws ApfloatRuntimeException
     {
         return ApcomplexMath.airyBi(x).real();
+    }
+
+    static Apfloat airyBi(Apfloat x, long precision)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.airyBi(x, precision).real();
     }
 
     /**
@@ -3567,6 +3591,8 @@ public class ApfloatMath
      *
      * @return Bi′(x)
      *
+     * @throws InfiniteExpansionException If <code>x</code> is zero.
+     *
      * @since 1.13.0
      */
 
@@ -3574,6 +3600,12 @@ public class ApfloatMath
         throws ApfloatRuntimeException
     {
         return ApcomplexMath.airyBiPrime(x).real();
+    }
+
+    static Apfloat airyBiPrime(Apfloat x, long precision)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.airyBiPrime(x, precision).real();
     }
 
     /**
@@ -3704,11 +3736,17 @@ public class ApfloatMath
     public static Apfloat ellipticK(Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        return ellipticK(x, x.precision());
+    }
+
+    static Apfloat ellipticK(Apfloat x, long precision)
+        throws ApfloatRuntimeException
+    {
         if (x.compareTo(Apfloat.ONES[x.radix()]) > 0)
         {
             throw new ArithmeticException("Result would be complex");
         }
-        return ApcomplexMath.ellipticK(x).real();
+        return ApcomplexMath.ellipticK(x, precision).real();
     }
 
     /**
@@ -3732,11 +3770,17 @@ public class ApfloatMath
     public static Apfloat ellipticE(Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        return ellipticE(x, x.precision());
+    }
+
+    static Apfloat ellipticE(Apfloat x, long precision)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
         if (x.compareTo(Apfloat.ONES[x.radix()]) > 0)
         {
             throw new ArithmeticException("Result would be complex");
         }
-        return ApcomplexMath.ellipticE(x).real();
+        return ApcomplexMath.ellipticE(x, precision).real();
     }
 
     /**
