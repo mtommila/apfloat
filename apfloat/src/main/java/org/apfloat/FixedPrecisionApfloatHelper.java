@@ -2025,12 +2025,6 @@ public class FixedPrecisionApfloatHelper
         return tmp;
     }
 
-    private Apfloat setErfPrecision(Apfloat x)
-    {
-        long precision = ApfloatHelper.extendPrecision(precision(), Math.max(0, Util.ifFinite(x.scale(), 2 * x.scale())));
-        return x.precision(precision);
-    }
-
     private Apfloat checkSmallLinear(Apfloat x)
     {
         if (x.scale() <= -precision())

@@ -1844,6 +1844,11 @@ public class FixedPrecisionApcomplexHelper
         return setTrigonometricPrecision(x);
     }
 
+    Apfloat setErfPrecision(Apfloat x)
+    {
+        return setErfPrecision((Apcomplex) x).real();
+    }
+
     private Apcomplex setPrecision(Apcomplex z)
         throws ApfloatRuntimeException
     {
@@ -1890,7 +1895,12 @@ public class FixedPrecisionApcomplexHelper
 
     private Apcomplex setErfPrecision(Apcomplex z)
     {
-        long precision = ApfloatHelper.extendPrecision(precision(), Math.max(0, Util.ifFinite(z.scale(), 2 * z.scale())));
+        long precision = precision(),
+             scale = z.scale();
+        if (scale > 0)
+        {
+            precision = ApfloatHelper.extendPrecision(precision, Util.ifFinite(scale, 2 * scale));
+        }
         return z.precision(precision);
     }
 

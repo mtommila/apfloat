@@ -1008,6 +1008,11 @@ public class FixedPrecisionApcomplexHelperTest
         result = helper.erf(z);
         assertEquals("0.1+1000000i value", new Apcomplex("(-7.12728e434294481895,9.94943e434294481896)"), result, new Apfloat("5e434294481891"));
         assertEquals("0.1+1000000i precision", 6, result.precision());
+
+        z = new Apcomplex("(-0.1,-0.2)");
+        result = helper.erf(z);
+        assertEquals("-0.1-0.2i value", new Apcomplex("(-0.117021,-0.226384)"), result, new Apfloat("5e-6"));
+        assertEquals("-0.1-0.2i precision", 6, result.precision());
     }
 
     public static void testErfc()
@@ -1047,6 +1052,11 @@ public class FixedPrecisionApcomplexHelperTest
         result = helper.erfc(z);
         assertEquals("-0.1+1000000i value", new Apcomplex("(-7.12728e434294481895,-9.94943e434294481896)"), result, new Apfloat("5e434294481891"));
         assertEquals("-0.1+1000000i precision", 6, result.precision());
+
+        z = new Apcomplex("(-0.1,-0.2)");
+        result = helper.erfc(z);
+        assertEquals("-0.1-0.2i value", new Apcomplex("(1.11702,0.226384)"), result, new Apfloat("5e-5"));
+        assertEquals("-0.1-0.2i precision", 6, result.precision());
     }
 
     public static void testErfi()
@@ -1071,6 +1081,11 @@ public class FixedPrecisionApcomplexHelperTest
         result = helper.erfi(z);
         assertEquals("0.1+1000000i value", new Apcomplex("(-2.28002e-434294481911,1.00000)"), result, new Apfloat("5e-5"));
         assertEquals("0.1+1000000i precision", 6, result.precision());
+
+        z = new Apcomplex("(-0.1,-0.2)");
+        result = helper.erfi(z);
+        assertEquals("-0.1-0.2i value", new Apcomplex("(-0.108747,-0.224881)"), result, new Apfloat("5e-6"));
+        assertEquals("-0.1-0.2i precision", 6, result.precision());
     }
 
     public static void testFresnelS()

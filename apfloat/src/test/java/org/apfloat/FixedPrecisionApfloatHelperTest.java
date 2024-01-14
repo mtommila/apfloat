@@ -1410,6 +1410,11 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.erf(x);
         assertEquals("value", new Apfloat("-0.966105"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("-0.5");
+        result = helper.erf(x);
+        assertEquals("-0.5 value", new Apfloat("-0.520499"), result, new Apfloat("5e-6"));
+        assertEquals("-0.5 precision", 6, result.precision());
     }
 
     public static void testErfc()
@@ -1419,6 +1424,11 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.erfc(x);
         assertEquals("value", new Apfloat("1.96611"), result, new Apfloat("5e-5"));
         assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("-0.5");
+        result = helper.erfc(x);
+        assertEquals("-0.5 value", new Apfloat("1.52049"), result, new Apfloat("5e-5"));
+        assertEquals("-0.5 precision", 6, result.precision());
     }
 
     public static void testErfi()
@@ -1428,6 +1438,11 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.erfi(x);
         assertEquals("value", new Apfloat("-4.58473"), result, new Apfloat("5e-5"));
         assertEquals("precision", 6, result.precision());
+
+        x = new Apfloat("-0.5");
+        result = helper.erfi(x);
+        assertEquals("-0.5 value", new Apfloat("-0.614952"), result, new Apfloat("5e-6"));
+        assertEquals("-0.5 precision", 6, result.precision());
     }
 
     public static void testInverseErf()
