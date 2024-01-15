@@ -3880,6 +3880,10 @@ public class ApcomplexMathTest
         a = ApcomplexMath.hypergeometric0F1Regularized(new Apcomplex("-2.000000"), new Apcomplex("(3.000000,4.000000)"));
         assertEquals("-2, 3+4i precision", 6, a.precision());
         assertEquals("-2, 3+4i value", new Apcomplex("(-39.0633,-21.8202)"), a, new Apfloat("5e-4"));
+
+        a = ApcomplexMath.hypergeometric0F1Regularized(new Apcomplex("-0.9999999999998"), new Apcomplex("(3.000000000000,4.000000000000)"));
+        assertEquals("-0.9999999999998, 3+4i precision", 12, a.precision());
+        assertEquals("-0.9999999999998, 3+4i value", new Apcomplex("(-33.49668360386,7.4495303552)"), a, new Apfloat("5e-11"));
     }
 
     public static void testHypergeometric1F1Regularized()

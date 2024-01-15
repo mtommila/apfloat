@@ -81,6 +81,18 @@ public class BesselHelperTest
         assertEquals("-0.999999, 6i precision", 6, a.precision());
         assertEquals("-0.999999, 6i value", new Apcomplex("(0.0000963557,-61.3419)"), a, new Apfloat("5e-4"));
 
+        a = BesselHelper.besselJ(new Apcomplex("-1.999999"), new Apcomplex("3.000000"));
+        assertEquals("-1.999999, 3 precision", 6, a.precision());
+        assertEquals("-1.999999, 3 value", new Apcomplex("0.486087"), a, new Apfloat("5e-6"));
+
+        a = BesselHelper.besselJ(new Apcomplex("-1.9999999999998"), new Apcomplex("3.0000000000000"));
+        assertEquals("-1.9999999999998, 3 precision", 14, a.precision());
+        assertEquals("-1.9999999999998, 3 value", new Apcomplex("0.48609126058580"), a, new Apfloat("5e-14"));
+
+        a = BesselHelper.besselJ(new Apcomplex("-1.9999999999998000"), new Apcomplex("3.0000000000000000"));
+        assertEquals("-1.9999999999998, 3 precision", 17, a.precision());
+        assertEquals("-1.9999999999998, 3 value", new Apcomplex("0.48609126058580704"), a, new Apfloat("5e-17"));
+
         /*
         a = BesselHelper.besselJ(new Apcomplex("1e-1000000000000"), new Apcomplex("(5.000000,6.000000)"));
         assertEquals("1e-1000000000000, 5 + 6i precision", 7, a.precision());

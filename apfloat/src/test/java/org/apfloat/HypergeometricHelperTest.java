@@ -119,5 +119,21 @@ public class HypergeometricHelperTest
         a = HypergeometricHelper.hypergeometricPFQRegularized(new Apcomplex[] { new Apcomplex("(2.00000,3.00000)"), new Apcomplex("(3.00000,4.00000)") }, new Apcomplex[] { new Apcomplex("-5.00000"), new Apcomplex("-4.00000"), new Apcomplex("(5.00000,6.00000)") }, new Apcomplex("(0.100000,0.200000)"));
         assertEquals("2+3i, 3+4i; -5, -4, 5+6i; 0.1+0.2i precision", 6, a.precision());
         assertEquals("2+3i, 3+4i; -5, -4, 5+6i; 0.1+0.2i value", new Apcomplex("(0.000531945,0.0000629876 )"), a, new Apfloat("5e-9"));
+
+        a = HypergeometricHelper.hypergeometricPFQRegularized(new Apcomplex[] { new Apcomplex("(2.00000,3.00000)"), new Apcomplex("(3.00000,4.00000)") }, new Apcomplex[] { new Apcomplex("-6.00001"), new Apcomplex("-5.00000"), new Apcomplex("(5.00000,6.00000)") }, new Apcomplex("(0.100000,0.200000)"));
+        assertEquals("2+3i, 3+4i; -6.00001, -5, 5+6i; 0.1+0.2i precision", 6, a.precision());
+        assertEquals("2+3i, 3+4i; -6.00001, -5, 5+6i; 0.1+0.2i value", new Apcomplex("(8.05671e-6,0.000115069)"), a, new Apfloat("5e-9"));
+
+        a = HypergeometricHelper.hypergeometricPFQRegularized(new Apcomplex[] { new Apcomplex("(2.00000,3.00000)"), new Apcomplex("(3.00000,4.00000)") }, new Apcomplex[] { new Apcomplex("-5.99999"), new Apcomplex("-5.00000"), new Apcomplex("(5.00000,6.00000)") }, new Apcomplex("(0.100000,0.200000)"));
+        assertEquals("2+3i, 3+4i; -5.99999, -5, 5+6i; 0.1+0.2i precision", 6, a.precision());
+        assertEquals("2+3i, 3+4i; -5.99999, -5, 5+6i; 0.1+0.2i value", new Apcomplex("(8.06751e-6,0.000115071)"), a, new Apfloat("5e-9"));
+
+        a = HypergeometricHelper.hypergeometricPFQRegularized(new Apcomplex[] { new Apcomplex("(2.00000,3.00000)"), new Apcomplex("(3.00000,4.00000)") }, new Apcomplex[] { new Apcomplex("-6.99999"), new Apcomplex("-5.00000"), new Apcomplex("(5.00000,6.00000)") }, new Apcomplex("(0.100000,0.200000)"));
+        assertEquals("2+3i, 3+4i; -6.99999, -5, 5+6i; 0.1+0.2i precision", 5, a.precision());
+        assertEquals("2+3i, 3+4i; -6.99999, -5, 5+6i; 0.1+0.2i value", new Apcomplex("(-0.0000115393,3.94988e-6)"), a, new Apfloat("5e-9"));
+
+        a = HypergeometricHelper.hypergeometricPFQRegularized(new Apcomplex[] { new Apcomplex("(2.00000,3.00000)"), new Apcomplex("(3.00000,4.00000)") }, new Apcomplex[] { new Apcomplex("-7.50000"), new Apcomplex("-5.00000"), new Apcomplex("(5.00000,6.00000)") }, new Apcomplex("(0.100000,0.200000)"));
+        assertEquals("2+3i, 3+4i; -7.5, -5, 5+6i; 0.1+0.2i precision", 6, a.precision());
+        assertEquals("2+3i, 3+4i; -7.5, -5, 5+6i; 0.1+0.2i value", new Apcomplex("(0.000209539,-0.0000265153)"), a, new Apfloat("5e-9"));
     }
 }

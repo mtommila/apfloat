@@ -463,6 +463,11 @@ class HypergeometricHelper
 
     public static Apcomplex hypergeometricPFQRegularized(Apcomplex[] a, Apcomplex[] b, Apcomplex z)
     {
+        return new HypergeometricHelper(a, b, z).hypergeometricPFQRegularized();
+    }
+
+    private Apcomplex hypergeometricPFQRegularized()
+    {
         Apcomplex result;
         Apfloat n = null;
         int j = -1;
@@ -487,8 +492,8 @@ class HypergeometricHelper
         if (n == null)
         {
             // None of the b is a nonpositive integer, regularization is trivial
-            Apcomplex[] gamma = Arrays.stream(b).map(ApcomplexMath::gamma).toArray(Apcomplex[]::new);
-            result = hypergeometricPFQ(a, b, z).divide(ApcomplexMath.product(gamma));
+            Apcomplex[] gamma = Arrays.stream(b).map(this::ensureGammaPrecision).map(ApcomplexMath::gamma).toArray(Apcomplex[]::new);
+            result = hypergeometricPFQ().divide(ApcomplexMath.product(gamma));
         }
         else
         {
@@ -500,12 +505,12 @@ class HypergeometricHelper
             if (result.real().signum() != 0 || result.imag().signum() != 0)
             {
                 Apfloat n2 = n.add(new Apint(2, radix));
-                Apcomplex[] gamma = Arrays.stream(b).map(n1::add).map(ApcomplexMath::gamma).toArray(Apcomplex[]::new);
+                Apcomplex[] gamma = Arrays.stream(b).map(n1::add).map(this::ensureGammaPrecision).map(ApcomplexMath::gamma).toArray(Apcomplex[]::new);
                 result = result.multiply(ApcomplexMath.pow(z, n1)).divide(ApcomplexMath.gamma(n2).multiply(ApcomplexMath.product(gamma)));
                 a = Arrays.stream(a).map(n1::add).toArray(Apcomplex[]::new);
                 b = Arrays.stream(b).map(n1::add).toArray(Apcomplex[]::new);
                 b[j] = n2;
-                result = result.multiply(hypergeometricPFQ(a, b, z));
+                result = result.multiply(hypergeometricPFQ());
             }
         }
         return result;
@@ -969,6 +974,20 @@ class HypergeometricHelper
         {
             dest[i] = ApfloatHelper.ensurePrecision(src[i], extendedPrecision);
         }
+    }
+
+    private Apcomplex ensureGammaPrecision(Apcomplex z)
+    {
+        Apint zRounded = RoundingHelper.roundToInteger(z.real(), RoundingMode.HALF_EVEN).truncate();
+        if (zRounded.signum() < 0)
+        {
+            long digitLoss = -z.subtract(zRounded).scale();
+            if (digitLoss > 0)
+            {
+                z = ApfloatHelper.ensurePrecision(z, Util.ifFinite(workingPrecision, workingPrecision + digitLoss));
+            }
+        }
+        return ApfloatHelper.ensurePrecision(z, workingPrecision);
     }
 
     private long targetPrecision,
