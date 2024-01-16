@@ -1473,6 +1473,11 @@ public class FixedPrecisionApfloatHelperTest
         result = helper.inverseErf(x);
         assertEquals("value", new Apfloat("-9.448789766720858262503185054107090039066"), result, new Apfloat("5e-39"));
         assertEquals("precision", 40, result.precision());
+
+        x = new Apfloat("0.1111111111111111111111111111111111111111", Apfloat.DEFAULT, 2);
+        result = helper.inverseErf(x);
+        assertEquals("0.1111111111111111111111111111111111111111 radix 2 value", new Apfloat("101.0000110100011110111111001101101111101", 40, 2), result, new Apfloat("1e-37", 1, 2));
+        assertEquals("0.1111111111111111111111111111111111111111 radix 2 precision", 40, result.precision());
     }
 
     public static void testInverseErfc()
@@ -1498,6 +1503,11 @@ public class FixedPrecisionApfloatHelperTest
         result = helper.inverseErfc(x);
         assertEquals("value", new Apfloat("-9.448789766720858262503185054107090039065"), result, new Apfloat("5e-39"));
         assertEquals("precision", 40, result.precision());
+
+        x = new Apfloat("1.111111111111111111111111111111111111111", Apfloat.DEFAULT, 2);
+        result = helper.inverseErfc(x);
+        assertEquals("1.111111111111111111111111111111111111111 radix 2 value", new Apfloat("-100.1111101111000101001000000001001100101", 40, 2), result, new Apfloat("1e-37", 1, 2));
+        assertEquals("1.111111111111111111111111111111111111111 radix 2 precision", 40, result.precision());
     }
 
     public static void testFresnelS()

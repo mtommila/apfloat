@@ -2760,6 +2760,10 @@ public class ApfloatMathTest
         assertEquals("-0.1, 1, 6 precision", 6, a.precision(), 1);
         assertEquals("-0.1, 1, 6 value", new Apfloat("-0.128594"), a, new Apfloat("5e-6"));
 
+        a = ApfloatMath.beta(new Apfloat("1", 40, 2), new Apfloat("10", 40, 2), new Apfloat("0.1111111111111111111111111111111111111111", Apfloat.DEFAULT, 2));
+        assertEquals("1, 10, 0.1111111111111111111111111111111111111111 radix 2 value", new Apfloat("0.1000000000000000000000000000000000000000", 40, 2), a, new Apfloat("1e-40", 1, 2));
+        assertEquals("1, 10, 0.1111111111111111111111111111111111111111 radix 2 precision", 40, a.precision());
+
         try
         {
             ApfloatMath.beta(new Apfloat("0.1"), new Apfloat(0), new Apfloat("1"));
@@ -2837,6 +2841,10 @@ public class ApfloatMathTest
         a = ApfloatMath.beta(new Apfloat("1.00000"), new Apfloat("-0.100000"), new Apfloat("2.00000"), new Apfloat("6.00000"));
         assertEquals("1, -0.1, 2, 6 precision", 6, a.precision(), 1);
         assertEquals("1, -0.1, 2, 6 value", new Apfloat("-0.0168720"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.beta(new Apfloat("0.1", 40, 2), new Apfloat("1", 40, 2), new Apfloat("10", 40, 2), new Apfloat("0.1111111111111111111111111111111111111111", Apfloat.DEFAULT, 2));
+        assertEquals("0.1, 1, 10, 0.1111111111111111111111111111111111111111, 2 radix 2 value", new Apfloat("0.01100000000000000000000000000000000000001", 39, 2), a, new Apfloat("1e-40", 1, 2));
+        assertEquals("0.1, 1, 10,, 0.1111111111111111111111111111111111111111, 2 radix 2 precision", 39, a.precision());
 
         try
         {
@@ -3202,6 +3210,10 @@ public class ApfloatMathTest
         assertEquals("-3, -2, -3, 1 precision", Apfloat.INFINITE, a.precision());
         assertEquals("-3, -2, -3, 1 value", new Apfloat("0"), a);
 
+        a = ApfloatMath.hypergeometric2F1(new Apfloat(1, 40, 2), new Apfloat(2, 40, 2), new Apfloat(3, 40, 2), new Apfloat("0.1111111111111111111111111111111111111111", Apfloat.DEFAULT, 2));
+        assertEquals("1, 2, 3, 0.1111111111111111111111111111111111111111 radix 2 value", new Apfloat("110101.0111001110100111011111010111000111", 40, 2), a, new Apfloat("1e-31", 1, 2));
+        assertEquals("1, 2, 3, 0.1111111111111111111111111111111111111111 radix 2 precision", 40, a.precision());
+
         try
         {
             ApfloatMath.hypergeometric2F1(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("1.000001"));
@@ -3331,6 +3343,10 @@ public class ApfloatMathTest
         a = ApfloatMath.hypergeometric2F1Regularized(new Apfloat("-2.00000"), new Apfloat("2.20000"), new Apfloat("-1.00000"), new Apfloat("0.100000"));
         assertEquals("-2, 2.2, -1, 0.1 precision", 6, a.precision());
         assertEquals("-2, 2.2, -1, 0.1 value", new Apfloat("0.0704000"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.hypergeometric2F1Regularized(new Apfloat(1, 40, 2), new Apfloat(2, 40, 2), new Apfloat(3, 40, 2), new Apfloat("0.1111111111111111111111111111111111111111", Apfloat.DEFAULT, 2));
+        assertEquals("1, 2, 3, 0.1111111111111111111111111111111111111111 radix 2 value", new Apfloat("11010.10111001110100111011111010111000111", 40, 2), a, new Apfloat("1e-32", 1, 2));
+        assertEquals("1, 2, 3, 0.1111111111111111111111111111111111111111 radix 2 precision", 40, a.precision());
 
         try
         {
@@ -3966,6 +3982,10 @@ public class ApfloatMathTest
         assertEquals("-3 precision", 6, a.precision());
         assertEquals("-3 value", new Apfloat("1.07826"), a, new Apfloat("5e-5"));
 
+        a = ApfloatMath.ellipticK(new Apfloat("0.1111111111111111111111111111111111111111", Apfloat.DEFAULT, 2));
+        assertEquals("0.1111111111111111111111111111111111111111 radix 2 value", new Apfloat("1111.001111111100111000001111010011000000", 40, 2), a, new Apfloat("1e-36", 1, 2));
+        assertEquals("0.1111111111111111111111111111111111111111 radix 2 precision", 40, a.precision());
+
         try
         {
             ApfloatMath.ellipticK(new Apfloat("1.10000", 6, 2));
@@ -4014,6 +4034,10 @@ public class ApfloatMathTest
         a = ApfloatMath.ellipticE(new Apfloat("1.00000"));
         assertEquals("1 precision", 6, a.precision());
         assertEquals("1 value", new Apfloat("1.00000"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.ellipticE(new Apfloat("0.1111111111111111111111111111111111111111", Apfloat.DEFAULT, 2));
+        assertEquals("0.1111111111111111111111111111111111111111 radix 2 value", new Apfloat("1.000000000000000000000000000000000000011", 40, 2), a, new Apfloat("1e-39", 1, 2));
+        assertEquals("0.1111111111111111111111111111111111111111 radix 2 precision", 40, a.precision());
 
         try
         {

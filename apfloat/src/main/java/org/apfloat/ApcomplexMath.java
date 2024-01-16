@@ -2361,8 +2361,9 @@ public class ApcomplexMath
         {
             throw new ArithmeticException("Incomplete beta with a nonpositive integer");
         }
-        Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(z.precision(), 1), z.radix());
-        return pow(z, a).divide(a).multiply(hypergeometric2F1(a, one.subtract(b), a.add(one), z));
+        long precision = Math.min(Math.min(z.precision(), a.precision()), b.precision());
+        Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(precision, 1), z.radix());
+        return pow(z, a).divide(a).multiply(hypergeometric2F1(a, ApfloatHelper.ensurePrecision(one.subtract(b), precision), ApfloatHelper.ensurePrecision(a.add(one), precision), z));
     }
 
     /**
@@ -2397,9 +2398,10 @@ public class ApcomplexMath
         {
             throw new ArithmeticException("Generalized incomplete beta with a nonpositive integer");
         }
-        Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(z1.precision(), 1), z1.radix());
-        Apcomplex a1 = a.add(one),
-                  b1 = one.subtract(b);
+        long precision = Math.min(Math.min(Math.min(z1.precision(), z2.precision()), a.precision()), b.precision());
+        Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(precision, 1), z1.radix());
+        Apcomplex a1 = ApfloatHelper.ensurePrecision(a.add(one), precision),
+                  b1 = ApfloatHelper.ensurePrecision(one.subtract(b), precision);
         return pow(z2, a).multiply(hypergeometric2F1(a, b1, a1, z2)).subtract(pow(z1, a).multiply(hypergeometric2F1(a, b1, a1, z1))).divide(a);
     }
 
@@ -3468,7 +3470,7 @@ public class ApcomplexMath
         Apfloat one = Apint.ONES[radix],
                 two = new Apfloat(2, precision, radix),
                 pi = ApfloatMath.pi(precision, radix);
-        return pi.divide(two.multiply(agm(one, sqrt(one.subtract(z)))));
+        return pi.divide(two.multiply(agm(one, sqrt(ApfloatHelper.ensurePrecision(one.subtract(z), precision)))));
     }
 
     /**
