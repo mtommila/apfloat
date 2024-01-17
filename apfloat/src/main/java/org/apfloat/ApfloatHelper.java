@@ -25,6 +25,7 @@ package org.apfloat;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -646,6 +647,21 @@ class ApfloatHelper
     {
         return new Apcomplex(reducePrecision(z.real(), extraPrecision),
                              reducePrecision(z.imag(), extraPrecision));
+    }
+
+    // Returns z so that gamma(z) should have the given precision 
+    public static Apcomplex ensureGammaPrecision(Apcomplex z, long precision)
+    {
+        Apint zRounded = RoundingHelper.roundToInteger(z.real(), RoundingMode.HALF_EVEN).truncate();
+        if (zRounded.signum() < 0)
+        {
+            long digitLoss = -z.subtract(zRounded).scale();
+            if (digitLoss > 0)
+            {
+                precision = Util.ifFinite(precision, precision + digitLoss);
+            }
+        }
+        return ensurePrecision(z, precision);
     }
 
     public static long size(Aprational x)

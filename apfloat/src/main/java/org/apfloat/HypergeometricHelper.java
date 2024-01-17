@@ -978,16 +978,7 @@ class HypergeometricHelper
 
     private Apcomplex ensureGammaPrecision(Apcomplex z)
     {
-        Apint zRounded = RoundingHelper.roundToInteger(z.real(), RoundingMode.HALF_EVEN).truncate();
-        if (zRounded.signum() < 0)
-        {
-            long digitLoss = -z.subtract(zRounded).scale();
-            if (digitLoss > 0)
-            {
-                z = ApfloatHelper.ensurePrecision(z, Util.ifFinite(workingPrecision, workingPrecision + digitLoss));
-            }
-        }
-        return ApfloatHelper.ensurePrecision(z, workingPrecision);
+        return ApfloatHelper.ensureGammaPrecision(z, workingPrecision);
     }
 
     private long targetPrecision,

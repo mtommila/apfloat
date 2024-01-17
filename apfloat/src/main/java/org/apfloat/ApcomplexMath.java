@@ -2318,6 +2318,7 @@ public class ApcomplexMath
             // Finite divided by infinity
             return Apcomplex.ZEROS[a.radix()];
         }
+        long precision = Math.min(a.precision(), b.precision());
         if (aOrBNonpositiveInteger && abNonpositiveInteger)
         {
             // Infinity divided by infinity, needs different algorithm
@@ -2328,9 +2329,13 @@ public class ApcomplexMath
                 b = a;
                 a = tmp;
             }
+            a = ApfloatHelper.ensureGammaPrecision(a, precision);
             return gamma(a).divide(pochhammer(b, a));
         }
         // The trivial case
+        a = ApfloatHelper.ensureGammaPrecision(a, precision);
+        b = ApfloatHelper.ensureGammaPrecision(b, precision);
+        ab = ApfloatHelper.ensureGammaPrecision(ab, precision);
         return gamma(a).multiply(gamma(b)).divide(gamma(ab));
     }
 
@@ -2361,7 +2366,7 @@ public class ApcomplexMath
         {
             throw new ArithmeticException("Incomplete beta with a nonpositive integer");
         }
-        long precision = Math.min(Math.min(z.precision(), a.precision()), b.precision());
+        long precision = Util.min(z.precision(), a.precision(), b.precision());
         Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(precision, 1), z.radix());
         return pow(z, a).divide(a).multiply(hypergeometric2F1(a, ApfloatHelper.ensurePrecision(one.subtract(b), precision), ApfloatHelper.ensurePrecision(a.add(one), precision), z));
     }
@@ -2398,7 +2403,7 @@ public class ApcomplexMath
         {
             throw new ArithmeticException("Generalized incomplete beta with a nonpositive integer");
         }
-        long precision = Math.min(Math.min(Math.min(z1.precision(), z2.precision()), a.precision()), b.precision());
+        long precision = Util.min(z1.precision(), z2.precision(), a.precision(), b.precision());
         Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(precision, 1), z1.radix());
         Apcomplex a1 = ApfloatHelper.ensurePrecision(a.add(one), precision),
                   b1 = ApfloatHelper.ensurePrecision(one.subtract(b), precision);
@@ -2451,7 +2456,8 @@ public class ApcomplexMath
             // If n is integer and relatively small, just evaluating the multiplication is probably faster
             return pochhammer(z, n.longValueExact());
         }
-        return gamma(zn).divide(gamma(z));
+        z = ApfloatHelper.ensureGammaPrecision(z, precision);
+        return ApfloatHelper.limitPrecision(gamma(zn).divide(gamma(z)), precision);
     }
 
     static Apcomplex pochhammer(Apcomplex z, long n)

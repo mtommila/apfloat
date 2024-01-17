@@ -2653,6 +2653,14 @@ public class ApcomplexMathTest
         assertEquals("3.5, -3.5 precision", Apfloat.INFINITE, a.precision());
         assertEquals("3.5, -3.5 value", new Apcomplex("0"), a);
 
+        a = ApcomplexMath.beta(new Apcomplex("-0.999999"), new Apcomplex("4.00000"));
+        assertEquals("-0.999999, 4 precision", 6, a.precision());
+        assertEquals("-0.999999, 4 value", new Apcomplex("-2.99999e6"), a, new Apfloat("5e1"));
+
+        a = ApcomplexMath.beta(new Apcomplex("4.00000"), new Apcomplex("-0.999999"));
+        assertEquals("4, -0.999999 precision", 6, a.precision());
+        assertEquals("4, -0.999999 value", new Apcomplex("-2.99999e6"), a, new Apfloat("5e1"));
+
         try
         {
             ApcomplexMath.beta(new Apcomplex("-4"), new Apcomplex("3.5"));
@@ -2842,8 +2850,12 @@ public class ApcomplexMathTest
         assertEquals("0.12345, 12345 value", new Apcomplex("1.16927e45146"), a, new Apfloat("5e45142"));
 
         a = ApcomplexMath.pochhammer(new Apcomplex("-0.999999"), new Apcomplex("2.00000"));
-        assertEquals("1e-1000000000000000, 2 precision", 6, a.precision());
-        assertEquals("1e-1000000000000000, 2 value", new Apcomplex("-9.99999e-7"), a, new Apfloat("5e-12"));
+        assertEquals("-0.999999, 2 precision", 6, a.precision());
+        assertEquals("-0.999999, 2 value", new Apcomplex("-9.99999e-7"), a, new Apfloat("5e-12"));
+
+        a = ApcomplexMath.pochhammer(new Apcomplex("-0.999999"), new Apcomplex("3.50000"));
+        assertEquals("-0.999999, 3.5 precision", 6, a.precision());
+        assertEquals("-0.999999, 3.5 value", new Apcomplex("-1.32934e-6"), a, new Apfloat("5e-11"));
 
         a = ApcomplexMath.pochhammer(new Apcomplex("1.00000e-1000000000000000"), new Apcomplex("2.00000"));
         assertEquals("1e-1000000000000000, 2 precision", 6, a.precision());

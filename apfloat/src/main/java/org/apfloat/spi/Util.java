@@ -473,6 +473,25 @@ public class Util
     }
 
     /**
+     * Returns the minimum of the arguments.
+     *
+     * @param x The first argument.
+     * @param y More arguments.
+     *
+     * @return The minimum of the arguments
+     */
+
+    public static long min(long x, long... y)
+    {
+        long min = x;
+        for (int i = 0; i < y.length; i++)
+        {
+            min = Math.min(min, y[i]);
+        }
+        return min;
+    }
+
+    /**
      * Convert iterator to stream.
      *
      * @param <T> The type.

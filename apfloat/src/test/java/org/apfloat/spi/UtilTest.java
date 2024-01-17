@@ -23,6 +23,12 @@
  */
 package org.apfloat.spi;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -283,5 +289,21 @@ public class UtilTest
     {
         assertEquals("Finite", 2, Util.ifFinite(1, 2));
         assertEquals("Infinite", Apfloat.INFINITE, Util.ifFinite(Apfloat.INFINITE, 2));
+    }
+
+    public static void testMin()
+    {
+        assertEquals("Only", 1, Util.min(1));
+        assertEquals("First", 1, Util.min(1, 2));
+        assertEquals("Last", 1, Util.min(3, 2, 1));
+        assertEquals("Middle", 1, Util.min(3, 1, 2));
+    }
+
+    public static void testStream()
+    {
+        Iterator<Integer> iterator = Arrays.asList(1, 2, 3).iterator();
+        Stream<Integer> stream = Util.stream(iterator);
+        List<Integer> list = stream.collect(Collectors.toList());
+        assertEquals("Items", Arrays.asList(1, 2, 3), list);
     }
 }
