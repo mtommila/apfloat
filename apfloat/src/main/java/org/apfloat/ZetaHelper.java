@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,11 +23,13 @@
  */
 package org.apfloat;
 
+import org.apfloat.spi.Util;
+
 /**
  * Helper class for the Riemann zeta function.
  *
  * @since 1.11.0
- * @version 1.11.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -108,7 +110,7 @@ class ZetaHelper
         double t = Math.abs(s.imag().doubleValue()),
                s12 = ApcomplexMath.abs(one.subtract(ApcomplexMath.pow(two, one.subtract(s.precision(doublePrecision))))).doubleValue();
         long n = (long) ((workingPrecision * Math.log(radix) + t * Math.PI / 2 + Math.log((1 + 2 * t) / s12)) / Math.log(3 + Math.sqrt(8))),
-             n2 = Math.multiplyExact(n, 2);
+             n2 = Util.multiplyExact(n, 2);
         Apfloat denominator = ApfloatMath.factorial(n2, workingPrecision, radix),
                 numerator = new Apint(n, radix).multiply(denominator).multiply(ApfloatMath.pow(four.precision(workingPrecision), n)),
                 d = Apfloat.ZERO;

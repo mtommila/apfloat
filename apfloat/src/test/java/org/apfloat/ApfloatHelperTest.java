@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.1
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -55,6 +55,7 @@ public class ApfloatHelperTest
         suite.addTest(new ApfloatHelperTest("testExtendPrecision"));
         suite.addTest(new ApfloatHelperTest("testReducePrecision"));
         suite.addTest(new ApfloatHelperTest("testSetPrecision"));
+        suite.addTest(new ApfloatHelperTest("testLongValueExact"));
 
         return suite;
     }
@@ -303,5 +304,22 @@ public class ApfloatHelperTest
         assertEquals("(1, 12) real radix", 12, a.real().radix());
         a = ApfloatHelper.setPrecision(new Apcomplex(new Apfloat(12, 2, 12), new Apfloat(1, 1, 12)), 1);
         assertEquals("(12, 1) imag radix", 12, a.imag().radix());
+    }
+
+    public static void testLongValueExact()
+    {
+        assertEquals("Valid", 6, ApfloatHelper.longValueExact(new Apint(6)));
+        assertEquals("Max", Long.MAX_VALUE, ApfloatHelper.longValueExact(new Apint(Long.MAX_VALUE)));
+        assertEquals("Min", Long.MIN_VALUE, ApfloatHelper.longValueExact(new Apint(Long.MIN_VALUE)));
+
+        try
+        {
+            ApfloatHelper.longValueExact(new Apint(Long.MAX_VALUE).add(Apint.ONE));
+            fail("Overflow allowed");
+        }
+        catch (OverflowException oe)
+        {
+            // OK: overflow
+        }
     }
 }

@@ -2420,7 +2420,7 @@ public class ApfloatMath
                 four = new Apfloat(4, workingPrecision, radix),
                 log4 = log(four),
                 pi = pi(workingPrecision, radix),
-                d = pow(two, Math.multiplyExact(2,  n) - 1),
+                d = pow(two, Util.multiplyExact(2,  n) - 1),
                 dnk = d,
                 z = Apfloat.ZERO;
         for (long k = n - 1; k >= 0; k--)
@@ -2502,7 +2502,7 @@ public class ApfloatMath
         Iterator<Aprational> bernoullis2 = AprationalMath.bernoullis2Small(radix);
         for (long n = 1; ; n++)
         {
-            f = f.multiply(twopi2).divide(new Apint(Math.multiplyExact(2, n) - 1, radix).multiply(new Apint(2 * n, radix)));
+            f = f.multiply(twopi2).divide(new Apint(Util.multiplyExact(2, n) - 1, radix).multiply(new Apint(2 * n, radix)));
             Apfloat z = abs(bernoullis2.next()).multiply(f).subtract(one);
             if (z.scale() < -precision)
             {

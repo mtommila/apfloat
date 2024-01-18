@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -500,8 +500,9 @@ public class AprationalMath
         {
             return Apint.ZEROS[radix];
         }
-        Apint one = new Apint(1, radix);
-        return pochhammer(n.subtract(k).add(one), k.numerator()).divide(ApintMath.factorial(k.longValueExact(), radix));
+        Apint one = new Apint(1, radix),
+              f = ApintMath.factorial(ApfloatHelper.longValueExact(k.truncate()), radix);
+        return pochhammer(n.subtract(k).add(one), k.numerator()).divide(f);
     }
 
     /**
@@ -635,7 +636,7 @@ public class AprationalMath
         Apint one = Apint.ONES[radix],
               two = new Apint(2, radix);
         long p = Math.max(1, (long) Math.ceil(n * Math.log(n) / Math.log(radix))),
-             precision = ApfloatHelper.extendPrecision(Math.multiplyExact(Math.multiplyExact(2, n) + 1, p));  // 2 * n * p + 2 is not enough!
+             precision = ApfloatHelper.extendPrecision(Util.multiplyExact(Util.multiplyExact(2, n) + 1, p));  // 2 * n * p + 2 is not enough!
         Apint f2n1 = ApintMath.factorial(2 * n - 1,  radix);
         Apfloat z = ApfloatMath.scale(new Apfloat(1, precision, radix), -p),
                 v = ApfloatMath.scale(f2n1.multiply(ApfloatMath.tan(z)), -p);
@@ -781,7 +782,7 @@ public class AprationalMath
         Apint one = Apint.ONES[radix],
               two = new Apint(2, radix);
         long p = (long) Math.ceil(n * Math.log(n) / Math.log(radix)),
-             precision = ApfloatHelper.extendPrecision(Math.multiplyExact(Math.multiplyExact(2, n) + 1, p));  // 2 * n * p + 2 is not enough!
+             precision = ApfloatHelper.extendPrecision(Util.multiplyExact(Util.multiplyExact(2, n) + 1, p));  // 2 * n * p + 2 is not enough!
         Apint f2n1 = ApintMath.factorial(2 * n - 1,  radix);
         Apfloat z = ApfloatMath.scale(new Apfloat(1, precision, radix), -p);
 

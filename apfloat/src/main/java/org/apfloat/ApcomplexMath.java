@@ -1737,15 +1737,7 @@ public class ApcomplexMath
                 {
                     throw new ArithmeticException("Gamma of negative integer");
                 }
-                long n;
-                try
-                {
-                    n = z.real().longValueExact();
-                }
-                catch (ArithmeticException ae)
-                {
-                    throw new OverflowException("Overflow");
-                }
+                long n = ApfloatHelper.longValueExact(z.real().truncate());
                 // If n is extremely large and precision is relatively low, then computing it as gamma is faster
                 // If n is relatively small compared to precision, then computing it as factorial is faster
                 double gammaEffort = Math.log(precision) * precision * precision;
@@ -1987,7 +1979,7 @@ public class ApcomplexMath
         Iterator<Aprational> bernoulli2 = AprationalMath.bernoullis2(n, radix);
         for (long k = 1; k <= n; k++)
         {
-            long k2 = Math.multiplyExact(k,  2);
+            long k2 = Util.multiplyExact(k,  2);
             Apcomplex term = bernoulli2.next().precision(workingPrecision).divide(new Apint(k2, radix).multiply(new Apint(k2 - 1, radix)).multiply(zp));
             if (k < n)
             {
@@ -2220,7 +2212,7 @@ public class ApcomplexMath
         Iterator<Aprational> bernoulli2 = AprationalMath.bernoullis2(n, radix);
         for (long k = 1; k <= n; k++)
         {
-            long k2 = Math.multiplyExact(k,  2);
+            long k2 = Util.multiplyExact(k,  2);
             zp = zp.multiply(z2);
             Apcomplex term = bernoulli2.next().precision(precision).divide(new Apint(k2, radix).multiply(zp));
 

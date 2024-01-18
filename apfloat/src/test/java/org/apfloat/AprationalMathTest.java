@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -656,6 +656,16 @@ public class AprationalMathTest
         catch (ArithmeticException ae)
         {
             // OK; result is not a rational number
+        }
+
+        try
+        {
+            AprationalMath.binomial(new Aprational("300000000000000000000/2"), new Aprational("100000000000000000000"));
+            fail("Overflow allowed");
+        }
+        catch (OverflowException oe)
+        {
+            // OK: overflow
         }
     }
 

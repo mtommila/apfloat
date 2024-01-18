@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import java.util.Map;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.11.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -554,6 +554,15 @@ public class ApintMathTest
         a = ApintMath.binomial(Long.MAX_VALUE, 1);
         assertEquals("MAX_VALUE,1 value", new Apint(Long.MAX_VALUE), a);
 
+        a = ApintMath.binomial(Long.MIN_VALUE, 0);
+        assertEquals("MIN_VALUE, 0 value", new Apint(1), a);
+
+        a = ApintMath.binomial(-1, Long.MAX_VALUE, 9);
+        assertEquals("-1 Long.MAX_VALUE value", new Apint(-1, 9), a);
+
+        a = ApintMath.binomial(Long.MAX_VALUE, -1, 9);
+        assertEquals("MAX_VALUE, -1 value", new Apint(0, 9), a);
+
         a = ApintMath.binomial(9, 5, 11);
         assertEquals("9,5 radix 11 value", new Apint(126, 11), a);
 
@@ -622,20 +631,10 @@ public class ApintMathTest
 
         try
         {
-            ApintMath.binomial(Long.MIN_VALUE, 0);
-            fail("Binomial(min,0) allowed");
+            ApintMath.binomial(new Apint("200000000000000000000"), new Apint("100000000000000000000"));
+            fail("Overflow allowed");
         }
-        catch (ArithmeticException ae)
-        {
-            // OK: overflow
-        }
-
-        try
-        {
-            ApintMath.binomial(Long.MAX_VALUE, -1);
-            fail("Binomial(max,-1) allowed");
-        }
-        catch (ArithmeticException ae)
+        catch (OverflowException oe)
         {
             // OK: overflow
         }

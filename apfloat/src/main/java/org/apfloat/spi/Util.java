@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,11 +28,12 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apfloat.Apfloat;
+import org.apfloat.OverflowException;
 
 /**
  * Miscellaneous utility methods.
  *
- * @version 1.12.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -489,6 +490,78 @@ public class Util
             min = Math.min(min, y[i]);
         }
         return min;
+    }
+
+    /**
+     * Returns the product of the arguments, throwing an exception if the result overflows a long.
+     *
+     * @param x The first operand.
+     * @param y The second operand.
+     *
+     * @return The result.
+     *
+     * @throws OverflowException If the result overflows a long
+     */
+
+    public static long multiplyExact(long x, long y)
+        throws OverflowException
+    {
+        try
+        {
+            return Math.multiplyExact(x, y);
+        }
+        catch (ArithmeticException ae)
+        {
+            throw new OverflowException("Overflow", ae);
+        }
+    }
+
+    /**
+     * Returns the sum of the arguments, throwing an exception if the result overflows a long.
+     *
+     * @param x The first operand.
+     * @param y The second operand.
+     *
+     * @return The result.
+     *
+     * @throws OverflowException If the result overflows a long
+     */
+
+    public static long addExact(long x, long y)
+        throws OverflowException
+    {
+        try
+        {
+            return Math.addExact(x, y);
+        }
+        catch (ArithmeticException ae)
+        {
+            throw new OverflowException("Overflow", ae);
+        }
+    }
+
+    /**
+     * Returns the difference of the arguments, throwing an exception if the result overflows a long.
+     *
+     * @param x The first operand.
+     * @param y The second operand.
+     *
+     * @return The result.
+     *
+     * @throws OverflowException If the result overflows a long
+     */
+
+    public static long subtractExact(long x, long y)
+        throws OverflowException
+    {
+        try
+        {
+            return Math.subtractExact(x, y);
+        }
+        catch (ArithmeticException ae)
+        {
+            throw new OverflowException("Overflow", ae);
+        }
     }
 
     /**

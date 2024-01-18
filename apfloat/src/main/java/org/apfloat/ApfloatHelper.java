@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ import static org.apfloat.spi.RadixConstants.*;
 /**
  * Various utility methods related to apfloats.
  *
- * @version 1.10.1
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -799,6 +799,20 @@ class ApfloatHelper
         };
 
         return new PushbackReader(new InputStreamReader(in, "ISO-8859-1"));
+    }
+
+    // Converts ArithmeticException to OverflowException if the Apint overflows a long
+    public static long longValueExact(Apint x)
+        throws OverflowException
+    {
+        try
+        {
+            return x.longValueExact();
+        }
+        catch (ArithmeticException ae)
+        {
+            throw new OverflowException("Overflow", ae);
+        }
     }
 
     private static int getDefaultRadix()

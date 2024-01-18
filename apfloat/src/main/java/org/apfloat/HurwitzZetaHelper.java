@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ class HurwitzZetaHelper
             {
                 // Use recurrence formula: zeta(s, a) = a^-s + zeta(s, a + 1)
                 Apcomplex t = Apcomplex.ZERO;
-                long i = a.longValueExact();
+                long i = ApfloatHelper.longValueExact(a.real().truncate());
                 while (i++ <= 0)
                 {
                     t = t.add(ApcomplexMath.pow(a, s.negate()));
@@ -110,7 +110,7 @@ class HurwitzZetaHelper
               two = new Apint(2, radix),
               min = ApintMath.max(two.subtract(a.real().truncate()), one.subtract(s.real()).divide(two).truncate().add(one)),
               N = ApintMath.max(new Apint(precision, radix), min);
-        long M = N.longValueExact(),
+        long M = ApfloatHelper.longValueExact(N),
              low = M,
              high = M;
         Apfloat R = R(s, a, N, M);
@@ -120,7 +120,7 @@ class HurwitzZetaHelper
         {
             low = M;
             // R is too large, M is too small
-            M = Math.multiplyExact(2, M);
+            M = Util.multiplyExact(2, M);
             N = new Apint(M, radix);
             R = R(s, a, N, M);
             high = M;

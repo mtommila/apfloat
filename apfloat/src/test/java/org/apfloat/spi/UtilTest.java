@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,9 +33,10 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apfloat.Apfloat;
+import org.apfloat.OverflowException;
 
 /**
- * @version 1.6
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -65,6 +66,11 @@ public class UtilTest
         suite.addTest(new UtilTest("testLog2down"));
         suite.addTest(new UtilTest("testLog2up"));
         suite.addTest(new UtilTest("testIfFinite"));
+        suite.addTest(new UtilTest("testMin"));
+        suite.addTest(new UtilTest("testMultiplyExact"));
+        suite.addTest(new UtilTest("testAddExact"));
+        suite.addTest(new UtilTest("testSubtractExact"));
+        suite.addTest(new UtilTest("testStream"));
 
         return suite;
     }
@@ -297,6 +303,51 @@ public class UtilTest
         assertEquals("First", 1, Util.min(1, 2));
         assertEquals("Last", 1, Util.min(3, 2, 1));
         assertEquals("Middle", 1, Util.min(3, 1, 2));
+    }
+
+    public static void testMultiplyExact()
+    {
+        assertEquals("Valid", 6, Util.multiplyExact(2, 3));
+
+        try
+        {
+            Util.multiplyExact(2, Long.MAX_VALUE);
+            fail("Overflow allowed");
+        }
+        catch (OverflowException oe)
+        {
+            // OK: overflow
+        }
+    }
+
+    public static void testAddExact()
+    {
+        assertEquals("Valid", 5, Util.addExact(2, 3));
+
+        try
+        {
+            Util.addExact(1, Long.MAX_VALUE);
+            fail("Overflow allowed");
+        }
+        catch (OverflowException oe)
+        {
+            // OK: overflow
+        }
+    }
+
+    public static void testSubtractExact()
+    {
+        assertEquals("Valid", -1, Util.subtractExact(2, 3));
+
+        try
+        {
+            Util.subtractExact(-2, Long.MAX_VALUE);
+            fail("Overflow allowed");
+        }
+        catch (OverflowException oe)
+        {
+            // OK: overflow
+        }
     }
 
     public static void testStream()

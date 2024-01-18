@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import java.util.Random;
 /**
  * Various mathematical functions for arbitrary precision integers.
  *
- * @version 1.11.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -708,7 +708,14 @@ public class ApintMath
         {
             if (k >= 0)
             {
-                n = Math.subtractExact(k, n) - 1;
+                try
+                {
+                    n = Math.subtractExact(k, n) - 1;
+                }
+                catch (ArithmeticException ae)
+                {
+                    return binomial(new Apint(n, radix), new Apint(k, radix));
+                }
             }
             else if (k <= n)
             {
@@ -724,7 +731,14 @@ public class ApintMath
         }
         else if (k < 0)
         {
-            k = Math.subtractExact(n, k);
+            try
+            {
+                k = Math.subtractExact(n, k);
+            }
+            catch (ArithmeticException ae)
+            {
+                return binomial(new Apint(n, radix), new Apint(k, radix));
+            }
         }
         if (k < 0 || k > n)
         {
@@ -802,7 +816,8 @@ public class ApintMath
             // Optimize performance
             k = n.subtract(k);
         }
-        Apint b = pochhammer(n.subtract(k).add(one), k).divide(factorial(k.longValueExact(), radix));
+        Apint f = factorial(ApfloatHelper.longValueExact(k), radix),
+              b = pochhammer(n.subtract(k).add(one), k).divide(f);
         return (negate ? b.negate() : b);
     }
 
