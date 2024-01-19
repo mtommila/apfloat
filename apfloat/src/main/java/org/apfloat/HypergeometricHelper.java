@@ -203,7 +203,7 @@ class HypergeometricHelper
                 term2 = pow(base2, exp2).multiply(pow(base3, exp3)).divide(gamma(g3).multiply(gamma(g4)).multiply(gamma(c2))).multiply(evaluate(a2, b2, c2, z));
             }
             Apcomplex d = term1.subtract(term2);
-            long precisionLoss = (d.real().signum() == 0 && d.imag().signum() == 0 ? workingPrecision : targetPrecision - d.precision());
+            long precisionLoss = (d.isZero() ? workingPrecision : targetPrecision - d.precision());
             if (retry && precisionLoss > 1) // Allow a precision loss of 1 (which happens often), otherwise retry with increased precision
             {
                 throw new RetryException(precisionLoss);
@@ -287,7 +287,7 @@ class HypergeometricHelper
             @Override
             public boolean isApplicable(Apcomplex z)
             {
-                return z.real().signum() != 0 || z.imag().signum() != 0;
+                return !z.isZero();
             }
 
             @Override
@@ -365,7 +365,7 @@ class HypergeometricHelper
             @Override
             public boolean isApplicable(Apcomplex z)
             {
-                return z.real().signum() != 0 || z.imag().signum() != 0;
+                return !z.isZero();
             }
 
             @Override
@@ -502,7 +502,7 @@ class HypergeometricHelper
             Apfloat n1 = n.add(Apint.ONES[radix]);
             Apcomplex[] pochhammer = Arrays.stream(a).map(ai -> ApcomplexMath.pochhammer(ai, n1)).toArray(Apcomplex[]::new);
             result = ApcomplexMath.product(pochhammer);
-            if (result.real().signum() != 0 || result.imag().signum() != 0)
+            if (!result.isZero())
             {
                 Apfloat n2 = n.add(new Apint(2, radix));
                 Apcomplex[] gamma = Arrays.stream(b).map(n1::add).map(this::ensureGammaPrecision).map(ApcomplexMath::gamma).toArray(Apcomplex[]::new);
@@ -558,7 +558,7 @@ class HypergeometricHelper
         }
         if (a.length > b.length + 1L)
         {
-            if (z.real().signum() == 0 && z.imag().signum() == 0)
+            if (z.isZero())
             {
                 return new Apfloat(1, targetPrecision, radix);
             }
@@ -797,7 +797,7 @@ class HypergeometricHelper
         {
             throw new ArithmeticException("Division by zero");
         }
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             return new Apfloat(1, targetPrecision, radix);
         }
@@ -856,7 +856,7 @@ class HypergeometricHelper
                     numerator = numerator.multiply(a[j]);
                     a[j] = a[j].add(one);
                 }
-                if (numerator.real().signum() == 0 && numerator.imag().signum() == 0)
+                if (numerator.isZero())
                 {
                     return s;   // It was a polynomial
                 }
@@ -871,9 +871,9 @@ class HypergeometricHelper
                 t = numerator.divide(denominator);
                 s = s.add(t);
                 maxSScale = Math.max(maxSScale, s.scale());
-            } while (i.compareTo(minN) <= 0 || divergentSeries && checkDivergence(o, t) || s.real().signum() == 0 && s.imag().signum() == 0 || s.scale() - t.scale() <= workingPrecision);  // Subtraction might overflow
+            } while (i.compareTo(minN) <= 0 || divergentSeries && checkDivergence(o, t) || s.isZero() || s.scale() - t.scale() <= workingPrecision);  // Subtraction might overflow
 
-            precisionLoss = (s.real().signum() == 0 && s.imag().signum() == 0 ? extendedPrecision : maxSScale - s.scale()); // Loss due to scale of s reduced from its peak (loss off most significant digits)
+            precisionLoss = (s.isZero() ? extendedPrecision : maxSScale - s.scale()); // Loss due to scale of s reduced from its peak (loss off most significant digits)
             if (workingPrecision - s.precision() > 1)  // Often the precision is reduced by 1
             {
                 precisionLoss = Util.ifFinite(precisionLoss, precisionLoss + workingPrecision - s.precision()); // Loss due to accumulation (loss off least significant digits)

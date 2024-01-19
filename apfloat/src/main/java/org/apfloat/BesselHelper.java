@@ -106,7 +106,7 @@ class BesselHelper
     private Apcomplex besselFirstKind(Apcomplex ν, boolean negate)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (ν.isInteger() && z.real().signum() == 0 && z.imag().signum() == 0)
+        if (ν.isInteger() && z.isZero())
         {
             return (ν.real().signum() == 0 ? Apint.ONES[radix] : z);
         }
@@ -119,7 +119,7 @@ class BesselHelper
     private Apcomplex besselY()
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             throw new ArithmeticException("Bessel Y of zero");
         }
@@ -134,7 +134,7 @@ class BesselHelper
     private Apcomplex besselK()
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             throw new ArithmeticException("Bessel K of zero");
         }
@@ -178,7 +178,7 @@ class BesselHelper
 
             result = f.apply(ν, z);
 
-            if (result.real().signum() == 0 && result.imag().signum() == 0) // The result shouldn't be exactly zero, it means full loss of significant digits
+            if (result.isZero()) // The result shouldn't be exactly zero, it means full loss of significant digits
             {
                 precisionLoss = workingPrecision;
             }

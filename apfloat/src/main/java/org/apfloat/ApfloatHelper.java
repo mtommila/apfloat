@@ -413,16 +413,16 @@ class ApfloatHelper
     private static Apcomplex checkPowBasic(Apcomplex z, Apcomplex w, long targetPrecision)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (w.real().signum() == 0 && w.imag().signum() == 0)
+        if (w.isZero())
         {
-            if (z.real().signum() == 0 && z.imag().signum() == 0)
+            if (z.isZero())
             {
                 throw new ArithmeticException("Zero to power zero");
             }
 
             return new Apcomplex(new Apfloat(1, Apfloat.INFINITE, z.radix()));
         }
-        else if (z.real().signum() == 0 && z.imag().signum() == 0)
+        else if (z.isZero())
         {
             if (w.real().signum() <= 0)
             {

@@ -39,7 +39,7 @@ import org.apfloat.spi.Util;
 /**
  * Arbitrary precision calculator implementation.
  *
- * @version 1.11.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -1305,7 +1305,7 @@ public class ApfloatCalculatorImpl
     private Number fixedOrArbitraryPrecision(java.util.function.Function<Apcomplex, Apcomplex> fixedPrecisionFunction, java.util.function.Function<Apcomplex, Apcomplex> arbitraryPrecisionFunction, Number x)
     {
         Apcomplex z = (Apcomplex) x;
-        return (getInputPrecision() != null && z.real().signum() == 0 && z.imag().signum() == 0 ? fixedPrecisionFunction.apply(z) : arbitraryPrecisionFunction.apply(z));
+        return (getInputPrecision() != null && z.isZero() ? fixedPrecisionFunction.apply(z) : arbitraryPrecisionFunction.apply(z));
     }
 
     private FixedPrecisionApcomplexHelper fixedPrecisionApcomplexHelper = new FixedPrecisionApcomplexHelper(Apfloat.INFINITE);

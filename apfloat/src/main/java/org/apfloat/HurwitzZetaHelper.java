@@ -48,7 +48,7 @@ class HurwitzZetaHelper
         {
             throw new ArithmeticException("Zeta of first argument one");
         }
-        if (s.real().signum() == 0 && s.imag().signum() == 0 && a.real().signum() == 0 && a.imag().signum() == 0)
+        if (s.isZero() && a.isZero())
         {
             Apint two = new Apint(2, radix);
             return new Aprational(one, two);
@@ -56,7 +56,7 @@ class HurwitzZetaHelper
         long precision = Math.min(s.precision(),  a.precision());
         if (a.isInteger() && a.real().signum() <= 0)
         {
-            if (s.real().signum() < 0 || s.real().signum() == 0 && s.imag().signum() == 0)
+            if (s.real().signum() < 0 || s.isZero())
             {
                 // Use recurrence formula: zeta(s, a) = a^-s + zeta(s, a + 1)
                 Apcomplex t = Apcomplex.ZERO;

@@ -150,7 +150,7 @@ public class ApcomplexMath
     {
         if (n == 0)
         {
-            if (z.real().signum() == 0 && z.imag().signum() == 0)
+            if (z.isZero())
             {
                 throw new ArithmeticException("Zero to power zero");
             }
@@ -269,7 +269,7 @@ public class ApcomplexMath
         {
             throw new ArithmeticException("Zeroth root");
         }
-        else if (z.real().signum() == 0 && z.imag().signum() == 0)
+        else if (z.isZero())
         {
             if (n < 0)
             {
@@ -349,7 +349,7 @@ public class ApcomplexMath
     public static Apcomplex inverseRoot(Apcomplex z, long n, long k)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             throw new ArithmeticException("Inverse root of zero");
         }
@@ -612,7 +612,7 @@ public class ApcomplexMath
         {
             throw new ApfloatRuntimeException("Maximum array size exceeded");
         }
-        else if (z.real().signum() == 0 && z.imag().signum() == 0)
+        else if (z.isZero())
         {
             if (n < 0)
             {
@@ -655,8 +655,7 @@ public class ApcomplexMath
     public static Apcomplex agm(Apcomplex a, Apcomplex b)
         throws ApfloatRuntimeException
     {
-        if (a.real().signum() == 0 && a.imag().signum() == 0 ||
-            b.real().signum() == 0 && b.imag().signum() == 0)         // Would not converge quadratically
+        if (a.isZero() || b.isZero())       // Would not converge quadratically
         {
             return Apcomplex.ZEROS[a.radix()];
         }
@@ -908,7 +907,7 @@ public class ApcomplexMath
     private static Apcomplex rawLog(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        assert (z.real().signum() != 0 || z.imag().signum() != 0);      // Infinity
+        assert (!z.isZero());      // Infinity
 
         Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix());
 
@@ -2427,7 +2426,7 @@ public class ApcomplexMath
         int radix = z.radix();
         long precision = Math.min(z.precision(), n.precision());
         Apint one = Apint.ONES[radix];
-        if (n.real().signum() == 0 && n.imag().signum() == 0)
+        if (n.isZero())
         {
             return one.precision(precision);
         }
@@ -2745,7 +2744,7 @@ public class ApcomplexMath
     public static Apcomplex erf(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             return z;
         }
@@ -2769,7 +2768,7 @@ public class ApcomplexMath
     static Apcomplex erfFixedPrecision(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             return z;
         }
@@ -2878,7 +2877,7 @@ public class ApcomplexMath
     public static Apcomplex fresnelS(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             return z;
         }
@@ -2925,7 +2924,7 @@ public class ApcomplexMath
     public static Apcomplex fresnelC(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             return z;
         }
@@ -3040,7 +3039,7 @@ public class ApcomplexMath
     public static Apcomplex logIntegral(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             return z;
         }

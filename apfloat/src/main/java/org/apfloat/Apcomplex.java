@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ import static java.util.FormattableFlags.*;
  * @see Apfloat
  * @see ApcomplexMath
  *
- * @version 1.12.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -415,6 +415,20 @@ public class Apcomplex
     }
 
     /**
+     * Returns if this number is zero.
+     *
+     * @return If this number is zero.
+     *
+     * @since 1.13.0
+     */
+
+    public boolean isZero()
+        throws ApfloatRuntimeException
+    {
+        return real().signum() == 0 && imag().signum() == 0;
+    }
+
+    /**
      * Returns if this number has an integer value. Note that this does not
      * necessarily mean that this object is an instance of {@link Apint}.
      * Neither does it mean that the precision is infinite.<p>
@@ -504,9 +518,9 @@ public class Apcomplex
     public Apcomplex divide(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
-            throw new ArithmeticException(real().signum() == 0 && imag().signum() == 0 ? "Zero divided by zero" : "Division by zero");
+            throw new ArithmeticException(isZero() ? "Zero divided by zero" : "Division by zero");
         }
 
         Apfloat tmpReal,
@@ -773,8 +787,7 @@ public class Apcomplex
     public long equalDigits(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        if (real().signum() == 0 && imag().signum() == 0 &&
-            z.real().signum() == 0 && z.imag().signum() == 0)
+        if (isZero() && z.isZero())
         {
             // Both are zero
             return Apfloat.INFINITE;

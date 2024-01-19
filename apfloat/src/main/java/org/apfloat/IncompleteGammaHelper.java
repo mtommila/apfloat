@@ -233,7 +233,7 @@ class IncompleteGammaHelper
 
     public static Apcomplex gamma(Apcomplex a, Apcomplex z)
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             if (a.real().signum() <= 0)
             {
@@ -248,9 +248,7 @@ class IncompleteGammaHelper
 
     public static Apcomplex gamma(Apcomplex a, Apcomplex z0, Apcomplex z1)
     {
-        if (a.real().signum() == 0 && a.imag().signum() == 0 &&
-            z0.real().signum() == 0 && z0.imag().signum() == 0 &&
-            z1.real().signum() == 0 && z1.imag().signum() == 0)
+        if (a.isZero() && z0.isZero() && z1.isZero())
         {
             throw new ArithmeticException("Gamma of zero");
         }
@@ -260,11 +258,11 @@ class IncompleteGammaHelper
         }
         checkPrecision(a, z0, z1);
 
-        if (z0.real().signum() == 0 && z0.imag().signum() == 0)
+        if (z0.isZero())
         {
             return lowerGamma(a, z1, null).getValue();
         }
-        if (z1.real().signum() == 0 && z1.imag().signum() == 0)
+        if (z1.isZero())
         {
             return lowerGamma(a, z0, null).getValue().negate();
         }
@@ -590,13 +588,13 @@ class IncompleteGammaHelper
             bn = s.b(n).precision(workingPrecision);
             d = d.multiply(an).add(bn);
             d = ApfloatHelper.ensurePrecision(d, workingPrecision);
-            if (d.real().signum() == 0 && d.imag().signum() == 0)
+            if (d.isZero())
             {
                 d = tiny(bn, workingPrecision);
             }
             c = bn.add(an.divide(c));
             c = ApfloatHelper.ensurePrecision(c, workingPrecision);
-            if (c.real().signum() == 0 && c.imag().signum() == 0)
+            if (c.isZero())
             {
                 c = tiny(bn, workingPrecision);
             }
@@ -617,7 +615,7 @@ class IncompleteGammaHelper
 
     private static Apcomplex tiny(Apcomplex z, long workingPrecision)
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             z = new Apfloat(1, workingPrecision, z.radix());
         }

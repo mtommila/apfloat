@@ -281,7 +281,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex acos(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
             return halfPi(z.radix());
@@ -300,7 +300,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex acosh(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        if (z.real().signum() == 0 && z.imag().signum() == 0)
+        if (z.isZero())
         {
             // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
             return valueOf(new Apcomplex(Apfloat.ZEROS[z.radix()], halfPi(z.radix())));

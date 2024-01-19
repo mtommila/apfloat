@@ -54,7 +54,7 @@ class ZetaHelper
         {
             return Apcomplex.ZEROS[radix];
         }
-        if (s.real().signum() == 0 && s.imag().signum() == 0)
+        if (s.isZero())
         {
             return new Aprational(one, two).negate();
         }

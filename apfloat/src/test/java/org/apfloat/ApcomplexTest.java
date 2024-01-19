@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.12.0
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -68,6 +68,7 @@ public class ApcomplexTest
         suite.addTest(new ApcomplexTest("testPrecision"));
         suite.addTest(new ApcomplexTest("testScale"));
         suite.addTest(new ApcomplexTest("testSize"));
+        suite.addTest(new ApcomplexTest("testIsZero"));
         suite.addTest(new ApcomplexTest("testIsInteger"));
         suite.addTest(new ApcomplexTest("testNegate"));
         suite.addTest(new ApcomplexTest("testAdd"));
@@ -445,6 +446,18 @@ public class ApcomplexTest
         assertEquals("(10, 0) size", 1, a.size());
         a = new Apcomplex("0");
         assertEquals("0 size", 0, a.size());
+    }
+
+    public static void testIsZero()
+    {
+        Apcomplex a = new Apcomplex("(1, 1)");
+        assertFalse("(1, 1)", a.isZero());
+        a = new Apcomplex("(1.5, 0)");
+        assertFalse("(1.5, 0)", a.isZero());
+        a = new Apcomplex("(0, 1)");
+        assertFalse("(0, 1)", a.isZero());
+        a = new Apcomplex("0");
+        assertTrue("0", a.isZero());
     }
 
     public static void testIsInteger()
