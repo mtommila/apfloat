@@ -1886,6 +1886,14 @@ public class ApcomplexMathTest
         assertEquals("12345.12345 precision", 5, a.precision());
         assertEquals("12345.12345 radix", 10, a.radix());
         assertEquals("12345.12345 value", new Apcomplex("8.9252e45146"), a, new Apfloat("5e45142"));
+        a = ApcomplexMath.gamma(new Apfloat("-0.9999991"));
+        assertEquals("-0.9999991 precision", 1, a.precision());
+        assertEquals("-0.9999991 radix", 10, a.radix());
+        assertEquals("-0.9999991 value", new Apcomplex("-1e6"), a, new Apfloat("0"));
+        a = ApcomplexMath.gamma(new Apfloat("-0.900000"));
+        assertEquals("-0.9 precision", 6, a.precision());
+        assertEquals("-0.9 radix", 10, a.radix());
+        assertEquals("-0.9 value", new Apcomplex("-10.5706"), a, new Apfloat("5e-4"));
 
         try
         {
@@ -2634,8 +2642,8 @@ public class ApcomplexMathTest
     public static void testBeta()
     {
         Apcomplex a = ApcomplexMath.beta(new Apcomplex("(1,2)").precision(30), new Apcomplex("(3,4)").precision(30));
-        assertEquals("1+2i, 3+4i precision", 29, a.precision());
-        assertEquals("1+2i, 3+4i value", new Apcomplex("(-0.06127416745225294419616254894,0.19751975615002245306433684614)"), a, new Apfloat("5e-30"));
+        assertEquals("1+2i, 3+4i precision", 30, a.precision());
+        assertEquals("1+2i, 3+4i value", new Apcomplex("(-0.061274167452252944196162548943,0.197519756150022453064336846144)"), a, new Apfloat("5e-30"));
 
         a = ApcomplexMath.beta(new Apcomplex("3.00000"), new Apcomplex("3.50000"));
         assertEquals("3, 3.5 precision", 6, a.precision());
@@ -2806,8 +2814,8 @@ public class ApcomplexMathTest
     public static void testPochhammer()
     {
         Apcomplex a = ApcomplexMath.pochhammer(new Apcomplex("(1,2)").precision(30), new Apcomplex("(3,4)").precision(30));
-        assertEquals("1+2i, 3+4i precision", 29, a.precision());
-        assertEquals("1+2i, 3+4i value", new Apcomplex("(-0.8043673515206222462807258894,0.2230733885949341859144143839)"), a, new Apfloat("5e-29"));
+        assertEquals("1+2i, 3+4i precision", 30, a.precision());
+        assertEquals("1+2i, 3+4i value", new Apcomplex("(-0.804367351520622246280725889393,0.223073388594934185914414383944)"), a, new Apfloat("5e-30"));
 
         a = ApcomplexMath.pochhammer(new Apcomplex("0"), new Apcomplex("-1.00"));
         assertEquals("0, -1 precision", 3, a.precision());
@@ -3535,7 +3543,7 @@ public class ApcomplexMathTest
         assertEquals("1+2i, 3+4i, 5+6i, 5+5i value", new Apcomplex("(0.00471924,-0.00269112)"), a, new Apfloat("5e-8"));
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex(new Apfloat(1, 6, 7), new Apfloat(2, 6, 7)), new Apcomplex(new Apfloat(3, 6, 7), new Apfloat(4, 6, 7)), new Apcomplex(new Apfloat(5, 6, 7), new Apfloat(6, 6, 7)), new Apcomplex(new Apfloat(5, 6, 7), new Apfloat(5, 6, 7)));
-        assertEquals("1+2i, 3+4i, 5+6i, 5+5i radix 7 precision", 5, a.precision());
+        assertEquals("1+2i, 3+4i, 5+6i, 5+5i radix 7 precision", 6, a.precision());
         assertEquals("1+2i, 3+4i, 5+6i, 5+5i radix 7 radix", 7, a.radix());
         assertEquals("1+2i, 3+4i, 5+6i, 5+5i radix 7 value", new Apcomplex(new Apfloat("0.001422133", 7, 7), new Apfloat("-0.0006314153", 7, 7)), a, new Apfloat("3e-8", 1, 7));
 
@@ -3591,7 +3599,7 @@ public class ApcomplexMathTest
         assertEquals("1+2i, 3+4i, 5+6i, -5-5i value", new Apcomplex("(-0.633637,0.498949)"), a, new Apfloat("5e-6"));
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex(new Apfloat(1, 6, 7), new Apfloat(2, 6, 7)), new Apcomplex(new Apfloat(3, 6, 7), new Apfloat(4, 6, 7)), new Apcomplex(new Apfloat(5, 6, 7), new Apfloat(6, 6, 7)), new Apcomplex(new Apfloat(-5, 6, 7), new Apfloat(-5, 6, 7)));
-        assertEquals("1+2i, 3+4i, 5+6i, -5-5i radix 7 precision", 5, a.precision());
+        assertEquals("1+2i, 3+4i, 5+6i, -5-5i radix 7 precision", 6, a.precision());
         assertEquals("1+2i, 3+4i, 5+6i, -5-5i radix 7 radix", 7, a.radix());
         assertEquals("1+2i, 3+4i, 5+6i, -5-5i radix 7 value", new Apcomplex(new Apfloat("-0.4302235", 7, 7), new Apfloat("0.33306556", 7, 7)), a, new Apfloat("3e-6", 1, 7));
 
@@ -3719,7 +3727,7 @@ public class ApcomplexMathTest
         assertEquals("1+2i, 3+4i, 5+6i, 2.2-1.1i value", new Apcomplex("(5.94238,-45.6929)"), a, new Apfloat("5e-4"));
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex(new Apfloat(1, 15, 7), new Apfloat(2, 15, 7)), new Apcomplex(new Apfloat(3, 15, 7), new Apfloat(4, 15, 7)), new Apcomplex(new Apfloat(5, 15, 7), new Apfloat(6, 15, 7)), new Apcomplex(new Apfloat("2.2", 15, 7), new Apfloat("1.1", 15, 7)));
-        assertEquals("1+2i, 3+4i, 5+6i, 2.2+1.1i radix 7 precision", 14, a.precision());
+        assertEquals("1+2i, 3+4i, 5+6i, 2.2+1.1i radix 7 precision", 15, a.precision());
         assertEquals("1+2i, 3+4i, 5+6i, 2.2+1.1i radix 7 radix", 7, a.radix());
         assertEquals("1+2i, 3+4i, 5+6i, 2.2+1.1i radix 7 value", new Apcomplex(new Apfloat("-0.00212125415466401", 15, 7), new Apfloat("0.01231461626540454", 15, 7)), a, new Apfloat("3e-16", 1, 7));
 
@@ -3931,7 +3939,7 @@ public class ApcomplexMathTest
         assertEquals("1, 2, -3, 7 precision", 5, a.precision());
         assertEquals("1, 2, -3, 7 value", new Apcomplex("6.17541"), a, new Apfloat("5e-4"));
 
-        a = ApcomplexMath.hypergeometric2F1Regularized(new Apcomplex("(1.10000000,2.20000000)"), new Apcomplex("(3.40000000,5.60000000)"), new Apcomplex("-7.00000000"), new Apcomplex("(-1.20000000,3.40000000)"));
+        a = ApcomplexMath.hypergeometric2F1Regularized(new Apcomplex("(1.1000000,2.2000000)"), new Apcomplex("(3.4000000,5.6000000)"), new Apcomplex("-7.0000000"), new Apcomplex("(-1.2000000,3.4000000)"));
         assertEquals("1.1+2.2i, 3.4+5.6i, -7, -1.2+3.4i precision", 6, a.precision());
         assertEquals("1.1+2.2i, 3.4+5.6i, -7, -1.2+3.4i value", new Apcomplex("(-8761.55,-55520.5)"), a, new Apfloat("5e-1"));
     }

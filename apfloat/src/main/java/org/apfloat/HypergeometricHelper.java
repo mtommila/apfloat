@@ -612,13 +612,13 @@ class HypergeometricHelper
             try
             {
                 // Evaluate with U*
-                Apcomplex ba = b.subtract(a);
+                Apcomplex ba = ensurePrecision(b.subtract(a));
                 Apcomplex result = zero;
                 if (!ba.isInteger() || ba.real().signum() > 0)
                 {
-                    result = pow(z.negate(), a.negate()).divide(gamma(ba)).multiply(hypergeometricUStar(a, b, z));
+                    result = pow(z.negate(), a.negate()).divide(gamma(ensureGammaPrecision(ba))).multiply(hypergeometricUStar(a, b, z));
                 }
-                result = result.add(pow(z, a.subtract(b)).multiply(exp(z)).divide(gamma(a)).multiply(hypergeometricUStar(ba, b, z.negate()))).multiply(gamma(b));
+                result = result.add(pow(z, ba.negate()).multiply(exp(z)).divide(gamma(ensureGammaPrecision(a))).multiply(hypergeometricUStar(ba, b, z.negate()))).multiply(gamma(ensureGammaPrecision(b)));
                 return ApfloatHelper.limitPrecision(result, targetPrecision);
             } catch (NotConvergingException nce)
             {
@@ -637,7 +637,7 @@ class HypergeometricHelper
         {
             // Kummer transformation
             factor = ApcomplexMath.exp(z);
-            a = b.subtract(a);
+            a = ensurePrecision(b.subtract(a));
             z = z.negate();
         }
 
@@ -648,7 +648,8 @@ class HypergeometricHelper
     private Apcomplex hypergeometricUStar(Apcomplex a, Apcomplex b, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        Apcomplex result = evaluate(new Apcomplex[] { a, a.subtract(b).add(one) }, new Apcomplex[0], one.divide(z).negate());
+        Apcomplex ab1 = ensurePrecision(a.subtract(b).add(one));
+        Apcomplex result = evaluate(new Apcomplex[] { a, ab1 }, new Apcomplex[0], one.divide(z).negate());
         return result;
     }
 
@@ -703,17 +704,21 @@ class HypergeometricHelper
                 }
             }
 
-            Apcomplex ab1 = ensurePrecision(a.subtract(b).add(one)),
-                      b1 = ensurePrecision(b.subtract(one));
+            Apcomplex ab1 = ensureGammaPrecision(a.subtract(b).add(one));
             result = zero;
             if (!ab1.isInteger() || ab1.real().signum() > 0)
             {
-                result = gamma(b1.negate()).divide(gamma(ab1)).multiply(hypergeometric1F1series(a, b, z));
+                Apcomplex b1n = ensureGammaPrecision(one.subtract(b));
+                result = gamma(b1n).divide(gamma(ab1)).multiply(hypergeometric1F1series(a, b, z));
             }
             if (!a.isInteger() || a.real().signum() > 0)
             {
                 Apint two = new Apint(2, radix);
-                result = result.add(gamma(b1).divide(gamma(a)).multiply(pow(z, b1.negate())).multiply(hypergeometric1F1series(ab1, two.subtract(b), z)));
+                Apcomplex b1 = ensureGammaPrecision(b.subtract(one)),
+                          b1n = ensurePrecision(one.subtract(b)),
+                          b2 = ensurePrecision(two.subtract(b));
+                a = ensureGammaPrecision(a);
+                result = result.add(gamma(b1).divide(gamma(a)).multiply(pow(z, b1n)).multiply(hypergeometric1F1series(ab1, b2, z)));
             }
             precisionLoss = targetPrecision - result.precision();
             workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + precisionLoss);
@@ -748,9 +753,10 @@ class HypergeometricHelper
                 return zero;
             }
             Apcomplex cab = s.subtract(b);
-            s = ApfloatHelper.ensurePrecision(s, workingPrecision);
-            t = ApfloatHelper.ensurePrecision(t, workingPrecision);
-            cab = ApfloatHelper.ensurePrecision(cab, workingPrecision);
+            s = ApfloatHelper.ensureGammaPrecision(s, workingPrecision);
+            t = ApfloatHelper.ensureGammaPrecision(t, workingPrecision);
+            cab = ApfloatHelper.ensureGammaPrecision(cab, workingPrecision);
+            c = ApfloatHelper.ensureGammaPrecision(c, workingPrecision);
             return ApcomplexMath.gamma(c).multiply(ApcomplexMath.gamma(cab)).divide(ApcomplexMath.gamma(s).multiply(ApcomplexMath.gamma(t)));
         }
         Apcomplex zDoublePrecision = z.precision(ApfloatHelper.getDoublePrecision(radix));

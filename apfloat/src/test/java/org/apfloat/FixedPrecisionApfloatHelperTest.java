@@ -1128,6 +1128,11 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.gamma(x);
         assertEquals("value", new Apfloat("2.22465301759833318396785103e11565705518092"), result, new Apfloat("5e11565705518066"));
         assertEquals("precision", 27, result.precision());
+
+        x = new Apfloat("-99.99999999999999999999999999");
+        result = helper.gamma(x);
+        assertEquals("-99.99999999999999999999999999 value", new Apfloat("1.07151028812546692318354681e-132"), result, new Apfloat("5e-158"));
+        assertEquals("-99.99999999999999999999999999 precision", 27, result.precision());
     }
 
     public static void testGammaIncomplete()

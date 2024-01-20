@@ -664,6 +664,11 @@ public class FixedPrecisionApcomplexHelperTest
         Apcomplex result = helper.gamma(z);
         assertEquals("value", new Apcomplex("(2.2799397381057012808806415e-682188176916,2.56143734228029034694359025e-682188176915)"), result, new Apfloat("5e-682188176941"));
         assertEquals("precision", 26, result.precision());
+
+        z = new Apcomplex("(-99.99999999999999999999999999,0.00000000000000000000000001)");
+        result = helper.gamma(z);
+        assertEquals("-99.99999999999999999999999999+0.00000000000000000000000001i value", new Apcomplex("(5.357551440627334615917734e-133,-5.357551440627334615917734e-133)"), result, new Apfloat("5e-158"));
+        assertEquals("-99.99999999999999999999999999+0.00000000000000000000000001i precision", 26, result.precision());
     }
 
     public static void testGammaIncomplete()

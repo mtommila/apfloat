@@ -23,6 +23,7 @@
  */
 package org.apfloat;
 
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -1753,10 +1754,22 @@ public class ApcomplexMath
         }
         if (z.real().signum() < 0)
         {
+            // Reduced precision for negative near-integers
+            long targetPrecision = precision;
+            Apint zRounded = RoundingHelper.roundToInteger(z.real(), RoundingMode.HALF_EVEN).truncate();
+            if (zRounded.signum() < 0)
+            {
+                long digitLoss = -z.subtract(zRounded).scale();
+                if (digitLoss > 0)
+                {
+                    targetPrecision -= digitLoss;
+                }
+            }
+
             // Use reflection formula, see e.g. https://functions.wolfram.com/GammaBetaErf/Gamma/16/03/01/
             z = z.negate();
             Apfloat pi = ApfloatMath.pi(precision, radix);
-            return pi.negate().divide(z.multiply(sin(pi.multiply(z))).multiply(gamma(z)));
+            return ApfloatHelper.limitPrecision(pi.negate().divide(z.multiply(sin(pi.multiply(z))).multiply(gamma(z))), targetPrecision);
         }
         long a1 = (long) (precision / Math.log(2 * Math.PI) * Math.log(radix));
         long workingPrecision = ApfloatHelper.extendPrecision(precision, (long) (precision * 0.5) + Apfloat.EXTRA_PRECISION); // increase intermediate precision - ck are large and alternating in sign, lots of precision loss
@@ -1784,21 +1797,17 @@ public class ApcomplexMath
         double normalizedScale = result.scale() * Math.log(radix);
         if (normalizedScale > 0 && z.real().scale() > 0)
         {
-            precision = precision - (long) (1.01 * Math.log(normalizedScale) / Math.log(radix)); // Very large results have a reduced precision
-            if (precision <= 0)
-            {
-                throw new LossOfPrecisionException("Complete loss of accurate digits");
-            }
+            precision -= (long) (1.01 * Math.log(normalizedScale) / Math.log(radix)); // Very large results have a reduced precision
         }
         else if (normalizedScale < 0)
         {
-            precision = precision - (long) (1.148 * Math.log(-normalizedScale) / Math.log(radix)); // Very small results also have a reduced precision
-            if (precision <= 0)
-            {
-                throw new LossOfPrecisionException("Complete loss of accurate digits");
-            }
+            precision -= (long) (1.148 * Math.log(-normalizedScale) / Math.log(radix)); // Very small results also have a reduced precision
         }
-        return result.precision(precision);
+        if (precision <= 0)
+        {
+            throw new LossOfPrecisionException("Complete loss of accurate digits");
+        }
+        return ApfloatHelper.limitPrecision(result, precision);
     }
 
     /**

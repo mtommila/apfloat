@@ -1826,7 +1826,7 @@ public class FixedPrecisionApcomplexHelper
 
     Apfloat setGammaPrecision(Apfloat x)
     {
-        return setTrigonometricPrecision(x);
+        return setGammaPrecision((Apcomplex) x).real();
     }
 
     Apfloat setZetaPrecision(Apfloat x)
@@ -1875,7 +1875,7 @@ public class FixedPrecisionApcomplexHelper
     private Apcomplex setGammaPrecision(Apcomplex z)
     {
         long precision = ApfloatHelper.extendPrecision(precision(), Math.max(0, z.scale()));
-        return z.precision(precision);
+        return ApfloatHelper.ensureGammaPrecision(z, precision);
     }
 
     private Apcomplex setZetaPrecision(Apcomplex z)
