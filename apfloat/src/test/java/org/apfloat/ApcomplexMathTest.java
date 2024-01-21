@@ -1975,6 +1975,10 @@ public class ApcomplexMathTest
         assertEquals("-4i,2i precision", 10, a.precision());
         assertEquals("-4i,2i value", new Apcomplex("(89.37681331,-0.32076166)"), a, new Apfloat("5e-8"));
 
+        a = ApcomplexMath.gamma(new Apcomplex("3.50000"), new Apcomplex("0"));
+        assertEquals("3.5 precision", 6, a.precision());
+        assertEquals("3.5 value", new Apcomplex("3.32335"), a, new Apfloat("5e-5"));
+
         a = ApcomplexMath.gamma(new Apcomplex("(1.5000000,1.0000000)"), new Apcomplex("(-1.0000000,1.0000000e-2)"));
         assertEquals("1.5+i,-1+0.01i precision", 8, a.precision());
         assertEquals("1.5+i,-1+0.01i value", new Apcomplex("(0.59778962,0.13066077)"), a, new Apfloat("5e-8"));

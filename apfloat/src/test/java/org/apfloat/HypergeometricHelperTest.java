@@ -48,6 +48,7 @@ public class HypergeometricHelperTest
         TestSuite suite = new TestSuite();
 
         suite.addTest(new HypergeometricHelperTest("testHypergeometricPFQ"));
+        suite.addTest(new HypergeometricHelperTest("testHypergeometricPFQRegularized"));
 
         return suite;
     }

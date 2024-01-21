@@ -103,7 +103,7 @@ class IncompleteGammaHelper
         LOWER1(ContinuedFractionType.LOWER, IncompleteGammaHelper::lowerGammaSequence)
         {
             @Override
-            protected long doGetMinIterations(Apcomplex a, Apcomplex z)
+            public long getMinIterations(Apcomplex a, Apcomplex z)
             {
                 return (a.real().signum() >= 0 ? 0 : Util.subtractExact(4, Util.multiplyExact(2, ApfloatHelper.longValueExact(a.real().truncate()))));
             }
@@ -111,7 +111,7 @@ class IncompleteGammaHelper
         LOWER2(ContinuedFractionType.LOWER, IncompleteGammaHelper::lowerGammaSequenceAlternative)
         {
             @Override
-            protected long doGetMinIterations(Apcomplex a, Apcomplex z)
+            public long getMinIterations(Apcomplex a, Apcomplex z)
             {
                 return Math.max(a.real().signum() >= 0 ? 0 : Util.subtractExact(3, ApfloatHelper.longValueExact(a.real().truncate())),
                                 Util.subtractExact(2, Util.addExact(a.real().truncate().longValueExact(), ApfloatHelper.longValueExact(z.real().truncate()))));
@@ -120,7 +120,7 @@ class IncompleteGammaHelper
         UPPER1(ContinuedFractionType.UPPER, IncompleteGammaHelper::upperGammaSequence)
         {
             @Override
-            protected long doGetMinIterations(Apcomplex a, Apcomplex z)
+            public long getMinIterations(Apcomplex a, Apcomplex z)
             {
                 return Math.max(a.real().signum() <= 0 ? 0 : Util.addExact(2, ApfloatHelper.longValueExact(a.real().truncate())),
                                 Util.addExact(1, Util.subtractExact(ApfloatHelper.longValueExact(a.real().truncate()), ApfloatHelper.longValueExact(z.real().truncate())) / 2));
@@ -129,7 +129,7 @@ class IncompleteGammaHelper
         UPPER2(ContinuedFractionType.UPPER, IncompleteGammaHelper::upperGammaSequenceAlternative)
         {
             @Override
-            protected long doGetMinIterations(Apcomplex a, Apcomplex z)
+            public long getMinIterations(Apcomplex a, Apcomplex z)
             {
                 return (a.real().signum() <= 0 ? 0 : Util.addExact(Util.multiplyExact(2, ApfloatHelper.longValueExact(a.real().truncate())), 2));
             }
@@ -151,19 +151,7 @@ class IncompleteGammaHelper
             return this.sequence;
         }
 
-        public long getMinIterations(Apcomplex a, Apcomplex z)
-        {
-            try
-            {
-                return doGetMinIterations(a, z);
-            }
-            catch (ArithmeticException ae)
-            {
-                throw new OverflowException(ae.getMessage(), ae);
-            }
-        }
-
-        protected abstract long doGetMinIterations(Apcomplex a, Apcomplex z);
+        public abstract long getMinIterations(Apcomplex a, Apcomplex z);
 
         public static ContinuedFraction[] upperValues()
         {
@@ -696,7 +684,7 @@ class IncompleteGammaHelper
                 sum = sum.add(t);
             }
             n++;
-        } while (sum.scale() - t.scale() < targetPrecision && !t.equals(Apcomplex.ZERO)); // Also check for underflow of t
+        } while (sum.scale() - t.scale() < targetPrecision && !t.isZero()); // Also check for underflow of t
 
         return ApfloatHelper.reducePrecision(sum);
     }
@@ -720,7 +708,7 @@ class IncompleteGammaHelper
             s = s.multiply(mz).divide(kk);
             t = s.divide(kk);
             sum = sum.add(t);
-        } while (sum.scale() - t.scale() < targetPrecision && !t.equals(Apcomplex.ZERO));   // Also check for underflow of t
+        } while (sum.scale() - t.scale() < targetPrecision && !t.isZero());   // Also check for underflow of t
 
         Apcomplex result = ApfloatMath.euler(targetPrecision, radix).negate().subtract(ApcomplexMath.log(z)).subtract(ApfloatHelper.reducePrecision(sum));
         return result;
