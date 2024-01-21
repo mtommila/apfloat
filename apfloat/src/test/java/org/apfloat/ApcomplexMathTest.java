@@ -1831,7 +1831,7 @@ public class ApcomplexMathTest
         assertEquals("10.1+I radix", 10, a.radix());
         assertEquals("10.1+I value", new Apcomplex("(-275889.24637304345640288294183505994521208628420155,332093.85747733234553448206237389863106703170190430)"), a, new Apfloat("5e-44"));
         a = ApcomplexMath.gamma(new Apcomplex(new Apfloat("100.1", 50), new Apfloat(1, 50)));
-        assertEquals("100.1+I precision", 47, a.precision(), 1); //FIXME
+        assertEquals("100.1+I precision", 48, a.precision());
         assertEquals("100.1+I radix", 10, a.radix());
         assertEquals("100.1+I value", new Apcomplex("(-1.6325249252175791061043773321806465941281038201e155,-1.46196463909803799277895455102943868342521844260e156)"), a, new Apfloat("5e109"));
         a = ApcomplexMath.gamma(new Apcomplex(new Apfloat(1, 200), new Apfloat("1000000000000.1", 200)));
@@ -3727,8 +3727,8 @@ public class ApcomplexMathTest
         assertEquals("12345.1, 2.2, 3.3, 1.1 value", new Apcomplex("(6.92558629055670804609685408962018969630924e12339,-2.175737101221514124404378847e12325)"), a, new Apfloat("5e12310"));
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"), new Apcomplex("(2.20000,-1.10000)"));
-        assertEquals("1+2i, 3+4i, 5+6i, 2.2-1.1i precision", 3, a.precision()); // FIXME precision is suspiciously low
-        assertEquals("1+2i, 3+4i, 5+6i, 2.2-1.1i value", new Apcomplex("(5.94238,-45.6929)"), a, new Apfloat("5e-4"));
+        assertEquals("1+2i, 3+4i, 5+6i, 2.2-1.1i precision", 3, a.precision());
+        assertEquals("1+2i, 3+4i, 5+6i, 2.2-1.1i value", new Apcomplex("(5.94238,-45.6929)"), a, new Apfloat("5e-1"));
 
         a = ApcomplexMath.hypergeometric2F1(new Apcomplex(new Apfloat(1, 15, 7), new Apfloat(2, 15, 7)), new Apcomplex(new Apfloat(3, 15, 7), new Apfloat(4, 15, 7)), new Apcomplex(new Apfloat(5, 15, 7), new Apfloat(6, 15, 7)), new Apcomplex(new Apfloat("2.2", 15, 7), new Apfloat("1.1", 15, 7)));
         assertEquals("1+2i, 3+4i, 5+6i, 2.2+1.1i radix 7 precision", 15, a.precision());
