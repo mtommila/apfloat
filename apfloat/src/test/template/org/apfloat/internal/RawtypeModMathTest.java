@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import java.util.Random;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.0.1
+ * @version 1.13.0
  * @author Mikko Tommila
  */
 
@@ -114,7 +114,7 @@ public class RawtypeModMathTest
 
             for (int i = 0; i < 1000; i++)
             {
-                x = Math.abs(random.nextLong()) % lm;
+                x = Math.abs(random.nextLong()) % (lm - 1) + 1;
 
                 assertEquals(x + " ^ -1 % " + lm, 1L, (long) math.modMultiply(math.modInverse((rawtype) x), (rawtype) x));
             }
@@ -159,7 +159,7 @@ public class RawtypeModMathTest
             for (int i = 0; i < 1000; i++)
             {
                 x = Math.abs(random.nextLong()) % lm;
-                y = Math.abs(random.nextLong()) % lm;
+                y = Math.abs(random.nextLong()) % (lm - 1) + 1;
 
                 assertEquals(x + " / " + y + " % " + lm, x, (long) math.modMultiply(math.modDivide((rawtype) x, (rawtype) y), (rawtype) y));
             }
