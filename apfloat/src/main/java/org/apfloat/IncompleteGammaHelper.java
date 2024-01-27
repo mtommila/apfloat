@@ -269,7 +269,7 @@ class IncompleteGammaHelper
 
     private static GammaValue upperGamma(Apcomplex a, Apcomplex z)
     {
-        if (useAsymptoticLarge(a, z))
+        if (useAsymptoticLarge(a, z) && !(a.isInteger() && a.real().signum() <= 0))
         {
             return asymptoticLargeA(a, z);
         }
