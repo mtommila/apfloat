@@ -269,6 +269,14 @@ class IncompleteGammaHelper
 
     private static GammaValue upperGamma(Apcomplex a, Apcomplex z)
     {
+        if (useAsymptoticLarge(a, z))
+        {
+            return asymptoticLargeA(a, z);
+        }
+        if (useAsymptoticLarge(z, a))
+        {
+            return asymptoticLargeZ(a, z);
+        }
         ContinuedFraction[] algorithms = null;
         if (a.isInteger() && a.real().signum() <= 0)
         {
@@ -294,6 +302,18 @@ class IncompleteGammaHelper
 
         ContinuedFraction fastest = fastestG(a, z, algorithms);
         return gammaG(a, z, fastest, ContinuedFractionType.UPPER);
+    }
+
+    private static boolean useAsymptoticLarge(Apcomplex larger, Apcomplex smaller)
+    {
+        if (larger.scale() > 1 && larger.scale() > smaller.scale())
+        {
+            long precision = Math.min(larger.precision(), smaller.precision());
+            double digitsPerTerm = larger.scale() - Math.max(1.0, smaller.scale());
+            double maxTerms = 2;
+            return digitsPerTerm * maxTerms > precision;
+        }
+        return false;
     }
 
     private static GammaValue lowerGamma(Apcomplex a, Apcomplex z, ContinuedFraction[] algorithms)
@@ -357,15 +377,15 @@ class IncompleteGammaHelper
         // Borderline cases where upper gamma continued fraction might not converge well
         if (a.scale() > 0 && z.scale() > 0)
         {
-            double ratio = norm(a).divide(norm(z)).doubleValue();
-            return 0.01 <= ratio && ratio <= 100.0;
+            double ratio = abs(a).divide(abs(z)).doubleValue();
+            return 0.1 <= ratio && ratio <= 10.0;
         }
         return false;
     }
 
-    private static Apfloat norm(Apcomplex z)
+    private static Apfloat abs(Apcomplex z)
     {
-        return ApcomplexMath.norm(z.precision(ApfloatHelper.getDoublePrecision(z.radix())));
+        return ApcomplexMath.abs(z.precision(ApfloatHelper.getDoublePrecision(z.radix())));
     }
 
     private static GammaValue gammaG(Apcomplex a, Apcomplex z, ContinuedFraction algorithm, ContinuedFractionType type)
@@ -610,6 +630,28 @@ class IncompleteGammaHelper
         return ApcomplexMath.scale(ApcomplexMath.ulp(z), -workingPrecision).precision(workingPrecision);
     }
 
+    // Asymptotic algorithm for |a| -> infinity
+    private static GammaValue asymptoticLargeA(Apcomplex a, Apcomplex z)
+    {
+        // https://functions.wolfram.com/GammaBetaErf/Gamma2/06/02/01/
+        Apint one = Apcomplex.ONES[a.radix()];
+        Apcomplex sum = one.add(z.divide(a)).add(z.multiply(z.subtract(one)).divide(a.multiply(a)));
+        Apcomplex result = ApcomplexMath.exp(z.negate()).multiply(ApcomplexMath.pow(z, a)).divide(a).multiply(sum);
+        return new GammaValue(a, result, true);
+    }
+
+    // Asymptotic algorithm for |z| -> infinity
+    private static GammaValue asymptoticLargeZ(Apcomplex a, Apcomplex z)
+    {
+        // https://functions.wolfram.com/GammaBetaErf/Gamma2/06/02/02/
+        int radix = a.radix();
+        Apint one = Apcomplex.ONES[radix],
+              two = new Apint(2, radix);
+        Apcomplex sum = one.subtract(one.subtract(a).divide(z)).add(two.subtract(a).multiply(one.subtract(a)).divide(z.multiply(z)));
+        Apcomplex result = ApcomplexMath.exp(z.negate()).multiply(ApcomplexMath.pow(z, a.subtract(one))).multiply(sum);
+        return new GammaValue(a, result, false);
+    }
+
     // Upper gamma of nonpositive integer
     private static Apcomplex upperGamma(long mn, Apcomplex z)
     {
@@ -654,7 +696,7 @@ class IncompleteGammaHelper
         long targetPrecision = Math.min(a.precision(), z.precision());
         int radix = z.radix();
         Apcomplex sum = Apcomplex.ZERO;
-        Apint one = new Apint(1, radix);
+        Apint one = Apint.ONES[radix];
         Apcomplex f = (useAlternatingSum ? one.precision(targetPrecision) : a);
         long n = 0;
         Apcomplex t;

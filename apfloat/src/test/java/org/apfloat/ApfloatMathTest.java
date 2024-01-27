@@ -2457,6 +2457,14 @@ public class ApfloatMathTest
         assertEquals("4.5,0 precision", 8, a.precision());
         assertEquals("4.5,0 value", new Apfloat("11.631728"), a, new Apfloat("5e-6"));
 
+        a = ApfloatMath.gamma(new Apfloat("1234567890.0000000000"), new Apfloat("0.12345678900000000"));
+        assertEquals("1234567890,0.123456789 precision", 10, a.precision());
+        assertEquals("1234567890,0.123456789", new Apfloat("9.091929131e10687926435"), a, new Apfloat("5e10687926426"));
+
+        a = ApfloatMath.gamma(new Apfloat("0.12345678900000000"), new Apfloat("1234567890.000000000"));
+        assertEquals("0.123456789,1234567890 precision", 10, a.precision());
+        assertEquals("0.123456789,1234567890", new Apfloat("7.395260483e-536166031"), a, new Apfloat("5e-536166022"));
+
         a = ApfloatMath.gamma(new Apfloat("4.0000000", Apfloat.DEFAULT, 11), new Apfloat("0.60000000", Apfloat.DEFAULT, 11));
         assertEquals("4,0.6 precision radix 11", 8, a.precision());
         assertEquals("4,0.6 value radix 11", new Apfloat("5.a929793", Apfloat.DEFAULT, 11), a, new Apfloat("5e-7", Apfloat.DEFAULT, 11));
@@ -2511,7 +2519,7 @@ public class ApfloatMathTest
         }
         try
         {
-            ApfloatMath.gamma(new Apfloat("1e100", 100), new Apfloat("1e102"));
+            ApfloatMath.gamma(new Apfloat("1e100", 100), new Apfloat("1.000e102"));
             fail("Overflow");
         }
         catch (OverflowException are)
@@ -2624,7 +2632,7 @@ public class ApfloatMathTest
         }
         try
         {
-            ApfloatMath.gamma(new Apfloat("1e100", 100), new Apfloat("1e102"), new Apfloat("1e103"));
+            ApfloatMath.gamma(new Apfloat("1e100", 100), new Apfloat("1.000e102"), new Apfloat("1.000e103"));
             fail("Overflow");
         }
         catch (OverflowException are)

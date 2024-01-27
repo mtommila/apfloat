@@ -2098,7 +2098,7 @@ public class ApcomplexMathTest
         }
         try
         {
-            ApcomplexMath.gamma(new Apcomplex("(1e100,1)"), new Apcomplex("(1e102,1)"));
+            ApcomplexMath.gamma(new Apcomplex("(1.000e100,1.000)"), new Apcomplex("(1.000e102,1.000)"));
             fail("Overflow");
         }
         catch (OverflowException are)
