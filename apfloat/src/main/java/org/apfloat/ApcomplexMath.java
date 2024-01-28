@@ -955,6 +955,12 @@ public class ApcomplexMath
 
         long doublePrecision = ApfloatHelper.getDoublePrecision(radix);
 
+        if (z.real().compareTo(new Apfloat(Long.MIN_VALUE * Math.log((double) radix), doublePrecision, radix)) <= 0)
+        {
+            // Underflow
+
+            return Apcomplex.ZEROS[z.radix()];
+        }
         // If the real part of the argument is close to 0, the result is more accurate; if it's very big the result is less accurate
         if (z.real().precision() < z.real().scale() - 1)
         {
@@ -976,12 +982,6 @@ public class ApcomplexMath
         else if (z.real().compareTo(new Apfloat((double) Long.MAX_VALUE * Math.log((double) radix), doublePrecision, radix)) >= 0)
         {
             throw new OverflowException("Overflow");
-        }
-        else if (z.real().compareTo(new Apfloat((double) Long.MIN_VALUE * Math.log((double) radix), doublePrecision, radix)) <= 0)
-        {
-            // Underflow
-
-            return Apcomplex.ZEROS[z.radix()];
         }
 
         boolean negateResult = false;                           // If the final result is to be negated

@@ -1246,6 +1246,12 @@ public class ApfloatMathTest
         a = ApfloatMath.exp(new Apfloat("-1e25", 50));
         assertEquals("-1e25, 50 value", new Apfloat(0), a);
 
+        a = ApfloatMath.exp(new Apfloat("-1e25"));
+        assertEquals("-1e25, 1 value", new Apfloat(0), a);
+
+        a = ApfloatMath.exp(new Apfloat("-1e25", Apfloat.INFINITE));
+        assertEquals("-1e25, infinite value", new Apfloat(0), a);
+
         a = ApfloatMath.exp(new Apfloat("-21237598959199934509.830775042768"));
         assertEquals("-21237598959199934509.830775042768 value", new Apfloat(0), a);
 

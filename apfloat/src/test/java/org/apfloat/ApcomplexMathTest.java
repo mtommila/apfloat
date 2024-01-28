@@ -969,6 +969,9 @@ public class ApcomplexMathTest
         a = ApcomplexMath.exp(new Apcomplex(new Apfloat("-1e25", 50), new Apfloat("3.1415926535897932384626433832795028841971693993751")));
         assertEquals("(-1e25,pi), 50 value", new Apfloat(0), a);
 
+        a = ApcomplexMath.exp(new Apcomplex(new Apfloat("-1e25"), new Apfloat("1e100")));
+        assertEquals("(-1e25,1e100) value", new Apfloat(0), a);
+
         a = ApcomplexMath.exp(new Apcomplex("(-21237598959199934509.830775042768,3.1415926535897932384626433832795)"));
         assertEquals("(-21237598959199934509.830775042768,pi) value", new Apfloat(0), a);
 
@@ -2597,7 +2600,7 @@ public class ApcomplexMathTest
 
         try
         {
-            ApcomplexMath.digamma(ApfloatHelper.setPrecision(new Apcomplex("(-1e4000000,1e4000000)"), 30));
+            ApcomplexMath.digamma(ApfloatHelper.setPrecision(new Apcomplex("(-1e4000000,-1)"), 30));
             fail("Loss of precision in cot()");
         }
         catch (LossOfPrecisionException lope)

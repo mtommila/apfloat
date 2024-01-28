@@ -1424,6 +1424,12 @@ public class ApfloatMath
              precision,
              doublePrecision = ApfloatHelper.getDoublePrecision(radix);
 
+        if (x.compareTo(new Apfloat(Long.MIN_VALUE * Math.log((double) radix), doublePrecision, radix)) <= 0)
+        {
+            // Underflow
+
+            return Apfloat.ZEROS[radix];
+        }
         // If the argument is close to 0, the result is more accurate
         if (x.scale() < 1)
         {
@@ -1447,12 +1453,6 @@ public class ApfloatMath
         else if (x.compareTo(new Apfloat((double) Long.MAX_VALUE * Math.log((double) radix), doublePrecision, radix)) >= 0)
         {
             throw new OverflowException("Overflow");
-        }
-        else if (x.compareTo(new Apfloat((double) Long.MIN_VALUE * Math.log((double) radix), doublePrecision, radix)) <= 0)
-        {
-            // Underflow
-
-            return Apfloat.ZEROS[radix];
         }
         else if (x.scale() <= Long.MIN_VALUE / 2 + Apfloat.EXTRA_PRECISION)
         {
