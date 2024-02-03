@@ -93,6 +93,17 @@
         <artifactId>apfloat-calc</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- Transitive dependencies -->
+      <dependency>
+        <groupId>org.apache.bcel</groupId>
+        <artifactId>bcel</artifactId>
+        <version>6.8.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-library</artifactId>
+        <version>2.13.12</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
