@@ -4,7 +4,7 @@
 
   <groupId>org.apfloat</groupId>
   <artifactId>apfloat-parent</artifactId>
-  <version>1.13.0</version>
+  <version>1.14.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>apfloat-parent</name>
@@ -23,7 +23,7 @@
     <connection>scm:git:git://github.com/mtommila/apfloat.git</connection>
     <developerConnection>scm:git:ssh://github.com:mtommila/apfloat.git</developerConnection>
     <url>https://github.com/mtommila/apfloat</url>
-    <tag>1.13.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <developers>
