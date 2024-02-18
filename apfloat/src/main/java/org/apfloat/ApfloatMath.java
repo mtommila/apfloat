@@ -49,7 +49,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApintMath
  *
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -1743,6 +1743,20 @@ public class ApfloatMath
         Apcomplex i = new Apcomplex(Apfloat.ZERO, one);
 
         return ApcomplexMath.log(x.add(i.multiply(sqrt(one.subtract(x.multiply(x)))))).imag();
+    }
+
+    static Apfloat acos(Apfloat x, long precision)
+    {
+        if (x.signum() == 0)
+        {
+            return halfPi(x.radix(), precision);
+        }
+        return acos(x);
+    }
+
+    static Apfloat halfPi(int radix, long precision)
+    {
+        return pi(precision, radix).divide(new Apfloat(2, precision, radix));
     }
 
     /**
@@ -3781,6 +3795,471 @@ public class ApfloatMath
             throw new ArithmeticException("Result would be complex");
         }
         return ApcomplexMath.ellipticE(x, precision).real();
+    }
+
+    /**
+     * Hermite function. For integer values of <code>ν</code> gives the Hermite polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>H<sub>ν</sub>(x)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat hermiteH(Apfloat ν, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.hermiteH(ν, x).real();
+    }
+
+    /**
+     * Laguerre function. For integer values of <code>ν</code> gives the Laguerre polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>L<sub>ν</sub>(x)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat laguerreL(Apfloat ν, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.laguerreL(ν, x).real();
+    }
+
+    /**
+     * Generalized Laguerre function. For integer values of <code>ν</code> gives the generalized Laguerre polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param λ The second argument.
+     * @param x The third argument.
+     *
+     * @return <i>L<sub>ν</sub><sup style='position: relative; left: -0.4em;'>λ</sup>(x)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat laguerreL(Apfloat ν, Apfloat λ, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.laguerreL(ν, λ, x).real();
+    }
+
+    /**
+     * Legendre function. For integer values of <code>ν</code> gives the Legendre polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>P<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is not an integer and <code>x</code> &le; -1.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat legendreP(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (!ν.isInteger())
+        {
+            Apfloat minusOne = Apint.ONES[ν.radix()].negate();
+            if (x.compareTo(minusOne) < 0)
+            {
+                throw new ArithmeticException("Result would be complex");
+            }
+        }
+        return ApcomplexMath.legendreP(ν, x).real();
+    }
+
+    /**
+     * Associated Legendre function of the first kind. Gives Legendre functions of type 2.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param μ The second argument.
+     * @param x The third argument.
+     *
+     * @return <i>P<sub>ν</sub><sup style='position: relative; left: -0.4em;'>μ</sup>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &le; -1 or &ge; 1 and <code>ν</code> or <code>μ</code> is not an integer or <code>μ</code> is not even or <code>μ</code> is not positive and <code>-μ</code> &le; <code>ν</code> &lt; <code>μ</code>.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat legendreP(Apfloat ν, Apfloat μ, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apfloat one = Apint.ONES[ν.radix()];
+        if (x.compareTo(one.negate()) < 0 ||
+            x.compareTo(one) > 0)
+        {
+            boolean isReal = (isEven(μ) && (ν.isInteger() || x.signum() > 0) || ν.isInteger() && μ.isInteger() && μ.signum() > 0 && ν.compareTo(μ) < 0 && ν.compareTo(μ.negate()) >= 0);
+            if (!isReal)
+            {
+                throw new ArithmeticException("Result would be complex");
+            }
+        }
+        return ApcomplexMath.legendreP(ν, μ, x).real();
+    }
+
+    private static boolean isEven(Apfloat x)
+    {
+        return (x.isInteger() && x.truncate().mod(new Apint(2, x.radix())).signum() == 0);
+    }
+
+    /**
+     * Legendre function of the second kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>Q<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &ge; 1 or &le; -1.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat legendreQ(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apfloat one = Apint.ONES[ν.radix()];
+        if (x.compareTo(one.negate()) < 0 ||
+            x.compareTo(one) > 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.legendreQ(ν, x).real();
+    }
+
+    /**
+     * Associated Legendre function of the second kind. Gives Legendre functions of type 2.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param μ The second argument.
+     * @param x The third argument.
+     *
+     * @return <i>Q<sub>ν</sub><sup style='position: relative; left: -0.4em;'>μ</sup>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &ge; 1 or &le; -1.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat legendreQ(Apfloat ν, Apfloat μ, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apfloat one = Apint.ONES[ν.radix()];
+        if (x.compareTo(one.negate()) < 0 ||
+            x.compareTo(one) > 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.legendreQ(ν, μ, x).real();
+    }
+
+    /**
+     * Chebyshev function of the first kind. For integer values of <code>ν</code> gives the Chebyshev polynomial of the first kind.<p>
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>T<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &lt; -1 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat chebyshevT(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        checkMinusOneNonInteger(ν, x);
+        return ApcomplexMath.chebyshevT(ν, x).real();
+    }
+
+    private static void checkMinusOneNonInteger(Apfloat ν, Apfloat x)
+    {
+        Apfloat one = Apint.ONES[ν.radix()];
+        if (x.compareTo(one.negate()) < 0 && !ν.isInteger())
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+    }
+
+    /**
+     * Chebyshev function of the second kind. For integer values of <code>ν</code> gives the Chebyshev polynomial of the second kind.<p>
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>U<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &le; -1 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat chebyshevU(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        checkMinusOneNonInteger(ν, x);
+        return ApcomplexMath.chebyshevU(ν, x).real();
+    }
+
+    /**
+     * Renormalized Gegenbauer function.<p>
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>C<sub>ν</sub><sup style='position: relative; left: -0.4em;'>(0)</sup>(x)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is zero. Also if <code>x</code> is &lt; -1 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat gegenbauerC(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        checkMinusOneNonInteger(ν, x);
+        return ApcomplexMath.gegenbauerC(ν, x).real();
+    }
+
+    /**
+     * Gegenbauer function. For nonnegative integer values of <code>ν</code> gives the Gegenbauer polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param λ The second argument.
+     * @param x The third argument.
+     *
+     * @return <i>C<sub>ν</sub><sup style='position: relative; left: -0.4em;'>λ</sup>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &lt; -1 and <code>ν</code> is not an integer. Also if <code>x</code> is -1 and <code>λ</code> is > 1/2. Also if <code>x</code> is -1 and <code>λ</code> is 1/2 and <code>ν</code> is not an integer. 
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat gegenbauerC(Apfloat ν, Apfloat λ, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        checkMinusOneNonInteger(ν, x);
+        return ApcomplexMath.gegenbauerC(ν, λ, x).real();
+    }
+
+    /**
+     * Jacobi function. For nonnegative integer values of <code>ν</code> gives the Jacobi polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param a The second argument.
+     * @param b The third argument.
+     * @param x The fourth argument.
+     *
+     * @return <i>P<sub>ν</sub><sup style='position: relative; left: -0.4em;'>(a,b)</sup>(x)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is not a positive integer and either <code>x</code> is -1 and <code>b</code> is > 0 or <code>x</code> is &lt; -1. Also if <code>ν + a</code> is a negative integer and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat jacobiP(Apfloat ν, Apfloat a, Apfloat b, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        checkMinusOneNonInteger(ν, x);
+        return ApcomplexMath.jacobiP(ν, a, b, x).real();
+    }
+
+    /**
+     * Fibonacci function. For nonnegative integer values of <code>ν</code> gives the Fibonacci polynomial.<p>
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>F<sub>ν</sub>(x)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat fibonacci(Apfloat ν, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.fibonacci(ν, x).real();
+    }
+
+    /**
+     * Euler polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param n The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>E<sub>n</sub>(x)</i>
+     *
+     * @throws IllegalArgumentException If <code>n</code> &lt; 0.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat eulerE(long n, Apfloat x)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.eulerE(n, x).real();
+    }
+
+    /**
+     * Bernoulli polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param n The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>B<sub>n</sub>(x)</i>
+     *
+     * @throws IllegalArgumentException If <code>n</code> &lt; 0.
+     * @throws InfiniteExpansionException If <code>x</code> is zero.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat bernoulliB(long n, Apfloat x)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.bernoulliB(n, x).real();
+    }
+
+    /**
+     * Harmonic number.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return <i>H<sub>x</sub></i>
+     *
+     * @throws ArithmeticException If <code>x</code> is a negative integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat harmonicNumber(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.harmonicNumber(x).real();
+    }
+
+    /**
+     * Generalized harmonic number.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The first argument.
+     * @param r The second argument.
+     *
+     * @return <i>H<sub>x</sub><sup style='position: relative; left: -0.4em;'>(r)</sup></i>
+     *
+     * @throws ArithmeticException If <code>x</code> is a negative integer, unless <code>r</code> is a nonpositive integer. Also if <code>x</code> is &lt; -1 and <code>r</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat harmonicNumber(Apfloat x, Apfloat r)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        checkMinusOneNonInteger(r, x);
+        return ApcomplexMath.harmonicNumber(x, r).real();
+    }
+
+    /**
+     * Polylogarithm.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return Li<sub>ν</sub>(x)
+     *
+     * @throws ArithmeticException If <code>ν</code> is &le; 1 and <code>x</code> is 1 or if <code>x</code> is &gt; 1.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat polylog(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apfloat one = Apint.ONES[ν.radix()];
+        if (x.compareTo(one) > 0)
+        {
+            throw new ArithmeticException("Result would be complex");
+        }
+        return ApcomplexMath.polylog(ν, x).real();
     }
 
     /**

@@ -31,7 +31,7 @@ import java.util.NoSuchElementException;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -71,6 +71,8 @@ public class AprationalMathTest
         suite.addTest(new AprationalMathTest("testBinomial"));
         suite.addTest(new AprationalMathTest("testPochhammer"));
         suite.addTest(new AprationalMathTest("testBernoulli"));
+        suite.addTest(new AprationalMathTest("testHarmonicNumber"));
+        suite.addTest(new AprationalMathTest("testHarmonicNumberGeneralized"));
 
         return suite;
     }
@@ -828,6 +830,76 @@ public class AprationalMathTest
         catch (IllegalArgumentException iae)
         {
             // OK
+        }
+    }
+
+    public static void testHarmonicNumber()
+    {
+        Aprational a = AprationalMath.harmonicNumber(new Apint(4));
+        assertEquals("4 value", new Aprational("25/12"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint("3"));
+        assertEquals("3 value", new Aprational("11/6"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint(0));
+        assertEquals("0 value", new Aprational("0"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint("6"));
+        assertEquals("6 value", new Aprational("49/20"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint("6", 7));
+        assertEquals("6 radix", 7, a.radix());
+        assertEquals("6 value", new Aprational("100/26", 7), a);
+
+        try
+        {
+            AprationalMath.harmonicNumber(new Apint(-1));
+            fail("-1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result would be infinite
+        }
+    }
+
+    public static void testHarmonicNumberGeneralized()
+    {
+        Aprational a = AprationalMath.harmonicNumber(new Apint(3), new Apint(4));
+        assertEquals("3, 4 value", new Aprational("1393/1296"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint("2"), new Apint("3"));
+        assertEquals("2, 3 value", new Aprational("9/8"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint("7"), new Apint("-5"));
+        assertEquals("7, -5 value", new Aprational("29008"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint(0), new Apint(0));
+        assertEquals("0, 0 value", new Aprational("0"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint(0), new Apint(1));
+        assertEquals("0, 1 value", new Aprational("0"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint("-1"), new Apint("0"));
+        assertEquals("-1, 0 value", new Aprational("-1"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint("-3"), new Apint("-2"));
+        assertEquals("-3, -2 value", new Aprational("-5"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint("-6"), new Apint("-4"));
+        assertEquals("-6, -4 value", new Aprational("-979"), a);
+
+        a = AprationalMath.harmonicNumber(new Apint("6", 7), new Apint("4", 7));
+        assertEquals("6, 4 radix", 7, a.radix());
+        assertEquals("6, 4 value", new Aprational("230044310/215105154", 7), a);
+
+        try
+        {
+            AprationalMath.harmonicNumber(new Apint(-1), new Apint(2));
+            fail("-1, 2 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result would be infinite
         }
     }
 }

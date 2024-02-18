@@ -519,6 +519,10 @@ class ApfloatHelper
     public static long reducePrecision(long precision, long extraPrecision)
         throws ApfloatRuntimeException
     {
+        if (precision == Apfloat.INFINITE)
+        {
+            return precision;
+        }
         precision = precision - extraPrecision;
         if (precision <= 0)
         {

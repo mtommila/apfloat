@@ -281,12 +281,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex acos(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        if (z.isZero())
-        {
-            // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
-            return halfPi(z.radix());
-        }
-        return valueOf(ApcomplexMath.acos(setPrecision(z)));
+        return valueOf(ApcomplexMath.acos(setPrecision(z), precision()));
     }
 
     /**
@@ -300,12 +295,7 @@ public class FixedPrecisionApcomplexHelper
     public Apcomplex acosh(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        if (z.isZero())
-        {
-            // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
-            return valueOf(new Apcomplex(Apfloat.ZEROS[z.radix()], halfPi(z.radix())));
-        }
-        return valueOf(ApcomplexMath.acosh(setPrecision(z)));
+        return valueOf(ApcomplexMath.acosh(setPrecision(z), precision()));
     }
 
     /**
@@ -1776,11 +1766,6 @@ public class FixedPrecisionApcomplexHelper
         throws NumberFormatException, ApfloatRuntimeException
     {
         return ApfloatMath.pi(precision(), radix);
-    }
-
-    Apfloat halfPi(int radix)
-    {
-        return pi(radix).divide(new Apfloat(2, precision(), radix));
     }
 
     Apfloat setTrigonometricPrecision(Apfloat x)

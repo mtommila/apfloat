@@ -37,7 +37,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApfloatMath
  *
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -1223,6 +1223,15 @@ public class ApcomplexMath
         }
     }
 
+    static Apcomplex acos(Apcomplex z, long precision)
+    {
+        if (z.isZero())
+        {
+            return ApfloatMath.halfPi(z.radix(), precision);
+        }
+        return acos(z);
+    }
+
     /**
      * Inverse hyperbolic cosine. Calculated using <code>log()</code>.
      *
@@ -1244,6 +1253,15 @@ public class ApcomplexMath
         {
             return log(z.subtract(sqrt(z.multiply(z).subtract(one))));
         }
+    }
+
+    static Apcomplex acosh(Apcomplex z, long precision)
+    {
+        if (z.isZero())
+        {
+            return new Apcomplex(Apfloat.ZEROS[z.radix()], ApfloatMath.halfPi(z.radix(), precision));
+        }
+        return acosh(z);
     }
 
     /**
@@ -3514,6 +3532,793 @@ public class ApcomplexMath
     }
 
     /**
+     * Hermite function. For integer values of <code>ν</code> gives the Hermite polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>H<sub>ν</sub>(z)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex hermiteH(Apcomplex ν, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = Math.min(ν.precision(), z.precision());
+        Apfloat one = Apint.ONES[radix];
+        if (ν.isZero())
+        {
+            return one.precision(precision);
+        }
+        Apfloat two = new Apfloat(2, precision, radix),
+                three = new Apfloat(3, precision, radix),
+                pi = ApfloatMath.pi(precision, radix);
+        Apcomplex n12 = one.subtract(ν).divide(two),
+                  nn2 = ν.negate().divide(two),
+                  z2 = z.multiply(z),
+                  result = Apint.ZEROS[radix];
+        if (!(n12.isInteger() && n12.real().signum() <= 0))
+        {
+            result = inverseRoot(gamma(ApfloatHelper.ensureGammaPrecision(n12, precision)), 1).multiply(hypergeometric1F1(ApfloatHelper.ensurePrecision(nn2, precision), one.divide(two), z2));
+        }
+        if (!(z.isZero() || nn2.isInteger() && nn2.real().signum() <= 0))
+        {
+            result = result.subtract(two.multiply(z).divide(gamma(ApfloatHelper.ensureGammaPrecision(nn2, precision))).multiply(hypergeometric1F1(ApfloatHelper.ensurePrecision(n12, precision), three.divide(two), z2)));
+        }
+        return pow(two, ν).multiply(sqrt(pi)).multiply(result);
+    }
+
+    /**
+     * Laguerre function. For integer values of <code>ν</code> gives the Laguerre polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>L<sub>ν</sub>(z)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex laguerreL(Apcomplex ν, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        long precision = Math.min(ν.precision(), z.precision());
+        Apfloat one = Apint.ONES[ν.radix()].precision(precision);
+        return hypergeometric1F1(ν.negate(), one, z);
+    }
+
+    /**
+     * Generalized Laguerre function. For integer values of <code>ν</code> gives the generalized Laguerre polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param λ The second argument.
+     * @param z The third argument.
+     *
+     * @return <i>L<sub>ν</sub><sup style='position: relative; left: -0.4em;'>λ</sup>(z)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex laguerreL(Apcomplex ν, Apcomplex λ, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        long precision = Util.min(ν.precision(), λ.precision(), z.precision());
+        Apfloat one = Apint.ONES[ν.radix()];
+        return pochhammer(ApfloatHelper.ensurePrecision(ν.add(one), precision), λ).multiply(hypergeometric1F1Regularized(ν.negate(), ApfloatHelper.ensurePrecision(λ.add(one), precision), z));
+    }
+
+    /**
+     * Legendre function. For integer values of <code>ν</code> gives the Legendre polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>P<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is not an integer and <code>z</code> is -1.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex legendreP(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apcomplex zero = Apcomplex.ZEROS[ν.radix()];
+        return legendreP(ν, zero, z);
+    }
+
+    /**
+     * Associated Legendre function of the first kind. Gives Legendre functions of type 2.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param μ The second argument.
+     * @param z The third argument.
+     *
+     * @return <i>P<sub>ν</sub><sup style='position: relative; left: -0.4em;'>μ</sup>(z)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is not an integer and <code>z</code> is -1.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex legendreP(Apcomplex ν, Apcomplex μ, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        long precision = Util.min(ν.precision(), μ.precision(), z.precision());
+        int radix = ν.radix();
+        Apfloat one = Apint.ONES[radix],
+                two = new Apint(2, radix);
+        Apcomplex result = hypergeometric2F1Regularized(ν.negate(), ApfloatHelper.ensurePrecision(ν.add(one), precision), ApfloatHelper.ensurePrecision(one.subtract(μ), precision), ApfloatHelper.ensurePrecision(one.subtract(z).divide(two), precision));
+        if (!μ.isZero())
+        {
+            Apcomplex μ2 = μ.divide(two);
+            result = result.multiply(pow(ApfloatHelper.ensurePrecision(one.add(z), precision), μ2)).divide(pow(ApfloatHelper.ensurePrecision(one.subtract(z), precision), μ2));
+        }
+        return result;
+    }
+
+    /**
+     * Legendre function of the second kind.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>Q<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is 1 or -1.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex legendreQ(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apcomplex zero = Apcomplex.ZEROS[ν.radix()];
+        return legendreQ(ν, zero, z);
+    }
+
+    /**
+     * Associated Legendre function of the second kind. Gives Legendre functions of type 2.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param μ The second argument.
+     * @param z The third argument.
+     *
+     * @return <i>Q<sub>ν</sub><sup style='position: relative; left: -0.4em;'>μ</sup>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is 1 or -1.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex legendreQ(Apcomplex ν, Apcomplex μ, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        long precision = Util.min(ν.precision(), μ.precision(), z.precision());
+        int radix = ν.radix();
+        Apfloat one = Apint.ONES[radix],
+                two = new Apfloat(2, precision, radix),
+                three = new Apint(3, radix),
+                pi = ApfloatMath.pi(precision, radix);
+        Apcomplex z2 = z.multiply(z),
+                  p1 = pochhammer(one.subtract(μ).add(ν).divide(two), one.divide(two).add(μ)),
+                  p2 = pochhammer(two.subtract(μ).add(ν).divide(two), μ.subtract(one.divide(two))),
+                  result = Apint.ZEROS[radix];
+        if (!p1.isZero())
+        {
+            result = result.add(cos(ApfloatHelper.ensurePrecision(μ.add(ν).divide(two).multiply(pi), precision)).multiply(p1).multiply(z).divide(two).multiply(hypergeometric2F1Regularized(ApfloatHelper.ensurePrecision(one.subtract(μ).subtract(ν).divide(two), precision), ApfloatHelper.ensurePrecision(ν.subtract(μ).divide(two).add(one), precision), three.divide(two), z2)));
+        }
+        if (!p2.isZero())
+        {
+            result = result.subtract(sin(ApfloatHelper.ensurePrecision(μ.add(ν).divide(two).multiply(pi), precision)).multiply(p2).divide(two).multiply(hypergeometric2F1Regularized(ApfloatHelper.ensurePrecision(μ.negate().subtract(ν).divide(two), precision), ApfloatHelper.ensurePrecision(ν.subtract(μ).add(one).divide(two), precision), one.divide(two), z2)));
+        }
+        result = result.multiply(pow(two, μ)).multiply(pi).multiply(pow(ApfloatHelper.ensurePrecision(one.subtract(z2), precision), μ.negate().divide(two)));
+        return result;
+    }
+
+    /**
+     * Spherical harmonic function.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param λ The first argument.
+     * @param μ The second argument.
+     * @param ϑ The third argument.
+     * @param ϕ The fourth argument.
+     *
+     * @return <i>Y<sub>λ</sub><sup style='position: relative; left: -0.1em;'>μ</sup>(ϑ, &phi;)</i>
+     *
+     * @throws ArithmeticException If <code>ϑ</code> is &pi; plus a multiple of 2 &pi; and μ is not an integer and has a negative real part, or if <code>λ - μ</code> is a negative integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex sphericalHarmonicY(Apcomplex λ, Apcomplex μ, Apcomplex ϑ, Apcomplex ϕ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (λ.isInteger() && μ.isInteger())
+        {
+            // The polynomial version
+            return sphericalHarmonicY(λ.real().truncate(), μ.real().truncate(), ϑ, ϕ);
+        }
+        long precision = Util.min(λ.precision(), μ.precision(), ϑ.precision(), ϕ.precision());
+        int radix = λ.radix();
+        Apint zero = Apint.ZEROS[radix],
+              one = Apint.ONES[radix],
+              two = new Apint(2, radix),
+              four = new Apint(4, radix);
+        Apcomplex i = new Apcomplex(zero, one),
+                  result = two.multiply(λ).add(one);
+        if (result.isZero())
+        {
+            return result;
+        }
+        Apfloat pi = ApfloatMath.pi(precision, radix);
+        result = sqrt(result.divide(four.multiply(pi)));
+        if (!μ.isZero())
+        {
+            Apcomplex λμ1 = λ.add(μ).add(one);
+            if (λμ1.isInteger() && λμ1.real().signum() <= 0)
+            {
+                return zero;
+            }
+            result = result.multiply(sqrt(gamma(ApfloatHelper.ensureGammaPrecision(λ.subtract(μ).add(one), precision)))).divide(sqrt(gamma(ApfloatHelper.ensureGammaPrecision(λμ1, precision)))).multiply(exp(i.multiply(ϕ).multiply(μ)));
+        }
+        return result.multiply(legendreP(λ, μ, cos(ϑ)));
+    }
+
+    private static Apcomplex sphericalHarmonicY(Apint n, Apint m, Apcomplex ϑ, Apcomplex ϕ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        long precision = Util.min(ϑ.precision(), ϕ.precision());
+        int radix = n.radix();
+        Apint zero = Apint.ZEROS[radix],
+              one = Apint.ONES[radix],
+              two = new Apint(2, radix),
+              four = new Apint(4, radix);
+        if (n.signum() < 0)
+        {
+            return sphericalHarmonicY(n.negate().subtract(one), m, ϑ, ϕ);
+        }
+        if (n.compareTo(ApfloatMath.abs(m)) < 0)
+        {
+            return zero;
+        }
+        Apfloat pi = ApfloatMath.pi(precision, radix);
+        Apcomplex i = new Apcomplex(zero, one);
+        return sqrt(two.multiply(n).add(one).multiply(ApfloatMath.factorial(ApfloatHelper.longValueExact(n.subtract(m)), precision, radix)).divide(four.multiply(pi).multiply(ApfloatMath.factorial(ApfloatHelper.longValueExact(n.add(m)), precision, radix)))).multiply(exp(i.multiply(m).multiply(ϕ))).multiply(legendreP(n, m, cos(ϑ)));
+    }
+
+    /**
+     * Chebyshev function of the first kind. For integer values of <code>ν</code> gives the Chebyshev polynomial of the first kind.<p>
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>T<sub>ν</sub>(z)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex chebyshevT(Apcomplex ν, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        if (ν.isZero() && z.isZero())
+        {
+            return Apcomplex.ONES[ν.radix()];
+        }
+        long precision = Math.min(ν.precision(), z.precision());
+        return cos(ν.multiply(acos(z, precision)));
+    }
+
+    /**
+     * Chebyshev function of the second kind. For integer values of <code>ν</code> gives the Chebyshev polynomial of the second kind.<p>
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>U<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is -1 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex chebyshevU(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apint one = Apint.ONES[ν.radix()];
+        if (ν.isZero() && z.isZero())
+        {
+            return one;
+        }
+        if (z.equals(one))
+        {
+            return one.add(ν);
+        }
+        if (z.equals(one.negate()) && ν.isInteger())
+        {
+            Apcomplex result = one.add(ν);
+            boolean negate = (ν.real().truncate().mod(new Apint(2, ν.radix())).signum() != 0);
+            return (negate ? result.negate() : result);
+        }
+        long precision = Math.min(ν.precision(), z.precision());
+        return sin(ν.add(one).multiply(acos(z, precision))).multiply(inverseRoot(one.subtract(pow(z, 2)), 2));
+    }
+
+    /**
+     * Renormalized Gegenbauer function.<p>
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>C<sub>ν</sub><sup style='position: relative; left: -0.4em;'>(0)</sup>(z)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is zero.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex gegenbauerC(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apint two = new Apint(2, ν.radix());
+        return two.divide(ν).multiply(chebyshevT(ν, z));
+    }
+
+    /**
+     * Gegenbauer function. For nonnegative integer values of <code>ν</code> gives the Gegenbauer polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param λ The second argument.
+     * @param z The third argument.
+     *
+     * @return <i>C<sub>ν</sub><sup style='position: relative; left: -0.4em;'>λ</sup>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is -1 and real part of <code>λ</code> is > 1/2. Also if <code>z</code> is -1 and <code>λ</code> is 1/2 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex gegenbauerC(Apcomplex ν, Apcomplex λ, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (λ.isZero())
+        {
+            return λ;
+        }
+        if (ν.isInteger() && ν.real().signum() >= 0)
+        {
+            return gegenbauerC(ApfloatHelper.longValueExact(ν.real().truncate()), λ, z);
+        }
+        long precision = Util.min(ν.precision(), λ.precision(), z.precision());
+        int radix = ν.radix();
+        Apfloat one = Apint.ONES[radix],
+                two = new Apfloat(2, precision, radix),
+                pi = ApfloatMath.pi(precision, radix);
+        Apcomplex λ12 = ApfloatHelper.ensurePrecision(one.subtract(two.multiply(λ)), precision),
+                  νλ = ApfloatHelper.ensurePrecision(ν.add(λ), precision),
+                  ν1 = ApfloatHelper.ensurePrecision(ν.add(one), precision),
+                  λ2ν = ApfloatHelper.ensurePrecision(two.multiply(λ).add(ν), precision),
+                  λhalf = ApfloatHelper.ensurePrecision(λ.add(one.divide(two)), precision),
+                  z12 = ApfloatHelper.ensurePrecision(one.subtract(z), precision).divide(two),
+                  result;
+        if (isNonPositiveInteger(ν1))
+        {
+            if (isNonPositiveInteger(λ))
+            {
+                return Apint.ZEROS[radix];
+            }
+            result = pochhammer(ν1, λ12.negate()).divide(gamma(ApfloatHelper.ensureGammaPrecision(λ, precision)));
+        }
+        else
+        {
+            result = pochhammer(λ, νλ).divide(gamma(ApfloatHelper.ensureGammaPrecision(ν1, precision)));
+        }
+        if (result.isZero())
+        {
+            return result;
+        }
+        return result.multiply(pow(two, λ12)).multiply(sqrt(pi)).multiply(hypergeometric2F1Regularized(ν.negate(), λ2ν, λhalf, z12));
+    }
+
+    private static Apcomplex gegenbauerC(long n, Apcomplex λ, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        long precision = Math.min(λ.precision(), z.precision());
+        int radix = λ.radix();
+        if (n == 0)
+        {
+            return new Apfloat(1, precision, radix);
+        }
+        precision = ApfloatHelper.extendPrecision(precision);
+        λ = ApfloatHelper.ensurePrecision(λ, precision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
+        long n2 = n / 2,
+             k = n2,
+             n2k = n - 2 * k;
+        Apcomplex sum = Apint.ZEROS[radix],
+                  z2 = z.multiply(new Apint(2, radix)),
+                  numerator = pochhammer(λ, n - k).multiply(n2k == 0 ? Apint.ONES[radix] : z2),
+                  denominator = ApfloatMath.factorial(k, precision, radix).multiply(ApfloatMath.factorial(n2k, precision, radix));
+        z2 = z2.multiply(z2);
+        for (; k >= 0; k--, n2k += 2)
+        {
+            if (k < n2)
+            {
+                numerator = numerator.multiply(λ.add(new Apint(n - k - 1, radix))).multiply(z2);
+                denominator = denominator.multiply(new Apint(n2k - 1, radix)).multiply(new Apint(n2k, radix));
+            }
+            Apcomplex term = numerator.divide(denominator);
+            sum = ((k & 1) == 0 ? sum.add(term) : sum.subtract(term));
+            if (k > 0)
+            {
+                numerator = numerator.multiply(new Apint(k, radix));
+            }
+        }
+        return ApfloatHelper.reducePrecision(sum);
+    }
+
+    /**
+     * Jacobi function. For nonnegative integer values of <code>ν</code> gives the Jacobi polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param a The second argument.
+     * @param b The third argument.
+     * @param z The fourth argument.
+     *
+     * @return <i>P<sub>ν</sub><sup style='position: relative; left: -0.4em;'>(a,b)</sup>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is -1 and real part of <code>b</code> is > 0 and <code>ν</code> is not a positive integer. Also if <code>ν + a</code> is a negative integer and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex jacobiP(Apcomplex ν, Apcomplex a, Apcomplex b, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (ν.isInteger() && ν.real().signum() >= 0)
+        {
+            return jacobiP(ApfloatHelper.longValueExact(ν.real().truncate()), a, b, z);
+        }
+        long precision = Util.min(ν.precision(), a.precision(), b.precision(), z.precision());
+        int radix = ν.radix();
+        Apint one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        Apcomplex ν1 = ApfloatHelper.ensurePrecision(ν.add(one), precision),
+                  abν1 = ApfloatHelper.ensurePrecision(a.add(b).add(ν).add(one), precision),
+                  a1 = ApfloatHelper.ensurePrecision(a.add(one), precision),
+                  z12 = ApfloatHelper.ensurePrecision(one.subtract(z), precision).divide(two);
+        return pochhammer(ν1, a).multiply(hypergeometric2F1Regularized(ν.negate(), abν1, a1, z12));
+    }
+
+    private static Apcomplex jacobiP(long n, Apcomplex a, Apcomplex b, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        long precision = Util.min(a.precision(), b.precision(), z.precision());
+        int radix = a.radix();
+        if (n == 0)
+        {
+            return new Apfloat(1, precision, radix);
+        }
+        precision = ApfloatHelper.extendPrecision(precision);
+        a = ApfloatHelper.ensurePrecision(a, precision);
+        b = ApfloatHelper.ensurePrecision(b, precision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
+        Apint one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        Apcomplex sum = Apint.ZEROS[radix],
+                  a1 = ApfloatHelper.ensurePrecision(a.add(one), precision),
+                  abn1 = ApfloatHelper.ensurePrecision(a1.add(b).add(new Apint(n, radix)), precision),
+                  z12 = ApfloatHelper.ensurePrecision(one.subtract(z), precision).divide(two),
+                  numerator = one,
+                  denominator = ApfloatMath.factorial(n, precision, radix);
+        for (long k = 0; k <= n; k++)
+        {
+            Apint kk = new Apint(k, radix);
+            Apcomplex term = numerator.multiply(pochhammer(a1.add(kk), n - k)).divide(denominator);
+            sum = sum.add(term);
+            if (k < n)
+            {
+                Apcomplex abnk1 = ApfloatHelper.ensurePrecision(abn1.add(kk), precision);
+                numerator = numerator.multiply(new Apint(-n + k, radix)).multiply(abnk1).multiply(z12);
+                denominator = denominator.multiply(kk.add(one));
+            }
+        }
+        return ApfloatHelper.reducePrecision(sum);
+    }
+
+    /**
+     * Fibonacci function. For nonnegative integer values of <code>ν</code> gives the Fibonacci polynomial.<p>
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>F<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is -1 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex fibonacci(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        long precision = Math.min(ν.precision(), z.precision());
+        int radix = ν.radix();
+        Apint zero = Apfloat.ZEROS[radix],
+              two = new Apint(2, radix),
+              four = new Apint(4, radix);
+        Apcomplex twoI = new Apcomplex(zero, two);
+        if (ν.isInteger() && (z.equals(twoI) || z.equals(twoI.negate())))
+        {
+            long n = ν.real().truncate().mod(four).longValueExact();
+            Apcomplex i = new Apcomplex(zero, new Apint(z.imag().signum() < 0 ? -1 : 1, radix));
+            return pow(i, n + 1).multiply(ν).negate();
+        }
+        Apfloat pi = ApfloatMath.pi(precision, radix);
+        Apcomplex ν2 = pow(two, ν),
+                  z4 = sqrt(ApfloatHelper.ensurePrecision(z.multiply(z).add(four), precision)),
+                  zz4ν = pow(ApfloatHelper.ensurePrecision(z.add(z4), precision), ν);
+        return zz4ν.divide(ν2).subtract(cos(pi.multiply(ν)).multiply(ν2).divide(zz4ν)).divide(z4);
+    }
+
+    /**
+     * Euler polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param n The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>E<sub>n</sub>(z)</i>
+     *
+     * @throws IllegalArgumentException If <code>n</code> &lt; 0.
+     * @throws InfiniteExpansionException If <code>z</code> is zero.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex eulerE(long n, Apcomplex z)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return eulerE(n, z, z.precision());
+    }
+
+    static Apcomplex eulerE(long n, Apcomplex z, long precision)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        if (n < 0)
+        {
+            throw new IllegalArgumentException("Negative Euler polynomial");
+        }
+        if (z.isZero() && n > 0 && (n & 1) == 0)
+        {
+            return z;
+        }
+        int radix = z.radix();
+        if (n == 0)
+        {
+            return new Apfloat(1, precision, radix);
+        }
+        long extraPrecision = (long) Math.ceil(2.7 * n / Math.log(radix)),
+            workingPrecision = ApfloatHelper.extendPrecision(precision, extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, workingPrecision);
+        Apfloat two = new Apfloat(2, workingPrecision, radix),
+                nn = new Apfloat(-n, workingPrecision, radix);
+        Apcomplex result = two.multiply(pow(two, Util.addExact(n, 1)).multiply(zeta(nn, z.divide(two))).subtract(zeta(nn, z)));
+        return ApfloatHelper.limitPrecision(result, precision);
+    }
+
+    /**
+     * Bernoulli polynomial.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param n The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>B<sub>n</sub>(z)</i>
+     *
+     * @throws IllegalArgumentException If <code>n</code> &lt; 0.
+     * @throws InfiniteExpansionException If <code>z</code> is zero.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex bernoulliB(long n, Apcomplex z)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return bernoulliB(n, z, z.precision());
+    }
+
+    static Apcomplex bernoulliB(long n, Apcomplex z, long precision)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        if (n < 0)
+        {
+            throw new IllegalArgumentException("Negative Bernoulli polynomial");
+        }
+        int radix = z.radix();
+        if (n == 0)
+        {
+            return new Apfloat(1, precision, radix);
+        }
+        long extraPrecision = (long) Math.ceil(2.7 * n / Math.log(radix)),
+             workingPrecision = ApfloatHelper.extendPrecision(precision, extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, workingPrecision);
+        Apfloat nn = new Apfloat(-n, workingPrecision, radix),
+                n1 = new Apfloat(1 - n, workingPrecision, radix);
+        Apcomplex result = nn.multiply(zeta(n1, z));
+        return ApfloatHelper.limitPrecision(result, precision);
+    }
+
+    /**
+     * Harmonic number.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return <i>H<sub>z</sub></i>
+     *
+     * @throws ArithmeticException If <code>z</code> is a negative integer.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex harmonicNumber(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (z.isZero())
+        {
+            return z;
+        }
+        long precision = z.precision();
+        int radix = z.radix();
+        Apint one = Apint.ONES[radix];
+        Apfloat eulerGamma = ApfloatMath.euler(precision, radix);
+        return digamma(z.add(one)).add(eulerGamma);
+    }
+
+    /**
+     * Generalized harmonic number.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The first argument.
+     * @param r The second argument.
+     *
+     * @return <i>H<sub>z</sub><sup style='position: relative; left: -0.4em;'>(r)</sup></i>
+     *
+     * @throws ArithmeticException If <code>z</code> is a negative integer, unless <code>r</code> has a negative real part or is zero.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex harmonicNumber(Apcomplex z, Apcomplex r)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (z.isZero() || r.isZero())
+        {
+            return z;
+        }
+        int radix = z.radix();
+        Apint one = Apint.ONES[radix];
+        if (r.equals(one))
+        {
+            return harmonicNumber(z);
+        }
+        long precision = Math.min(z.precision(), r.precision());
+        Apcomplex z1 = ApfloatHelper.ensurePrecision(z.add(one), precision);
+        return zeta(r).subtract(zeta(r, z1));
+    }
+
+    /**
+     * Polylogarithm.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return Li<sub>ν</sub>(z)
+     *
+     * @throws ArithmeticException If the real part of <code>ν</code> is &le; 1 and <code>z</code> is 1.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex polylog(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (z.isZero())
+        {
+            return z;
+        }
+        long precision = Math.min(ν.precision(), z.precision());
+        int radix = ν.radix();
+        Apint zero = Apint.ZEROS[radix],
+              one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        Apfloat pi = ApfloatMath.pi(precision, radix);
+        boolean unitLine = (z.imag().signum() == 0 && z.real().signum() > 0 && z.real().compareTo(one) < 0);
+        Apcomplex i = new Apcomplex(zero, one),
+                  epiνi2 = exp(pi.multiply(ν).multiply(i).divide(two)),
+                  zn = (unitLine ? z : z.negate()),
+                  offset = (unitLine ? zero : pi.multiply(i)),
+                  ν1 = ApfloatHelper.ensurePrecision(ν.subtract(one), precision),
+                  logznpi2i = ApfloatHelper.ensurePrecision(log(zn).add(offset), precision).divide(pi.multiply(two).multiply(i)),
+                  oneMinusLogznpi2i = ApfloatHelper.ensurePrecision(one.subtract(logznpi2i), precision);
+        return pow(two.multiply(pi), ν1).multiply(i).multiply(gamma(ApfloatHelper.ensureGammaPrecision(ν1.negate(), precision))).multiply(zeta(ν1.negate(), logznpi2i).divide(epiνi2).subtract(epiνi2.multiply(zeta(ν1.negate(), oneMinusLogznpi2i))));
+    }
+
+    /**
      * Returns the unit in the last place of the argument, considering the
      * scale and precision. This is maximum of the ulps of the real and
      * imaginary part of the argument.
@@ -3535,5 +4340,10 @@ public class ApcomplexMath
     private static Apcomplex lastIterationExtendPrecision(int iterations, int precisingIteration, Apcomplex z)
     {
         return (iterations == 0 && precisingIteration != 0 ? ApfloatHelper.extendPrecision(z) : z);
+    }
+
+    private static boolean isNonPositiveInteger(Apcomplex z)
+    {
+        return (z.isInteger() && z.real().signum() <= 0);
     }
 }

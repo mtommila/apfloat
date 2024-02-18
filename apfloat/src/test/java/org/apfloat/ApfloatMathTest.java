@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
 import static java.math.RoundingMode.*;
 
 /**
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -145,6 +145,24 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testBesselK"));
         suite.addTest(new ApfloatMathTest("testEllipticK"));
         suite.addTest(new ApfloatMathTest("testEllipticE"));
+        suite.addTest(new ApfloatMathTest("testHermiteH"));
+        suite.addTest(new ApfloatMathTest("testLaguerreL"));
+        suite.addTest(new ApfloatMathTest("testLaguerreLGeneralized"));
+        suite.addTest(new ApfloatMathTest("testLegendreP"));
+        suite.addTest(new ApfloatMathTest("testLegendrePAssociated"));
+        suite.addTest(new ApfloatMathTest("testLegendreQ"));
+        suite.addTest(new ApfloatMathTest("testLegendreQAssociated"));
+        suite.addTest(new ApfloatMathTest("testChebyshevT"));
+        suite.addTest(new ApfloatMathTest("testChebyshevU"));
+        suite.addTest(new ApfloatMathTest("testGegenbauerCRenormalized"));
+        suite.addTest(new ApfloatMathTest("testGegenbauerC"));
+        suite.addTest(new ApfloatMathTest("testJacobiP"));
+        suite.addTest(new ApfloatMathTest("testFibonacci"));
+        suite.addTest(new ApfloatMathTest("testEulerE"));
+        suite.addTest(new ApfloatMathTest("testBernoulliB"));
+        suite.addTest(new ApfloatMathTest("testHarmonicNumber"));
+        suite.addTest(new ApfloatMathTest("testHarmonicNumberGeneralized"));
+        suite.addTest(new ApfloatMathTest("testPolylog"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testContinuedFraction"));
@@ -4080,6 +4098,581 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+        }
+    }
+
+    public static void testHermiteH()
+    {
+        Apfloat a = ApfloatMath.hermiteH(new Apfloat("2.00000"), new Apfloat("3.00000"));
+        assertEquals("2, 3 precision", 6, a.precision());
+        assertEquals("2, 3 value", new Apfloat("34.0000"), a, new Apfloat("5e-4"));
+    }
+
+    public static void testLaguerreL()
+    {
+        Apfloat a = ApfloatMath.laguerreL(new Apfloat("2.00000"), new Apfloat("3.00000"));
+        assertEquals("2, 3 precision", 6, a.precision());
+        assertEquals("2, 3 value", new Apfloat("-0.500000"), a, new Apfloat("5e-6"));
+    }
+
+    public static void testLaguerreLGeneralized()
+    {
+        Apfloat a = ApfloatMath.laguerreL(new Apfloat("2.00000"), new Apfloat("3.00000"), new Apfloat("4.00000"));
+        assertEquals("2, 3, 4 precision", 6, a.precision());
+        assertEquals("2, 3, 4 value", new Apfloat("-2.00000"), a, new Apfloat("5e-5"));
+    }
+
+    public static void testLegendreP()
+    {
+        Apfloat a = ApfloatMath.legendreP(new Apfloat("2.00000"), new Apfloat("3.00000"));
+        assertEquals("2, 3 precision", 6, a.precision());
+        assertEquals("2, 3 value", new Apfloat("13.0000"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.legendreP(new Apfloat("2.00000"), new Apfloat("-1.10000"));
+        assertEquals("2, -1.1 precision", 6, a.precision());
+        assertEquals("2, -1.1 value", new Apfloat("1.31500"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.legendreP(new Apfloat("5.000000"), new Apfloat("-1.000000"));
+        assertEquals("5, -1 precision", 6, a.precision());
+        assertEquals("5, -1 value", new Apfloat("-1.00000"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.legendreP(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2));
+        assertEquals("0.1, 0.11 radix 2 precision", 18, a.precision());
+        assertEquals("0.1, 0.11 radix 2 radix", 2, a.radix());
+        assertEquals("0.1, 0.11 radix 2 value", new Apfloat("0.111001101111110011", 18, 2), a, new Apfloat("1e-18", 1, 2));
+
+        try
+        {
+            ApfloatMath.legendreP(new Apfloat("2.10000"), new Apfloat("-1.00000"));
+            fail("2.1, -1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.legendreP(new Apfloat("2.10000"), new Apfloat("-1.10000"));
+            fail("2.1, -1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testLegendrePAssociated()
+    {
+        Apfloat a = ApfloatMath.legendreP(new Apfloat("2.10000"), new Apfloat("3.20000"), new Apfloat("0.500000"));
+        assertEquals("2.1, 3.2, 0.5 precision", 6, a.precision());
+        assertEquals("2.1, 3.2, 0.5 value", new Apfloat("-5.81509"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.legendreP(new Apfloat("2.00000"), new Apfloat("3.00000"), new Apfloat("1.10000"));
+        assertEquals("2, 3, 1.1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("2, 3, 1.1 value", new Apfloat("0"), a);
+
+        a = ApfloatMath.legendreP(new Apfloat("2.00000"), new Apfloat("3.00000"), new Apfloat("-1.10000"));
+        assertEquals("2, 3, -1.1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("2, 3, -1.1 value", new Apfloat("0"), a);
+
+        a = ApfloatMath.legendreP(new Apfloat("0"), new Apfloat("1.00000"), new Apfloat("1.100000"));
+        assertEquals("0, 3, -1.1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0, 3, -1.1 value", new Apfloat("0"), a);
+
+        a = ApfloatMath.legendreP(new Apfloat("-5.00000"), new Apfloat("5.00000"), new Apfloat("1.100000"));
+        assertEquals("-5, 5, -1.1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-5, 5, -1.1 value", new Apfloat("0"), a);
+
+        a = ApfloatMath.legendreP(new Apfloat("2.10000"), new Apfloat("2.00000"), new Apfloat("1.10000"));
+        assertEquals("2.1, 2, 1.1 precision", 6, a.precision());
+        assertEquals("2.1, 2, 1.1 value", new Apfloat("-0.777038"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.legendreP(new Apfloat("-5.000000"), new Apfloat("4.000000"), new Apfloat("-1.100000"));
+        assertEquals("-5, 4, -1.1 precision", 6, a.precision());
+        assertEquals("-5, 4, -1.1 value", new Apfloat("4.63050"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.legendreP(new Apfloat("-3.00000"), new Apfloat("-4.00000"), new Apfloat("-1.10000"));
+        assertEquals("-3, -4, -1.1 precision", 6, a.precision());
+        assertEquals("-3, -4, -1.1 value", new Apfloat("3.32587"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.legendreP(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2), new Apfloat("0.111", 18, 2));
+        assertEquals("0.1, 0.11, 0.111 radix 2 precision", 18, a.precision());
+        assertEquals("0.1, 0.11, 0.111 radix 2 radix", 2, a.radix());
+        assertEquals("0.1, 0.11, 0.111 radix 2 value", new Apfloat("0.1001110100101111011", 18, 2), a, new Apfloat("1e-18", 1, 2));
+
+        try
+        {
+            ApfloatMath.legendreP(new Apfloat("1.10000"), new Apfloat("1.00000"), new Apfloat("1.100000"));
+            fail("1.1, 1, 1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.legendreP(new Apfloat("1.00000"), new Apfloat("1.10000"), new Apfloat("1.100000"));
+            fail("1, 1.1, 1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.legendreP(new Apfloat("2.10000"), new Apfloat("4.00000"), new Apfloat("-1.10000"));
+            fail("2.1, 4, -1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.legendreP(new Apfloat("-4.00000"), new Apfloat("-3.00000"), new Apfloat("-1.10000"));
+            fail("-4, -3, -1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.legendreP(new Apfloat("1.00000"), new Apfloat("1.00000"), new Apfloat("1.100000"));
+            fail("1, 1, 1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.legendreP(new Apfloat("-6.00000"), new Apfloat("5.00000"), new Apfloat("1.100000"));
+            fail("-6, 5, 1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testLegendreQ()
+    {
+        Apfloat a = ApfloatMath.legendreQ(new Apfloat("2.00000"), new Apfloat("0.300000"));
+        assertEquals("2, 0.3 precision", 6, a.precision());
+        assertEquals("2, 0.3 value", new Apfloat("-0.562975"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.legendreQ(new Apfloat("0.1", 20, 2), new Apfloat("0.11", 20, 2));
+        assertEquals("0.1, 0.11 radix 2 precision", 18, a.precision());
+        assertEquals("0.1, 0.11 radix 2 radix", 2, a.radix());
+        assertEquals("0.1, 0.11 radix 2 value", new Apfloat("0.00111001011011111100", 18, 2), a, new Apfloat("1e-20", 1, 2));
+
+        try
+        {
+            ApfloatMath.legendreQ(new Apfloat("2.00000"), new Apfloat("1.00000"));
+            fail("2, 1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.legendreQ(new Apfloat("2.10000"), new Apfloat("-1.00000"));
+            fail("2.1, -1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.legendreQ(new Apfloat("2.10000"), new Apfloat("-1.10000"));
+            fail("2.1, -1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testLegendreQAssociated()
+    {
+        Apfloat a = ApfloatMath.legendreQ(new Apfloat("2.00000"), new Apfloat("3.00000"), new Apfloat("0.300000"));
+        assertEquals("2, 3, 0.3 precision", 6, a.precision());
+        assertEquals("2, 3, 0.3 value", new Apfloat("-9.21569"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.legendreQ(new Apfloat("0.1", 19, 2), new Apfloat("0.11", 19, 2), new Apfloat("0.111", 19, 2));
+        assertEquals("0.1, 0.11, 0.111 radix 2 precision", 18, a.precision());
+        assertEquals("0.1, 0.11, 0.111 radix 2 radix", 2, a.radix());
+        assertEquals("0.1, 0.11, 0.111 radix 2 value", new Apfloat("-1.110000000111111111", 18, 2), a, new Apfloat("1e-17", 1, 2));
+
+        try
+        {
+            ApfloatMath.legendreQ(new Apfloat("2.00000"), new Apfloat("3.00000"), new Apfloat("1.00000"));
+            fail("2, 3, 1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.legendreQ(new Apfloat("2.10000"), new Apfloat("3.00000"), new Apfloat("-1.00000"));
+            fail("2.1, 3, -1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.legendreQ(new Apfloat("2.10000"), new Apfloat("3.00000"), new Apfloat("-1.10000"));
+            fail("2.1, 3, -1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testChebyshevT()
+    {
+        Apfloat a = ApfloatMath.chebyshevT(new Apfloat("2.00000"), new Apfloat("3.00000"));
+        assertEquals("2, 3 precision", 6, a.precision());
+        assertEquals("2, 3 value", new Apfloat("17.0000"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.chebyshevT(new Apfloat("2.30000"), new Apfloat("-1.00000"));
+        assertEquals("2.3, -1 precision", 6, a.precision());
+        assertEquals("2.3, -1 value", new Apfloat("0.587785"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.chebyshevT(new Apfloat("2.000000"), new Apfloat("-1.100000"));
+        assertEquals("2, -1.1 precision", 6, a.precision());
+        assertEquals("2, -1.1 value", new Apfloat("1.42000"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.chebyshevT(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2));
+        assertEquals("0.1, 0.11 radix 2 precision", 18, a.precision());
+        assertEquals("0.1, 0.11 radix 2 radix", 2, a.radix());
+        assertEquals("0.1, 0.11 radix 2 value", new Apfloat("0.111011110111011101", 18, 2), a, new Apfloat("1e-18", 1, 2));
+
+        try
+        {
+            ApfloatMath.chebyshevT(new Apfloat("2.30000"), new Apfloat("-1.00001"));
+            fail("2.3, -1.00001 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testChebyshevU()
+    {
+        Apfloat a = ApfloatMath.chebyshevU(new Apfloat("2.00000"), new Apfloat("3.00000"));
+        assertEquals("2, 3 precision", 6, a.precision());
+        assertEquals("2, 3 value", new Apfloat("35.0000"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.chebyshevU(new Apfloat("2.00000"), new Apfloat("-1.00000"));
+        assertEquals("2, -1 precision", 6, a.precision());
+        assertEquals("2, -1 value", new Apfloat("3.00000"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.chebyshevU(new Apfloat("2.000000"), new Apfloat("-1.100000"));
+        assertEquals("2, -1.1 precision", 6, a.precision());
+        assertEquals("2, -1.1 value", new Apfloat("3.84000"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.chebyshevU(new Apfloat("0.1", 20, 2), new Apfloat("0.11", 20, 2));
+        assertEquals("0.1, 0.11 radix 2 precision", 18, a.precision());
+        assertEquals("0.1, 0.11 radix 2 radix", 2, a.radix());
+        assertEquals("0.1, 0.11 radix 2 value", new Apfloat("1.01010110000110000", 18, 2), a, new Apfloat("1e-17", 1, 2));
+
+        try
+        {
+            ApfloatMath.chebyshevU(new Apfloat("2.10000"), new Apfloat("-1.00000"));
+            fail("2.1, -1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.chebyshevU(new Apfloat("2.10000"), new Apfloat("-1.00001"));
+            fail("2.1, -1.00001 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testGegenbauerCRenormalized()
+    {
+        Apfloat a = ApfloatMath.gegenbauerC(new Apfloat("2.00000"), new Apfloat("3.00000"));
+        assertEquals("2, 3 precision", 6, a.precision());
+        assertEquals("2, 3 value", new Apfloat("17.0000"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.gegenbauerC(new Apfloat("2.10000"), new Apfloat("-1.00000"));
+        assertEquals("2.1, -1 precision", 6, a.precision());
+        assertEquals("2.1, -1 value", new Apfloat("0.905768"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.gegenbauerC(new Apfloat("-2.000000"), new Apfloat("-1.100000"));
+        assertEquals("-2, -1.1 precision", 6, a.precision());
+        assertEquals("-2, -1.1 value", new Apfloat("-1.42000"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.gegenbauerC(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2));
+        assertEquals("0.1, 0.11 radix 2 precision", 18, a.precision());
+        assertEquals("0.1, 0.11 radix 2 radix", 2, a.radix());
+        assertEquals("0.1, 0.11 radix 2 value", new Apfloat("11.1011110111011101", 18, 2), a, new Apfloat("1e-16", 1, 2));
+
+        try
+        {
+            ApfloatMath.gegenbauerC(new Apfloat("0"), new Apfloat("1.00000"));
+            fail("0, 1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.gegenbauerC(new Apfloat("2.10000"), new Apfloat("-1.00001"));
+            fail("2.1, -1.00001 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testGegenbauerC()
+    {
+        Apfloat a = ApfloatMath.gegenbauerC(new Apfloat("2.00000"), new Apfloat("3.00000"), new Apfloat("4.00000"));
+        assertEquals("2, 3, 4 precision", 6, a.precision());
+        assertEquals("2, 3, 4 value", new Apfloat("381.000"), a, new Apfloat("5e-3"));
+
+        a = ApfloatMath.gegenbauerC(new Apfloat("-2.10000"), new Apfloat("-0.500000"), new Apfloat("2.10000"));
+        assertEquals("-2.1, -0.5, 2.1 precision", 6, a.precision());
+        assertEquals("-2.1, -0.5, 2.1 value", new Apfloat("-3.90011"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.gegenbauerC(new Apfloat("-2.000000"), new Apfloat("-3.10000"), new Apfloat("-1.100000"));
+        assertEquals("-2, -3.1, -1.1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-2, -3.1, -1.1 value", new Apfloat("0"), a);
+
+        a = ApfloatMath.gegenbauerC(new Apfloat("3.00000"), new Apfloat("0.500000"), new Apfloat("-1.00000"));
+        assertEquals("3, 0.5, 2.1 precision", 6, a.precision());
+        assertEquals("3, 0.5, 2.1 value", new Apfloat("-1.00000"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.gegenbauerC(new Apfloat("-3.00000"), new Apfloat("0.500000"), new Apfloat("-1.00000"));
+        assertEquals("-3, 0.5, 2.1 precision", 6, a.precision());
+        assertEquals("-3, 0.5, 2.1 value", new Apfloat("1.00000"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.gegenbauerC(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2), new Apfloat("0.111", 18, 2));
+        assertEquals("0.1, 0.11, 0.111 radix 2 precision", 18, a.precision());
+        assertEquals("0.1, 0.11, 0.111 radix 2 radix", 2, a.radix());
+        assertEquals("0.1, 0.11, 0.111 radix 2 value", new Apfloat("1.00110101010011001", 18, 2), a, new Apfloat("1e-17", 1, 2));
+
+        try
+        {
+            ApfloatMath.gegenbauerC(new Apfloat("2.10000"), new Apfloat("3.10000"), new Apfloat("-1.00000"));
+            fail("2.1, 3.1, -1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.gegenbauerC(new Apfloat("-2.10000"), new Apfloat("0.500000"), new Apfloat("-1.00000"));
+            fail("-2.1, 0.5, -1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.gegenbauerC(new Apfloat("2.10000"), new Apfloat("1"), new Apfloat("-1.00001"));
+            fail("2.1, 1, -1.00001 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testJacobiP()
+    {
+        Apfloat a = ApfloatMath.jacobiP(new Apfloat("3.0000"), new Apfloat("4.0000"), new Apfloat("5.0000"), new Apfloat("6.0000"));
+        assertEquals("3, 4, 5, 6 precision", 6, a.precision());
+        assertEquals("3, 4, 5, 6 value", new Apfloat("11808.1"), a, new Apfloat("5e-1"));
+
+        a = ApfloatMath.jacobiP(new Apfloat("2.10000"), new Apfloat("-1.00000"), new Apfloat("-1.00000"), new Apfloat("-1.00000"));
+        assertEquals("2.1, -1, -1, -1 precision", 6, a.precision());
+        assertEquals("2.1, -1, -1, -1 value", new Apfloat("0.0468396"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.jacobiP(new Apfloat("1.0000000"), new Apfloat("-2.0000000"), new Apfloat("-1.0000000"), new Apfloat("-1.1000000"));
+        assertEquals("1, -2, -1, -1.1 precision", 6, a.precision());
+        assertEquals("1, -2, -1, -1.1 value", new Apfloat("0.0500000"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.jacobiP(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2), new Apfloat("0.111", 18, 2), new Apfloat("0.1111", 18, 2));
+        assertEquals("0.1, 0.11, 0.111, 0.1111 radix 2 precision", 18, a.precision());
+        assertEquals("0.1, 0.11, 0.111, 0.1111 radix 2 radix", 2, a.radix());
+        assertEquals("0.1, 0.11, 0.111, 0.1111 radix 2 value", new Apfloat("1.0101101000001101011", 18, 2), a, new Apfloat("1e-17", 1, 2));
+
+        try
+        {
+            ApfloatMath.jacobiP(new Apfloat("2.10000"), new Apfloat("-1.00000"), new Apfloat("0.100000"), new Apfloat("-1.00000"));
+            fail("2.1, -1, 0.1, -1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.jacobiP(new Apfloat("2.10000"), new Apfloat("-1.00000"), new Apfloat("-1.00000"), new Apfloat("-1.10000"));
+            fail("2.1, -1, -1, -1.1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.jacobiP(new Apfloat("-0.50000"), new Apfloat("-0.50000"), new Apfloat("1.00000"), new Apfloat("1.00000"));
+            fail("-0.5, -0.5, 1, 1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testFibonacci()
+    {
+        Apfloat a = ApfloatMath.fibonacci(new Apfloat("3.00000"), new Apfloat("4.00000"));
+        assertEquals("3, 4 precision", 6, a.precision());
+        assertEquals("3, 4 value", new Apfloat("17.0000"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.fibonacci(new Apfloat("5.600000"), new Apfloat("7.800000"));
+        assertEquals("5.6, 7.8 precision", 6, a.precision());
+        assertEquals("5.6, 7.8 value", new Apfloat("13453.4"), a, new Apfloat("5e-1"));
+    }
+
+    public static void testEulerE()
+    {
+        Apfloat a = ApfloatMath.eulerE(3, new Apfloat("4.00000"));
+        assertEquals("3, 4 precision", 6, a.precision());
+        assertEquals("3, 4 value", new Apfloat("40.2500"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.eulerE(56, new Apfloat("7.80000"));
+        assertEquals("56, 7.8 precision", 6, a.precision());
+        assertEquals("56, 7.8 value", new Apfloat("6.61538e45"), a, new Apfloat("5e40"));
+    }
+
+    public static void testBernoulliB()
+    {
+        Apfloat a = ApfloatMath.bernoulliB(3, new Apfloat("4.00000"));
+        assertEquals("3, 4 precision", 6, a.precision());
+        assertEquals("3, 4 value", new Apfloat("42.0000"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.bernoulliB(56, new Apfloat("7.80000"));
+        assertEquals("56, 7.8 precision", 6, a.precision());
+        assertEquals("56, 7.8 value", new Apfloat("3.43754e47"), a, new Apfloat("5e42"));
+    }
+
+    public static void testHarmonicNumber()
+    {
+        Apfloat a = ApfloatMath.harmonicNumber(new Apfloat("3.45000"));
+        assertEquals("3.45 precision", 6, a.precision());
+        assertEquals("3.45 value", new Apfloat("1.95357"), a, new Apfloat("5e-5"));
+
+        try
+        {
+            ApfloatMath.harmonicNumber(new Apfloat("-1.0000"));
+            fail("-1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testHarmonicNumberGeneralized()
+    {
+        Apfloat a = ApfloatMath.harmonicNumber(new Apfloat("3.40000"), new Apfloat("5.60000"));
+        assertEquals("3.4, 5.6 precision", 6, a.precision());
+        assertEquals("3.4, 5.6 value", new Apfloat("1.02299"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.harmonicNumber(new Apfloat("-1.00000"), new Apfloat("0"));
+        assertEquals("-1, 0 precision", 6, a.precision());
+        assertEquals("-1, 0 value", new Apfloat("-1.00000"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.harmonicNumber(new Apfloat("-1.00000"), new Apfloat("-1.00000"));
+        assertEquals("-1, -1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-1, -1 value", new Apfloat("0"), a);
+
+        a = ApfloatMath.harmonicNumber(new Apfloat("-1.1000000"), new Apfloat("-1.0000000"));
+        assertEquals("-1.1, -1 precision", 6, a.precision());
+        assertEquals("-1.1, -1 value", new Apfloat("0.0550000"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.harmonicNumber(new Apfloat("0.1", 22, 2), new Apfloat("0.11", 22, 2));
+        assertEquals("0.5, 0.75 precision", 18, a.precision());
+        assertEquals("0.5, 0.75 radix", 2, a.radix());
+        assertEquals("0.5, 0.75 value", new Apfloat("0.10010110001101010101", 18, 2), a, new Apfloat("1e-18", 1, 2));
+
+        try
+        {
+            ApfloatMath.harmonicNumber(new Apfloat("-1.0000"), new Apfloat("1.0000"));
+            fail("-1, 1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.harmonicNumber(new Apfloat("-1.10000"), new Apfloat("1.10000"));
+            fail("-1.1, 1,1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+    }
+
+    public static void testPolylog()
+    {
+        Apfloat a = ApfloatMath.polylog(new Apfloat("3.400000000"), new Apfloat("-5.600000000"));
+        assertEquals("3.4, -5.6 precision", 6, a.precision());
+        assertEquals("3.4, -5.6 value", new Apfloat("-4.15566"), a, new Apfloat("5e-5"));
+
+        try
+        {
+            ApfloatMath.polylog(new Apfloat("3.400000000"), new Apfloat("5.600000000"));
+            fail("3.4, 5.6 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be complex
+        }
+        try
+        {
+            ApfloatMath.polylog(new Apfloat("1.00000"), new Apfloat("1.00000"));
+            fail("1, 1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be infinite
+        }
+        try
+        {
+            ApfloatMath.polylog(new Apfloat("0.900000"), new Apfloat("1.00000"));
+            fail("0.9, 1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result would be infinite
         }
     }
 

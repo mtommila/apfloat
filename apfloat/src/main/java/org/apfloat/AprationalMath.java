@@ -36,7 +36,7 @@ import org.apfloat.spi.Util;
 /**
  * Various mathematical functions for arbitrary precision rational numbers.
  *
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -821,6 +821,82 @@ public class AprationalMath
                     two2k1 = two,
                     two2k;
         };
+    }
+
+    /**
+     * Harmonic number.<p>
+     *
+     * @param n The argument.
+     *
+     * @return <i>H<sub>n</sub></i>
+     *
+     * @throws ArithmeticException If <code>n</code> is negative.
+     *
+     * @since 1.14.0
+     */
+
+    public static Aprational harmonicNumber(Apint n)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return harmonicNumber(n, Apint.ONES[n.radix()]);
+    }
+
+    /**
+     * Generalized harmonic number.<p>
+     *
+     * @param n The first argument.
+     * @param r The second argument.
+     *
+     * @return <i>H<sub>n</sub><sup style='position: relative; left: -0.4em;'>(r)</sup></i>
+     *
+     * @throws ArithmeticException If <code>n</code> is negative and <code>r</code> is positive.
+     *
+     * @since 1.14.0
+     */
+
+    public static Aprational harmonicNumber(Apint n, Apint r)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (n.signum() == 0 || r.signum() == 0)
+        {
+            return n;
+        }
+        Apint one = Apint.ONES[n.radix()];
+        if (n.signum() < 0)
+        {
+            if (r.signum() > 0)
+            {
+                throw new ArithmeticException("Negative harmonic number");
+            }
+            return harmonicNumber(n.negate().subtract(one), r).negate();
+        }
+        Apint[] h = harmonicNumber(one, n, ApfloatHelper.longValueExact(r));
+        return new Aprational(h[0], h[1]);
+    }
+
+    private static Apint[] harmonicNumber(Apint n, Apint m, long r)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        int radix = n.radix();
+        Apint one = Apint.ONES[radix];
+        if (n.equals(m))
+        {
+            if (r >= 0)
+            {
+                Apint[] h = { one, ApintMath.pow(n, r) };
+                return h;
+            }
+            else
+            {
+                Apint[] h = { ApintMath.pow(n, -r), one };
+                return h;
+            }
+        }
+        Apint k = n.add(m).divide(new Apint(2, radix));
+        Apint[] hl = harmonicNumber(n, k, r),
+                hh = harmonicNumber(k.add(one), m, r),
+                h = { hl[0].multiply(hh[1]).add(hl[1].multiply(hh[0])), hl[1].multiply(hh[1]) };
+        return h;
     }
 
     private static Aprational recursiveSum(Aprational[] x, int n, int m)

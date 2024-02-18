@@ -220,12 +220,7 @@ public class FixedPrecisionApfloatHelper
     public Apfloat acos(Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (x.signum() == 0)
-        {
-            // Zero always has infinite precision so when zero input causes nonzero output special care must be taken
-            return halfPi(x.radix());
-        }
-        return valueOf(ApfloatMath.acos(setPrecision(x)));
+        return valueOf(ApfloatMath.acos(setPrecision(x), precision()));
     }
 
     /**
