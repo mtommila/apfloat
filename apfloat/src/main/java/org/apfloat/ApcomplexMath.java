@@ -2282,7 +2282,7 @@ public class ApcomplexMath
         {
             throw new ArithmeticException("Polygamma of negative order");
         }
-        if (z.isInteger() && z.real().signum() <= 0)
+        if (isNonPositiveInteger(z))
         {
             throw new ArithmeticException("Polygamma of nonpositive integer");
         }
@@ -2321,9 +2321,9 @@ public class ApcomplexMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         Apcomplex ab = a.add(b);
-        boolean aNonpositiveInteger = a.isInteger() && a.real().signum() <= 0,
-                bNonpositiveInteger = b.isInteger() && b.real().signum() <= 0,
-                abNonpositiveInteger = ab.isInteger() && ab.real().signum() <= 0,
+        boolean aNonpositiveInteger = isNonPositiveInteger(a),
+                bNonpositiveInteger = isNonPositiveInteger(b),
+                abNonpositiveInteger = isNonPositiveInteger(ab),
                 aOrBNonpositiveInteger = aNonpositiveInteger || bNonpositiveInteger;
         if (aOrBNonpositiveInteger && !abNonpositiveInteger ||
             aNonpositiveInteger && bNonpositiveInteger)
@@ -2380,7 +2380,7 @@ public class ApcomplexMath
     public static Apcomplex beta(Apcomplex z, Apcomplex a, Apcomplex b)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (a.isInteger() && a.real().signum() <= 0)
+        if (isNonPositiveInteger(a))
         {
             throw new ArithmeticException("Incomplete beta with a nonpositive integer");
         }
@@ -2417,7 +2417,7 @@ public class ApcomplexMath
         {
             return Apint.ZEROS[z1.radix()];
         }
-        if (a.isInteger() && a.real().signum() <= 0)
+        if (isNonPositiveInteger(a))
         {
             throw new ArithmeticException("Generalized incomplete beta with a nonpositive integer");
         }
@@ -2458,9 +2458,9 @@ public class ApcomplexMath
             return one.precision(precision);
         }
         Apcomplex zn = ApfloatHelper.extendPrecision(z).add(ApfloatHelper.extendPrecision(n));
-        if (z.isInteger() && z.real().signum() <= 0)    // gamma(z) is infinite
+        if (isNonPositiveInteger(z))    // gamma(z) is infinite
         {
-            if (zn.isInteger() && zn.real().signum() <= 0) // gamma(z + n) is infinite, too
+            if (isNonPositiveInteger(zn)) // gamma(z + n) is infinite, too
             {
                 z = one.subtract(z).subtract(n);
                 Apcomplex result = pochhammer(z, n);
@@ -3564,11 +3564,11 @@ public class ApcomplexMath
                   nn2 = ν.negate().divide(two),
                   z2 = z.multiply(z),
                   result = Apint.ZEROS[radix];
-        if (!(n12.isInteger() && n12.real().signum() <= 0))
+        if (!isNonPositiveInteger(n12))
         {
             result = inverseRoot(gamma(ApfloatHelper.ensureGammaPrecision(n12, precision)), 1).multiply(hypergeometric1F1(ApfloatHelper.ensurePrecision(nn2, precision), one.divide(two), z2));
         }
-        if (!(z.isZero() || nn2.isInteger() && nn2.real().signum() <= 0))
+        if (!(z.isZero() || isNonPositiveInteger(nn2)))
         {
             result = result.subtract(two.multiply(z).divide(gamma(ApfloatHelper.ensureGammaPrecision(nn2, precision))).multiply(hypergeometric1F1(ApfloatHelper.ensurePrecision(n12, precision), three.divide(two), z2)));
         }
