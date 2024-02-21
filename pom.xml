@@ -324,7 +324,7 @@
                   </sequential>
                 </ac:for>
                 <zip destfile="${project.build.directory}/apfloat-${project.version}.zip">
-                  <fileset dir="." includes="readme.html,license.txt" />
+                  <fileset dir="." includes="readme.html,LICENSE.txt" />
                   <fileset dir="src/site/resources" />
                   <zipfileset dir="${project.build.directory}/site/docs" prefix="docs" />
                   <zipfileset src="${project.build.directory}/apfloat-parent-${project.version}-sources.jar" prefix="source" excludes="META-INF/" />
@@ -337,7 +337,7 @@
                   <zipfileset file="apfloat-aparapi/target/apfloat-aparapi.jar" fullpath="lib/apfloat-aparapi.jar" />
                 </zip>
                 <zip destfile="${project.build.directory}/apfloat-unittest-${project.version}.zip">
-                  <fileset dir="." includes="readme.html,license.txt" />
+                  <fileset dir="." includes="readme.html,LICENSE.txt" />
                   <zipfileset src="apfloat/target/apfloat-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
                   <zipfileset src="apfloat-calc/target/apfloat-calc-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
                   <zipfileset src="apfloat-jscience/target/apfloat-jscience-${project.version}-test-sources.jar" prefix="source" excludes="META-INF/" />
