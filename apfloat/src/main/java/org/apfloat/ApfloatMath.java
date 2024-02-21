@@ -3259,9 +3259,9 @@ public class ApfloatMath
             initialGuess = s;
         }
         initialGuess = ApfloatHelper.ensurePrecision(initialGuess, doublePrecision);
-        Function<Apfloat, Apfloat> f = y -> erf(y).subtract(x),
+        Function<Apfloat, Apfloat> f = ApfloatMath::erf,
                                    fp = y -> two.multiply(exp(pow(y, 2).negate())).divide(sqrtPi);
-        Apfloat result = RootFinder.findRoot(f, (y, fy) -> fp.apply(y), initialGuess, targetPrecision);
+        Apfloat result = RootFinder.findRoot(f, (y, fy) -> fp.apply(y), x, initialGuess, targetPrecision);
         long precisionLoss = x.equalDigits(one);
         return ApfloatHelper.reducePrecision(result, precisionLoss);
     }

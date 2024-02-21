@@ -62,15 +62,15 @@ public class RootFinderTest
     public static void testFindRoot()
     {
         Apfloat x = new Apfloat(2, 100);
-        Apfloat a = RootFinder.findRoot(y -> exp(y).subtract(x), (y, f) -> f.add(x), new Apfloat(0.5), 100);
+        Apfloat a = RootFinder.findRoot(y -> exp(y), (y, f) -> f, x, new Apfloat(0.5), 100);
         assertEquals("log(2) precision", 100, a.precision());
         assertEquals("log(2) value", new Apfloat("0.6931471805599453094172321214581765680755001343602552541206800094933936219696947156058633269964186875"), a, new Apfloat("5e-100"));
 
-        a = RootFinder.findRoot(y -> gamma(y).subtract(x), (y, f) -> f.add(x).multiply(digamma(y)), new Apfloat(0.3), 100);
+        a = RootFinder.findRoot(y -> gamma(y), (y, f) -> f.multiply(digamma(y)), x, new Apfloat(0.3), 100);
         assertEquals("inverseGamma(2) precision", 100, a.precision());
         assertEquals("inverseGamma(2) value", new Apfloat("0.4428773964847274374520325165206056717103645380663664029912307198958524822841740804077009377298448221"), a, new Apfloat("5e-100"));
 
-        a = RootFinder.findRoot(y -> besselJ(ZERO, y), (y, f) -> besselJ(ONE, y).negate(), new Apfloat(2.4), 100);
+        a = RootFinder.findRoot(y -> besselJ(ZERO, y), (y, f) -> besselJ(ONE, y).negate(), ZERO, new Apfloat(2.4), 100);
         assertEquals("J_0 first zero precision", 100, a.precision());
         assertEquals("J_0 first zero value", new Apfloat("2.404825557695772768621631879326454643124244909145967135706999090596765838677194029204436343760145255"), a, new Apfloat("5e-99"));
     }

@@ -47,12 +47,12 @@ class RootFinder
      *
      * @param f The function.
      * @param fp The derivative of the function, first argument is x, second argument is f(x)
+     * @param y The function value to match (e.g. zero to find zeros, some other value to find inverses of functions)
      * @param initialGuess The initial guess
      * @param targetPrecision Target precision of the result
-     *
      * @return The root
      */
-    public static Apfloat findRoot(Function<Apfloat, Apfloat> f, BiFunction<Apfloat, Apfloat, Apfloat> fp, Apfloat initialGuess, long targetPrecision)
+    public static Apfloat findRoot(Function<Apfloat, Apfloat> f, BiFunction<Apfloat, Apfloat, Apfloat> fp, Apfloat y, Apfloat initialGuess, long targetPrecision)
     {
         Apfloat x = initialGuess;
         long workingPrecision = x.precision(),
@@ -61,11 +61,11 @@ class RootFinder
         {
             Apfloat fn = f.apply(x),
                     fpn = fp.apply(x, fn),
-                    d = fn.divide(fpn);
+                    d = fn.subtract(y).divide(fpn);
             precision = (d.signum() == 0 ? x.precision() : x.scale() - d.scale());
             if (precision > 0)
             {
-                workingPrecision = Math.max(workingPrecision, Util.ifFinite(precision, 2 * Util.ifFinite(precision, 2 * precision)));
+                workingPrecision = Math.min(targetPrecision, Math.max(workingPrecision, Util.ifFinite(precision, 2 * Util.ifFinite(precision, 2 * precision))));
             }
             x = x.subtract(d).precision(workingPrecision);
         } while (precision < targetPrecision);
