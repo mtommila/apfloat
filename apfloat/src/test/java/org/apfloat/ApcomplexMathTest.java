@@ -5003,6 +5003,10 @@ public class ApcomplexMathTest
         assertEquals("-2, 5 + 6i precision", 6, a.precision());
         assertEquals("-2, 5 + 6i value", new Apcomplex("(-0.000642876,-0.00406325)"), a, new Apfloat("5e-8"));
 
+        a = ApcomplexMath.hermiteH(new Apcomplex("-1.2000000"), new Apcomplex("1.9000000"));
+        assertEquals("-1.2, 1.9 precision", 6, a.precision());
+        assertEquals("-1.2, 1.9 value", new Apcomplex("0.175081"), a, new Apfloat("5e-6"));
+
         a = ApcomplexMath.hermiteH(new Apcomplex("0"), new Apcomplex("(5.00000,6.00000)"));
         assertEquals("0, 5 + 6i precision", 6, a.precision());
         assertEquals("0, 5 + 6i value", new Apcomplex("1"), a);

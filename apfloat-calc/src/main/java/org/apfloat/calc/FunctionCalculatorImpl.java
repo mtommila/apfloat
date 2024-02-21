@@ -33,7 +33,7 @@ import java.util.Map;
  * Calculator implementation with function support.
  * Provides a mapping mechanism for functions.
  *
- * @version 1.11.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -159,6 +159,7 @@ public abstract class FunctionCalculatorImpl
         public Number atan(Number x);
         public Number atanh(Number x);
         public Number bernoulli(Number x);
+        public Number bernoulliB(Number x, Number y);
         public Number besselI(Number x, Number y);
         public Number besselJ(Number x, Number y);
         public Number besselK(Number x, Number y);
@@ -170,6 +171,8 @@ public abstract class FunctionCalculatorImpl
         public Number catalan(Number x);
         public Number cbrt(Number x);
         public Number ceil(Number x);
+        public Number chebyshevT(Number x, Number y);
+        public Number chebyshevU(Number x, Number y);
         public Number cos(Number x);
         public Number cosIntegral(Number x);
         public Number cosh(Number x);
@@ -182,10 +185,12 @@ public abstract class FunctionCalculatorImpl
         public Number erfc(Number x);
         public Number erfi(Number x);
         public Number euler(Number x);
+        public Number eulerE(Number x, Number y);
         public Number exp(Number x);
         public Number expIntegralE(Number x, Number y);
         public Number expIntegralEi(Number x);
         public Number factorial(Number x);
+        public Number fibonacci(Number x, Number y);
         public Number floor(Number x);
         public Number frac(Number x);
         public Number fresnelC(Number x);
@@ -193,6 +198,11 @@ public abstract class FunctionCalculatorImpl
         public Number gamma(Number x);
         public Number gamma(Number x, Number y);
         public Number gamma(Number x, Number y, Number z);
+        public Number gegenbauerC(Number x, Number y);
+        public Number gegenbauerC(Number x, Number y, Number z);
+        public Number harmonicNumber(Number x);
+        public Number harmonicNumber(Number x, Number y);
+        public Number hermiteH(Number x, Number y);
         public Number hypergeometric0F1(Number a, Number z);
         public Number hypergeometric0F1Regularized(Number a, Number z);
         public Number hypergeometric1F1(Number a, Number b, Number z);
@@ -202,8 +212,15 @@ public abstract class FunctionCalculatorImpl
         public Number hypergeometricU(Number a, Number b, Number z);
         public Number inverseErf(Number x);
         public Number inverseErfc(Number x);
+        public Number jacobiP(Number x, Number y, Number z, Number w);
         public Number glaisher(Number x);
         public Number khinchin(Number x);
+        public Number laguerreL(Number x, Number y);
+        public Number laguerreL(Number x, Number y, Number z);
+        public Number legendreP(Number x, Number y);
+        public Number legendreP(Number x, Number y, Number z);
+        public Number legendreQ(Number x, Number y);
+        public Number legendreQ(Number x, Number y, Number z);
         public Number log(Number x);
         public Number log(Number x, Number y);
         public Number logGamma(Number x);
@@ -216,6 +233,7 @@ public abstract class FunctionCalculatorImpl
         public Number pi(Number x);
         public Number pochhammer(Number x, Number y);
         public Number polygamma(Number x, Number y);
+        public Number polylog(Number x, Number y);
         public Number random(Number x);
         public Number randomGaussian(Number x);
         @Deprecated
@@ -228,6 +246,7 @@ public abstract class FunctionCalculatorImpl
         public Number sinIntegral(Number x);
         public Number sinh(Number x);
         public Number sinhIntegral(Number x);
+        public Number sphericalHarmonicY(Number x, Number y, Number z, Number w);
         public Number sqrt(Number x);
         public Number tan(Number x);
         public Number tanh(Number x);
@@ -283,6 +302,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("atan", fixedFunction("atan", 1, (functions, arguments) -> functions.atan(arguments.get(0))));
         setFunction("atanh", fixedFunction("atanh", 1, (functions, arguments) -> functions.atanh(arguments.get(0))));
         setFunction("bernoulli", fixedFunction("bernoulli", 1, (functions, arguments) -> functions.bernoulli(arguments.get(0))));
+        setFunction("bernoulliB", fixedFunction("bernoulliB", 2, (functions, arguments) -> functions.bernoulliB(arguments.get(0), arguments.get(1))));
         setFunction("besselI", fixedFunction("besselI", 2, (functions, arguments) -> functions.besselI(arguments.get(0), arguments.get(1))));
         setFunction("besselJ", fixedFunction("besselJ", 2, (functions, arguments) -> functions.besselJ(arguments.get(0), arguments.get(1))));
         setFunction("besselK", fixedFunction("besselK", 2, (functions, arguments) -> functions.besselK(arguments.get(0), arguments.get(1))));
@@ -292,6 +312,8 @@ public abstract class FunctionCalculatorImpl
         setFunction("catalan", fixedFunction("catalan", 0, 1, (functions, arguments) -> functions.catalan(argumentOrInputPrecision(arguments))));
         setFunction("cbrt", fixedFunction("cbrt", 1, (functions, arguments) -> functions.cbrt(arguments.get(0))));
         setFunction("ceil", fixedFunction("ceil", 1, (functions, arguments) -> functions.ceil(arguments.get(0))));
+        setFunction("chebyshevT", fixedFunction("chebyshevT", 2, (functions, arguments) -> functions.chebyshevT(arguments.get(0), arguments.get(1))));
+        setFunction("chebyshevU", fixedFunction("chebyshevU", 2, (functions, arguments) -> functions.chebyshevU(arguments.get(0), arguments.get(1))));
         setFunction("cos", fixedFunction("cos", 1, (functions, arguments) -> functions.cos(arguments.get(0))));
         setFunction("cosIntegral", fixedFunction("cosIntegral", 1, (functions, arguments) -> functions.cosIntegral(arguments.get(0))));
         setFunction("cosh", fixedFunction("cosh", 1, (functions, arguments) -> functions.cosh(arguments.get(0))));
@@ -304,16 +326,21 @@ public abstract class FunctionCalculatorImpl
         setFunction("erfc", fixedFunction("erfc", 1, (functions, arguments) -> functions.erfc(arguments.get(0))));
         setFunction("erfi", fixedFunction("erfi", 1, (functions, arguments) -> functions.erfi(arguments.get(0))));
         setFunction("euler", fixedFunction("euler", 0, 1, (functions, arguments) -> functions.euler(argumentOrInputPrecision(arguments))));
+        setFunction("eulerE", fixedFunction("eulerE", 2, (functions, arguments) -> functions.eulerE(arguments.get(0), arguments.get(1))));
         setFunction("exp", fixedFunction("exp", 1, (functions, arguments) -> functions.exp(arguments.get(0))));
         setFunction("expIntegralE", fixedFunction("expIntegralE", 2, (functions, arguments) -> functions.expIntegralE(arguments.get(0), arguments.get(1))));
         setFunction("expIntegralEi", fixedFunction("expIntegralEi", 1, (functions, arguments) -> functions.expIntegralEi(arguments.get(0))));
         setFunction("factorial", fixedFunction("factorial", 1, (functions, arguments) -> functions.factorial(arguments.get(0))));
+        setFunction("fibonacci", fixedFunction("fibonacci", 2, (functions, arguments) -> functions.fibonacci(arguments.get(0), arguments.get(1))));
         setFunction("floor", fixedFunction("floor", 1, (functions, arguments) -> functions.floor(arguments.get(0))));
         setFunction("frac", fixedFunction("frac", 1, (functions, arguments) -> functions.frac(arguments.get(0))));
         setFunction("fresnelC", fixedFunction("fresnelC", 1, (functions, arguments) -> functions.fresnelC(arguments.get(0))));
         setFunction("fresnelS", fixedFunction("fresnelS", 1, (functions, arguments) -> functions.fresnelS(arguments.get(0))));
         setFunction("gamma", fixedFunction("gamma", 1, 3, (functions, arguments) -> (arguments.size() == 1 ? functions.gamma(arguments.get(0)) : arguments.size() == 2 ? functions.gamma(arguments.get(0), arguments.get(1)): functions.gamma(arguments.get(0), arguments.get(1), arguments.get(2)))));
+        setFunction("gegenbauerC", fixedFunction("gegenbauerC", 2, 3, (functions, arguments) -> (arguments.size() == 2 ? functions.gegenbauerC(arguments.get(0), arguments.get(1)) : functions.gegenbauerC(arguments.get(0), arguments.get(1), arguments.get(2)))));
         setFunction("glaisher", fixedFunction("glaisher", 0, 1, (functions, arguments) -> functions.glaisher(argumentOrInputPrecision(arguments))));
+        setFunction("harmonicNumber", fixedFunction("harmonicNumber", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.harmonicNumber(arguments.get(0)) : functions.harmonicNumber(arguments.get(0), arguments.get(1)))));
+        setFunction("hermiteH", fixedFunction("hermiteH", 2, (functions, arguments) -> functions.hermiteH(arguments.get(0), arguments.get(1))));
         setFunction("hypergeometric0F1", fixedFunction("hypergeometric0F1", 2, (functions, arguments) -> functions.hypergeometric0F1(arguments.get(0), arguments.get(1))));
         setFunction("hypergeometric0F1Regularized", fixedFunction("hypergeometric0F1Regularized", 2, (functions, arguments) -> functions.hypergeometric0F1Regularized(arguments.get(0), arguments.get(1))));
         setFunction("hypergeometric1F1", fixedFunction("hypergeometric1F1", 3, (functions, arguments) -> functions.hypergeometric1F1(arguments.get(0), arguments.get(1), arguments.get(2))));
@@ -323,7 +350,11 @@ public abstract class FunctionCalculatorImpl
         setFunction("hypergeometricU", fixedFunction("hypergeometricU", 3, (functions, arguments) -> functions.hypergeometricU(arguments.get(0), arguments.get(1), arguments.get(2))));
         setFunction("inverseErf", fixedFunction("inverseErf", 1, (functions, arguments) -> functions.inverseErf(arguments.get(0))));
         setFunction("inverseErfc", fixedFunction("inverseErfc", 1, (functions, arguments) -> functions.inverseErfc(arguments.get(0))));
+        setFunction("jacobiP", fixedFunction("jacobiP", 4, (functions, arguments) -> functions.jacobiP(arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3))));
         setFunction("khinchin", fixedFunction("khinchin", 0, 1, (functions, arguments) -> functions.khinchin(argumentOrInputPrecision(arguments))));
+        setFunction("laguerreL", fixedFunction("laguerreL", 2, 3, (functions, arguments) -> (arguments.size() == 2 ? functions.laguerreL(arguments.get(0), arguments.get(1)) : functions.laguerreL(arguments.get(0), arguments.get(1), arguments.get(2)))));
+        setFunction("legendreP", fixedFunction("legendreP", 2, 3, (functions, arguments) -> (arguments.size() == 2 ? functions.legendreP(arguments.get(0), arguments.get(1)) : functions.legendreP(arguments.get(0), arguments.get(1), arguments.get(2)))));
+        setFunction("legendreQ", fixedFunction("legendreQ", 2, 3, (functions, arguments) -> (arguments.size() == 2 ? functions.legendreQ(arguments.get(0), arguments.get(1)) : functions.legendreQ(arguments.get(0), arguments.get(1), arguments.get(2)))));
         setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
         setFunction("logGamma", fixedFunction("logGamma", 1, (functions, arguments) -> functions.logGamma(arguments.get(0))));
         setFunction("logIntegral", fixedFunction("logIntegral", 1, (functions, arguments) -> functions.logIntegral(arguments.get(0))));
@@ -335,6 +366,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("pi", fixedFunction("pi", 0, 1, (functions, arguments) -> functions.pi(argumentOrInputPrecision(arguments))));
         setFunction("pochhammer", fixedFunction("pochhammer", 2, (functions, arguments) -> functions.pochhammer(arguments.get(0), arguments.get(1))));
         setFunction("polygamma", fixedFunction("polygamma", 2, (functions, arguments) -> functions.polygamma(arguments.get(0), arguments.get(1))));
+        setFunction("polylog", fixedFunction("polylog", 2, (functions, arguments) -> functions.polylog(arguments.get(0), arguments.get(1))));
         setFunction("random", fixedFunction("random", 0, 1, (functions, arguments) -> functions.random(argumentOrInputPrecision(arguments))));
         setFunction("randomGaussian", fixedFunction("randomGaussian", 0, 1, (functions, arguments) -> functions.randomGaussian(argumentOrInputPrecision(arguments))));
         setFunction("round", fixedFunction("round", 2, (functions, arguments) -> functions.round(arguments.get(0), arguments.get(1))));
@@ -346,6 +378,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("sinIntegral", fixedFunction("sinIntegral", 1, (functions, arguments) -> functions.sinIntegral(arguments.get(0))));
         setFunction("sinh", fixedFunction("sinh", 1, (functions, arguments) -> functions.sinh(arguments.get(0))));
         setFunction("sinhIntegral", fixedFunction("sinhIntegral", 1, (functions, arguments) -> functions.sinhIntegral(arguments.get(0))));
+        setFunction("sphericalHarmonicY", fixedFunction("sphericalHarmonicY", 4, (functions, arguments) -> functions.sphericalHarmonicY(arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3))));
         setFunction("sqrt", fixedFunction("sqrt", 1, (functions, arguments) -> functions.sqrt(arguments.get(0))));
         setFunction("tan", fixedFunction("tan", 1, (functions, arguments) -> functions.tan(arguments.get(0))));
         setFunction("tanh", fixedFunction("tanh", 1, (functions, arguments) -> functions.tanh(arguments.get(0))));

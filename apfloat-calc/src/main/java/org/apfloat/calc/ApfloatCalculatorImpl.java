@@ -24,6 +24,7 @@
 package org.apfloat.calc;
 
 import java.math.RoundingMode;
+import java.util.function.BiFunction;
 
 import org.apfloat.Apcomplex;
 import org.apfloat.ApcomplexMath;
@@ -39,7 +40,7 @@ import org.apfloat.spi.Util;
 /**
  * Arbitrary precision calculator implementation.
  *
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -211,6 +212,17 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number bernoulliB(Number x, Number y)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Bernoulli B can only be used with a valid integer first argument");
+            }
+            long n = x.longValue();
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::bernoulliB, ApcomplexMath::bernoulliB, n, (Apcomplex) y);
+        }
+
+        @Override
         public Number besselI(Number x, Number y)
         {
             return ApcomplexMath.besselI((Apcomplex) x, (Apcomplex) y);
@@ -279,6 +291,18 @@ public class ApfloatCalculatorImpl
         public Number ceil(Number x)
         {
             throw new IllegalArgumentException("Ceiling can only be used with scalar values");
+        }
+
+        @Override
+        public Number chebyshevT(Number x, Number y)
+        {
+            return ApcomplexMath.chebyshevT((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number chebyshevU(Number x, Number y)
+        {
+            return ApcomplexMath.chebyshevU((Apcomplex) x, (Apcomplex) y);
         }
 
         @Override
@@ -364,6 +388,17 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number eulerE(Number x, Number y)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Euler E can only be used with a valid integer first argument");
+            }
+            long n = x.longValue();
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::eulerE, ApcomplexMath::eulerE, n, (Apcomplex) y);
+        }
+
+        @Override
         public Number exp(Number x)
         {
             return ApcomplexMath.exp((Apcomplex) x);
@@ -393,6 +428,12 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number fibonacci(Number x, Number y)
+        {
+            return ApcomplexMath.fibonacci((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
         public Number floor(Number x)
         {
             throw new IllegalArgumentException("Floor can only be used with scalar values");
@@ -414,6 +455,18 @@ public class ApfloatCalculatorImpl
         public Number fresnelS(Number x)
         {
             return ApcomplexMath.fresnelS((Apcomplex) x);
+        }
+
+        @Override
+        public Number gegenbauerC(Number x, Number y)
+        {
+            return ApcomplexMath.gegenbauerC((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number gegenbauerC(Number x, Number y, Number z)
+        {
+            return ApcomplexMath.gegenbauerC((Apcomplex) x, (Apcomplex) y, (Apcomplex) z);
         }
 
         @Override
@@ -443,6 +496,24 @@ public class ApfloatCalculatorImpl
         public Number gamma(Number x, Number y, Number z)
         {
             return ApcomplexMath.gamma((Apcomplex) x, (Apcomplex) y, (Apcomplex) z);
+        }
+
+        @Override
+        public Number harmonicNumber(Number x)
+        {
+            return ApcomplexMath.harmonicNumber((Apcomplex) x);
+        }
+
+        @Override
+        public Number harmonicNumber(Number x, Number y)
+        {
+            return ApcomplexMath.harmonicNumber((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number hermiteH(Number x, Number y)
+        {
+            return ApcomplexMath.hermiteH((Apcomplex) x, (Apcomplex) y);
         }
 
         @Override
@@ -500,6 +571,12 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number jacobiP(Number x, Number y, Number z, Number w)
+        {
+            return ApcomplexMath.jacobiP((Apcomplex) x, (Apcomplex) y, (Apcomplex) z, (Apcomplex) w);
+        }
+
+        @Override
         public Number khinchin(Number x)
         {
             if (!isLong(x))
@@ -508,6 +585,42 @@ public class ApfloatCalculatorImpl
             }
             long n = x.longValue();
             return ApfloatMath.khinchin(n);
+        }
+
+        @Override
+        public Number laguerreL(Number x, Number y)
+        {
+            return ApcomplexMath.laguerreL((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number laguerreL(Number x, Number y, Number z)
+        {
+            return ApcomplexMath.laguerreL((Apcomplex) x, (Apcomplex) y, (Apcomplex) z);
+        }
+
+        @Override
+        public Number legendreP(Number x, Number y)
+        {
+            return ApcomplexMath.legendreP((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number legendreP(Number x, Number y, Number z)
+        {
+            return ApcomplexMath.legendreP((Apcomplex) x, (Apcomplex) y, (Apcomplex) z);
+        }
+
+        @Override
+        public Number legendreQ(Number x, Number y)
+        {
+            return ApcomplexMath.legendreQ((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number legendreQ(Number x, Number y, Number z)
+        {
+            return ApcomplexMath.legendreQ((Apcomplex) x, (Apcomplex) y, (Apcomplex) z);
         }
 
         @Override
@@ -593,6 +706,12 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number polylog(Number x, Number y)
+        {
+            return ApcomplexMath.polylog((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
         public Number random(Number x)
         {
             if (!isLong(x))
@@ -666,6 +785,12 @@ public class ApfloatCalculatorImpl
         public Number sinhIntegral(Number x)
         {
             return ApcomplexMath.sinhIntegral((Apcomplex) x);
+        }
+
+        @Override
+        public Number sphericalHarmonicY(Number x, Number y, Number z, Number w)
+        {
+            return ApcomplexMath.sphericalHarmonicY((Apcomplex) x, (Apcomplex) y, (Apcomplex) z, (Apcomplex) w);
         }
 
         @Override
@@ -1158,6 +1283,18 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number harmonicNumber(Number x)
+        {
+            return AprationalMath.harmonicNumber((Apint) x);
+        }
+
+        @Override
+        public Number harmonicNumber(Number x, Number y)
+        {
+            return AprationalMath.harmonicNumber((Apint) x, (Apint) y);
+        }
+
+        @Override
         public Number lcm(Number x, Number y)
         {
             return ApintMath.lcm((Apint) x, (Apint) y);
@@ -1306,6 +1443,11 @@ public class ApfloatCalculatorImpl
     {
         Apcomplex z = (Apcomplex) x;
         return (getInputPrecision() != null && z.isZero() ? fixedPrecisionFunction.apply(z) : arbitraryPrecisionFunction.apply(z));
+    }
+
+    private <T extends Number, U extends Apcomplex> Number fixedOrArbitraryPrecision(BiFunction<T, U, Apcomplex> fixedPrecisionFunction, BiFunction<T, U, Apcomplex> arbitraryPrecisionFunction, T x, U y)
+    {
+        return (getInputPrecision() != null && y.isZero() ? fixedPrecisionFunction.apply(x, y) : arbitraryPrecisionFunction.apply(x, y));
     }
 
     private FixedPrecisionApcomplexHelper fixedPrecisionApcomplexHelper = new FixedPrecisionApcomplexHelper(Apfloat.INFINITE);

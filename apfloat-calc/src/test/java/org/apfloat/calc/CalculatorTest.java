@@ -32,7 +32,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.11.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -197,6 +197,7 @@ public class CalculatorTest
         assertCalculation("7.05464e-1", "airyBi(0.200000)");
         assertCalculation("4.61789e-1", "airyBiPrime(0.200000)");
         assertCalculation("7/6", "bernoulli(14)");
+        assertCalculation("3.3124e4", "bernoulliB(4,14.0000)");
         assertCalculation("1.72763", "besselI(0.700000,1.90000)");
         assertCalculation("5.84978e-1", "besselJ(0.700000,1.90000)");
         assertCalculation("2.06052", "besselK(0.700000,0.300000)");
@@ -224,6 +225,8 @@ public class CalculatorTest
         assertCalculation("1.2599", "cbrt(2.0000)");
         assertCalculation("2", "ceil(1.1)");
         assertCalculation("2", "ceil(3/2)");
+        assertCalculation("1.41288", "chebyshevT(0.70000,1.9000)");
+        assertCalculation("2.58673", "chebyshevU(0.700000,1.90000)");
         assertCalculation("-2", "copySign(2, -3)");
         assertCalculation("-1.04221", "cosIntegral(0.200000)");
         assertCalculation("-1.02221", "coshIntegral(0.200000)");
@@ -233,9 +236,11 @@ public class CalculatorTest
         assertCalculation("2.22703e-1", "erf(0.200000)");
         assertCalculation("7.77297e-1", "erfc(0.200000)");
         assertCalculation("2.41591", "erfi(1.20000)");
+        assertCalculation("1.2141", "eulerE(4, 1.90000)");
         assertCalculation("1.172", "expIntegralE(0.70000,0.30000)");
         assertCalculation("2.44209", "expIntegralEi(1.20000)");
         assertCalculation("5040", "factorial(7)");
+        assertCalculation("7.3936", "fibonacci(5.00000, 1.20000)");
         assertCalculation("2", "floor(2.9)");
         assertCalculation("2", "floor(29/10)");
         assertCalculation("9e-1", "frac(2.9)");
@@ -246,7 +251,14 @@ public class CalculatorTest
         assertCalculation("5.8861", "gamma(4.0000, 1.0000)");
         assertCalculation("5.0928", "gamma(4.0000, 0, 6.0000)");
         assertCalculation("4.74294943677064514689542753377e1-3.27488916473624576880974867017e1i", "gamma(100.000000000000000000000000000+374.000000000000000000000000000i)");
+        assertCalculation("-5.25676", "gegenbauerC(-1.10000,2.50000)");
+        assertCalculation("-2.60129", "gegenbauerC(-1.10000,-1.30000,2.50000)");
         assertCalculation("1.282427", "glaisher(7)");
+        assertCalculation("1.12151", "harmonicNumber(1.20000)");
+        assertCalculation("1.10411", "harmonicNumber(1.200000,1.300000)");
+        assertCalculation("42142223/12252240", "harmonicNumber(17)");
+        assertCalculation("6301272372663207205033976933/6076911214672415134617600000", "harmonicNumber(13,5)");
+        assertCalculation("3.04424", "hermiteH(1.20000,1.30000)");
         assertCalculation("1.453+1.237i", "hypergeometric0F1(3.456+2.890i,0.1234+4.678i)");
         assertCalculation("2.6328", "hypergeometric0F1Regularized(-3.00000,2.50000)");
         assertCalculation("-7.477+3.738i", "hypergeometric1F1(3.456+2.890i,3.456+2.890i,2.1234+2.678i)");
@@ -263,13 +275,21 @@ public class CalculatorTest
         assertCalculation("5e-1", "inverseRoot(4.0, 2)");
         assertCalculation("7.07e-1-7.07e-1i", "inverseRoot(-0.707+0.707i, 3)");
         assertCalculation("-5e-1", "inverseRoot(4.0, 2, 1)");
+        assertCalculation("6.28477", "jacobiP(1.20000,1.70000,0.900000,1.90000)");
         assertCalculation("2.685452", "khinchin(7)");
+        assertCalculation("-1.01693", "laguerreL(1.20000,1.90000)");
+        assertCalculation("1.38308", "laguerreL(1.20000,1.70000,1.30000)");
+        assertCalculation("2.26206", "legendreP(1.20000,1.90000)");
+        assertCalculation("-3.36749", "legendreP(1.20000,1.70000,0.900000)");
+        assertCalculation("1.07204", "legendreQ(1.70000,-0.900000)");
+        assertCalculation("4.1358", "legendreQ(1.20000,1.70000,0.900000)");
         assertCalculation("-4.371-3.651i", "logGamma(-1.234+2.345i)");
         assertCalculation("1.04516", "logIntegral(2.0000)");
         assertCalculation("1.23", "n(1.23456, 3)");
         assertCalculation("1.04748", "pochhammer(1.20000,0.700000)");
         assertCalculation("280/81", "pochhammer(1/3,4)");
         assertCalculation("-3.2018", "polygamma(2,0.900000)");
+        assertCalculation("1.79112-2.61823i", "polylog(1.20000,1.30000)");
         assertCalculation("2", "root(8, 3)");
         assertCalculation("2/3", "root(16/81, 4)");
         assertCalculation("7.07e-1+7.07e-1i", "root(-0.707+0.707i, 3)");
@@ -311,6 +331,7 @@ public class CalculatorTest
         assertCalculation("200000/3", "scale(2/3, 5)");
         assertCalculation("1.60541", "sinIntegral(2.00000)");
         assertCalculation("2.50157", "sinhIntegral(2.00000)");
+        assertCalculation("4.33712e-1-1.30178e-1i", "sphericalHarmonicY(1.20000,1.50000,0.900000,1.90000)");
         assertCalculation("3", "sqrt(9)");
         assertCalculation("2/3", "sqrt(4/9)");
         assertCalculation("7.07+7.07i", "sqrt(100.i)");
@@ -388,6 +409,11 @@ public class CalculatorTest
         assertCalculationFailure("bernoulli(i)");
         assertCalculationFailure("bernoulli()");
         assertCalculationFailure("bernoulli(1,1)");
+        assertCalculationFailure("bernoulliB(1)");
+        assertCalculationFailure("bernoulliB(1,1.0,1.0)");
+        assertCalculationFailure("bernoulliB(-1,1.0)");
+        assertCalculationFailure("bernoulliB(i,1.0)");
+        assertCalculationFailure("bernoulliB(2/3,1.0)");
         assertCalculationFailure("besselI(1.0)");
         assertCalculationFailure("besselI(1.0,1.0,1.0)");
         assertCalculationFailure("besselJ(1.0)");
@@ -418,6 +444,10 @@ public class CalculatorTest
         assertCalculationFailure("ceil(i)");
         assertCalculationFailure("ceil()");
         assertCalculationFailure("ceil(2, 2)");
+        assertCalculationFailure("chebyshevT(1.0)");
+        assertCalculationFailure("chebyshevT(1.0,1.0,1.0)");
+        assertCalculationFailure("chebyshevU(1.0)");
+        assertCalculationFailure("chebyshevU(1.0,1.0,1.0)");
         assertCalculationFailure("copySign(2i, -3)");
         assertCalculationFailure("copySign(2)");
         assertCalculationFailure("copySign(2, 2, 2)");
@@ -438,6 +468,11 @@ public class CalculatorTest
         assertCalculationFailure("erfc(0.5,0.5)");
         assertCalculationFailure("erfi()");
         assertCalculationFailure("erfi(0.5,0.5)");
+        assertCalculationFailure("eulerE(1)");
+        assertCalculationFailure("eulerE(1,1.0,1.0");
+        assertCalculationFailure("eulerE(-1,1.0)");
+        assertCalculationFailure("eulerE(i,1.0)");
+        assertCalculationFailure("eulerE(2/3,1.0)");
         assertCalculationFailure("expIntegralE(0.5)");
         assertCalculationFailure("expIntegralE(0.5,0.5,0.5)");
         assertCalculationFailure("expIntegralEi()");
@@ -447,6 +482,8 @@ public class CalculatorTest
         assertCalculationFailure("factorial(2/3)");
         assertCalculationFailure("factorial()");
         assertCalculationFailure("factorial(2, 2)");
+        assertCalculationFailure("fibonacci(1.0)");
+        assertCalculationFailure("fibonacci(1.0,1.0,1.0)");
         assertCalculationFailure("floor(i)");
         assertCalculationFailure("floor()");
         assertCalculationFailure("floor(2, 2)");
@@ -460,12 +497,20 @@ public class CalculatorTest
         assertCalculationFailure("gamma(0)");
         assertCalculationFailure("gamma()");
         assertCalculationFailure("gamma(2, 2, 2, 2)");
+        assertCalculationFailure("gegenbauerC(1.0)");
+        assertCalculationFailure("gegenbauerC(1.0,1.0,1.0,1.0)");
         assertCalculationFailure("glaisher()");
         assertCalculationFailure("glaisher(5, 5)");
         assertCalculationFailure("glaisher(0)");
         assertCalculationFailure("glaisher(-1)");
         assertCalculationFailure("glaisher(0.5)");
         assertCalculationFailure("glaisher(i)");
+        assertCalculationFailure("harmonicNumber()");
+        assertCalculationFailure("harmonicNumber(-1)");
+        assertCalculationFailure("harmonicNumber(-1,1)");
+        assertCalculationFailure("harmonicNumber(1.0,1.0,1.0)");
+        assertCalculationFailure("hermiteH(1.0)");
+        assertCalculationFailure("hermiteH(1.0,1.0,1.0)");
         assertCalculationFailure("hypergeometric0F1(0)");
         assertCalculationFailure("hypergeometric0F1(0,0)");
         assertCalculationFailure("hypergeometric0F1(0,0,0)");
@@ -509,12 +554,20 @@ public class CalculatorTest
         assertCalculationFailure("inverseRoot(2.0, i, 1)");
         assertCalculationFailure("inverseRoot(2.0, i, i)");
         assertCalculationFailure("inverseRoot(2.0, 2, 2, 2)");
+        assertCalculationFailure("jacobiP(1.0,1.0,1.0)");
+        assertCalculationFailure("jacobiP(1.0,1.0,1.0,1.0,1.0)");
         assertCalculationFailure("khinchin()");
         assertCalculationFailure("khinchin(5, 5)");
         assertCalculationFailure("khinchin(0)");
         assertCalculationFailure("khinchin(-1)");
         assertCalculationFailure("khinchin(0.5)");
         assertCalculationFailure("khinchin(i)");
+        assertCalculationFailure("laguerreL(1.0)");
+        assertCalculationFailure("laguerreL(1.0,1.0,1.0,1.0)");
+        assertCalculationFailure("legendreP(1.0)");
+        assertCalculationFailure("legendreP(1.0,1.0,1.0,1.0)");
+        assertCalculationFailure("legendreQ(1.0)");
+        assertCalculationFailure("legendreQ(1.0,1.0,1.0,1.0)");
         assertCalculationFailure("logGamma(0)");
         assertCalculationFailure("logGamma(-1)");
         assertCalculationFailure("logGamma()");
@@ -531,6 +584,8 @@ public class CalculatorTest
         assertCalculationFailure("polygamma(1)");
         assertCalculationFailure("polygamma(-1,1.0)");
         assertCalculationFailure("polygamma(1,1.0,1.0)");
+        assertCalculationFailure("polylog(0.5)");
+        assertCalculationFailure("polylog(0.5,0.5,0.5)");
         assertCalculationFailure("root(2, 2)");
         assertCalculationFailure("root(2)");
         assertCalculationFailure("root(2, i)");
@@ -571,6 +626,8 @@ public class CalculatorTest
         assertCalculationFailure("sinIntegral(1.0,1.0)");
         assertCalculationFailure("sinhIntegral()");
         assertCalculationFailure("sinhIntegral(1.0,1.0)");
+        assertCalculationFailure("sphericalHarmonicY(1.0,1.0,1.0)");
+        assertCalculationFailure("sphericalHarmonicY(1.0,1.0,1.0,1.0,1.0)");
         assertCalculationFailure("sqrt(2)");
         assertCalculationFailure("sqrt()");
         assertCalculationFailure("sqrt(4, 2)");
@@ -724,8 +781,10 @@ public class CalculatorTest
         assertCalculation("-0.258819", "airyAiPrime(0)", "-p", "-i", "6");
         assertCalculation("0.614927", "airyBi(0)", "-p", "-i", "6");
         assertCalculation("0.448288", "airyBiPrime(0)", "-p", "-i", "6");
+        assertCalculation("-7.09216", "bernoulliB(16, 0)", "-i", "6");
         assertCalculation("1.5708", "ellipticE(0)", "-p", "-i", "6");
         assertCalculation("1.5708", "ellipticK(0)", "-p", "-i", "6");
+        assertCalculation("58098.1", "eulerE(15, 0)", "-p", "-i", "6");
     }
 
     private static final String NEWLINE = System.lineSeparator();

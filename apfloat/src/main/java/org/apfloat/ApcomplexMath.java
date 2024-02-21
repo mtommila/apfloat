@@ -3577,6 +3577,10 @@ public class ApcomplexMath
             result = result.subtract(two.multiply(z).divide(gamma(ApfloatHelper.ensureGammaPrecision(nn2, precision))).multiply(hypergeometric1F1(ApfloatHelper.ensurePrecision(n12, precision), three.divide(two), z2)));
         }
         result = pow(two, ν).multiply(sqrt(pi)).multiply(result);
+        if (ν.imag().signum() == 0 && z.imag().signum() == 0)
+        {
+            result = result.real(); // With purely real input arguments the result should be purely real
+        }
         return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
