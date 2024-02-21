@@ -1,6 +1,6 @@
 # Apfloat
 
-Copyright © 2023 Mikko Tommila
+Copyright © 2024 Mikko Tommila
 
 This work is licensed under the terms of the MIT license. See the [MIT License](LICENSE.md) for more details.
 
