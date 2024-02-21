@@ -2,7 +2,7 @@
 
 Copyright © 2024 Mikko Tommila
 
-This work is licensed under the terms of the MIT license. See the [MIT License](LICENSE.md) for more details.
+This work is licensed under the terms of the MIT license. See the [MIT License](LICENSE.txt) for more details.
 
 If you have any questions or need a different type of license, please [contact the author](mailto:Mikko.Tommila@apfloat.org).
 
