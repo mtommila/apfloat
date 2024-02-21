@@ -41,7 +41,7 @@ import static org.apfloat.spi.RadixConstants.*;
 /**
  * Various utility methods related to apfloats.
  *
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -487,6 +487,13 @@ class ApfloatHelper
     {
         assert (radix > 0);
         return LONG_PRECISION[radix];
+    }
+
+    // To handle accumulating round-off errors better in slow functions
+    public static long getSmallExtraPrecision(int radix)
+    {
+        assert (radix > 0);
+        return Math.min(3, (long) Math.ceil(5 / Math.log(radix)));
     }
 
     // Returns x with precision at most as specified

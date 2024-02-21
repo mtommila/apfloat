@@ -38,7 +38,7 @@ import org.apfloat.spi.Util;
  * <code>ApfloatMath.acos(Apfloat.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -1778,6 +1778,345 @@ public class FixedPrecisionApfloatHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApfloatMath.ellipticE(setPrecision(x), precision()));
+    }
+
+    /**
+     * Hermite function.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>H<sub>ν</sub>(x)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat hermiteH(Apfloat ν, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.hermiteH(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Laguerre function.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>L<sub>ν</sub>(x)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat laguerreL(Apfloat ν, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.laguerreL(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Generalized Laguerre function.
+     *
+     * @param ν The first argument.
+     * @param λ The second argument.
+     * @param x The third argument.
+     *
+     * @return <i>L<sub>ν</sub><sup style='position: relative; left: -0.4em;'>λ</sup>(x)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat laguerreL(Apfloat ν, Apfloat λ, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.laguerreL(setPrecision(ν), setPrecision(λ), setPrecision(x)));
+    }
+
+    /**
+     * Legendre function.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>P<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is not an integer and <code>x</code> &le; -1.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat legendreP(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.legendreP(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Associated Legendre function of the first kind.
+     *
+     * @param ν The first argument.
+     * @param μ The second argument.
+     * @param x The third argument.
+     *
+     * @return <i>P<sub>ν</sub><sup style='position: relative; left: -0.4em;'>μ</sup>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &le; -1 or &ge; 1 and <code>ν</code> or <code>μ</code> is not an integer or <code>μ</code> is not even or <code>μ</code> is not positive and <code>-μ</code> &le; <code>ν</code> &lt; <code>μ</code>.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat legendreP(Apfloat ν, Apfloat μ, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.legendreP(setPrecision(ν), setPrecision(μ), setPrecision(x)));
+    }
+
+    /**
+     * Legendre function of the second kind.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>Q<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &ge; 1 or &le; -1.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat legendreQ(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.legendreQ(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Associated Legendre function of the second kind.
+     *
+     * @param ν The first argument.
+     * @param μ The second argument.
+     * @param x The third argument.
+     *
+     * @return <i>Q<sub>ν</sub><sup style='position: relative; left: -0.4em;'>μ</sup>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &ge; 1 or &le; -1.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat legendreQ(Apfloat ν, Apfloat μ, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.legendreQ(setPrecision(ν), setPrecision(μ), setPrecision(x)));
+    }
+
+    /**
+     * Chebyshev function of the first kind.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>T<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &lt; -1 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat chebyshevT(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.chebyshevT(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Chebyshev function of the second kind.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>U<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &le; -1 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat chebyshevU(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.chebyshevU(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Renormalized Gegenbauer function.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>C<sub>ν</sub><sup style='position: relative; left: -0.4em;'>(0)</sup>(x)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is zero. Also if <code>x</code> is &lt; -1 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat gegenbauerC(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.gegenbauerC(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Gegenbauer function.
+     *
+     * @param ν The first argument.
+     * @param λ The second argument.
+     * @param x The third argument.
+     *
+     * @return <i>C<sub>ν</sub><sup style='position: relative; left: -0.4em;'>λ</sup>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is &lt; -1 and <code>ν</code> is not an integer. Also if <code>x</code> is -1 and <code>λ</code> is > 1/2. Also if <code>x</code> is -1 and <code>λ</code> is 1/2 and <code>ν</code> is not an integer. 
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat gegenbauerC(Apfloat ν, Apfloat λ, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.gegenbauerC(setPrecision(ν), setPrecision(λ), setPrecision(x)));
+    }
+
+    /**
+     * Jacobi function.
+     *
+     * @param ν The first argument.
+     * @param a The second argument.
+     * @param b The third argument.
+     * @param x The fourth argument.
+     *
+     * @return <i>P<sub>ν</sub><sup style='position: relative; left: -0.4em;'>(a,b)</sup>(x)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is not a positive integer and either <code>x</code> is -1 and <code>b</code> is > 0 or <code>x</code> is &lt; -1. Also if <code>ν + a</code> is a negative integer and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat jacobiP(Apfloat ν, Apfloat a, Apfloat b, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.jacobiP(setPrecision(ν), setPrecision(a), setPrecision(b), setPrecision(x)));
+    }
+
+    /**
+     * Fibonacci function.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>F<sub>ν</sub>(x)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat fibonacci(Apfloat ν, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.fibonacci(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Euler polynomial.
+     *
+     * @param n The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>E<sub>n</sub>(x)</i>
+     *
+     * @throws IllegalArgumentException If <code>n</code> &lt; 0.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat eulerE(long n, Apfloat x)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.eulerE(n, setPrecision(x), precision()));
+    }
+
+    /**
+     * Bernoulli polynomial.
+     *
+     * @param n The first argument.
+     * @param x The second argument.
+     *
+     * @return <i>B<sub>n</sub>(x)</i>
+     *
+     * @throws IllegalArgumentException If <code>n</code> &lt; 0.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat bernoulliB(long n, Apfloat x)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.bernoulliB(n, setPrecision(x), precision()));
+    }
+
+    /**
+     * Harmonic number.
+     *
+     * @param x The argument.
+     *
+     * @return <i>H<sub>x</sub></i>
+     *
+     * @throws ArithmeticException If <code>x</code> is a negative integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat harmonicNumber(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.harmonicNumber(setPrecision(x)));
+    }
+
+    /**
+     * Generalized harmonic number.
+     *
+     * @param x The first argument.
+     * @param r The second argument.
+     *
+     * @return <i>H<sub>x</sub><sup style='position: relative; left: -0.4em;'>(r)</sup></i>
+     *
+     * @throws ArithmeticException If <code>x</code> is a negative integer, unless <code>r</code> is a nonpositive integer. Also if <code>x</code> is &lt; -1 and <code>r</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat harmonicNumber(Apfloat x, Apfloat r)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.harmonicNumber(setPrecision(x), setPrecision(r)));
+    }
+
+    /**
+     * Polylogarithm.
+     *
+     * @param ν The first argument.
+     * @param x The second argument.
+     *
+     * @return Li<sub>ν</sub>(x)
+     *
+     * @throws ArithmeticException If <code>ν</code> is &le; 1 and <code>x</code> is 1 or if <code>x</code> is &gt; 1.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat polylog(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.polylog(setPrecision(ν), setPrecision(x)));
     }
 
     /**

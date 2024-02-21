@@ -4262,7 +4262,7 @@ public class ApfloatMathTest
         assertEquals("2, 0.3 precision", 6, a.precision());
         assertEquals("2, 0.3 value", new Apfloat("-0.562975"), a, new Apfloat("5e-6"));
 
-        a = ApfloatMath.legendreQ(new Apfloat("0.1", 20, 2), new Apfloat("0.11", 20, 2));
+        a = ApfloatMath.legendreQ(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2));
         assertEquals("0.1, 0.11 radix 2 precision", 18, a.precision());
         assertEquals("0.1, 0.11 radix 2 radix", 2, a.radix());
         assertEquals("0.1, 0.11 radix 2 value", new Apfloat("0.00111001011011111100", 18, 2), a, new Apfloat("1e-20", 1, 2));
@@ -4302,7 +4302,7 @@ public class ApfloatMathTest
         assertEquals("2, 3, 0.3 precision", 6, a.precision());
         assertEquals("2, 3, 0.3 value", new Apfloat("-9.21569"), a, new Apfloat("5e-5"));
 
-        a = ApfloatMath.legendreQ(new Apfloat("0.1", 19, 2), new Apfloat("0.11", 19, 2), new Apfloat("0.111", 19, 2));
+        a = ApfloatMath.legendreQ(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2), new Apfloat("0.111", 18, 2));
         assertEquals("0.1, 0.11, 0.111 radix 2 precision", 18, a.precision());
         assertEquals("0.1, 0.11, 0.111 radix 2 radix", 2, a.radix());
         assertEquals("0.1, 0.11, 0.111 radix 2 value", new Apfloat("-1.110000000111111111", 18, 2), a, new Apfloat("1e-17", 1, 2));
@@ -4554,7 +4554,7 @@ public class ApfloatMathTest
         assertEquals("3, 4 precision", 6, a.precision());
         assertEquals("3, 4 value", new Apfloat("17.0000"), a, new Apfloat("5e-4"));
 
-        a = ApfloatMath.fibonacci(new Apfloat("5.600000"), new Apfloat("7.800000"));
+        a = ApfloatMath.fibonacci(new Apfloat("5.60000"), new Apfloat("7.80000"));
         assertEquals("5.6, 7.8 precision", 6, a.precision());
         assertEquals("5.6, 7.8 value", new Apfloat("13453.4"), a, new Apfloat("5e-1"));
     }
@@ -4643,13 +4643,13 @@ public class ApfloatMathTest
 
     public static void testPolylog()
     {
-        Apfloat a = ApfloatMath.polylog(new Apfloat("3.400000000"), new Apfloat("-5.600000000"));
+        Apfloat a = ApfloatMath.polylog(new Apfloat("3.40000"), new Apfloat("-5.60000"));
         assertEquals("3.4, -5.6 precision", 6, a.precision());
         assertEquals("3.4, -5.6 value", new Apfloat("-4.15566"), a, new Apfloat("5e-5"));
 
         try
         {
-            ApfloatMath.polylog(new Apfloat("3.400000000"), new Apfloat("5.600000000"));
+            ApfloatMath.polylog(new Apfloat("3.40000"), new Apfloat("5.60000"));
             fail("3.4, 5.6 accepted");
         }
         catch (ArithmeticException ae)

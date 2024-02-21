@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -128,6 +128,25 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testBesselK"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testEllipticK"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testEllipticE"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testHermiteH"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testLaguerreL"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testLaguerreLGeneralized"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testLegendreP"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testLegendrePAssociated"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testLegendreQ"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testLegendreQAssociated"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testSphericalHarmonicY"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testChebyshevT"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testChebyshevU"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testGegenbauerCRenormalized"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testGegenbauerC"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testJacobiP"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testFibonacci"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testEulerE"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testBernoulliB"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testHarmonicNumber"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testHarmonicNumberGeneralized"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testPolylog"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testUlp"));
 
         return suite;
@@ -1308,6 +1327,206 @@ public class FixedPrecisionApcomplexHelperTest
         result = helper.ellipticE(z);
         assertEquals("0 value", new Apcomplex("1.57080"), result, new Apfloat("5e-5"));
         assertEquals("0 precision", 6, result.precision());
+    }
+
+    public static void testHermiteH()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.hermiteH(ν, z);
+        assertEquals("value", new Apcomplex("(0.220764,-1.33163)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLaguerreL()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.laguerreL(ν, z);
+        assertEquals("value", new Apcomplex("(9314.19,-22921.5)"), result, new Apfloat("5e-1"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLaguerreLGeneralized()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  λ = new Apcomplex("(2.3,4.5)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.laguerreL(ν, λ, z);
+        assertEquals("value", new Apcomplex("(282.914,-228.484)"), result, new Apfloat("5e-3"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLegendreP()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.legendreP(ν, z);
+        assertEquals("value", new Apcomplex("(-0.151267,-0.361369)"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLegendrePAssociated()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  μ = new Apcomplex("(2.3,4.5)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.legendreP(ν, μ, z);
+        assertEquals("value", new Apcomplex("(-3.80093,4.47466)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLegendreQ()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.legendreQ(ν, z);
+        assertEquals("value", new Apcomplex("(0.601469,-0.241036)"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLegendreQAssociated()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  μ = new Apcomplex("(2.3,4.5)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.legendreQ(ν, μ, z);
+        assertEquals("value", new Apcomplex("(7.02866,5.97026)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testSphericalHarmonicY()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex λ = new Apcomplex("(1.2,3.4)"),
+                  μ = new Apcomplex("(2.3,4.5)"),
+                  ϑ = new Apcomplex("(2.3,5.6)"),
+                  ϕ = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.sphericalHarmonicY(λ, μ, ϑ, ϕ);
+        assertEquals("value", new Apcomplex("(-2.32719e-11,-7.09847e-11)"), result, new Apfloat("5e-16"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testChebyshevT()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.chebyshevT(ν, z);
+        assertEquals("value", new Apcomplex("(0.204132,-0.313985)"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testChebyshevU()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.chebyshevU(ν, z);
+        assertEquals("value", new Apcomplex("(0.260989,-1.34243)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testGegenbauerCRenormalized()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.gegenbauerC(ν, z);
+        assertEquals("value", new Apcomplex("(-0.126552,-0.164743)"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testGegenbauerC()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  λ = new Apcomplex("(2.3,4.5)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.gegenbauerC(ν, λ, z);
+        assertEquals("value", new Apcomplex("(-2.08751,-0.60583)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testJacobiP()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  a = new Apcomplex("(2.3,4.5)"),
+                  b = new Apcomplex("(3.4,5.6)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.jacobiP(ν, a, b, z);
+        assertEquals("value", new Apcomplex("(-0.497781,1.7976)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testFibonacci()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.fibonacci(ν, z);
+        assertEquals("value", new Apcomplex("(-2183.84,2962.55)"), result, new Apfloat("5e-2"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testEulerE()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex result = helper.eulerE(4, new Apcomplex("(5.6,7.8)"));
+        assertEquals("value", new Apcomplex("(-5064.11,-5661.49)"), result, new Apfloat("5e-2"));
+        assertEquals("precision", 6, result.precision());
+
+        result = helper.eulerE(15, new Apcomplex("0"));
+        assertEquals("0 value", new Apcomplex("(58098.1)"), result, new Apfloat("5e-1"));
+        assertEquals("0 precision", 6, result.precision());
+    }
+
+    public static void testBernoulliB()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex result = helper.bernoulliB(4, new Apcomplex("(5.6,7.8)"));
+        assertEquals("value", new Apcomplex("(-5099.22,-5581.93)"), result, new Apfloat("5e-2"));
+        assertEquals("precision", 6, result.precision());
+
+        result = helper.bernoulliB(18, new Apcomplex("0"));
+        assertEquals("0 value", new Apcomplex("(54.9712)"), result, new Apfloat("5e-4"));
+        assertEquals("0 precision", 6, result.precision());
+    }
+
+    public static void testHarmonicNumber()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex result = helper.harmonicNumber(new Apcomplex("(5.6,7.8)"));
+        assertEquals("value", new Apcomplex("(2.86985,0.906683)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHarmonicNumberGeneralized()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex z = new Apcomplex("(1.2,3.4)"),
+                  r = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.harmonicNumber(z, r);
+        assertEquals("value", new Apcomplex("(1.74953,-0.747868)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testPolylog()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.polylog(ν, z);
+        assertEquals("value", new Apcomplex("(-64.9686,18.3633)"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
     }
 
     public static void testUlp()

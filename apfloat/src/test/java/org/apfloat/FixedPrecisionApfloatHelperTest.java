@@ -28,7 +28,7 @@ import java.math.RoundingMode;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -153,6 +153,24 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBesselK"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testEllipticK"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testEllipticE"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testHermiteH"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testLaguerreL"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testLaguerreLGeneralized"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testLegendreP"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testLegendrePAssociated"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testLegendreQ"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testLegendreQAssociated"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testChebyshevT"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testChebyshevU"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testGegenbauerCRenormalized"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testGegenbauerC"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testJacobiP"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testFibonacci"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testEulerE"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testBernoulliB"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testHarmonicNumber"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testHarmonicNumberGeneralized"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testPolylog"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testContinuedFraction"));
@@ -1719,6 +1737,186 @@ public class FixedPrecisionApfloatHelperTest
         result = helper.ellipticE(x);
         assertEquals("0 value", new Apfloat("1.57080"), result, new Apfloat("5e-5"));
         assertEquals("0 precision", 6, result.precision());
+    }
+
+    public static void testHermiteH()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.hermiteH(ν, x);
+        assertEquals("value", new Apfloat("0.0789789"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLaguerreL()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.laguerreL(ν, x);
+        assertEquals("value", new Apfloat("24.0654"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLaguerreLGeneralized()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                λ = new Apfloat("-2.3"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.laguerreL(ν, λ, x);
+        assertEquals("value", new Apfloat("84.8071"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLegendreP()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.legendreP(ν, x);
+        assertEquals("value", new Apfloat("1.46890"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLegendrePAssociated()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                μ = new Apfloat("-2.3"),
+                x = new Apfloat("0.9");
+        Apfloat result = helper.legendreP(ν, μ, x);
+        assertEquals("value", new Apfloat("0.0124664"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLegendreQ()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("0.9");
+        Apfloat result = helper.legendreQ(ν, x);
+        assertEquals("value", new Apfloat("0.787390"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLegendreQAssociated()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                μ = new Apfloat("-2.3"),
+                x = new Apfloat("0.9");
+        Apfloat result = helper.legendreQ(ν, μ, x);
+        assertEquals("value", new Apfloat("-21.6240"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testChebyshevT()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.chebyshevT(ν, x);
+        assertEquals("value", new Apfloat("5.29150"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testChebyshevU()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.chebyshevU(ν, x);
+        assertEquals("value", new Apfloat("-0.377964"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testGegenbauerCRenormalized()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.gegenbauerC(ν, x);
+        assertEquals("value", new Apfloat("-7.05534"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testGegenbauerC()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                λ = new Apfloat("-2.3"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.gegenbauerC(ν, λ, x);
+        assertEquals("value", new Apfloat("-136.555"), result, new Apfloat("5e-3"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testJacobiP()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                a = new Apfloat("-1.9"),
+                b = new Apfloat("-2.3"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.jacobiP(ν, a, b, x);
+        assertEquals("value", new Apfloat("29.5169"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testFibonacci()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.fibonacci(ν, x);
+        assertEquals("value", new Apfloat("0.0648922"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testEulerE()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat result = helper.eulerE(4, new Apfloat("2.5"));
+        assertEquals("value", new Apfloat("10.3125"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testBernoulliB()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat result = helper.bernoulliB(4, new Apfloat("2.5"));
+        assertEquals("value", new Apfloat("14.0292"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHarmonicNumber()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat result = helper.harmonicNumber(new Apfloat("2.5"));
+        assertEquals("value", new Apfloat("1.68037"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testHarmonicNumberGeneralized()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("1.5"),
+                r = new Apfloat("2.5");
+        Apfloat result = helper.harmonicNumber(x, r);
+        assertEquals("value", new Apfloat("1.11412"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testPolylog()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("0.9");
+        Apfloat result = helper.polylog(ν, x);
+        assertEquals("value", new Apfloat("368.902"), result, new Apfloat("5e-3"));
+        assertEquals("precision", 6, result.precision());
     }
 
     public static void testRandom()

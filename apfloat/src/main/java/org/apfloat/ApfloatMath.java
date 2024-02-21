@@ -4150,6 +4150,7 @@ public class ApfloatMath
      * @return <i>E<sub>n</sub>(x)</i>
      *
      * @throws IllegalArgumentException If <code>n</code> &lt; 0.
+     * @throws InfiniteExpansionException If <code>x</code> is zero.
      *
      * @since 1.14.0
      */
@@ -4158,6 +4159,12 @@ public class ApfloatMath
         throws IllegalArgumentException, ApfloatRuntimeException
     {
         return ApcomplexMath.eulerE(n, x).real();
+    }
+
+    static Apfloat eulerE(long n, Apfloat x, long precision)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.eulerE(n, x, precision).real();
     }
 
     /**
@@ -4183,6 +4190,12 @@ public class ApfloatMath
         throws IllegalArgumentException, ApfloatRuntimeException
     {
         return ApcomplexMath.bernoulliB(n, x).real();
+    }
+
+    static Apfloat bernoulliB(long n, Apfloat x, long precision)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.bernoulliB(n, x, precision).real();
     }
 
     /**

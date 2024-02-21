@@ -35,7 +35,7 @@ import org.apfloat.spi.Util;
  * <code>ApcomplexMath.acos(Apcomplex.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -1721,6 +1721,366 @@ public class FixedPrecisionApcomplexHelper
         throws ApfloatRuntimeException
     {
         return valueOf(ApcomplexMath.ellipticE(setPrecision(z), precision()));
+    }
+
+    /**
+     * Hermite function.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>H<sub>ν</sub>(z)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex hermiteH(Apcomplex ν, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.hermiteH(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Laguerre function.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>L<sub>ν</sub>(z)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex laguerreL(Apcomplex ν, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.laguerreL(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Generalized Laguerre function.
+     *
+     * @param ν The first argument.
+     * @param λ The second argument.
+     * @param z The third argument.
+     *
+     * @return <i>L<sub>ν</sub><sup style='position: relative; left: -0.4em;'>λ</sup>(z)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex laguerreL(Apcomplex ν, Apcomplex λ, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.laguerreL(setPrecision(ν), setPrecision(λ), setPrecision(z)));
+    }
+
+    /**
+     * Legendre function.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>P<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is not an integer and <code>z</code> is -1.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex legendreP(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.legendreP(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Associated Legendre function of the first kind.
+     *
+     * @param ν The first argument.
+     * @param μ The second argument.
+     * @param z The third argument.
+     *
+     * @return <i>P<sub>ν</sub><sup style='position: relative; left: -0.4em;'>μ</sup>(z)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is not an integer and <code>z</code> is -1.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex legendreP(Apcomplex ν, Apcomplex μ, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.legendreP(setPrecision(ν), setPrecision(μ), setPrecision(z)));
+    }
+
+    /**
+     * Legendre function of the second kind.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>Q<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is 1 or -1.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex legendreQ(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.legendreQ(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Associated Legendre function of the second kind.
+     *
+     * @param ν The first argument.
+     * @param μ The second argument.
+     * @param z The third argument.
+     *
+     * @return <i>Q<sub>ν</sub><sup style='position: relative; left: -0.4em;'>μ</sup>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is 1 or -1.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex legendreQ(Apcomplex ν, Apcomplex μ, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.legendreQ(setPrecision(ν), setPrecision(μ), setPrecision(z)));
+    }
+
+    /**
+     * Spherical harmonic function.
+     *
+     * @param λ The first argument.
+     * @param μ The second argument.
+     * @param ϑ The third argument.
+     * @param ϕ The fourth argument.
+     *
+     * @return <i>Y<sub>λ</sub><sup style='position: relative; left: -0.1em;'>μ</sup>(ϑ, &phi;)</i>
+     *
+     * @throws ArithmeticException If <code>ϑ</code> is &pi; plus a multiple of 2 &pi; and μ is not an integer and has a negative real part, or if <code>λ - μ</code> is a negative integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex sphericalHarmonicY(Apcomplex λ, Apcomplex μ, Apcomplex ϑ, Apcomplex ϕ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.sphericalHarmonicY(setPrecision(λ), setPrecision(μ), setPrecision(ϑ), setPrecision(ϕ)));
+    }
+
+    /**
+     * Chebyshev function of the first kind.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>T<sub>ν</sub>(z)</i>
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex chebyshevT(Apcomplex ν, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.chebyshevT(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Chebyshev function of the second kind.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>U<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is -1 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex chebyshevU(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.chebyshevU(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Renormalized Gegenbauer function.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>C<sub>ν</sub><sup style='position: relative; left: -0.4em;'>(0)</sup>(z)</i>
+     *
+     * @throws ArithmeticException If <code>ν</code> is zero.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex gegenbauerC(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.gegenbauerC(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Gegenbauer function.
+     *
+     * @param ν The first argument.
+     * @param λ The second argument.
+     * @param z The third argument.
+     *
+     * @return <i>C<sub>ν</sub><sup style='position: relative; left: -0.4em;'>λ</sup>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is -1 and real part of <code>λ</code> is > 1/2. Also if <code>z</code> is -1 and <code>λ</code> is 1/2 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex gegenbauerC(Apcomplex ν, Apcomplex λ, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.gegenbauerC(setPrecision(ν), setPrecision(λ), setPrecision(z)));
+    }
+
+    /**
+     * Jacobi function.
+     *
+     * @param ν The first argument.
+     * @param a The second argument.
+     * @param b The third argument.
+     * @param z The fourth argument.
+     *
+     * @return <i>P<sub>ν</sub><sup style='position: relative; left: -0.4em;'>(a,b)</sup>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is -1 and real part of <code>b</code> is > 0 and <code>ν</code> is not a positive integer. Also if <code>ν + a</code> is a negative integer and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex jacobiP(Apcomplex ν, Apcomplex a, Apcomplex b, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.jacobiP(setPrecision(ν), setPrecision(a), setPrecision(b), setPrecision(z)));
+    }
+
+    /**
+     * Fibonacci function.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>F<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is -1 and <code>ν</code> is not an integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex fibonacci(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.fibonacci(new Apcomplex(setTrigonometricPrecision(ν.real()), setTrigonometricPrecision(ν.imag())), setPrecision(z)));
+    }
+
+    /**
+     * Euler polynomial.
+     *
+     * @param n The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>E<sub>n</sub>(z)</i>
+     *
+     * @throws IllegalArgumentException If <code>n</code> &lt; 0.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex eulerE(long n, Apcomplex z)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.eulerE(n, setPrecision(z), precision()));
+    }
+
+    /**
+     * Bernoulli polynomial.
+     *
+     * @param n The first argument.
+     * @param z The second argument.
+     *
+     * @return <i>B<sub>n</sub>(z)</i>
+     *
+     * @throws IllegalArgumentException If <code>n</code> &lt; 0.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex bernoulliB(long n, Apcomplex z)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.bernoulliB(n, setPrecision(z), precision()));
+    }
+
+    /**
+     * Harmonic number.
+     *
+     * @param z The argument.
+     *
+     * @return <i>H<sub>z</sub></i>
+     *
+     * @throws ArithmeticException If <code>z</code> is a negative integer.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex harmonicNumber(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.harmonicNumber(setPrecision(z)));
+    }
+
+    /**
+     * Generalized harmonic number.
+     *
+     * @param z The first argument.
+     * @param r The second argument.
+     *
+     * @return <i>H<sub>z</sub><sup style='position: relative; left: -0.4em;'>(r)</sup></i>
+     *
+     * @throws ArithmeticException If <code>z</code> is a negative integer, unless <code>r</code> has a negative real part or is zero.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex harmonicNumber(Apcomplex z, Apcomplex r)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.harmonicNumber(setPrecision(z), setPrecision(r)));
+    }
+
+    /**
+     * Polylogarithm.
+     *
+     * @param ν The first argument.
+     * @param z The second argument.
+     *
+     * @return Li<sub>ν</sub>(z)
+     *
+     * @throws ArithmeticException If the real part of <code>ν</code> is &le; 1 and <code>z</code> is 1.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex polylog(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.polylog(setPrecision(ν), setPrecision(z)));
     }
 
     /**

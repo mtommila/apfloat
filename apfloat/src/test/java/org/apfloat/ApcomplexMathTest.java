@@ -5155,7 +5155,7 @@ public class ApcomplexMathTest
 
     public static void testLegendreQ()
     {
-        Apcomplex a = ApcomplexMath.legendreQ(new Apcomplex("(3.000000000000,4.000000000000)"), new Apcomplex("(5.000000000000,6.000000000000)"));
+        Apcomplex a = ApcomplexMath.legendreQ(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
         assertEquals("3 + 4i, 5 + 6i precision", 6, a.precision());
         assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(-25.8244,35.7548)"), a, new Apfloat("5e-4"));
 
@@ -5196,7 +5196,7 @@ public class ApcomplexMathTest
 
     public static void testLegendreQAssociated()
     {
-        Apcomplex a = ApcomplexMath.legendreQ(new Apcomplex("(1.00000000000,2.00000000000)"), new Apcomplex("(3.00000000000,4.00000000000)"), new Apcomplex("(5.00000000000,6.00000000000)"));
+        Apcomplex a = ApcomplexMath.legendreQ(new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
         assertEquals("1 + 2i, 3 + 4i, 5 + 6i precision", 6, a.precision());
         assertEquals("1 + 2i, 3 + 4i, 5 + 6i value", new Apcomplex("(-18.6108,4.58924)"), a, new Apfloat("5e-4"));
 
@@ -5207,7 +5207,11 @@ public class ApcomplexMathTest
         a = ApcomplexMath.legendreQ(new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(4.00000,2.00000)"), new Apcomplex("(5.00000,6.00000)"));
         assertEquals("1 + 2i, 4 + 2i, 5 + 6i precision", 6, a.precision());
         assertEquals("1 + 2i, 4 + 2i, 5 + 6i value", new Apcomplex("(-6.65987,-26.5379)"), a, new Apfloat("5e-4"));
-
+/*
+        a = ApcomplexMath.legendreQ(new Apcomplex("(111.000,222.000)"), new Apcomplex("(333.000,444.000)"), new Apcomplex("(555.000,666.000)"));
+        assertEquals("1 + 2i, 3 + 4i, 5 + 6i precision", 6, a.precision());
+        assertEquals("1 + 2i, 3 + 4i, 5 + 6i value", new Apcomplex("(-1.51954e766,6.241444e766)"), a, new Apfloat("5e761"));
+*/
         a = ApcomplexMath.legendreQ(new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)), new Apcomplex(new Apfloat("-0.1", 18, 2), new Apfloat("-0.11", 18, 2)), new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("-0.11", 18, 2)));
         assertEquals("0.5 + 0.75i, -0.5 - 0.75i, 0.5 - 0.75i precision", 18, a.precision());
         assertEquals("0.5 + 0.75i, -0.5 - 0.75i, 0.5 - 0.75i radix", 2, a.radix());
@@ -5626,9 +5630,13 @@ public class ApcomplexMathTest
 
     public static void testFibonacci()
     {
-        Apcomplex a = ApcomplexMath.fibonacci(new Apcomplex("(3.000000,4.000000)"), new Apcomplex("(5.000000,6.000000)"));
+        Apcomplex a = ApcomplexMath.fibonacci(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
         assertEquals("3 + 4i, 5 + 6i precision", 6, a.precision());
         assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(723.269,975.240)"), a, new Apfloat("5e-3"));
+
+        a = ApcomplexMath.fibonacci(new Apcomplex("(333.00000,444.00000)"), new Apcomplex("(5.00000000,6.00000000)"));
+        assertEquals("333 + 444i, 5 + 6i precision", 4, a.precision());
+        assertEquals("333 + 444i, 5 + 6i value", new Apcomplex("(3.54e472,3.136e473)"), a, new Apfloat("5e470"));
 
         a = ApcomplexMath.fibonacci(new Apcomplex("0"), new Apcomplex("(3.00000,4.00000)"));
         assertEquals("0, 3 + 4i precision", Apfloat.INFINITE, a.precision());
@@ -5638,7 +5646,7 @@ public class ApcomplexMathTest
         assertEquals("1, 3 + 4i precision", 6, a.precision());
         assertEquals("1, 3 + 4i value", new Apcomplex("1.00000"), a, new Apfloat("5e-5"));
 
-        a = ApcomplexMath.fibonacci(new Apcomplex("4.000000"), new Apcomplex("(5.000000,6.000000)"));
+        a = ApcomplexMath.fibonacci(new Apcomplex("4.00000"), new Apcomplex("(5.00000,6.00000)"));
         assertEquals("4, 5 + 6i precision", 6, a.precision());
         assertEquals("4, 5 + 6i value", new Apcomplex("(-405.000,246.000)"), a, new Apfloat("5e-3"));
 
@@ -5663,7 +5671,7 @@ public class ApcomplexMathTest
         assertEquals("2, 2i radix radix 9", 9, a.radix());
         assertEquals("2, 2i value radix 9", new Apcomplex(new Apint(0, 9), new Apint(2, 9)), a);
 
-        a = ApcomplexMath.fibonacci(new Apcomplex(new Apfloat("0.1", 20, 2), new Apfloat("0.11", 20, 2)), new Apcomplex(new Apfloat("-0.1", 20, 2), new Apfloat("-0.11", 20, 2)));
+        a = ApcomplexMath.fibonacci(new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)), new Apcomplex(new Apfloat("-0.1", 18, 2), new Apfloat("-0.11", 18, 2)));
         assertEquals("0.5 + 0.75i, -0.5 - 0.75i precision", 18, a.precision());
         assertEquals("0.5 + 0.75i, -0.5 - 0.75i radix", 2, a.radix());
         assertEquals("0.5 + 0.75i, -0.5 - 0.75i value", new Apcomplex(new Apfloat("-0.000111111111101011111111", 18, 2), new Apfloat("1.11110101100110111", 18, 2)), a, new Apfloat("1e-17", 1, 2));
@@ -5887,37 +5895,41 @@ public class ApcomplexMathTest
 
     public static void testPolylog()
     {
-        Apcomplex a = ApcomplexMath.polylog(new Apcomplex("(3.000000,4.000000)"), new Apcomplex("(5.000000,6.000000)"));
+        Apcomplex a = ApcomplexMath.polylog(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
         assertEquals("3 + 4i, 5 + 6i precision", 6, a.precision());
         assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(27.2502,30.5992)"), a, new Apfloat("5e-4"));
-
-        a = ApcomplexMath.polylog(new Apcomplex("(3.0000000,4.0000000)"), new Apcomplex("2.0000000"));
+/*
+        a = ApcomplexMath.polylog(new Apcomplex("(333.00000,444.00000)"), new Apcomplex("(555.00000,666.00000)"));
+        assertEquals("333 + 444i, 555 + 666i precision", 6, a.precision());
+        assertEquals("333 + 444i, 555 + 666i value", new Apcomplex("(555.000,666.000)"), a, new Apfloat("5e-3"));
+*/
+        a = ApcomplexMath.polylog(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("2.00000"));
         assertEquals("3 + 4i, 2 precision", 6, a.precision());
         assertEquals("3 + 4i, 2 value", new Apcomplex("(1.64436,0.0209666)"), a, new Apfloat("5e-5"));
 
-        a = ApcomplexMath.polylog(new Apcomplex("(3.0000000,4.0000000)"), new Apcomplex("1.0000000"));
+        a = ApcomplexMath.polylog(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("1.00000"));
         assertEquals("3 + 4i, 1 precision", 6, a.precision());
         assertEquals("3 + 4i, 1 value", new Apcomplex("(0.890555,-0.00807595)"), a, new Apfloat("5e-6"));
 
-        a = ApcomplexMath.polylog(new Apcomplex("(3.000000000,4.000000000)"), new Apcomplex("0.5000000000"));
+        a = ApcomplexMath.polylog(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("0.500000"));
         assertEquals("3 + 4i, 0.5 precision", 6, a.precision());
         assertEquals("3 + 4i, 0.5 value", new Apcomplex("(0.470416,-0.00634237)"), a, new Apfloat("5e-6"));
 
-        a = ApcomplexMath.polylog(new Apcomplex("(3.00000000,4.00000000)"), new Apcomplex("(0.500000000,0.100000000)"));
+        a = ApcomplexMath.polylog(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(0.500000,0.100000)"));
         assertEquals("3 + 4i, 0.5 + 0.1i precision", 6, a.precision());
         assertEquals("3 + 4i, 0.5 + 0.1i value", new Apcomplex("(0.472997,0.0818064)"), a, new Apfloat("5e-6"));
 
-        a = ApcomplexMath.polylog(new Apcomplex("(3.00000000,4.00000000)"), new Apcomplex("(0.500000000,-0.100000000)"));
+        a = ApcomplexMath.polylog(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(0.500000,-0.100000)"));
         assertEquals("3 + 4i, 0.5 - 0.1i precision", 6, a.precision());
         assertEquals("3 + 4i, 0.5 - 0.1i value", new Apcomplex("(0.469938,-0.0948103)"), a, new Apfloat("5e-6"));
 
-        a = ApcomplexMath.polylog(new Apcomplex("(3.0000000,4.0000000)"), new Apcomplex("0"));
+        a = ApcomplexMath.polylog(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("0"));
         assertEquals("3 + 4i, 0 precision", Apfloat.INFINITE, a.precision());
         assertEquals("3 + 4i, 0 value", new Apcomplex("0"), a);
 
         try
         {
-            ApcomplexMath.polylog(new Apcomplex("(-3.0000000,4.0000000)"), new Apcomplex("1.0000000"));
+            ApcomplexMath.polylog(new Apcomplex("(-3.00000,4.00000)"), new Apcomplex("1.00000"));
             fail("-3 + 4i, 1 accepted");
         }
         catch (ArithmeticException ae)
