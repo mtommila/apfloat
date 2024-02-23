@@ -5740,18 +5740,35 @@ public class ApcomplexMathTest
         assertEquals("0, 5 + 6i precision", 6, a.precision());
         assertEquals("0, 5 + 6i value", new Apcomplex("1.00000"), a, new Apfloat("5e-5"));
 
+        a = ApcomplexMath.eulerE(0, new Apcomplex("0"));
+        assertEquals("0, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0, 0 value", new Apcomplex("1"), a);
+
         a = ApcomplexMath.eulerE(4, new Apcomplex("0"));
         assertEquals("4, 0 precision", Apfloat.INFINITE, a.precision());
-        assertEquals("4, 0", new Apcomplex("0"), a, new Apfloat("5e-2"));
+        assertEquals("4, 0 value", new Apcomplex("0"), a);
 
         a = ApcomplexMath.eulerE(4, new Apcomplex("1.00000"));
         assertEquals("4, 1 precision", Apfloat.INFINITE, a.precision());
-        assertEquals("4, 1", new Apcomplex("0"), a, new Apfloat("5e-2"));
+        assertEquals("4, 1 value", new Apcomplex("0"), a, new Apfloat("5e-2"));
+
+        a = ApcomplexMath.eulerE(17, new Apcomplex("0"));
+        assertEquals("17, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("17, 0 value", new Aprational("-3202291/2"), a);
+
+        a = ApcomplexMath.eulerE(17, new Apcomplex("0"), 6);
+        assertEquals("17, 0 precision fixed", 6, a.precision());
+        assertEquals("17, 0 value fixed", new Apcomplex("-1601145.5"), a, new Apfloat("5e1"));
 
         a = ApcomplexMath.eulerE(3, new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)));
         assertEquals("3, 0.5 + 0.75i precision", 18, a.precision());
         assertEquals("3, 0.5 + 0.75i radix", 2, a.radix());
         assertEquals("3, 0.5 + 0.75i value", new Apcomplex(new Apfloat("0", 18, 2), new Apfloat("-0.111111", 18, 2)), a, new Apfloat("1e-18", 1, 2));
+
+        a = ApcomplexMath.eulerE(13, new Apint(0, 2));
+        assertEquals("13, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("13, 0 radix", 2, a.radix());
+        assertEquals("13, 0 value", new Aprational("-1010101010101/10", 2), a);
 
         try
         {
@@ -5761,16 +5778,6 @@ public class ApcomplexMathTest
         catch (IllegalArgumentException iae)
         {
             // OK, n < 0
-        }
-
-        try
-        {
-            ApcomplexMath.eulerE(3, new Apint(0, 3));
-            fail("3, 0 infinite expansion");
-        }
-        catch (InfiniteExpansionException iee)
-        {
-            // OK
         }
     }
 
@@ -5800,10 +5807,35 @@ public class ApcomplexMathTest
         assertEquals("0, 5 + 6i precision", 6, a.precision());
         assertEquals("0, 5 + 6i value", new Apcomplex("1.00000"), a, new Apfloat("5e-5"));
 
+        a = ApcomplexMath.bernoulliB(0, new Apcomplex("0"));
+        assertEquals("0, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0, 0 value", new Apcomplex("1"), a);
+
+        a = ApcomplexMath.bernoulliB(1, new Apcomplex("0"));
+        assertEquals("1, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("1, 0 value", new Aprational("-1/2"), a);
+
+        a = ApcomplexMath.bernoulliB(3, new Apcomplex("0"));
+        assertEquals("3, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("3, 0 value", new Apcomplex("0"), a);
+
+        a = ApcomplexMath.bernoulliB(16, new Apcomplex("0"));
+        assertEquals("16, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("16, 0 value", new Aprational("-3617/510"), a);
+
+        a = ApcomplexMath.bernoulliB(16, new Apcomplex("0"), 6);
+        assertEquals("16, 0 precision fixed", 6, a.precision());
+        assertEquals("16, 0 value fixed", new Apcomplex("-7.09216"), a, new Apfloat("5e-5"));
+
         a = ApcomplexMath.bernoulliB(3, new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)));
         assertEquals("3, 0.5 + 0.75i precision", 18, a.precision());
         assertEquals("3, 0.5 + 0.75i radix", 2, a.radix());
         assertEquals("3, 0.5 + 0.75i value", new Apcomplex(new Apfloat("0", 18, 2), new Apfloat("-0.100111", 18, 2)), a, new Apfloat("1e-18", 1, 2));
+
+        a = ApcomplexMath.bernoulliB(14, new Apint(0, 2));
+        assertEquals("14, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("14, 0 radix", 2, a.radix());
+        assertEquals("14, 0 value", new Aprational("111/110", 2), a);
 
         try
         {

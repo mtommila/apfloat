@@ -4171,7 +4171,6 @@ public class ApcomplexMath
      * @return <i>E<sub>n</sub>(z)</i>
      *
      * @throws IllegalArgumentException If <code>n</code> &lt; 0.
-     * @throws InfiniteExpansionException If <code>z</code> is zero.
      *
      * @since 1.14.0
      */
@@ -4189,11 +4188,21 @@ public class ApcomplexMath
         {
             throw new IllegalArgumentException("Negative Euler polynomial");
         }
-        if (z.isZero() && n > 0 && (n & 1) == 0)
-        {
-            return z;
-        }
         int radix = z.radix();
+        long n1 = Util.addExact(n, 1);
+        if (z.isZero())
+        {
+            if (n > 0 && (n & 1) == 0)
+            {
+                return z;
+            }
+            if (precision == Apfloat.INFINITE)
+            {
+                Apint one = Apint.ONES[radix],
+                      two = new Apint(2, radix);
+                return AprationalMath.bernoulli(n1, radix).multiply(two).multiply(ApintMath.pow(two, n1).subtract(one)).divide(new Apint(n1, radix)).negate();
+            }
+        }
         if (n == 0)
         {
             return new Apfloat(1, precision, radix);
@@ -4203,7 +4212,7 @@ public class ApcomplexMath
         z = ApfloatHelper.ensurePrecision(z, workingPrecision);
         Apfloat two = new Apfloat(2, workingPrecision, radix),
                 nn = new Apfloat(-n, workingPrecision, radix);
-        Apcomplex result = two.multiply(pow(two, Util.addExact(n, 1)).multiply(zeta(nn, z.divide(two))).subtract(zeta(nn, z)));
+        Apcomplex result = two.multiply(pow(two, n1).multiply(zeta(nn, z.divide(two))).subtract(zeta(nn, z)));
         return ApfloatHelper.limitPrecision(result, precision);
     }
 
@@ -4221,7 +4230,6 @@ public class ApcomplexMath
      * @return <i>B<sub>n</sub>(z)</i>
      *
      * @throws IllegalArgumentException If <code>n</code> &lt; 0.
-     * @throws InfiniteExpansionException If <code>z</code> is zero.
      *
      * @since 1.14.0
      */
@@ -4240,6 +4248,17 @@ public class ApcomplexMath
             throw new IllegalArgumentException("Negative Bernoulli polynomial");
         }
         int radix = z.radix();
+        if (z.isZero())
+        {
+            if (n > 1 && (n & 1) == 1)
+            {
+                return z;
+            }
+            if (precision == Apfloat.INFINITE)
+            {
+                return AprationalMath.bernoulli(n, radix);
+            }
+        }
         if (n == 0)
         {
             return new Apfloat(1, precision, radix);

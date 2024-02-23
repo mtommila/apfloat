@@ -4150,7 +4150,6 @@ public class ApfloatMath
      * @return <i>E<sub>n</sub>(x)</i>
      *
      * @throws IllegalArgumentException If <code>n</code> &lt; 0.
-     * @throws InfiniteExpansionException If <code>x</code> is zero.
      *
      * @since 1.14.0
      */
@@ -4181,7 +4180,6 @@ public class ApfloatMath
      * @return <i>B<sub>n</sub>(x)</i>
      *
      * @throws IllegalArgumentException If <code>n</code> &lt; 0.
-     * @throws InfiniteExpansionException If <code>x</code> is zero.
      *
      * @since 1.14.0
      */
