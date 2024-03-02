@@ -27,13 +27,14 @@ import junit.framework.TestSuite;
 
 import static org.apfloat.Apfloat.ONE;
 import static org.apfloat.Apfloat.ZERO;
+import static org.apfloat.ApfloatMath.airyAiPrime;
 import static org.apfloat.ApfloatMath.besselJ;
 import static org.apfloat.ApfloatMath.digamma;
 import static org.apfloat.ApfloatMath.exp;
 import static org.apfloat.ApfloatMath.gamma;
 
 /**
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -73,5 +74,9 @@ public class RootFinderTest
         a = RootFinder.findRoot(y -> besselJ(ZERO, y), (y, f) -> besselJ(ONE, y).negate(), ZERO, new Apfloat(2.4), 100);
         assertEquals("J_0 first zero precision", 100, a.precision());
         assertEquals("J_0 first zero value", new Apfloat("2.404825557695772768621631879326454643124244909145967135706999090596765838677194029204436343760145255"), a, new Apfloat("5e-99"));
+
+        a = RootFinder.findRoot(ApfloatMath::airyAi, (y, f) -> airyAiPrime(y), ZERO, new Apfloat(-4.0), 6);
+        assertEquals("Ai second zero precision", 6, a.precision());
+        assertEquals("Ai second zero value", new Apfloat("-4.08795"), a, new Apfloat("5e-5"));
     }
 }

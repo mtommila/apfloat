@@ -29,7 +29,7 @@ import org.apfloat.spi.Util;
  * Helper class for the Riemann zeta function.
  *
  * @since 1.11.0
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -44,21 +44,37 @@ class ZetaHelper
     public static Apcomplex zeta(Apcomplex s)
     {
         int radix = s.radix();
-        Apint one = new Apint(1, radix);
+        Apint one = Apint.ONES[radix];
         if (s.equals(one))
         {
             throw new ArithmeticException("Zeta of one");
         }
         Apint two = new Apint(2, radix);
-        if (s.isInteger() && s.real().signum() < 0 && s.real().mod(two).signum() == 0)
-        {
-            return Apcomplex.ZEROS[radix];
-        }
         if (s.isZero())
         {
             return new Aprational(one, two).negate();
         }
-        if (s.precision() == Apfloat.INFINITE)
+        long precision = s.precision();
+        if (s.isInteger() && s.real().signum() < 0)
+        {
+            if (s.real().truncate().mod(two).signum() == 0)
+            {
+                return Apcomplex.ZEROS[radix];
+            }
+            if (precision == Apfloat.INFINITE)
+            {
+                try
+                {
+                    long n1 = one.subtract(s.real()).longValueExact();
+                    return AprationalMath.bernoulli(n1, radix).divide(new Apint(n1, radix)).negate();
+                }
+                catch (ArithmeticException ae)
+                {
+                    // longValueExact overflow
+                }
+            }
+        }
+        if (precision == Apfloat.INFINITE)
         {
             throw new InfiniteExpansionException("Cannot calculate zeta function to infinite precision");
         }
@@ -79,7 +95,7 @@ class ZetaHelper
 
         if (s.real().compareTo(one) < 0 && s.imag().compareTo(new Apint(50000, radix)) > 0)
         {
-            // Zetafast is only faster for rather large values if Im(s)
+            // Zetafast is only faster for rather large values of Im(s)
             return new ZetaHelper().zetafast(s);
         }
         else
