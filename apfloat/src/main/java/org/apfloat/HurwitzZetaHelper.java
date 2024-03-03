@@ -27,11 +27,13 @@ import java.util.Iterator;
 
 import org.apfloat.spi.Util;
 
+import static org.apfloat.ApcomplexMath.isNonPositiveInteger;
+
 /**
  * Helper class for the Hurwitz zeta function.
  *
  * @since 1.11.0
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -54,7 +56,7 @@ class HurwitzZetaHelper
             return new Aprational(one, two);
         }
         long precision = Math.min(s.precision(),  a.precision());
-        if (a.isInteger() && a.real().signum() <= 0)
+        if (isNonPositiveInteger(a))
         {
             if (s.real().signum() < 0 || s.isZero())
             {

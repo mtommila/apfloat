@@ -160,7 +160,7 @@ class BesselHelper
         else
         {
             Apint νRounded = RoundingHelper.roundToInteger(ν.real(), RoundingMode.HALF_EVEN).truncate();
-            long digitLoss = -ν.subtract(νRounded).scale();
+            long digitLoss = Math.min(workingPrecision, -ν.subtract(νRounded).scale());
             if (digitLoss > 0)
             {
                 workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);

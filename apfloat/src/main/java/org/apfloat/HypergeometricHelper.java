@@ -36,6 +36,7 @@ import static java.util.Comparator.comparing;
 import static org.apfloat.ApcomplexMath.abs;
 import static org.apfloat.ApcomplexMath.exp;
 import static org.apfloat.ApcomplexMath.gamma;
+import static org.apfloat.ApcomplexMath.isNonPositiveInteger;
 import static org.apfloat.ApcomplexMath.pow;
 import static org.apfloat.ApcomplexMath.sin;
 import static org.apfloat.ApcomplexMath.sqrt;
@@ -186,7 +187,7 @@ class HypergeometricHelper
         {
             Apcomplex term1,
                       term2;
-            if (g1.isInteger() && g1.real().signum() <= 0 || g2.isInteger() && g2.real().signum() <= 0)
+            if (isNonPositiveInteger(g1) || isNonPositiveInteger(g2))
             {
                 term1 = zero;   // Division by infinity
             }
@@ -194,7 +195,7 @@ class HypergeometricHelper
             {
                 term1 = pow(base1, exp1).divide(gamma(g1).multiply(gamma(g2)).multiply(gamma(c1))).multiply(evaluate(a1, b1, c1, z));
             }
-            if (g3.isInteger() && g3.real().signum() <= 0 || g4.isInteger() && g4.real().signum() <= 0)
+            if (isNonPositiveInteger(g3) || isNonPositiveInteger(g4))
             {
                 term2 = zero;   // Division by infinity
             }
@@ -276,7 +277,7 @@ class HypergeometricHelper
                           z1 = one.subtract(z),
                           s = c.subtract(a),
                           t = c.subtract(b);
-                if (s.isInteger() && s.real().signum() <= 0 && (!t.isInteger() || t.real().signum() > 0 || s.real().compareTo(t.real()) >= 0))
+                if (isNonPositiveInteger(s) && (!isNonPositiveInteger(t) || s.real().compareTo(t.real()) >= 0))
                 {
                     return ApcomplexMath.pow(z1, b.negate()).multiply(helper.evaluate(s, b, c, z(z)));
                 }
@@ -475,7 +476,7 @@ class HypergeometricHelper
         for (int i = 0; i < b.length; i++)
         {
             Apfloat br = b[i].real().negate();
-            if (b[i].isInteger() && br.signum() >= 0)
+            if (isNonPositiveInteger(b[i]))
             {
                 if (n == null)
                 {
@@ -615,7 +616,7 @@ class HypergeometricHelper
                 // Evaluate with U*
                 Apcomplex ba = ensurePrecision(b.subtract(a));
                 Apcomplex result = zero;
-                if (!ba.isInteger() || ba.real().signum() > 0)
+                if (!isNonPositiveInteger(ba))
                 {
                     result = pow(z.negate(), a.negate()).divide(gamma(ensureGammaPrecision(ba))).multiply(hypergeometricUStar(a, b, z));
                 }
@@ -633,7 +634,7 @@ class HypergeometricHelper
 
     private Apcomplex hypergeometric1F1series(Apcomplex a, Apcomplex b, Apcomplex z)
     {
-        if (a.equals(b))
+        if (a.equals(b) && !isNonPositiveInteger(a))
         {
             return ApcomplexMath.exp(z);
         }
@@ -723,12 +724,12 @@ class HypergeometricHelper
 
             Apcomplex ab1 = ensureGammaPrecision(a.subtract(b).add(one));
             result = zero;
-            if (!ab1.isInteger() || ab1.real().signum() > 0)
+            if (!isNonPositiveInteger(ab1))
             {
                 Apcomplex b1n = ensureGammaPrecision(one.subtract(b));
                 result = gamma(b1n).divide(gamma(ab1)).multiply(hypergeometric1F1series(a, b, z));
             }
-            if (!a.isInteger() || a.real().signum() > 0)
+            if (!isNonPositiveInteger(a))
             {
                 Apint two = new Apint(2, radix);
                 Apcomplex b1 = ensureGammaPrecision(b.subtract(one)),
@@ -765,7 +766,7 @@ class HypergeometricHelper
             }
             Apcomplex s = c.subtract(a),
                       t = c.subtract(b);
-            if (s.isInteger() && s.real().signum() <= 0 || t.isInteger() && t.real().signum() <= 0)
+            if (isNonPositiveInteger(s) || isNonPositiveInteger(t))
             {
                 return zero;
             }
