@@ -237,7 +237,7 @@ public class CalculatorTest
         assertCalculation("7.77297e-1", "erfc(0.200000)");
         assertCalculation("2.41591", "erfi(1.20000)");
         assertCalculation("1.2141", "eulerE(4, 1.90000)");
-        assertCalculation("1.172", "expIntegralE(0.70000,0.30000)");
+        assertCalculation("1.1722", "expIntegralE(0.70000,0.30000)");
         assertCalculation("2.44209", "expIntegralEi(1.20000)");
         assertCalculation("5040", "factorial(7)");
         assertCalculation("7.3936", "fibonacci(5.00000, 1.20000)");
@@ -284,7 +284,7 @@ public class CalculatorTest
         assertCalculation("1.07204", "legendreQ(1.70000,-0.900000)");
         assertCalculation("4.1358", "legendreQ(1.20000,1.70000,0.900000)");
         assertCalculation("-4.371-3.651i", "logGamma(-1.234+2.345i)");
-        assertCalculation("1.04516", "logIntegral(2.0000)");
+        assertCalculation("1.04516", "logIntegral(2.000000)");
         assertCalculation("1.23", "n(1.23456, 3)");
         assertCalculation("1.04748", "pochhammer(1.20000,0.700000)");
         assertCalculation("280/81", "pochhammer(1/3,4)");

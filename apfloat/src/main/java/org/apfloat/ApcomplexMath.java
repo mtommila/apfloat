@@ -2751,7 +2751,7 @@ public class ApcomplexMath
     public static Apcomplex hypergeometricU(Apcomplex a, Apcomplex b, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return HypergeometricHelper.hypergeometricU(a, b, z);
+        return HypergeometricHelper.hypergeometricU(a, b, z, false);
     }
 
     /**
@@ -2835,9 +2835,9 @@ public class ApcomplexMath
         {
             // More accurate algorithm for larger values
             long precision = z.precision();
-            Apint two = new Apint(2, radix);
             Apfloat sqrtPi = ApfloatMath.sqrt(ApfloatMath.pi(precision, radix)),
-                    half = new Aprational(one, two);
+                    two = new Apfloat(2, precision, radix),
+                    half = one.divide(two);
             Apcomplex result = gamma(half, z.multiply(z)).divide(sqrtPi);
             return result;  // Note that compared to the erf() algorithm, z.real().signum() > 0 always so no need to negate the result ever
         }
@@ -4488,7 +4488,7 @@ public class ApcomplexMath
         return (iterations == 0 && precisingIteration != 0 ? ApfloatHelper.extendPrecision(z) : z);
     }
 
-    private static boolean isNonPositiveInteger(Apcomplex z)
+    static boolean isNonPositiveInteger(Apcomplex z)
     {
         return (z.isInteger() && z.real().signum() <= 0);
     }

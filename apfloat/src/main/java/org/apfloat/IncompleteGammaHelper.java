@@ -29,11 +29,13 @@ import java.util.function.LongFunction;
 
 import org.apfloat.spi.Util;
 
+import static org.apfloat.ApcomplexMath.isNonPositiveInteger;
+
 /**
  * Helper class for the incomplete gamma function.
  *
  * @since 1.10.0
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -254,6 +256,10 @@ class IncompleteGammaHelper
         {
             return lowerGamma(a, z0, null).getValue().negate();
         }
+        if (useSum(z0) && useSum(z1))
+        {
+            return sum(a, z1).subtract(sum(a, z0));
+        }
 
         return upperGamma(a, z0).subtract(upperGamma(a, z1));
     }
@@ -269,7 +275,7 @@ class IncompleteGammaHelper
 
     private static GammaValue upperGamma(Apcomplex a, Apcomplex z)
     {
-        if (useAsymptoticLarge(a, z) && !(a.isInteger() && a.real().signum() <= 0))
+        if (useAsymptoticLarge(a, z) && !isNonPositiveInteger(a))
         {
             return asymptoticLargeA(a, z);
         }
@@ -277,8 +283,13 @@ class IncompleteGammaHelper
         {
             return asymptoticLargeZ(a, z);
         }
+        GammaValue result = attemptUStar(a, z);
+        if (result != null)
+        {
+            return result;
+        }
         ContinuedFraction[] algorithms = null;
-        if (a.isInteger() && a.real().signum() <= 0)
+        if (isNonPositiveInteger(a))
         {
             if (isCloseToNegativeRealAxis(z))
             {
@@ -309,8 +320,8 @@ class IncompleteGammaHelper
         if (larger.scale() > 1 && larger.scale() > smaller.scale())
         {
             long precision = Math.min(larger.precision(), smaller.precision());
-            double digitsPerTerm = larger.scale() - Math.max(1.0, smaller.scale());
-            double maxTerms = 2;
+            double digitsPerTerm = larger.scale() - Math.max(1.0, smaller.scale()),
+                   maxTerms = 2;
             return digitsPerTerm * maxTerms > precision;
         }
         return false;
@@ -318,7 +329,7 @@ class IncompleteGammaHelper
 
     private static GammaValue lowerGamma(Apcomplex a, Apcomplex z, ContinuedFraction[] algorithms)
     {
-        if (a.isInteger() && a.real().signum() <= 0)
+        if (isNonPositiveInteger(a))
         {
             throw new ArithmeticException("Lower gamma with first argument nonpositive integer");
         }
@@ -494,6 +505,10 @@ class IncompleteGammaHelper
     private static ContinuedFraction fastestG(Apcomplex a, Apcomplex z, ContinuedFraction[] algorithms)
     {
         // There are some input values for which the upper continued fraction behaves in a very pathological way e.g. a=-1e-2+4e2i and z=1e-2+1e2i
+        if (algorithms.length == 1)
+        {
+            return algorithms[0];
+        }
         int radix = z.radix();
         long precision = (long) (50 / Math.log10(radix));
         a = a.precision(precision);
@@ -634,9 +649,13 @@ class IncompleteGammaHelper
     private static GammaValue asymptoticLargeA(Apcomplex a, Apcomplex z)
     {
         // https://functions.wolfram.com/GammaBetaErf/Gamma2/06/02/01/
+        long precision = Math.min(a.precision(), z.precision());
         Apint one = Apcomplex.ONES[a.radix()];
-        Apcomplex sum = one.add(z.divide(a)).add(z.multiply(z.subtract(one)).divide(a.multiply(a)));
-        Apcomplex result = ApcomplexMath.exp(z.negate()).multiply(ApcomplexMath.pow(z, a)).divide(a).multiply(sum);
+        Apcomplex z1 = ApfloatHelper.ensurePrecision(z.subtract(one), precision),
+                  sum = one.add(z.divide(a)).add(z.multiply(z1).divide(a.multiply(a))),
+                  zz = ApfloatHelper.extendPrecision(z, a.scale()),
+                  aa = ApfloatHelper.extendPrecision(a, a.scale()),
+                  result = ApcomplexMath.exp(z.negate()).multiply(ApcomplexMath.pow(zz, aa)).divide(a).multiply(sum);
         return new GammaValue(a, result, true);
     }
 
@@ -644,12 +663,35 @@ class IncompleteGammaHelper
     private static GammaValue asymptoticLargeZ(Apcomplex a, Apcomplex z)
     {
         // https://functions.wolfram.com/GammaBetaErf/Gamma2/06/02/02/
+        long precision = Math.min(a.precision(), z.precision());
         int radix = a.radix();
         Apint one = Apcomplex.ONES[radix],
               two = new Apint(2, radix);
-        Apcomplex sum = one.subtract(one.subtract(a).divide(z)).add(two.subtract(a).multiply(one.subtract(a)).divide(z.multiply(z)));
-        Apcomplex result = ApcomplexMath.exp(z.negate()).multiply(ApcomplexMath.pow(z, a.subtract(one))).multiply(sum);
+        Apcomplex a1 = ApfloatHelper.ensurePrecision(one.subtract(a), precision),
+                  a2 = ApfloatHelper.ensurePrecision(two.subtract(a), precision),
+                  sum = one.subtract(a1.divide(z)).add(a2.multiply(a1).divide(z.multiply(z))),
+                  result = ApcomplexMath.exp(z.negate()).multiply(ApcomplexMath.pow(z, a1.negate())).multiply(sum);
         return new GammaValue(a, result, false);
+    }
+
+    // Algorithm for using hypergeometric U
+    private static GammaValue attemptUStar(Apcomplex a, Apcomplex z)
+    {
+        long precision = Math.min(a.precision(), z.precision());
+        Apcomplex a1 = ApfloatHelper.ensurePrecision(Apcomplex.ONES[a.radix()].subtract(a), precision);
+        try
+        {
+            Apcomplex result = HypergeometricHelper.hypergeometricU(a1, a1, z, true);
+            if (result != null)
+            {
+                return new GammaValue(a, result.multiply(ApcomplexMath.exp(z.negate())), false);
+            }
+        }
+        catch (LossOfPrecisionException lope)
+        {
+            // Attempt another algorithm
+        }
+        return null;
     }
 
     // Upper gamma of nonpositive integer

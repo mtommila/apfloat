@@ -46,7 +46,7 @@ import static org.apfloat.ApfloatMath.scale;
  * Helper class for hypergeometric functions.
  *
  * @since 1.11.0
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -528,15 +528,16 @@ class HypergeometricHelper
      * @param a The first argument.
      * @param b The second argument.
      * @param z The third argument.
+     * @param fastOnly Only attempt relatively fast algorithms and return null if not applicable
      *
      * @return <i>U(a, b, z)</i>
      *
      * @since 1.13.0
      */
 
-    public static Apcomplex hypergeometricU(Apcomplex a, Apcomplex b, Apcomplex z)
+    public static Apcomplex hypergeometricU(Apcomplex a, Apcomplex b, Apcomplex z, boolean fastOnly)
     {
-        return new HypergeometricHelper(new Apcomplex[] { a }, new Apcomplex[] { b }, z).hypergeometricU();
+        return new HypergeometricHelper(new Apcomplex[] { a }, new Apcomplex[] { b }, z).hypergeometricU(fastOnly);
     }
 
     // In the general case (p = q + 1) this works only for |z| < 1, and in general, may converge slowly for very large |z|
@@ -632,6 +633,10 @@ class HypergeometricHelper
 
     private Apcomplex hypergeometric1F1series(Apcomplex a, Apcomplex b, Apcomplex z)
     {
+        if (a.equals(b))
+        {
+            return ApcomplexMath.exp(z);
+        }
         Apcomplex factor = one;
         if (z.real().signum() < 0)
         {
@@ -653,7 +658,7 @@ class HypergeometricHelper
         return result;
     }
 
-    private Apcomplex hypergeometricU()
+    private Apcomplex hypergeometricU(boolean fastOnly)
         throws ArithmeticException, ApfloatRuntimeException
     {
         if (abs(z).doubleValue() > targetPrecision * Math.log(radix))
@@ -663,10 +668,22 @@ class HypergeometricHelper
                 // Evaluate with U*
                 Apcomplex result = pow(z, a[0].negate()).multiply(hypergeometricUStar(a[0], b[0], z));
                 return ApfloatHelper.limitPrecision(result, targetPrecision);
-            } catch (NotConvergingException nce)
+            }
+            catch (NotConvergingException nce)
             {
                 // Ignore and retry with the (possibly very slow) direct evaluation of the series
+                if (fastOnly)
+                {
+                    // Too slow, try another algorithm
+                    return null;
+                }
             }
+        }
+        if (fastOnly && (Stream.concat(Arrays.stream(a), Arrays.stream(b)).map(Apcomplex::real).reduce(ApfloatMath::min).get().doubleValue() < -100.0 * targetPrecision ||  // Check minimum number of evaluation terms
+                         z.scale() > 5.0 / Math.log(radix)))    // Check convergence speed
+        {
+            // Too slow, try another algorithm
+            return null;
         }
 
         // Evaluate two 1F1 functions, this often results in cancellation of significant digits so we may retry with higher precision
@@ -694,7 +711,7 @@ class HypergeometricHelper
             else
             {
                 Apint bRounded = RoundingHelper.roundToInteger(b.real(), RoundingMode.HALF_EVEN).truncate();
-                long digitLoss = -b.subtract(bRounded).scale();
+                long digitLoss = Math.min(workingPrecision, -b.subtract(bRounded).scale());
                 if (digitLoss > 0)
                 {
                     workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
@@ -720,7 +737,7 @@ class HypergeometricHelper
                 a = ensureGammaPrecision(a);
                 result = result.add(gamma(b1).divide(gamma(a)).multiply(pow(z, b1n)).multiply(hypergeometric1F1series(ab1, b2, z)));
             }
-            precisionLoss = targetPrecision - result.precision();
+            precisionLoss = (result.isZero() ? workingPrecision : targetPrecision - result.precision());
             workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + precisionLoss);
         } while (precisionLoss > 0);
         return ApfloatHelper.limitPrecision(result, targetPrecision);
@@ -848,14 +865,20 @@ class HypergeometricHelper
             Apint i = zero;
             Apcomplex numerator = one,
                       denominator = one,
-                      o,
+                      o = null,
                       t = null;
+            boolean minIterations;
 
             extraPrecision = precisionLoss;
             s = one;
 
             do
             {
+                minIterations = i.compareTo(minN) <= 0;
+                if (divergentSeries && !minIterations)
+                {
+                    checkDivergence(o, t);
+                }
                 i = i.add(one);
                 for (int j = 0; j < a.length; j++)
                 {
@@ -877,7 +900,7 @@ class HypergeometricHelper
                 t = numerator.divide(denominator);
                 s = s.add(t);
                 maxSScale = Math.max(maxSScale, s.scale());
-            } while (i.compareTo(minN) <= 0 || divergentSeries && checkDivergence(o, t) || s.isZero() || s.scale() - t.scale() <= workingPrecision);  // Subtraction might overflow
+            } while (minIterations || s.isZero() || s.scale() - t.scale() <= workingPrecision);  // Subtraction might overflow
 
             precisionLoss = (s.isZero() ? extendedPrecision : maxSScale - s.scale()); // Loss due to scale of s reduced from its peak (loss off most significant digits)
             if (workingPrecision - s.precision() > 1)  // Often the precision is reduced by 1
@@ -895,14 +918,13 @@ class HypergeometricHelper
         return s;
     }
 
-    private boolean checkDivergence(Apcomplex old, Apcomplex term)
+    private void checkDivergence(Apcomplex old, Apcomplex term)
     {
         // Check if the divergent series reached the smallest term already, even though the required precision was not reached
         if (old != null && abs(old).compareTo(abs(term)) < 0)
         {
             throw new NotConvergingException();
         }
-        return false;
     }
 
     // See: https://def.fe.up.pt/pipermail/maxima-discuss/2006.txt "Methods for numerically difficult cases of 2F1(a,b;c|z)", alternative algorithm by Bill Gosper

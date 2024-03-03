@@ -3100,7 +3100,7 @@ public class ApfloatMath
             a.isInteger() && a.signum() <= 0 ||
             a.isInteger() && b.isInteger() && b.compareTo(a) > 0)
         {
-            return HypergeometricHelper.hypergeometricU(a, b, x).real();
+            return ApcomplexMath.hypergeometricU(a, b, x).real();
         }
         throw new ArithmeticException("Result would be complex");
     }
@@ -3228,7 +3228,8 @@ public class ApfloatMath
         long doublePrecision = ApfloatHelper.getDoublePrecision(radix);
         if (x.compareTo(new Apfloat(0.8, Apfloat.DEFAULT, radix)) >= 0)
         {
-            Apfloat log2pix = log(two.divide(pi.multiply(pow(x.subtract(one), 2))));
+            Apfloat x1 = x.subtract(one).precision(doublePrecision),
+                    log2pix = log(two.divide(pi.multiply(pow(x1, 2))));
             initialGuess = sqrt(log2pix.subtract(log(log2pix)).divide(two));
         }
         else

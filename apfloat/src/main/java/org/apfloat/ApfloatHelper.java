@@ -666,7 +666,7 @@ class ApfloatHelper
         Apint zRounded = RoundingHelper.roundToInteger(z.real(), RoundingMode.HALF_EVEN).truncate();
         if (zRounded.signum() < 0)
         {
-            long digitLoss = -z.subtract(zRounded).scale();
+            long digitLoss = Math.min(precision, -z.subtract(zRounded).scale());
             if (digitLoss > 0)
             {
                 precision = Util.ifFinite(precision, precision + digitLoss);

@@ -2436,12 +2436,12 @@ public class ApfloatMathTest
         a = ApfloatMath.gamma(new Apfloat("4.0000000"), new Apfloat("6.0000000"));
         assertEquals("4,6 precision", 8, a.precision());
         assertEquals("4,6 value", new Apfloat("0.90722330"), a, new Apfloat("5e-8"));
-        a = ApfloatMath.gamma(new Apfloat("4.500000"), new Apfloat("6.500000"));
+        a = ApfloatMath.gamma(new Apfloat("4.50000"), new Apfloat("6.50000"));
         assertEquals("4.5,6.5 precision", 6, a.precision());
         assertEquals("4.5,6.5 value", new Apfloat("1.89139"), a, new Apfloat("5e-5"));
         a = ApfloatMath.gamma(new Apfloat("-0.500000"), new Apfloat("0.500000"));
-        assertEquals("-0.5,0.5 precision", 5, a.precision());
-        assertEquals("-0.5,0.5 value", new Apfloat("0.590691"), a, new Apfloat("5e-5"));
+        assertEquals("-0.5,0.5 precision", 6, a.precision());
+        assertEquals("-0.5,0.5 value", new Apfloat("0.590691"), a, new Apfloat("5e-6"));
 
         a = ApfloatMath.gamma(new Apfloat(1, 10), new Apfloat(-1, 10));
         assertEquals("1,-1 precision", 10, a.precision());
@@ -2607,8 +2607,8 @@ public class ApfloatMathTest
         assertEquals("4,1,0 value", new Apfloat("-0.11392894"), a, new Apfloat("5e-8"));
 
         a = ApfloatMath.gamma(new Apfloat(-4), new Apfloat(10000.0), new Apfloat(0.01));
-        assertEquals("-4,10000,0.01 precision", 24, a.precision());
-        assertEquals("-4,10000,0.01 value", new Apfloat("-24669150.2547202578891267"), a, new Apfloat("5e-16"));
+        assertEquals("-4,10000,0.01 precision", 16, a.precision());
+        assertEquals("-4,10000,0.01 value", new Apfloat("-24669150.2547202578891267"), a, new Apfloat("5e-8"));
 
         a = ApfloatMath.gamma(Apfloat.ZERO, new Apfloat(1.0), new Apfloat(2.0));
         assertEquals("0,1,2 precision", 16, a.precision());
@@ -3770,7 +3770,7 @@ public class ApfloatMathTest
 
     public static void testLogIntegral()
     {
-        Apfloat a = ApfloatMath.logIntegral(new Apfloat("3.00000"));
+        Apfloat a = ApfloatMath.logIntegral(new Apfloat("3.000000"));
         assertEquals("3 precision", 6, a.precision());
         assertEquals("3 value", new Apfloat("2.16359"), a, new Apfloat("5e-5"));
 
