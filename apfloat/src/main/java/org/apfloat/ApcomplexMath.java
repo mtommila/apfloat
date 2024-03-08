@@ -1779,6 +1779,10 @@ public class ApcomplexMath
             if (zRounded.signum() < 0)
             {
                 long digitLoss = -z.subtract(zRounded).scale();
+                if (digitLoss >= targetPrecision)
+                {
+                    throw new ArithmeticException("Gamma of negative integer within precision");
+                }
                 if (digitLoss > 0)
                 {
                     targetPrecision -= digitLoss;
@@ -1786,7 +1790,8 @@ public class ApcomplexMath
             }
 
             // Use reflection formula, see e.g. https://functions.wolfram.com/GammaBetaErf/Gamma/16/03/01/
-            z = z.negate();
+            precision = ApfloatHelper.extendPrecision(precision, ApfloatHelper.getSmallExtraPrecision(radix));
+            z = ApfloatHelper.ensurePrecision(z.negate(), precision);
             Apfloat pi = ApfloatMath.pi(precision, radix);
             return ApfloatHelper.limitPrecision(pi.negate().divide(z.multiply(sin(pi.multiply(z))).multiply(gamma(z))), targetPrecision);
         }
@@ -1976,15 +1981,23 @@ public class ApcomplexMath
 
         if (z.real().signum() <= 0)
         {
+            long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix);
+            z = ApfloatHelper.extendPrecision(z, extraPrecision);
+
             // Use reflection formula
+            Apcomplex result;
             if (z.scale() < -precision)
             {
                 // See e.g. https://functions.wolfram.com/GammaBetaErf/LogGamma/16/01/01/
                 // Note that with z so small, now sin(z) ~= z, accurate to the precision of z
-                return log(pi).subtract(log(pi.multiply(z))).subtract(logGamma(z.negate())).subtract(log(z.negate()));
+                result = log(pi).subtract(log(pi.multiply(z))).subtract(logGamma(z.negate())).subtract(log(z.negate()));
             }
-            // See: Arbitrary-precision computation of the gamma function, Fredrik Johansson, https://arxiv.org/pdf/2109.08392.pdf
-            return log(pi).subtract(logSin(z)).subtract(logGamma(one.subtract(z)));
+            else
+            {
+                // See: Arbitrary-precision computation of the gamma function, Fredrik Johansson, https://arxiv.org/pdf/2109.08392.pdf
+                result = log(pi).subtract(logSin(z)).subtract(logGamma(one.subtract(z)));
+            }
+            return ApfloatHelper.reducePrecision(result, extraPrecision);
         }
 
         double adjust = Math.log(precision) + 1,    // Adjustment for the sqrt(n) factor in bernoulli numbers
@@ -2203,13 +2216,22 @@ public class ApcomplexMath
             {
                 throw new InfiniteExpansionException("Cannot calculate digamma function to infinite precision");
             }
+
+            long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix);
+            precision = ApfloatHelper.extendPrecision(precision, extraPrecision);
+            z = ApfloatHelper.ensurePrecision(z, precision);
             Apfloat pi = ApfloatMath.pi(precision, radix);
             // Use reflection formula, see e.g. https://functions.wolfram.com/GammaBetaErf/PolyGamma/16/01/01/
+            Apcomplex result;
             if (z.scale() < -precision)
             {
-                return digamma(z.negate()).subtract(pi.multiply(cot(pi.multiply(z)))).subtract(one.divide(z));
+                result = digamma(z.negate()).subtract(pi.multiply(cot(pi.multiply(z)))).subtract(one.divide(z));
             }
-            return digamma(one.subtract(z)).subtract(pi.multiply(cot(pi.multiply(z))));
+            else
+            {
+                result = digamma(one.subtract(z)).subtract(pi.multiply(cot(pi.multiply(z))));
+            }
+            return ApfloatHelper.reducePrecision(result, extraPrecision);
         }
         if (precision == Apfloat.INFINITE)
         {
@@ -2291,12 +2313,15 @@ public class ApcomplexMath
         {
             return digamma(z);
         }
-        long precision = z.precision();
+
         int radix = z.radix();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apint one = Apint.ONES[radix];
         Apfloat n1 = new Apfloat(n, precision, radix).add(one);
         Apcomplex result = ApfloatMath.gamma(n1).multiply(zeta(n1, z));
-        return ((n & 1) == 1 ? result : result.negate());
+        return ApfloatHelper.reducePrecision((n & 1) == 1 ? result : result.negate(), extraPrecision);
     }
 
     /**
@@ -2332,12 +2357,14 @@ public class ApcomplexMath
             // Infinite divided by finite, or two infinities divided by one infinity
             throw new ArithmeticException("Beta is infinite");
         }
+        int radix = a.radix();
         if (!aOrBNonpositiveInteger && abNonpositiveInteger)
         {
             // Finite divided by infinity
-            return Apcomplex.ZEROS[a.radix()];
+            return Apcomplex.ZEROS[radix];
         }
-        long precision = Math.min(a.precision(), b.precision());
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Math.min(a.precision(), b.precision()), extraPrecision);
         if (aOrBNonpositiveInteger && abNonpositiveInteger)
         {
             // Infinity divided by infinity, needs different algorithm
@@ -2349,13 +2376,14 @@ public class ApcomplexMath
                 a = tmp;
             }
             a = ApfloatHelper.ensureGammaPrecision(a, precision);
-            return gamma(a).divide(pochhammer(b, a));
+            b = ApfloatHelper.ensurePrecision(b, precision);
+            return ApfloatHelper.reducePrecision(gamma(a).divide(pochhammer(b, a)), extraPrecision);
         }
         // The trivial case
         a = ApfloatHelper.ensureGammaPrecision(a, precision);
         b = ApfloatHelper.ensureGammaPrecision(b, precision);
         ab = ApfloatHelper.ensureGammaPrecision(ab, precision);
-        return gamma(a).multiply(gamma(b)).divide(gamma(ab));
+        return ApfloatHelper.reducePrecision(gamma(a).multiply(gamma(b)).divide(gamma(ab)), extraPrecision);
     }
 
     /**
@@ -2385,9 +2413,14 @@ public class ApcomplexMath
         {
             throw new ArithmeticException("Incomplete beta with a nonpositive integer");
         }
-        long precision = Util.min(z.precision(), a.precision(), b.precision());
-        Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(precision, 1), z.radix());
-        return pow(z, a).divide(a).multiply(hypergeometric2F1(a, ApfloatHelper.ensurePrecision(one.subtract(b), precision), ApfloatHelper.ensurePrecision(a.add(one), precision), z));
+        int radix = z.radix();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Util.min(z.precision(), a.precision(), b.precision()), extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
+        a = ApfloatHelper.ensurePrecision(a, precision);
+        Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(precision, 1), radix);
+        Apcomplex result = pow(z, a).divide(a).multiply(hypergeometric2F1(a, ApfloatHelper.ensurePrecision(one.subtract(b), precision), ApfloatHelper.ensurePrecision(a.add(one), precision), z));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -2414,19 +2447,25 @@ public class ApcomplexMath
     public static Apcomplex beta(Apcomplex z1, Apcomplex z2, Apcomplex a, Apcomplex b)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        int radix = z1.radix();
         if (z1.equals(z2))
         {
-            return Apint.ZEROS[z1.radix()];
+            return Apint.ZEROS[radix];
         }
         if (isNonPositiveInteger(a))
         {
             throw new ArithmeticException("Generalized incomplete beta with a nonpositive integer");
         }
-        long precision = Util.min(z1.precision(), z2.precision(), a.precision(), b.precision());
-        Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(precision, 1), z1.radix());
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Util.min(z1.precision(), z2.precision(), a.precision(), b.precision()), extraPrecision);
+        z1 = ApfloatHelper.ensurePrecision(z1, precision);
+        z2 = ApfloatHelper.ensurePrecision(z2, precision);
+        a = ApfloatHelper.ensurePrecision(a, precision);
+        Apfloat one = new Apfloat(1, ApfloatHelper.extendPrecision(precision, 1), radix);
         Apcomplex a1 = ApfloatHelper.ensurePrecision(a.add(one), precision),
                   b1 = ApfloatHelper.ensurePrecision(one.subtract(b), precision);
-        return pow(z2, a).multiply(hypergeometric2F1(a, b1, a1, z2)).subtract(pow(z1, a).multiply(hypergeometric2F1(a, b1, a1, z1))).divide(a);
+        Apcomplex result = pow(z2, a).multiply(hypergeometric2F1(a, b1, a1, z2)).subtract(pow(z1, a).multiply(hypergeometric2F1(a, b1, a1, z1))).divide(a);
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -2458,7 +2497,8 @@ public class ApcomplexMath
         {
             return one.precision(precision);
         }
-        Apcomplex zn = ApfloatHelper.extendPrecision(z).add(ApfloatHelper.extendPrecision(n));
+        long longPrecision = ApfloatHelper.getLongPrecision(radix);
+        Apcomplex zn = ApfloatHelper.extendPrecision(z, longPrecision).add(ApfloatHelper.extendPrecision(n, longPrecision));    // Keep sufficient precision regardless of the scale difference of z and n
         if (isNonPositiveInteger(z))    // gamma(z) is infinite
         {
             if (isNonPositiveInteger(zn)) // gamma(z + n) is infinite, too
@@ -2475,7 +2515,10 @@ public class ApcomplexMath
             // If n is integer and relatively small, just evaluating the multiplication is probably faster
             return pochhammer(z, n.longValueExact());
         }
-        z = ApfloatHelper.ensureGammaPrecision(z, precision);
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             extendedPrecision = ApfloatHelper.extendPrecision(precision, extraPrecision);
+        zn = ApfloatHelper.ensureGammaPrecision(zn, extendedPrecision);
+        z = ApfloatHelper.ensureGammaPrecision(z, extendedPrecision);
         return ApfloatHelper.limitPrecision(gamma(zn).divide(gamma(z)), precision);
     }
 
@@ -2518,19 +2561,29 @@ public class ApcomplexMath
     public static Apcomplex binomial(Apcomplex n, Apcomplex k)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (n.imag().signum() == 0 && k.imag().signum() == 0)
+        long precision = Math.min(n.precision(), k.precision());
+        int radix = n.radix();
+        Apint threshold = new Apint(precision, radix);
+        if (n.isInteger() && k.isInteger() && n.real().compareTo(threshold) <= 0 && k.real().compareTo(threshold) <= 0)
         {
-            return ApfloatMath.binomial(n.real(), k.real());
+            // If n and k are integers and relatively small, evaluating factorials is probably faster
+            return ApintMath.binomial(n.real().truncate(), k.real().truncate()).precision(precision);
         }
         Apcomplex nk = n.subtract(k);
         if (k.isInteger() && k.real().signum() < 0 ||
             nk.isInteger() && nk.real().signum() < 0)
         {
             // The divisor is infinity (but the dividend isn't) so we get zero
-            return Apcomplex.ZEROS[n.radix()];
+            return Apcomplex.ZEROS[radix];
         }
-        Apint one = Apint.ONES[n.radix()];
-        return gamma(n.add(one)).divide(gamma(k.add(one)).multiply(gamma(nk.add(one))));
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix);
+        precision = ApfloatHelper.extendPrecision(precision, extraPrecision);
+        Apint one = Apint.ONES[radix];
+        Apcomplex n1 = ApfloatHelper.ensureGammaPrecision(n.add(one), precision),
+                  k1 = ApfloatHelper.ensureGammaPrecision(k.add(one), precision),
+                  nk1 = ApfloatHelper.ensureGammaPrecision(nk.add(one), precision);
+        Apcomplex result = gamma(n1).divide(gamma(k1).multiply(gamma(nk1)));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -2780,14 +2833,16 @@ public class ApcomplexMath
         {
             // More accurate algorithm for larger values
             int radix = z.radix();
-            long precision = z.precision();
+            long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+                 precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
+            z = ApfloatHelper.ensurePrecision(z, precision);
             Apint one = Apint.ONES[radix],
                   two = new Apint(2, radix);
             Apfloat sqrtPi = ApfloatMath.sqrt(ApfloatMath.pi(precision, radix)),
                     half = new Aprational(one, two).precision(precision);
             Apcomplex result = one.subtract(gamma(half, z.multiply(z)).divide(sqrtPi));
             boolean negate = (z.real().signum() == 0 ? z.imag().signum() < 0 : z.real().signum() < 0);
-            return (negate ? result.negate() : result);
+            return ApfloatHelper.reducePrecision(negate ? result.negate() : result, extraPrecision);
         }
         // More accurate algorithm for smaller values
         return erfFixedPrecision(z);
@@ -2801,14 +2856,17 @@ public class ApcomplexMath
             return z;
         }
         int radix = z.radix();
-        long precision = z.precision();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apint one = Apint.ONES[radix],
               two = new Apint(2, radix),
               three = new Apint(3, radix);
         Apfloat sqrtPi = ApfloatMath.sqrt(ApfloatMath.pi(precision, radix)),
                 half = new Aprational(one, two).precision(precision),
                 threeHalfs = new Aprational(three, two).precision(precision);
-        return two.multiply(z).divide(sqrtPi).multiply(hypergeometric1F1(half, threeHalfs, z.multiply(z).negate()));
+        Apcomplex result = two.multiply(z).divide(sqrtPi).multiply(hypergeometric1F1(half, threeHalfs, z.multiply(z).negate()));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -2834,12 +2892,14 @@ public class ApcomplexMath
         if (z.scale() > 0 && z.real().signum() > 0)
         {
             // More accurate algorithm for larger values
-            long precision = z.precision();
+            long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+                 precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
+            z = ApfloatHelper.ensurePrecision(z, precision);
             Apfloat sqrtPi = ApfloatMath.sqrt(ApfloatMath.pi(precision, radix)),
                     two = new Apfloat(2, precision, radix),
                     half = one.divide(two);
             Apcomplex result = gamma(half, z.multiply(z)).divide(sqrtPi);
-            return result;  // Note that compared to the erf() algorithm, z.real().signum() > 0 always so no need to negate the result ever
+            return ApfloatHelper.reducePrecision(result, extraPrecision);   // Note that compared to the erf() algorithm, z.real().signum() > 0 always so no need to negate the result ever
         }
         // More accurate algorithm for smaller values
         return one.subtract(erf(z));
@@ -2910,7 +2970,9 @@ public class ApcomplexMath
             return z;
         }
         int radix = z.radix();
-        long precision = z.precision();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apfloat two = new Apfloat(2, precision, radix),
                 pi = ApfloatMath.pi(precision, radix);
         if (z.scale() > 0)
@@ -2921,8 +2983,9 @@ public class ApcomplexMath
             Apcomplex i = new Apcomplex(Apfloat.ZEROS[radix], one),
                       z2 = z.multiply(z),
                       iz2 = i.multiply(z2),
-                      iHalfPiZ2 = iz2.multiply(pi).divide(two);
-            return i.multiply(z).multiply(inverseRoot(two, 2)).divide(two).multiply(fresnelTerm(one, half, invSqrtPi, iz2, iHalfPiZ2).subtract(fresnelTerm(one, half, invSqrtPi, iz2.negate(), iHalfPiZ2.negate())));
+                      iHalfPiZ2 = iz2.multiply(pi).divide(two),
+                      result = i.multiply(z).multiply(inverseRoot(two, 2)).divide(two).multiply(fresnelTerm(one, half, invSqrtPi, iz2, iHalfPiZ2).subtract(fresnelTerm(one, half, invSqrtPi, iz2.negate(), iHalfPiZ2.negate())));
+            return ApfloatHelper.reducePrecision(result, extraPrecision);
         }
         Apfloat three = new Apfloat(3, precision, radix),
                 four = new Apfloat(4, precision, radix),
@@ -2931,7 +2994,8 @@ public class ApcomplexMath
                 sixteen = new Apfloat(16, precision, radix);
         Apcomplex[] a = { three.divide(four) },
                     b = { three.divide(two), seven.divide(four) };
-        return pi.multiply(pow(z, 3)).divide(six).multiply(HypergeometricHelper.hypergeometricPFQ(a, b, pi.multiply(pi).negate().multiply(pow(z, 4)).divide(sixteen)));
+        Apcomplex result = pi.multiply(pow(z, 3)).divide(six).multiply(HypergeometricHelper.hypergeometricPFQ(a, b, pi.multiply(pi).negate().multiply(pow(z, 4)).divide(sixteen)));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -2957,7 +3021,9 @@ public class ApcomplexMath
             return z;
         }
         int radix = z.radix();
-        long precision = z.precision();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apfloat two = new Apfloat(2, precision, radix),
                 pi = ApfloatMath.pi(precision, radix);
         Apint one = Apfloat.ONES[radix];
@@ -2968,15 +3034,17 @@ public class ApcomplexMath
             Apcomplex i = new Apcomplex(Apfloat.ZEROS[radix], one),
                       z2 = z.multiply(z),
                       iz2 = i.multiply(z2),
-                      iHalfPiZ2 = iz2.multiply(pi).divide(two);
-            return z.multiply(inverseRoot(two, 2)).divide(two).multiply(fresnelTerm(one, half, invSqrtPi, iz2, iHalfPiZ2).add(fresnelTerm(one, half, invSqrtPi, iz2.negate(), iHalfPiZ2.negate())));
+                      iHalfPiZ2 = iz2.multiply(pi).divide(two),
+                      result = z.multiply(inverseRoot(two, 2)).divide(two).multiply(fresnelTerm(one, half, invSqrtPi, iz2, iHalfPiZ2).add(fresnelTerm(one, half, invSqrtPi, iz2.negate(), iHalfPiZ2.negate())));
+            return ApfloatHelper.reducePrecision(result, extraPrecision);
         }
         Apfloat four = new Apfloat(4, precision, radix),
                 five = new Apfloat(5, precision, radix),
                 sixteen = new Apfloat(16, precision, radix);
         Apcomplex[] a = { one.divide(four) },
                     b = { one.divide(two), five.divide(four) };
-        return z.multiply(HypergeometricHelper.hypergeometricPFQ(a, b, pi.multiply(pi).negate().multiply(pow(z, 4)).divide(sixteen)));
+        Apcomplex result = z.multiply(HypergeometricHelper.hypergeometricPFQ(a, b, pi.multiply(pi).negate().multiply(pow(z, 4)).divide(sixteen)));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     private static Apcomplex fresnelTerm(Apint one, Apfloat half, Apfloat invSqrtPi, Apcomplex iz2, Apcomplex iHalfPiZ2)
@@ -3006,10 +3074,15 @@ public class ApcomplexMath
     public static Apcomplex expIntegralE(Apcomplex ν, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        long precision = Math.min(ν.precision(), z.precision());
-        Apfloat one = Apint.ONES[ν.radix()].precision(ApfloatHelper.extendPrecision(precision, 1));
-        Apcomplex ν1 = ApfloatHelper.ensurePrecision(ν.subtract(one), precision);
-        return pow(z, ν1).multiply(gamma(ν1.negate(), z));
+        int radix = ν.radix();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Math.min(ν.precision(), z.precision()), extraPrecision);
+        ν = ApfloatHelper.ensurePrecision(ν, precision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
+        Apfloat one = Apint.ONES[radix].precision(ApfloatHelper.extendPrecision(precision, 1));
+        Apcomplex ν1 = ApfloatHelper.ensureGammaPrecision(ν.subtract(one), precision),
+                  result = pow(z, ν1).multiply(gamma(ν1.negate(), z));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -3033,18 +3106,22 @@ public class ApcomplexMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         int radix = z.radix();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apint zero = Apint.ZEROS[radix];
         Apfloat adjust;
         if (z.imag().signum() == 0)
         {
-            adjust = z.real().signum() > 0 ? ApfloatMath.pi(z.precision(), radix).negate() : zero;
+            adjust = z.real().signum() > 0 ? ApfloatMath.pi(precision, radix).negate() : zero;
         }
         else
         {
-            Apfloat pi = ApfloatMath.pi(z.precision(), radix);
+            Apfloat pi = ApfloatMath.pi(precision, radix);
             adjust = z.imag().signum() < 0 ? pi.negate() : pi;
         }
-        return gamma(zero, z.negate()).negate().add(new Apcomplex(zero, adjust));
+        Apcomplex result = gamma(zero, z.negate()).negate().add(new Apcomplex(zero, adjust));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -3093,7 +3170,9 @@ public class ApcomplexMath
         throws ApfloatRuntimeException
     {
         int radix = z.radix();
-        long precision = z.precision();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apfloat zero = Apint.ZEROS[radix],
                 one = Apint.ONES[radix],
                 two = new Apfloat(2, precision, radix);
@@ -3105,14 +3184,16 @@ public class ApcomplexMath
                 adjust = adjust.negate();
             }
             Apcomplex i = new Apcomplex(zero, one),
-                      iz = i.multiply(z);
-            return gamma(zero, iz.negate()).subtract(gamma(zero, iz)).add(new Apcomplex(zero, adjust)).multiply(i).divide(two);
+                      iz = i.multiply(z),
+                      result = gamma(zero, iz.negate()).subtract(gamma(zero, iz)).add(new Apcomplex(zero, adjust)).multiply(i).divide(two);
+            return ApfloatHelper.reducePrecision(result, extraPrecision);
         }
         Apfloat three = new Apfloat(3, precision, radix),
                 four = new Apfloat(4, precision, radix);
         Apcomplex[] a = { one.divide(two) },
                     b = { three.divide(two), three.divide(two) };
-        return z.multiply(HypergeometricHelper.hypergeometricPFQ(a, b, z.multiply(z).divide(four).negate()));
+        Apcomplex result = z.multiply(HypergeometricHelper.hypergeometricPFQ(a, b, z.multiply(z).divide(four).negate()));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -3136,7 +3217,9 @@ public class ApcomplexMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         int radix = z.radix();
-        long precision = z.precision();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apfloat zero = Apint.ZEROS[radix],
                 one = Apint.ONES[radix],
                 two = new Apfloat(2, precision, radix);
@@ -3149,8 +3232,9 @@ public class ApcomplexMath
                 adjust = (z.imag().signum() < 0 ? adjust.negate() : adjust);
             }
             Apcomplex i = new Apcomplex(zero, one),
-                      iz = i.multiply(z);
-            return gamma(zero, iz.negate()).add(gamma(zero, iz)).divide(two).negate().add(new Apcomplex(zero, adjust));
+                      iz = i.multiply(z),
+                      result = gamma(zero, iz.negate()).add(gamma(zero, iz)).divide(two).negate().add(new Apcomplex(zero, adjust));
+            return ApfloatHelper.reducePrecision(result, extraPrecision);
         }
         Apcomplex logz = log(z);
         Apfloat three = new Apfloat(3, precision, radix),
@@ -3158,8 +3242,9 @@ public class ApcomplexMath
                 euler = ApfloatMath.euler(precision, radix);
         Apcomplex[] a = { one, one },
                     b = { two, two, three.divide(two) };
-        Apcomplex z24 = z.multiply(z).divide(four).negate();
-        return z24.multiply(HypergeometricHelper.hypergeometricPFQ(a, b, z24)).add(logz).add(euler);
+        Apcomplex z24 = z.multiply(z).divide(four).negate(),
+                  result = z24.multiply(HypergeometricHelper.hypergeometricPFQ(a, b, z24)).add(logz).add(euler);
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -3531,10 +3616,14 @@ public class ApcomplexMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         int radix = z.radix();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix);
+        precision = ApfloatHelper.extendPrecision(precision, extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apfloat one = Apint.ONES[radix],
                 two = new Apfloat(2, precision, radix),
                 pi = ApfloatMath.pi(precision, radix);
-        return pi.divide(two.multiply(agm(one, sqrt(ApfloatHelper.ensurePrecision(one.subtract(z), precision)))));
+        Apcomplex result = pi.divide(two.multiply(agm(one, sqrt(ApfloatHelper.ensurePrecision(one.subtract(z), precision)))));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -3564,11 +3653,15 @@ public class ApcomplexMath
         throws ApfloatRuntimeException
     {
         int radix = z.radix();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix);
+        precision = ApfloatHelper.extendPrecision(precision, extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apfloat one = Apint.ONES[radix].precision(precision),
                 two = new Apfloat(2, precision, radix),
                 pi = ApfloatMath.pi(precision, radix),
                 half = one.divide(two);
-        return pi.divide(two).multiply(hypergeometric2F1(half.negate(), half, one, z));
+        Apcomplex result = pi.divide(two).multiply(hypergeometric2F1(half.negate(), half, one, z));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -3892,8 +3985,13 @@ public class ApcomplexMath
             // The polynomial version
             return sphericalHarmonicY(λ.real().truncate(), μ.real().truncate(), ϑ, ϕ);
         }
-        long precision = Util.min(λ.precision(), μ.precision(), ϑ.precision(), ϕ.precision());
         int radix = λ.radix();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Util.min(λ.precision(), μ.precision(), ϑ.precision(), ϕ.precision()), extraPrecision);
+        λ = ApfloatHelper.ensurePrecision(λ, precision);
+        μ = ApfloatHelper.ensurePrecision(μ, precision);
+        ϑ = ApfloatHelper.ensurePrecision(ϑ, precision);
+        ϕ = ApfloatHelper.ensurePrecision(ϕ, precision);
         Apint zero = Apint.ZEROS[radix],
               one = Apint.ONES[radix],
               two = new Apint(2, radix),
@@ -3917,13 +4015,12 @@ public class ApcomplexMath
             λμ1 = ApfloatHelper.ensureGammaPrecision(λμ1, precision);
             result = result.multiply(sqrt(gamma(λnμ1))).divide(sqrt(gamma(λμ1))).multiply(exp(i.multiply(ϕ).multiply(μ)));
         }
-        return result.multiply(legendreP(λ, μ, cos(ϑ)));
+        return ApfloatHelper.reducePrecision(result.multiply(legendreP(λ, μ, cos(ϑ))), extraPrecision);
     }
 
     private static Apcomplex sphericalHarmonicY(Apint n, Apint m, Apcomplex ϑ, Apcomplex ϕ)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        long precision = Util.min(ϑ.precision(), ϕ.precision());
         int radix = n.radix();
         Apint zero = Apint.ZEROS[radix],
               one = Apint.ONES[radix],
@@ -3937,9 +4034,14 @@ public class ApcomplexMath
         {
             return zero;
         }
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Util.min(ϑ.precision(), ϕ.precision()), extraPrecision);
+        ϑ = ApfloatHelper.ensurePrecision(ϑ, precision);
+        ϕ = ApfloatHelper.ensurePrecision(ϕ, precision);
         Apfloat pi = ApfloatMath.pi(precision, radix);
-        Apcomplex i = new Apcomplex(zero, one);
-        return sqrt(two.multiply(n).add(one).multiply(ApfloatMath.factorial(ApfloatHelper.longValueExact(n.subtract(m)), precision, radix)).divide(four.multiply(pi).multiply(ApfloatMath.factorial(ApfloatHelper.longValueExact(n.add(m)), precision, radix)))).multiply(exp(i.multiply(m).multiply(ϕ))).multiply(legendreP(n, m, cos(ϑ)));
+        Apcomplex i = new Apcomplex(zero, one),
+                  result = sqrt(two.multiply(n).add(one).multiply(ApfloatMath.factorial(ApfloatHelper.longValueExact(n.subtract(m)), precision, radix)).divide(four.multiply(pi).multiply(ApfloatMath.factorial(ApfloatHelper.longValueExact(n.add(m)), precision, radix)))).multiply(exp(i.multiply(m).multiply(ϕ))).multiply(legendreP(n, m, cos(ϑ)));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -3956,12 +4058,17 @@ public class ApcomplexMath
     public static Apcomplex chebyshevT(Apcomplex ν, Apcomplex z)
         throws ApfloatRuntimeException
     {
+        int radix = ν.radix();
         if (ν.isZero() && z.isZero())
         {
-            return Apcomplex.ONES[ν.radix()];
+            return Apcomplex.ONES[radix];
         }
-        long precision = Math.min(ν.precision(), z.precision());
-        return cos(ν.multiply(acos(z, precision)));
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Math.min(ν.precision(), z.precision()), extraPrecision);
+        ν = ApfloatHelper.ensurePrecision(ν, precision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
+        Apcomplex result = cos(ν.multiply(acos(z, precision)));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -3980,7 +4087,8 @@ public class ApcomplexMath
     public static Apcomplex chebyshevU(Apcomplex ν, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        Apint one = Apint.ONES[ν.radix()];
+        int radix = ν.radix();
+        Apint one = Apint.ONES[radix];
         if (ν.isZero() && z.isZero())
         {
             return one;
@@ -3992,11 +4100,15 @@ public class ApcomplexMath
         if (z.equals(one.negate()) && ν.isInteger())
         {
             Apcomplex result = one.add(ν);
-            boolean negate = (ν.real().truncate().mod(new Apint(2, ν.radix())).signum() != 0);
+            boolean negate = (ν.real().truncate().mod(new Apint(2, radix)).signum() != 0);
             return (negate ? result.negate() : result);
         }
-        long precision = Math.min(ν.precision(), z.precision());
-        return sin(ν.add(one).multiply(acos(z, precision))).multiply(inverseRoot(one.subtract(pow(z, 2)), 2));
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Math.min(ν.precision(), z.precision()), extraPrecision);
+        ν = ApfloatHelper.ensurePrecision(ν, precision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
+        Apcomplex result = sin(ν.add(one).multiply(acos(z, precision))).multiply(inverseRoot(one.subtract(pow(z, 2)), 2));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -4049,8 +4161,12 @@ public class ApcomplexMath
         {
             return gegenbauerC(ApfloatHelper.longValueExact(ν.real().truncate()), λ, z);
         }
-        long precision = Util.min(ν.precision(), λ.precision(), z.precision());
         int radix = ν.radix();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Util.min(ν.precision(), λ.precision(), z.precision()), extraPrecision);
+        ν = ApfloatHelper.ensurePrecision(ν, precision);
+        λ = ApfloatHelper.ensurePrecision(λ, precision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apfloat one = Apint.ONES[radix],
                 two = new Apfloat(2, precision, radix),
                 pi = ApfloatMath.pi(precision, radix);
@@ -4077,7 +4193,8 @@ public class ApcomplexMath
         {
             return result;
         }
-        return result.multiply(pow(two, λ12)).multiply(sqrt(pi)).multiply(hypergeometric2F1Regularized(ν.negate(), λ2ν, λhalf, z12));
+        result = result.multiply(pow(two, λ12)).multiply(sqrt(pi)).multiply(hypergeometric2F1Regularized(ν.negate(), λ2ν, λhalf, z12));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     private static Apcomplex gegenbauerC(long n, Apcomplex λ, Apcomplex z)
@@ -4144,15 +4261,21 @@ public class ApcomplexMath
         {
             return jacobiP(ApfloatHelper.longValueExact(ν.real().truncate()), a, b, z);
         }
-        long precision = Util.min(ν.precision(), a.precision(), b.precision(), z.precision());
         int radix = ν.radix();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Util.min(ν.precision(), a.precision(), b.precision(), z.precision()), extraPrecision);
+        ν = ApfloatHelper.ensurePrecision(ν, precision);
+        a = ApfloatHelper.ensurePrecision(a, precision);
+        b = ApfloatHelper.ensurePrecision(b, precision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apint one = Apint.ONES[radix],
               two = new Apint(2, radix);
         Apcomplex ν1 = ApfloatHelper.ensurePrecision(ν.add(one), precision),
                   abν1 = ApfloatHelper.ensurePrecision(a.add(b).add(ν).add(one), precision),
                   a1 = ApfloatHelper.ensurePrecision(a.add(one), precision),
-                  z12 = ApfloatHelper.ensurePrecision(one.subtract(z), precision).divide(two);
-        return pochhammer(ν1, a).multiply(hypergeometric2F1Regularized(ν.negate(), abν1, a1, z12));
+                  z12 = ApfloatHelper.ensurePrecision(one.subtract(z), precision).divide(two),
+                  result = pochhammer(ν1, a).multiply(hypergeometric2F1Regularized(ν.negate(), abν1, a1, z12));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     private static Apcomplex jacobiP(long n, Apcomplex a, Apcomplex b, Apcomplex z)
@@ -4379,7 +4502,8 @@ public class ApcomplexMath
         int radix = z.radix();
         Apint one = Apint.ONES[radix];
         Apfloat eulerGamma = ApfloatMath.euler(precision, radix);
-        return digamma(z.add(one)).add(eulerGamma);
+        Apcomplex z1 = ApfloatHelper.ensurePrecision(z.add(one), precision);
+        return digamma(z1).add(eulerGamma);
     }
 
     /**

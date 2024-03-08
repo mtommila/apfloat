@@ -80,9 +80,10 @@ class ZetaHelper
         }
         if (s.real().signum() < 0)
         {
-            s = ApfloatHelper.extendPrecision(s);
+            long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix);
+            s = ApfloatHelper.extendPrecision(s, extraPrecision);
             Apcomplex result = chi(s).multiply(zeta(one.subtract(s)));
-            return ApfloatHelper.reducePrecision(result);
+            return ApfloatHelper.reducePrecision(result, extraPrecision);
         }
         if (s.imag().signum() < 0)
         {

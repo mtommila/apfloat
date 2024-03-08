@@ -111,14 +111,17 @@ class HypergeometricHelper
                 digitLoss = workingPrecision;
                 workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
                 Apfloat offset = offset(-digitLoss);
-                a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset), a.imag());
+                if (!b.equals(offset))  // It might be that b is exactly the same as the offset so a - b is not integer after all (but would be if we did add the offset), we just need to increase the precisions
+                {
+                    a = new Apcomplex(a.real().precision(Apfloat.INFINITE).add(offset), a.imag());
+                }
                 b = new Apcomplex(adjustOffset(b.real(), offset), b.imag());
                 ensurePrecisions();
             }
             else
             {
                 Apint abRounded = RoundingHelper.roundToInteger(ab.real(), RoundingMode.HALF_EVEN).truncate();
-                digitLoss = -ab.subtract(abRounded).scale();
+                digitLoss = Math.min(workingPrecision, -ab.subtract(abRounded).scale());
                 if (digitLoss > 0)
                 {
                     workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
@@ -138,6 +141,9 @@ class HypergeometricHelper
             long digitLoss;
             if (cab.isInteger())
             {
+                Apcomplex aOrig = a,
+                          bOrig = b,
+                          cOrig = c;
                 // Adjust the one which has largest magnitude in real part
                 swapLargerAB();
                 digitLoss = workingPrecision;
@@ -155,11 +161,20 @@ class HypergeometricHelper
                 }
                 b = new Apcomplex(adjustOffset(b.real(), offset), b.imag());
                 ensurePrecisions();
+                if (c.subtract(a).subtract(b).isInteger())
+                {
+                    // It could be that a+b happened to be equal to the offset, to suitable precision, so we don't need to adjust by offset after all, we just need to increase the precision
+                    a = aOrig;
+                    b = bOrig;
+                    c = cOrig;
+                    ensurePrecisions();
+                    assert (!c.subtract(a).subtract(b).isInteger());
+                }
             }
             else
             {
                 Apint cabRounded = RoundingHelper.roundToInteger(cab.real(), RoundingMode.HALF_EVEN).truncate();
-                digitLoss = -cab.subtract(cabRounded).scale();
+                digitLoss = Math.min(workingPrecision, -cab.subtract(cabRounded).scale());
                 if (digitLoss > 0)
                 {
                     workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
@@ -411,12 +426,13 @@ class HypergeometricHelper
 
     private HypergeometricHelper(Apcomplex[] a, Apcomplex[] b, Apcomplex z)
     {
-        this.a = a;
-        this.b = b;
-        this.z = z;
-        this.targetPrecision = precision(a, b, z);
-        this.workingPrecision = targetPrecision;
         this.radix = z.radix();
+        this.extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix);
+        this.targetPrecision = ApfloatHelper.extendPrecision(precision(a, b, z), extraPrecision);
+        this.workingPrecision = targetPrecision;
+        this.a = Arrays.stream(a).map(c -> ApfloatHelper.extendPrecision(c, extraPrecision)).toArray(Apcomplex[]::new);
+        this.b = Arrays.stream(b).map(c -> ApfloatHelper.extendPrecision(c, extraPrecision)).toArray(Apcomplex[]::new);
+        this.z = ensurePrecision(z);
         this.one = Apint.ONES[radix];
         this.zero = Apint.ZEROS[radix];
     }
@@ -440,7 +456,8 @@ class HypergeometricHelper
 
     public static Apcomplex hypergeometricPFQ(Apcomplex[] a, Apcomplex[] b, Apcomplex z)
     {
-        return new HypergeometricHelper(a, b, z).hypergeometricPFQ();
+        HypergeometricHelper helper = new HypergeometricHelper(a, b, z);
+        return helper.result(helper.hypergeometricPFQ());
     }
 
     /**
@@ -464,7 +481,8 @@ class HypergeometricHelper
 
     public static Apcomplex hypergeometricPFQRegularized(Apcomplex[] a, Apcomplex[] b, Apcomplex z)
     {
-        return new HypergeometricHelper(a, b, z).hypergeometricPFQRegularized();
+        HypergeometricHelper helper = new HypergeometricHelper(a, b, z);
+        return helper.result(helper.hypergeometricPFQRegularized());
     }
 
     private Apcomplex hypergeometricPFQRegularized()
@@ -538,7 +556,8 @@ class HypergeometricHelper
 
     public static Apcomplex hypergeometricU(Apcomplex a, Apcomplex b, Apcomplex z, boolean fastOnly)
     {
-        return new HypergeometricHelper(new Apcomplex[] { a }, new Apcomplex[] { b }, z).hypergeometricU(fastOnly);
+        HypergeometricHelper helper = new HypergeometricHelper(new Apcomplex[] { a }, new Apcomplex[] { b }, z);
+        return helper.result(helper.hypergeometricU(fastOnly));
     }
 
     // In the general case (p = q + 1) this works only for |z| < 1, and in general, may converge slowly for very large |z|
@@ -594,11 +613,39 @@ class HypergeometricHelper
         if (abs(z).doubleValue() > targetPrecision * Math.log(radix))
         {
             // Evaluate with 1F1
-            Apcomplex sqrtZ = sqrt(z);
+            // https://functions.wolfram.com/HypergeometricFunctions/Hypergeometric0F1/27/01/
             Apint two = new Apint(2, radix),
                   four = new Apint(4, radix);
             Aprational half = new Aprational(one, two);
-            Apcomplex result = exp(two.negate().multiply(sqrtZ)).multiply(hypergeometric1F1(b.subtract(half), two.multiply(b).subtract(one), four.multiply(sqrtZ)));
+            Apcomplex b12 = ensurePrecision(b.subtract(half)),
+                      b21 = ensurePrecision(two.multiply(b).subtract(one)),
+                      result;
+            if (isNonPositiveInteger(b12))
+            {
+                // This transformation wouldn't work correctly if 0F1 is not polynomial, but 1F1 becomes polynomial (b12 is nonpositive integer)
+                // Note that if b is not a nonpositive integer (in which case 0F1 would also throw exception) then 2b-1 is not a nonpositive integer either so b21 is not a problem like b12
+                long digitLoss = workingPrecision;
+                workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + digitLoss);
+                Apfloat offset = offset(-digitLoss);
+                b = new Apcomplex(b.real().precision(Apfloat.INFINITE).add(offset), b.imag());
+                b = ensurePrecision(b);
+                z = ensurePrecision(z);
+                b12 = ensurePrecision(b.subtract(half));
+                b21 = ensurePrecision(two.multiply(b).subtract(one));
+            }
+            if (z.real().signum() >= 0)
+            {
+                // Use the formula for Bessel I and Bessel I as 1F1
+                Apcomplex sqrtZ = sqrt(z);
+                result = exp(two.negate().multiply(sqrtZ)).multiply(hypergeometric1F1(b12, b21, four.multiply(sqrtZ)));
+            }
+            else
+            {
+                // Use the formula for Bessel J and Bessel J as 1F1
+                Apcomplex i = new Apcomplex(zero, one),
+                          sqrtZ = sqrt(z.negate());
+                result = exp(two.negate().multiply(i).multiply(sqrtZ)).multiply(hypergeometric1F1(b12, b21, four.multiply(i).multiply(sqrtZ)));
+            }
             return ApfloatHelper.limitPrecision(result, targetPrecision);
         }
 
@@ -614,6 +661,7 @@ class HypergeometricHelper
             try
             {
                 // Evaluate with U*
+                // Note: this transformation works correctly if 1F1 is not polynomial but U* becomes polynomial (a or a-b+1 is nonpositive integer, or b-a or 1-a is nonpositive integer)
                 Apcomplex ba = ensurePrecision(b.subtract(a));
                 Apcomplex result = zero;
                 if (!isNonPositiveInteger(ba))
@@ -1010,7 +1058,13 @@ class HypergeometricHelper
         return ApfloatHelper.ensureGammaPrecision(z, workingPrecision);
     }
 
+    private Apcomplex result(Apcomplex z)
+    {
+        return (z == null ? z : ApfloatHelper.reducePrecision(z, extraPrecision));
+    }
+
     private long targetPrecision,
+                 extraPrecision,
                  workingPrecision;
     private int radix;
     private Apcomplex[] a,

@@ -3001,7 +3001,7 @@ public class ApfloatMathTest
         assertEquals("9,4 precision", 10, a.precision());
         assertEquals("9,4 value", new Apfloat("126.0000000"), a, new Apfloat("5e-7"));
 
-        a = ApfloatMath.binomial(new Apfloat("9.30000"), new Apfloat("4.20000"));
+        a = ApfloatMath.binomial(new Apfloat("9.300000"), new Apfloat("4.200000"));
         assertEquals("9.3,4.2 precision", 6, a.precision());
         assertEquals("9.3,4.2 value", new Apfloat("154.376"), a, new Apfloat("5e-3"));
 
@@ -3018,8 +3018,8 @@ public class ApfloatMathTest
         assertEquals("1,0 value", new Apfloat(1), a);
 
         a = ApfloatMath.binomial(new Apfloat("3.20000"), new Apfloat("4.00000"));
-        assertEquals("3.2,4 precision", 5, a.precision());
-        assertEquals("3.2,4 value", new Apfloat("0.070400"), a, new Apfloat("5e-6"));
+        assertEquals("3.2,4 precision", 6, a.precision());
+        assertEquals("3.2,4 value", new Apfloat("0.0704000"), a, new Apfloat("5e-7"));
 
         a = ApfloatMath.binomial(new Apfloat("7.20000"), new Apfloat("4.20000"));
         assertEquals("7.2,4.2 precision", 6, a.precision());
@@ -3449,7 +3449,7 @@ public class ApfloatMathTest
 
         a = ApfloatMath.hypergeometricU(new Apfloat("-1.0"), new Apfloat("-1.5"), new Apfloat("0"));
         assertEquals("-1, -1.5, 0 precision", 2, a.precision());
-        assertEquals("-1, -1.5, 0 value", new Apcomplex("1.5"), a);
+        assertEquals("-1, -1.5, 0 value", new Apcomplex("1.5"), a, new Apfloat("5e-1"));
 
         a = ApfloatMath.hypergeometricU(new Apfloat("1.0"), new Apfloat("-1.5"), new Apfloat("0"));
         assertEquals("1, -1.5, 0 precision", 2, a.precision());
@@ -3458,6 +3458,15 @@ public class ApfloatMathTest
         a = ApfloatMath.hypergeometricU(new Apfloat("1.0"), new Apfloat("0.50"), new Apfloat("0"));
         assertEquals("1, 0.5, 0 precision", 2, a.precision());
         assertEquals("1, 0.5, 0 value", new Apcomplex("2.0"), a, new Apfloat("5e-1"));
+
+        // Limit cases
+        a = ApfloatMath.hypergeometricU(new Apfloat("1.50000"), new Apfloat("-2.00000"), new Apfloat("0.100000"));
+        assertEquals("1.5, -2, 0.1 precision", 6, a.precision());
+        assertEquals("1.5, -2, 0.1 value", new Apfloat("0.160301"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat("1.50000"), new Apfloat("2.00000"), new Apfloat("0.100000"));
+        assertEquals("1.5, 2, 0.1 precision", 6, a.precision());
+        assertEquals("1.5, 2, 0.1 value", new Apfloat("9.96165"), a, new Apfloat("5e-5"));
 
         try
         {

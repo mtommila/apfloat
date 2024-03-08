@@ -2841,19 +2841,7 @@ public class ApfloatMath
     public static Apfloat binomial(Apfloat n, Apfloat k)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (n.isInteger() && k.isInteger())
-        {
-            return ApintMath.binomial(n.truncate(), k.truncate()).precision(Math.min(n.precision(), k.precision()));
-        }
-        Apfloat nk = n.subtract(k);
-        if (k.isInteger() && k.signum() < 0 ||
-            nk.isInteger() && nk.signum() < 0)
-        {
-            // The divisor is infinity (but the dividend isn't) so we get zero
-            return Apcomplex.ZEROS[n.radix()];
-        }
-        Apint one = Apint.ONES[n.radix()];
-        return gamma(n.add(one)).divide(gamma(k.add(one)).multiply(gamma(nk.add(one))));
+        return ApcomplexMath.binomial(n, k).real();
     }
 
     /**

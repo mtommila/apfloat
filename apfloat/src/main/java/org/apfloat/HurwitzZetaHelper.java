@@ -61,15 +61,20 @@ class HurwitzZetaHelper
             if (s.real().signum() < 0 || s.isZero())
             {
                 // Use recurrence formula: zeta(s, a) = a^-s + zeta(s, a + 1)
-                Apcomplex t = Apcomplex.ZERO;
+                long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+                     extendedPrecision = ApfloatHelper.extendPrecision(precision, extraPrecision);
+                a = ApfloatHelper.ensurePrecision(a, extendedPrecision);
+                Apcomplex t = Apcomplex.ZERO,
+                          sn = ApfloatHelper.ensurePrecision(s.negate(), extendedPrecision);
                 long i = ApfloatHelper.longValueExact(a.real().truncate());
                 while (i++ <= 0)
                 {
-                    t = t.add(ApcomplexMath.pow(a, s.negate()));
+                    t = t.add(ApcomplexMath.pow(a, sn));
                     a = a.add(one);
                 }
+                t = ApfloatHelper.reducePrecision(t, extraPrecision);
                 a = a.precision(precision);
-                return t.add(zeta(s, a).precision(precision));  // Precision is not correct as S, I and T cancel out each other
+                return t.add(ApfloatHelper.ensurePrecision(zeta(s, a), precision)); // Precision is not correct as S, I and T cancel out each other
             }
 
             throw new ArithmeticException("Zeta of second argument nonpositive integer");

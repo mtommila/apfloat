@@ -205,7 +205,7 @@ public class CalculatorTest
         assertCalculation("3.55114", "beta(0.200000,4.00000)");
         assertCalculation("3.00545", "beta(0.100000,0.200000,4.00000)");
         assertCalculation("-1.02994", "beta(0.100000,2.90000,0.200000,4.00000)");
-        assertCalculation("1.5057e2", "binomial(9.2000,4.6000)");
+        assertCalculation("1.5057e2", "binomial(9.20000,4.60000)");
         assertCalculation("2.3282", "binomial(4,3.5000)");
         assertCalculation("6.5625", "binomial(4.5000,3)");
         assertCalculation("45", "binomial(10,2)");
@@ -263,7 +263,7 @@ public class CalculatorTest
         assertCalculation("2.6328", "hypergeometric0F1Regularized(-3.00000,2.50000)");
         assertCalculation("-7.477+3.738i", "hypergeometric1F1(3.456+2.890i,3.456+2.890i,2.1234+2.678i)");
         assertCalculation("1.2856", "hypergeometric1F1Regularized(0.200000,-3,1.50000)");
-        assertCalculation("-1.478-2.074i", "hypergeometric2F1(9.456+4.890i,3.456+2.890i,1.256+1.390i,0.11234+0.1678i)");
+        assertCalculation("-1.477-2.073i", "hypergeometric2F1(9.456+4.890i,3.456+2.890i,1.256+1.390i,0.11234+0.1678i)");
         assertCalculation("4.8317", "hypergeometric2F1Regularized(0.100000,0.200000,-3,0.800000)");
         assertCalculation("4.99704", "hypergeometricU(1.20000,2,0.200000)");
         assertCalculation("2", "fmod(5, 3)");

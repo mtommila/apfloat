@@ -29,17 +29,19 @@ import java.util.function.BiFunction;
 import org.apfloat.spi.Util;
 
 import static org.apfloat.ApcomplexMath.cos;
+import static org.apfloat.ApcomplexMath.exp;
 import static org.apfloat.ApcomplexMath.hypergeometric0F1Regularized;
 import static org.apfloat.ApcomplexMath.pow;
 import static org.apfloat.ApcomplexMath.sin;
 import static org.apfloat.ApfloatMath.pi;
 import static org.apfloat.ApfloatMath.scale;
+import static org.apfloat.ApfloatMath.sqrt;
 
 /**
  * Helper class for Bessel functions.
  *
  * @since 1.13.0
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -59,24 +61,24 @@ class BesselHelper
 
     private BesselHelper(Apcomplex ν, Apcomplex z)
     {
-        this.ν = ν;
-        this.z = z;
-        this.targetPrecision = Math.min(ν.precision(), z.precision());
-        this.workingPrecision = targetPrecision;
         this.radix = z.radix();
+        this.targetPrecision = Math.min(ν.precision(), z.precision());
+        this.workingPrecision = ApfloatHelper.extendPrecision(targetPrecision, ApfloatHelper.getSmallExtraPrecision(radix));
+        this.ν = ensurePrecision(ν);
+        this.z = ensurePrecision(z);
         this.two = new Apint(2, radix);
     }
 
     public static Apcomplex besselJ(Apcomplex ν, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return new BesselHelper(ν, z).besselJ(ν);
+        return new BesselHelper(ν, z).besselJ();
     }
 
     public static Apcomplex besselI(Apcomplex ν, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        return new BesselHelper(ν, z).besselI(ν);
+        return new BesselHelper(ν, z).besselI();
     }
 
     public static Apcomplex besselY(Apcomplex ν, Apcomplex z)
@@ -89,6 +91,20 @@ class BesselHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return new BesselHelper(ν, z).besselK();
+    }
+
+    private Apcomplex besselJ()
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apcomplex result = besselJ(ν);
+        return ApfloatHelper.reducePrecision(result, ApfloatHelper.getSmallExtraPrecision(radix));
+    }
+
+    private Apcomplex besselI()
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apcomplex result = besselI(ν);
+        return ApfloatHelper.reducePrecision(result, ApfloatHelper.getSmallExtraPrecision(radix));
     }
 
     private Apcomplex besselJ(Apcomplex ν)
@@ -138,6 +154,19 @@ class BesselHelper
         {
             throw new ArithmeticException("Bessel K of zero");
         }
+        Apint one = Apint.ONES[radix];
+        Apfloat half = one.precision(workingPrecision).divide(two);
+        Apcomplex ν12 = ensurePrecision(ν.add(half)),
+                  ν21 = ensurePrecision(two.multiply(ν).add(one)),
+                  z2 = two.multiply(z),
+                  u = HypergeometricHelper.hypergeometricU(ν12, ν21, z2, true);
+        if (u != null)
+        {
+            Apfloat pi = pi(workingPrecision, radix);
+            Apcomplex result = sqrt(pi).multiply(pow(z2, ν)).multiply(exp(z.negate())).multiply(u);
+            return ApfloatHelper.limitPrecision(result, targetPrecision);
+        }
+
         return besselSecondKind((ν, z) ->
         {
             Apfloat pi = pi(workingPrecision, radix);
