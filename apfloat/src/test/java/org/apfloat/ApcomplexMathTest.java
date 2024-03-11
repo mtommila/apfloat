@@ -5005,9 +5005,13 @@ public class ApcomplexMathTest
 
     public static void testEllipticE()
     {
-        Apcomplex a = ApcomplexMath.ellipticE(new Apcomplex("(3.000000,4.000000)"));
+        Apcomplex a = ApcomplexMath.ellipticE(new Apcomplex("(3.00000,4.00000)"));
         assertEquals("3 + 4i precision", 6, a.precision());
         assertEquals("3 + 4i value", new Apcomplex("(1.49955,-1.57788)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.ellipticE(new Apcomplex("(55,66)").precision(80));
+        assertEquals("55 + 66i precision", 80, a.precision());
+        assertEquals("55 + 66i value", new Apcomplex("(4.0811432805851427433792385864776680345716395379587937142840046535853583006891006,-8.2188557700657038428087644147741544808312164555261128756030008732791464871734558)"), a, new Apfloat("5e-79"));
 
         a = ApcomplexMath.ellipticE(new Apcomplex("1.00000"));
         assertEquals("1 precision", 6, a.precision());

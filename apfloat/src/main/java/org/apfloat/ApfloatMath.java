@@ -37,6 +37,7 @@ import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apfloat.spi.Util;
@@ -849,6 +850,12 @@ public class ApfloatMath
     public static Apfloat agm(Apfloat a, Apfloat b)
         throws ApfloatRuntimeException
     {
+        return agm(a, b, null);
+    }
+
+    static Apfloat agm(Apfloat a, Apfloat b, Consumer<Apfloat> consumer)
+        throws ApfloatRuntimeException
+    {
         if (a.signum() == 0 || b.signum() == 0)         // Would not converge quadratically
         {
             return Apfloat.ZEROS[a.radix()];
@@ -887,7 +894,14 @@ public class ApfloatMath
         long precision = 0,
              halfWorkingPrecision = (workingPrecision + 1) / 2;
         final long CONVERGING = 1000;           // Arbitrarily chosen value...
-        Apfloat two = new Apfloat(2, Apfloat.INFINITE, a.radix());
+        Apfloat two = new Apfloat(2, Apfloat.INFINITE, a.radix()),
+                c2 = null;
+
+        if (consumer != null)
+        {
+            c2 = ApfloatHelper.ensurePrecision(a.multiply(a).subtract(b.multiply(b)), workingPrecision);
+            consumer.accept(c2);
+        }
 
         // First check convergence
         while (precision < CONVERGING && precision < halfWorkingPrecision)
@@ -901,6 +915,8 @@ public class ApfloatMath
             b = ApfloatHelper.ensurePrecision(b, workingPrecision);
 
             precision = a.equalDigits(b);
+
+            c2 = agmConsume(consumer, a, c2, workingPrecision);
         }
 
         // Now we know quadratic convergence
@@ -915,10 +931,25 @@ public class ApfloatMath
             b = ApfloatHelper.ensurePrecision(b, workingPrecision);
 
             precision *= 2;
+
+            c2 = agmConsume(consumer, a, c2, workingPrecision);
         }
 
         Apfloat result = a.add(b).divide(two).precision(targetPrecision);
+        agmConsume(consumer, result, c2, workingPrecision);
         return (negate ? result.negate() : result);
+    }
+
+    private static Apfloat agmConsume(Consumer<Apfloat> consumer, Apfloat a, Apfloat c2, long workingPrecision)
+    {
+        if (consumer != null)
+        {
+            Apfloat four = new Apfloat(4, Apfloat.INFINITE, a.radix()),
+                    c = ApfloatHelper.ensurePrecision(c2.divide(four.multiply(a)), workingPrecision);
+            c2 = ApfloatHelper.ensurePrecision(c.multiply(c), workingPrecision);
+            consumer.accept(c2);
+        }
+        return c2;
     }
 
     /**
@@ -3725,6 +3756,60 @@ public class ApfloatMath
 
     /**
      * Complete elliptic integral of the first kind.<p>
+     * 
+     * Note that this function uses the definition:
+     *   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *     <mrow>
+     *       <mrow>
+     *         <mrow>
+     *           <mi>K</mi>
+     *           <mo>(</mo>
+     *           <mi>x</mi>
+     *           <mo>)</mo>
+     *         </mrow>
+     *         <mo>&#10869;</mo>
+     *         <mrow>
+     *           <msubsup>
+     *             <mo>&#8747;</mo>
+     *             <mn>0</mn>
+     *             <mfrac>
+     *               <mi>&#960;</mi>
+     *               <mn>2</mn>
+     *             </mfrac>
+     *           </msubsup>
+     *           <mrow>
+     *             <mfrac>
+     *               <mn>1</mn>
+     *               <msqrt>
+     *                 <mrow>
+     *                   <mn>1</mn>
+     *                   <mo>-</mo>
+     *                   <mrow>
+     *                     <mi>x</mi>
+     *                     <mo>&#8290;</mo>
+     *                     <mrow>
+     *                       <msup>
+     *                         <mi>sin</mi>
+     *                         <mn>2</mn>
+     *                       </msup>
+     *                       <mo>(</mo>
+     *                       <mi>t</mi>
+     *                       <mo>)</mo>
+     *                     </mrow>
+     *                   </mrow>
+     *                 </mrow>
+     *               </msqrt>
+     *             </mfrac>
+     *             <mo>&#8290;</mo>
+     *             <mrow>
+     *               <mo>&#8518;</mo>
+     *               <mi>t</mi>
+     *             </mrow>
+     *           </mrow>
+     *         </mrow>
+     *       </mrow>
+     *     </mrow>
+     *   </math>
      *
      * @param x The argument.
      *
@@ -3755,10 +3840,56 @@ public class ApfloatMath
     /**
      * Complete elliptic integral of the second kind.<p>
      *
-     * @implNote
-     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
-     * It is impractically slow beyond a precision of a few thousand digits. At the time of
-     * implementation no generic fast algorithm is known for the function.
+     * Note that this function uses the definition:
+     *   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *     <mrow>
+     *       <mrow>
+     *         <mrow>
+     *           <mi>E</mi>
+     *           <mo>(</mo>
+     *           <mi>x</mi>
+     *           <mo>)</mo>
+     *         </mrow>
+     *         <mo>&#10869;</mo>
+     *         <mrow>
+     *           <msubsup>
+     *             <mo>&#8747;</mo>
+     *             <mn>0</mn>
+     *             <mfrac>
+     *               <mi>&#960;</mi>
+     *               <mn>2</mn>
+     *             </mfrac>
+     *           </msubsup>
+     *           <mrow>
+     *             <msqrt>
+     *               <mrow>
+     *                 <mn>1</mn>
+     *                 <mo>-</mo>
+     *                 <mrow>
+     *                   <mi>x</mi>
+     *                   <mo>&#8290;</mo>
+     *                   <mrow>
+     *                     <msup>
+     *                       <mi>sin</mi>
+     *                       <mn>2</mn>
+     *                     </msup>
+     *                     <mo>(</mo>
+     *                     <mi>t</mi>
+     *                     <mo>)</mo>
+     *                   </mrow>
+     *                 </mrow>
+     *               </mrow>
+     *             </msqrt>
+     *             <mo>&#8290;</mo>
+     *             <mrow>
+     *               <mo>&#8518;</mo>
+     *               <mi>t</mi>
+     *             </mrow>
+     *           </mrow>
+     *         </mrow>
+     *       </mrow>
+     *     </mrow>
+     *   </math>
      *
      * @param x The argument.
      *

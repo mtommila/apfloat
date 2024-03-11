@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Queue;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.PriorityQueue;
 
@@ -657,6 +658,12 @@ public class ApcomplexMath
     public static Apcomplex agm(Apcomplex a, Apcomplex b)
         throws ApfloatRuntimeException
     {
+        return agm(a, b, null);
+    }
+
+    static Apcomplex agm(Apcomplex a, Apcomplex b, Consumer<Apcomplex> consumer)
+        throws ApfloatRuntimeException
+    {
         if (a.isZero() || b.isZero())       // Would not converge quadratically
         {
             return Apcomplex.ZEROS[a.radix()];
@@ -666,7 +673,7 @@ public class ApcomplexMath
             a.imag().signum() == 0 &&
             b.imag().signum() == 0)
         {
-            return ApfloatMath.agm(a.real(), b.real());
+            return ApfloatMath.agm(a.real(), b.real(), consumer == null ? null : consumer::accept);
         }
 
         if (a.equals(b))                                              // Thanks to Marko Gaspersic for finding several bugs in issue #12
@@ -696,6 +703,13 @@ public class ApcomplexMath
              halfWorkingPrecision = (workingPrecision + 1) / 2;
         final long CONVERGING = 1000;           // Arbitrarily chosen value...
         Apfloat two = new Apfloat(2, Apfloat.INFINITE, a.radix());
+        Apcomplex c2 = null;
+
+        if (consumer != null)
+        {
+            c2 = ApfloatHelper.ensurePrecision(a.multiply(a).subtract(b.multiply(b)), workingPrecision);
+            consumer.accept(c2);
+        }
 
         // First check convergence
         while (precision < CONVERGING && precision < halfWorkingPrecision)
@@ -709,6 +723,8 @@ public class ApcomplexMath
             b = ApfloatHelper.ensurePrecision(b, workingPrecision);
 
             precision = a.equalDigits(b);
+
+            c2 = agmConsume(consumer, a, c2, workingPrecision);
         }
 
         // Now we know quadratic convergence
@@ -723,9 +739,13 @@ public class ApcomplexMath
             b = ApfloatHelper.ensurePrecision(b, workingPrecision);
 
             precision *= 2;
+
+            c2 = agmConsume(consumer, a, c2, workingPrecision);
         }
 
-        return ApfloatHelper.setPrecision(a.add(b).divide(two), targetPrecision);
+        Apcomplex result = a.add(b).divide(two);
+        agmConsume(consumer, result, c2, workingPrecision);
+        return ApfloatHelper.setPrecision(result, targetPrecision);
     }
 
     private static Apcomplex limitPrecision(Apcomplex z)
@@ -756,6 +776,18 @@ public class ApcomplexMath
             result = result.negate();
         }
         return result;
+    }
+
+    private static Apcomplex agmConsume(Consumer<Apcomplex> consumer, Apcomplex a, Apcomplex c2, long workingPrecision)
+    {
+        if (consumer != null)
+        {
+            Apfloat four = new Apfloat(4, Apfloat.INFINITE, a.radix());
+            Apcomplex c = ApfloatHelper.ensurePrecision(c2.divide(four.multiply(a)), workingPrecision);
+            c2 = ApfloatHelper.ensurePrecision(c.multiply(c), workingPrecision);
+            consumer.accept(c2);
+        }
+        return c2;
     }
 
     /**
@@ -3595,6 +3627,60 @@ public class ApcomplexMath
 
     /**
      * Complete elliptic integral of the first kind.<p>
+     * 
+     * Note that this function uses the definition:
+     *   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *     <mrow>
+     *       <mrow>
+     *         <mrow>
+     *           <mi>K</mi>
+     *           <mo>(</mo>
+     *           <mi>z</mi>
+     *           <mo>)</mo>
+     *         </mrow>
+     *         <mo>&#10869;</mo>
+     *         <mrow>
+     *           <msubsup>
+     *             <mo>&#8747;</mo>
+     *             <mn>0</mn>
+     *             <mfrac>
+     *               <mi>&#960;</mi>
+     *               <mn>2</mn>
+     *             </mfrac>
+     *           </msubsup>
+     *           <mrow>
+     *             <mfrac>
+     *               <mn>1</mn>
+     *               <msqrt>
+     *                 <mrow>
+     *                   <mn>1</mn>
+     *                   <mo>-</mo>
+     *                   <mrow>
+     *                     <mi>z</mi>
+     *                     <mo>&#8290;</mo>
+     *                     <mrow>
+     *                       <msup>
+     *                         <mi>sin</mi>
+     *                         <mn>2</mn>
+     *                       </msup>
+     *                       <mo>(</mo>
+     *                       <mi>t</mi>
+     *                       <mo>)</mo>
+     *                     </mrow>
+     *                   </mrow>
+     *                 </mrow>
+     *               </msqrt>
+     *             </mfrac>
+     *             <mo>&#8290;</mo>
+     *             <mrow>
+     *               <mo>&#8518;</mo>
+     *               <mi>t</mi>
+     *             </mrow>
+     *           </mrow>
+     *         </mrow>
+     *       </mrow>
+     *     </mrow>
+     *   </math>
      *
      * @param z The argument.
      *
@@ -3615,6 +3701,12 @@ public class ApcomplexMath
     static Apcomplex ellipticK(Apcomplex z, long precision)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        return ellipticK(z, precision, null);
+    }
+
+    static Apcomplex ellipticK(Apcomplex z, long precision, Consumer<Apcomplex> consumer)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
         int radix = z.radix();
         long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix);
         precision = ApfloatHelper.extendPrecision(precision, extraPrecision);
@@ -3622,18 +3714,64 @@ public class ApcomplexMath
         Apfloat one = Apint.ONES[radix],
                 two = new Apfloat(2, precision, radix),
                 pi = ApfloatMath.pi(precision, radix);
-        Apcomplex result = pi.divide(two.multiply(agm(one, sqrt(ApfloatHelper.ensurePrecision(one.subtract(z), precision)))));
+        Apcomplex result = pi.divide(two.multiply(agm(one, sqrt(ApfloatHelper.ensurePrecision(one.subtract(z), precision)), consumer)));
         return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
      * Complete elliptic integral of the second kind.<p>
      *
-     * @implNote
-     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
-     * It is impractically slow beyond a precision of a few thousand digits. At the time of
-     * implementation no generic fast algorithm is known for the function.
-     *
+     * Note that this function uses the definition:
+     *   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *     <mrow>
+     *       <mrow>
+     *         <mrow>
+     *           <mi>E</mi>
+     *           <mo>(</mo>
+     *           <mi>z</mi>
+     *           <mo>)</mo>
+     *         </mrow>
+     *         <mo>&#10869;</mo>
+     *         <mrow>
+     *           <msubsup>
+     *             <mo>&#8747;</mo>
+     *             <mn>0</mn>
+     *             <mfrac>
+     *               <mi>&#960;</mi>
+     *               <mn>2</mn>
+     *             </mfrac>
+     *           </msubsup>
+     *           <mrow>
+     *             <msqrt>
+     *               <mrow>
+     *                 <mn>1</mn>
+     *                 <mo>-</mo>
+     *                 <mrow>
+     *                   <mi>z</mi>
+     *                   <mo>&#8290;</mo>
+     *                   <mrow>
+     *                     <msup>
+     *                       <mi>sin</mi>
+     *                       <mn>2</mn>
+     *                     </msup>
+     *                     <mo>(</mo>
+     *                     <mi>t</mi>
+     *                     <mo>)</mo>
+     *                   </mrow>
+     *                 </mrow>
+     *               </mrow>
+     *             </msqrt>
+     *             <mo>&#8290;</mo>
+     *             <mrow>
+     *               <mo>&#8518;</mo>
+     *               <mi>t</mi>
+     *             </mrow>
+     *           </mrow>
+     *         </mrow>
+     *       </mrow>
+     *     </mrow>
+     *   </math>
+     * 
      * @param z The argument.
      *
      * @return <i>E(z)</i>
@@ -3653,14 +3791,20 @@ public class ApcomplexMath
         throws ApfloatRuntimeException
     {
         int radix = z.radix();
+        Apint zero = Apint.ZEROS[radix],
+              one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        if (z.equals(one))
+        {
+            return z;
+        }
         long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix);
         precision = ApfloatHelper.extendPrecision(precision, extraPrecision);
         z = ApfloatHelper.ensurePrecision(z, precision);
-        Apfloat one = Apint.ONES[radix].precision(precision),
-                two = new Apfloat(2, precision, radix),
-                pi = ApfloatMath.pi(precision, radix),
-                half = one.divide(two);
-        Apcomplex result = pi.divide(two).multiply(hypergeometric2F1(half.negate(), half, one, z));
+        Apcomplex[] sum = new Apcomplex[] { zero };
+        Aprational[] p2 = new Aprational[1];
+        Apcomplex k = ellipticK(z, precision, c2 -> sum[0] = sum[0].add((p2[0] = (p2[0] == null ? new Aprational(one, two) : p2[0].multiply(two))).multiply(c2))),
+                  result = one.subtract(sum[0]).multiply(k);
         return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
