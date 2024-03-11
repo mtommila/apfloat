@@ -617,9 +617,7 @@ class HypergeometricHelper
             Apint two = new Apint(2, radix),
                   four = new Apint(4, radix);
             Aprational half = new Aprational(one, two);
-            Apcomplex b12 = ensurePrecision(b.subtract(half)),
-                      b21 = ensurePrecision(two.multiply(b).subtract(one)),
-                      result;
+            Apcomplex b12 = ensurePrecision(b.subtract(half));
             if (isNonPositiveInteger(b12))
             {
                 // This transformation wouldn't work correctly if 0F1 is not polynomial, but 1F1 becomes polynomial (b12 is nonpositive integer)
@@ -631,8 +629,9 @@ class HypergeometricHelper
                 b = ensurePrecision(b);
                 z = ensurePrecision(z);
                 b12 = ensurePrecision(b.subtract(half));
-                b21 = ensurePrecision(two.multiply(b).subtract(one));
             }
+            Apcomplex b21 = ensurePrecision(two.multiply(b).subtract(one)),
+                      result;
             if (z.real().signum() >= 0)
             {
                 // Use the formula for Bessel I and Bessel I as 1F1

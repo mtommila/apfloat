@@ -6028,11 +6028,13 @@ public class ApcomplexMathTest
         Apcomplex a = ApcomplexMath.polylog(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
         assertEquals("3 + 4i, 5 + 6i precision", 6, a.precision());
         assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(27.2502,30.5992)"), a, new Apfloat("5e-4"));
-/*
+
+        /* Very slow
         a = ApcomplexMath.polylog(new Apcomplex("(333.00000,444.00000)"), new Apcomplex("(555.00000,666.00000)"));
         assertEquals("333 + 444i, 555 + 666i precision", 6, a.precision());
         assertEquals("333 + 444i, 555 + 666i value", new Apcomplex("(555.000,666.000)"), a, new Apfloat("5e-3"));
-*/
+        */
+
         a = ApcomplexMath.polylog(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("2.00000"));
         assertEquals("3 + 4i, 2 precision", 6, a.precision());
         assertEquals("3 + 4i, 2 value", new Apcomplex("(1.64436,0.0209666)"), a, new Apfloat("5e-5"));
@@ -6056,6 +6058,10 @@ public class ApcomplexMathTest
         a = ApcomplexMath.polylog(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("0"));
         assertEquals("3 + 4i, 0 precision", Apfloat.INFINITE, a.precision());
         assertEquals("3 + 4i, 0 value", new Apcomplex("0"), a);
+
+        a = ApcomplexMath.polylog(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("-0.500000"));
+        assertEquals("3 + 4i, -0.5 precision", 6, a.precision());
+        assertEquals("3 + 4i, -0.5 value", new Apcomplex("(-0.527181,-0.0150122)"), a, new Apfloat("5e-6"));
 
         try
         {
