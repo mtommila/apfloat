@@ -4718,6 +4718,33 @@ public class ApcomplexMath
         Apint zero = Apint.ZEROS[radix],
               one = Apint.ONES[radix],
               two = new Apint(2, radix);
+        if (z.equals(one) && ν.real().compareTo(one) <= 0)
+        {
+            throw new ArithmeticException("Polylogarithm is infinite");
+        }
+        if (ν.isInteger() && ν.real().signum() > 0)
+        {
+            // Avoid gamma of nonpositive integer
+            ν = ν.precision(Apfloat.INFINITE).add(scale(new Apfloat("0.1", precision, radix), -precision));
+            precision = Util.ifFinite(precision, precision + precision);
+        }
+        else if (ν.real().signum() > 0)
+        {
+            Apint νRounded = RoundingHelper.roundToInteger(ν.real(), RoundingMode.HALF_EVEN).truncate();
+            long digitLoss = Math.min(precision, -ν.subtract(νRounded).scale());
+            if (digitLoss > 0)
+            {
+                precision = Util.ifFinite(precision, precision + digitLoss);
+            }
+        }
+        ν = ApfloatHelper.ensurePrecision(ν, precision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
+        if (ν.isZero())
+        {
+            // Avoid zeta of one
+            Apcomplex z1 = ApfloatHelper.ensurePrecision(one.subtract(z), precision);
+            return ApfloatHelper.limitPrecision(z.divide(z1), targetPrecision);
+        }
         Apfloat pi = ApfloatMath.pi(precision, radix);
         boolean unitLine = (z.imag().signum() == 0 && z.real().signum() > 0 && z.real().compareTo(one) < 0);
         Apcomplex i = new Apcomplex(zero, one),

@@ -4656,6 +4656,10 @@ public class ApfloatMathTest
         assertEquals("3.4, -5.6 precision", 6, a.precision());
         assertEquals("3.4, -5.6 value", new Apfloat("-4.15566"), a, new Apfloat("5e-5"));
 
+        a = ApfloatMath.polylog(new Apfloat("2.00000"), new Apfloat("-3.40000"));
+        assertEquals("2, -3.4 precision", 6, a.precision());
+        assertEquals("2, -3.4 value", new Apfloat("-2.11882"), a, new Apfloat("5e-5"));
+
         try
         {
             ApfloatMath.polylog(new Apfloat("3.40000"), new Apfloat("5.60000"));

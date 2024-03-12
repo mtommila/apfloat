@@ -6067,6 +6067,35 @@ public class ApcomplexMathTest
         assertEquals("3 + 4i, -0.5 precision", 6, a.precision());
         assertEquals("3 + 4i, -0.5 value", new Apcomplex("(-0.527181,-0.0150122)"), a, new Apfloat("5e-6"));
 
+        a = ApcomplexMath.polylog(new Apcomplex("4.000000"), new Apcomplex("(5.000000,6.000000)"));
+        assertEquals("4, 5 + 6i precision", 6, a.precision());
+        assertEquals("4, 5 + 6i value", new Apcomplex("(2.35058,7.05471)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.polylog(new Apcomplex("1.00000"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("1, 5 + 6i precision", 6, a.precision());
+        assertEquals("1, 5 + 6i value", new Apcomplex("(-1.97562,2.15880)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.polylog(new Apcomplex("0"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("0, 5 + 6i precision", 6, a.precision());
+        assertEquals("0, 5 + 6i value", new Apcomplex("(-1.07692,0.115385)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.polylog(new Apcomplex("4.00001"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("4.00001, 5 + 6i precision", 6, a.precision());
+        assertEquals("4.00001, 5 + 6i value", new Apcomplex("(2.35059,7.05471)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.polylog(new Apcomplex("2.000000000000000"), new Apcomplex("(9.993319736282411e-1,3.654595031305655e-2)"));
+        assertEquals("2, 9.993319736282411e-1 + 3.654595031305655e-2i precision", 16, a.precision());
+        assertEquals("2, 9.993319736282411e-1 + 3.654595031305655e-2i value", new Apcomplex("(1.587849086339557,0.1575108716027421)"), a, new Apfloat("5e-15"));
+
+        try
+        {
+            ApcomplexMath.polylog(new Apcomplex("(1.00000,4.00000)"), new Apcomplex("1.00000"));
+            fail("1 + 4i, 1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
         try
         {
             ApcomplexMath.polylog(new Apcomplex("(-3.00000,4.00000)"), new Apcomplex("1.00000"));
