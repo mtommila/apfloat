@@ -55,29 +55,42 @@ class HurwitzZetaHelper
             Apint two = new Apint(2, radix);
             return new Aprational(one, two);
         }
-        long precision = Math.min(s.precision(),  a.precision());
+        Apcomplex sOrig = s;
+        long targetPrecision = Math.min(s.precision(),  a.precision()),
+             precision = ApfloatHelper.extendPrecision(targetPrecision);
+        s = ApfloatHelper.ensurePrecision(s, precision);
+        a = ApfloatHelper.ensurePrecision(a, precision);
         if (isNonPositiveInteger(a))
         {
             if (s.real().signum() < 0 || s.isZero())
             {
                 // Use recurrence formula: zeta(s, a) = a^-s + zeta(s, a + 1)
-                long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
-                     extendedPrecision = ApfloatHelper.extendPrecision(precision, extraPrecision);
-                a = ApfloatHelper.ensurePrecision(a, extendedPrecision);
                 Apcomplex t = Apcomplex.ZERO,
-                          sn = ApfloatHelper.ensurePrecision(s.negate(), extendedPrecision);
+                          sn = s.negate();
                 long i = ApfloatHelper.longValueExact(a.real().truncate());
                 while (i++ <= 0)
                 {
                     t = t.add(ApcomplexMath.pow(a, sn));
                     a = a.add(one);
                 }
-                t = ApfloatHelper.reducePrecision(t, extraPrecision);
-                a = a.precision(precision);
-                return t.add(ApfloatHelper.ensurePrecision(zeta(s, a), precision)); // Precision is not correct as S, I and T cancel out each other
+                t = ApfloatHelper.reducePrecision(t);
+                s = sOrig;
+                a = a.precision(targetPrecision);
+                Apcomplex z = zeta(s, a);
+                if (t.isZero())
+                {
+                    return z;
+                }
+                return t.add(ApfloatHelper.ensurePrecision(z, precision));
             }
 
             throw new ArithmeticException("Zeta of second argument nonpositive integer");
+        }
+        if (isNonPositiveInteger(s))
+        {
+            // Handle cases where the result might be genuinely zero
+            long n1 = ApfloatHelper.longValueExact(one.subtract(s.real().truncate()));
+            return bernoulliB(n1, a).divide(new Apint(n1, radix)).negate();
         }
         if (precision == Apfloat.INFINITE)
         {
@@ -89,15 +102,28 @@ class HurwitzZetaHelper
         // Far in the critical strip N should be larger than M for better efficiency
         // Note that the search is for the absolute size of the error term, not the relative error (relative to the value of the zeta function being evaluated)
         // Thus we would first need some guess for the scale of the value of the Hurwitz zeta function, to have a goal for the size of the error term
-        long zetaScale = Math.min(0, zetaScale(s.precision(doublePrecision), a.precision(doublePrecision)));
-        Apint N = binarySearch(ApfloatHelper.limitPrecision(s, doublePrecision), ApfloatHelper.limitPrecision(a, doublePrecision), precision, -Util.ifFinite(-zetaScale, precision - zetaScale)),
-              M = N;
-        s = ApfloatHelper.extendPrecision(s);
-        a = ApfloatHelper.extendPrecision(a);
-        Apcomplex I = I(s, a, N),
-                  S = S(s, a, N.longValueExact()),
-                  T = T(s, a, N, M.longValueExact());
-        return ApfloatHelper.reducePrecision(S.add(I).add(T));
+        long zetaScale = Math.min(0, zetaScale(s.precision(doublePrecision), a.precision(doublePrecision))),
+             targetScale = -Util.ifFinite(-zetaScale, targetPrecision - zetaScale),
+             precisionLoss;
+        Apcomplex result;
+        do
+        {
+            Apint N = binarySearch(s, a, targetPrecision, targetScale), // s could be a nonpositive near-integer so easier not to round it to avoid getting a zero from the Pochammer symbol
+                  M = N;
+            Apcomplex I = I(s, a, N),
+                      S = S(s, a, N.longValueExact()),
+                      T = T(s, a, N, M.longValueExact());
+            result = S.add(I).add(T);
+            precisionLoss = (result.isZero() ? precision : targetPrecision - result.precision());   // Assumed that the result can't be exactly zero because those are handled by the polynomial case above (the real zeros)
+            if (precisionLoss > 0)
+            {
+                precision = Util.ifFinite(precision, precision + precisionLoss);
+                targetScale = -Util.ifFinite(-targetScale, -targetScale + precisionLoss);
+                s = ApfloatHelper.ensurePrecision(s, precision);
+                a = ApfloatHelper.ensurePrecision(a, precision);
+            }
+        } while (precisionLoss > 0);
+        return ApfloatHelper.limitPrecision(result, targetPrecision);
     }
 
     private static long zetaScale(Apcomplex s, Apcomplex a)
@@ -241,5 +267,29 @@ class HurwitzZetaHelper
     {
         // Increase the precision to avoid loss of precision exception
         return ApfloatHelper.extendPrecision(x, Math.max(0, x.scale()));
+    }
+
+    // Bernoulli polynomial, calculated as a polynomial
+    // z assumed to be of extended precision already
+    private static Apcomplex bernoulliB(long n, Apcomplex z)
+    {
+        long precision = z.precision();
+        int radix = z.radix();
+        Apcomplex sum = Apcomplex.ZEROS[radix],
+                  numerator = new Apfloat(1, precision, radix),
+                  denominator = numerator;
+        Iterator<Aprational> bernoullis = AprationalMath.bernoullis(n, radix);
+        for (long k = 0; k <= n; k++)
+        {
+            Aprational b = bernoullis.next();
+            sum = sum.add(b.multiply(numerator).divide(denominator));
+            if (k < n)
+            {
+                numerator = numerator.multiply(new Apint(n - k, radix));
+                denominator = denominator.multiply(new Apint(k + 1, radix)).multiply(z);
+            }
+        }
+        sum = sum.multiply(ApcomplexMath.pow(z, n));
+        return ApfloatHelper.reducePrecision(sum);
     }
 }

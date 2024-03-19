@@ -474,6 +474,25 @@ public class Util
     }
 
     /**
+     * Returns the maximum of the arguments.
+     *
+     * @param x The first argument.
+     * @param y More arguments.
+     *
+     * @return The maximum of the arguments
+     */
+
+    public static long max(long x, long... y)
+    {
+        long max = x;
+        for (int i = 0; i < y.length; i++)
+        {
+            max = Math.max(max, y[i]);
+        }
+        return max;
+    }
+
+    /**
      * Returns the minimum of the arguments.
      *
      * @param x The first argument.

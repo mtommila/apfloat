@@ -36,7 +36,7 @@ import org.apfloat.Apfloat;
 import org.apfloat.OverflowException;
 
 /**
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -66,6 +66,7 @@ public class UtilTest
         suite.addTest(new UtilTest("testLog2down"));
         suite.addTest(new UtilTest("testLog2up"));
         suite.addTest(new UtilTest("testIfFinite"));
+        suite.addTest(new UtilTest("testMax"));
         suite.addTest(new UtilTest("testMin"));
         suite.addTest(new UtilTest("testMultiplyExact"));
         suite.addTest(new UtilTest("testAddExact"));
@@ -295,6 +296,14 @@ public class UtilTest
     {
         assertEquals("Finite", 2, Util.ifFinite(1, 2));
         assertEquals("Infinite", Apfloat.INFINITE, Util.ifFinite(Apfloat.INFINITE, 2));
+    }
+
+    public static void testMax()
+    {
+        assertEquals("Only", 1, Util.max(1));
+        assertEquals("First", 2, Util.max(1, 2));
+        assertEquals("Last", 3, Util.max(2, 1, 3));
+        assertEquals("Middle", 3, Util.max(2, 3, 1));
     }
 
     public static void testMin()

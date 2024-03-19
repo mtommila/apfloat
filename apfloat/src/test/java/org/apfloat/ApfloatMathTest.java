@@ -3101,12 +3101,12 @@ public class ApfloatMathTest
         assertEquals("3,4 value", new Apfloat("0.0400199"), a, new Apfloat("5e-7"));
 
         a = ApfloatMath.zeta(new Apfloat("3.00000"), new Apfloat("-4.20000"));
-        assertEquals("3,4.2 precision", 5, a.precision());
-        assertEquals("3,4.2 value", new Apfloat("-123.50"), a, new Apfloat("5e-2"));
+        assertEquals("3,4.2 precision", 6, a.precision());
+        assertEquals("3,4.2 value", new Apfloat("-123.502"), a, new Apfloat("5e-3"));
 
         a = ApfloatMath.zeta(new Apfloat("-3.00000"), new Apfloat("-4.20000"));
-        assertEquals("-3,4.2 precision", 7, a.precision());
-        assertEquals("-3,4.2 value", new Apfloat("-119.2381"), a, new Apfloat("5e-4"));
+        assertEquals("-3,4.2 precision", 6, a.precision());
+        assertEquals("-3,4.2 value", new Apfloat("-119.2381"), a, new Apfloat("5e-3"));
 
         a = ApfloatMath.zeta(new Apfloat("3.00000"), new Apfloat("4.20000"));
         assertEquals("3,4.2 precision", 6, a.precision());
@@ -3131,6 +3131,18 @@ public class ApfloatMathTest
         a = ApfloatMath.zeta(new Apfloat("-3.00000"), new Apfloat("0"));
         assertEquals("-3,0 precision", 6, a.precision());
         assertEquals("-3,0 value", new Apfloat("0.00833333"), a, new Apfloat("5e-8"));
+
+        a = ApfloatMath.zeta(new Apfloat("-33.0000"), new Apfloat("0"));
+        assertEquals("-33,0 precision", 6, a.precision());
+        assertEquals("-33,0 value", new Apfloat("-1.26357e10"), a, new Apfloat("5e5"));
+
+        a = ApfloatMath.zeta(new Apfloat("-333.000"), new Apfloat("0"));
+        assertEquals("-333,0 precision", 6, a.precision());
+        assertEquals("-333,0 value", new Apfloat("-5.2873977e430"), a, new Apfloat("5e425"));
+
+        a = ApfloatMath.zeta(new Apfloat("-3.00000"), new Apfloat("1.00000"));
+        assertEquals("-3,1 precision", 6, a.precision());
+        assertEquals("-3,1 value", new Apfloat("0.00833333"), a, new Apfloat("5e-8"));
 
         a = ApfloatMath.zeta(new Apfloat("0"), new Apfloat("0"));
         assertEquals("0,0 precision", Apfloat.INFINITE, a.precision());
@@ -3167,6 +3179,15 @@ public class ApfloatMathTest
         {
             ApfloatMath.zeta(new Apfloat("-3.2"), new Apfloat("-4.2"));
             fail("Zeta of s noninteger and a nonpositive");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK
+        }
+        try
+        {
+            ApfloatMath.zeta(new Apfloat("3.0"), new Apfloat("-3.0"));
+            fail("3, -3 division by zero");
         }
         catch (ArithmeticException ae)
         {
@@ -4621,11 +4642,15 @@ public class ApfloatMathTest
         assertEquals("-1, -1 precision", Apfloat.INFINITE, a.precision());
         assertEquals("-1, -1 value", new Apfloat("0"), a);
 
-        a = ApfloatMath.harmonicNumber(new Apfloat("-1.1000000"), new Apfloat("-1.0000000"));
+        a = ApfloatMath.harmonicNumber(new Apfloat("-1.100000"), new Apfloat("-1.000000"));
         assertEquals("-1.1, -1 precision", 6, a.precision());
         assertEquals("-1.1, -1 value", new Apfloat("0.0550000"), a, new Apfloat("5e-5"));
 
-        a = ApfloatMath.harmonicNumber(new Apfloat("0.1", 22, 2), new Apfloat("0.11", 22, 2));
+        a = ApfloatMath.harmonicNumber(new Apfloat("-4.00000"), new Apfloat("-3.00000"));
+        assertEquals("-4, -3 precision", 6, a.precision());
+        assertEquals("-4, -3 value", new Apfloat("36.0000"), a, new Apfloat("5e-4"));
+
+        a = ApfloatMath.harmonicNumber(new Apfloat("0.1", 21, 2), new Apfloat("0.11", 21, 2));
         assertEquals("0.5, 0.75 precision", 18, a.precision());
         assertEquals("0.5, 0.75 radix", 2, a.radix());
         assertEquals("0.5, 0.75 value", new Apfloat("0.10010110001101010101", 18, 2), a, new Apfloat("1e-18", 1, 2));

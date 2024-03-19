@@ -8,7 +8,7 @@ If you have any questions or need a different type of license, please [contact t
 
 ## Building the Library
 
-To build the library quickly, without running unit tests (takes about 10 minutes) and without signing with GPG run:
+To build the library quickly, without running unit tests (takes about 20 minutes) and without signing with GPG run:
 
 `mvn clean install -Dgpg.skip -Djarsigner.skip -DskipTests`
 
