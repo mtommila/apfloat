@@ -60,6 +60,12 @@ class HurwitzZetaHelper
              precision = ApfloatHelper.extendPrecision(targetPrecision);
         s = ApfloatHelper.ensurePrecision(s, precision);
         a = ApfloatHelper.ensurePrecision(a, precision);
+        if (isNonPositiveInteger(s))
+        {
+            // Handle cases where the result might be genuinely zero
+            long n1 = ApfloatHelper.longValueExact(one.subtract(s.real().truncate()));
+            return bernoulliB(n1, a).divide(new Apfloat(n1, targetPrecision, radix)).negate();
+        }
         if (isNonPositiveInteger(a))
         {
             if (s.real().signum() < 0 || s.isZero())
@@ -85,12 +91,6 @@ class HurwitzZetaHelper
             }
 
             throw new ArithmeticException("Zeta of second argument nonpositive integer");
-        }
-        if (isNonPositiveInteger(s))
-        {
-            // Handle cases where the result might be genuinely zero
-            long n1 = ApfloatHelper.longValueExact(one.subtract(s.real().truncate()));
-            return bernoulliB(n1, a).divide(new Apint(n1, radix)).negate();
         }
         if (precision == Apfloat.INFINITE)
         {
@@ -273,8 +273,13 @@ class HurwitzZetaHelper
     // z assumed to be of extended precision already
     private static Apcomplex bernoulliB(long n, Apcomplex z)
     {
+        assert (n > 0);
         long precision = z.precision();
         int radix = z.radix();
+        if (z.isZero())
+        {
+            return AprationalMath.bernoulli(n, radix);
+        }
         Apcomplex sum = Apcomplex.ZEROS[radix],
                   numerator = new Apfloat(1, precision, radix),
                   denominator = numerator;

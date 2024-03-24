@@ -3125,7 +3125,7 @@ public class ApfloatMathTest
         assertEquals("-3,-3 value", new Apfloat("-35.9917"), a, new Apfloat("5e-4"));
 
         a = ApfloatMath.zeta(new Apfloat("-3.00000"), new Apfloat("-1.00000"));
-        assertEquals("-3,-1 precision", 5, a.precision());
+        assertEquals("-3,-1 precision", 6, a.precision());
         assertEquals("-3,-1 value", new Apfloat("-0.991667"), a, new Apfloat("5e-6"));
 
         a = ApfloatMath.zeta(new Apfloat("-3.00000"), new Apfloat("0"));

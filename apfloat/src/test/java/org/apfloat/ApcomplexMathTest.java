@@ -3297,6 +3297,14 @@ public class ApcomplexMathTest
         assertEquals("-1+2i,-3 precision", 6, a.precision());
         assertEquals("-1+2i,-3 value", new Apcomplex("(210.002,2354.18)"), a, new Apfloat("5e-2"));
 
+        a = ApcomplexMath.zeta(new Apcomplex("0"), new Apcomplex("-1.00000"));
+        assertEquals("0,-1 precision", 6, a.precision());
+        assertEquals("0,-1 value", new Apcomplex("(1.50000)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.zeta(new Apcomplex("0"), new Apcomplex("-2.00000"));
+        assertEquals("0,-2 precision", 6, a.precision());
+        assertEquals("0,-2 value", new Apcomplex("(2.50000)"), a, new Apfloat("5e-5"));
+
         a = ApcomplexMath.zeta(new Apcomplex("(2,3)"), new Apcomplex("(4,5)"));
         assertEquals("2+3i,4+5i precision", 1, a.precision());
         assertEquals("2+3i,4+5i value", new Apcomplex("(0.2,-0.9)"), a, new Apfloat("5e-1"));
@@ -5938,6 +5946,10 @@ public class ApcomplexMathTest
         a = ApcomplexMath.bernoulliB(4, new Apcomplex("-3.00000"));
         assertEquals("4, -3 precision", 6, a.precision());
         assertEquals("4, -3 value", new Apcomplex("143.967"), a, new Apfloat("5e-3"));
+
+        a = ApcomplexMath.bernoulliB(1, new Apcomplex("-2.00000"));
+        assertEquals("1, -2 precision", 6, a.precision());
+        assertEquals("1, -2 value", new Apcomplex("-2.50000"), a, new Apfloat("5e-5"));
 
         a = ApcomplexMath.bernoulliB(3, new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)));
         assertEquals("3, 0.5 + 0.75i precision", 18, a.precision());
