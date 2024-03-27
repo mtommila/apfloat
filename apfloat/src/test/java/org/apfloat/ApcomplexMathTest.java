@@ -3317,6 +3317,22 @@ public class ApcomplexMathTest
         assertEquals("-7.5-3.2i,-2.3-4.6i radix 9 precision", 18, a.precision());
         assertEquals("-7.5-3.2i,-2.3-4.6i radix 9 value", new Apcomplex(new Apfloat("-4.30042688353112500e8", 18, 9), new Apfloat("1.43812330126776638e8", 18, 9)), a, new Apfloat("5e-8", 1, 9));
 
+        a = ApcomplexMath.zeta(new Apcomplex(new Apfloat("-1", 18, 2)), new Apcomplex(new Apfloat("0", 18, 2)));
+        assertEquals("-1,0 radix 2 precision", 18, a.precision());
+        assertEquals("-1,0 radix 2 value", new Apcomplex(new Apfloat("-0.00010101010101010101011", 18, 2)), a, new Apfloat("1e-21", 1, 2));
+
+        a = ApcomplexMath.zeta(new Apcomplex(new Apfloat("0", 18, 2)), new Apcomplex(new Apfloat("-1", 18, 2)));
+        assertEquals("0,-1 radix 2 precision", 18, a.precision());
+        assertEquals("0,-1 radix 2 value", new Apcomplex(new Apfloat("1.1", 18, 2)), a, new Apfloat("1e-17", 1, 2));
+
+        a = ApcomplexMath.zeta(new Apcomplex(new Apfloat("-0.1", 18, 2)), new Apcomplex(new Apfloat("-1", 18, 2)));
+        assertEquals("-0.1,-1 radix 2 precision", 18, a.precision());
+        assertEquals("-0.1,-1 radix 2 value", new Apcomplex(new Apfloat("-0.001101010011100000001", 18, 2), new Apfloat("1", 18, 2)), a, new Apfloat("1e-17", 1, 2));
+
+        a = ApcomplexMath.zeta(new Apcomplex(new Apfloat("0", 18, 2)), new Apcomplex(new Apfloat("0", 18, 2)));
+        assertEquals("0,0 radix 2 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0,0 radix 2 value", new Apcomplex(new Apfloat("0.1", Apfloat.INFINITE, 2)), a);
+
         for (int r = -5; r <= 5; r += 2)
         {
             for (int i = -5; i <= 5; i += 2)
