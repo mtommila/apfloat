@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,9 @@
  */
 package org.apfloat.internal;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +38,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.1
- * @version 1.9.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -89,6 +91,7 @@ public class ParallelRunnerTest
         suite.addTest(new ParallelRunnerTest("testRunParallelLong"));
         suite.addTest(new ParallelRunnerTest("testRunParallelTwo"));
         suite.addTest(new ParallelRunnerTest("testWait"));
+        suite.addTest(new ParallelRunnerTest("testInterrupt"));
 
         return suite;
     }
@@ -270,6 +273,62 @@ public class ParallelRunnerTest
             done.set(true);
 
             assertEquals(threads + " threads (" + threadNames + ")", threads, threadNames.size());
+        }
+    }
+
+    public static void testInterrupt()
+    {
+        for (int threads = 1; threads <= 32; threads++)
+        {
+            ApfloatContext ctx = ApfloatContext.getContext();
+            ctx.setNumberOfProcessors(threads);
+            ctx.setExecutorService(ApfloatContext.getDefaultExecutorService());
+
+            final long LENGTH = 1000000000000000000L;
+            List<Integer> interrupted = new Vector<>();
+            ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
+            {
+                @Override
+                public Runnable getRunnable(long start, long length)
+                {
+                    return () ->
+                    {
+                        int hash = 0;
+                        while (true)
+                        {
+                            try
+                            {
+                                hash += ApfloatContext.getContext().hashCode();
+                            }
+                            catch (ApfloatInterruptedException aie)
+                            {
+                                interrupted.add(hash);
+                                throw aie;
+                            }
+                            Thread.yield();
+                        }
+                    };
+                }
+            };
+
+            Thread currentThread = Thread.currentThread();
+            new Thread(() ->
+            {
+                sleepUninterrupted(100);
+                currentThread.interrupt();
+            }).start();
+            try
+            {
+                ParallelRunner.runParallel(parallelRunnable);
+                fail("No exception thrown");
+            }
+            catch (ApfloatInterruptedException aie)
+            {
+                // Ok, should be thrown
+            }
+            sleepUninterrupted(100);
+
+            assertEquals(threads + " threads, interrupted threads", threads, interrupted.size());
         }
     }
 

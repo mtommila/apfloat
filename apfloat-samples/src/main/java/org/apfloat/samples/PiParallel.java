@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import java.io.IOException;
 
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatContext;
+import org.apfloat.ApfloatInterruptedException;
 import org.apfloat.ApfloatRuntimeException;
 
 /**
@@ -40,7 +41,7 @@ import org.apfloat.ApfloatRuntimeException;
  * execute just one thread and divide its time to multiple
  * simulated threads.
  *
- * @version 1.9.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -71,8 +72,6 @@ public class PiParallel
         public void r(long n1, long n2, ApfloatHolder T, ApfloatHolder Q, ApfloatHolder P, BinarySplittingProgressIndicator progressIndicator)
             throws ApfloatRuntimeException
         {
-            checkAlive();
-
             ApfloatContext ctx = ApfloatContext.getContext();
             int numberOfProcessors = ctx.getNumberOfProcessors();
 
@@ -123,8 +122,17 @@ public class PiParallel
                     };
 
                     BackgroundOperation<?> backgroundOperation = new BackgroundOperation<>(new ThreadLimitedOperation<>(operation1, numberOfProcessors1));
-                    Operation<?> directOperation = () -> {
-                        operation2.execute();
+                    Operation<?> directOperation = () ->
+                    {
+                        try
+                        {
+                            operation2.execute();
+                        }
+                        catch (ApfloatInterruptedException aie)
+                        {
+                            backgroundOperation.cancel();
+                            throw aie;
+                        }
                         return backgroundOperation.getResult();     // Waits for the background operation to complete, must be run within the thread-limited context
                     };
                     new ThreadLimitedOperation<>(directOperation, numberOfProcessors2).execute();
@@ -301,8 +309,6 @@ public class PiParallel
         @Override
         public T execute()
         {
-            checkAlive();
-
             ApfloatContext threadCtx = ApfloatContext.getThreadContext();
             ApfloatContext ctx = (ApfloatContext) ApfloatContext.getContext().clone();
             ctx.setNumberOfProcessors(this.numberOfProcessors);

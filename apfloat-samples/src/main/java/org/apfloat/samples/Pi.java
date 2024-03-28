@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import org.apfloat.ApfloatRuntimeException;
 /**
  * Calculates pi using four different algorithms.
  *
- * @version 1.8.2
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -330,8 +330,6 @@ public class Pi
         public void r(long n1, long n2, ApfloatHolder T, ApfloatHolder Q, ApfloatHolder P, BinarySplittingProgressIndicator progressIndicator)
             throws ApfloatRuntimeException
         {
-            checkAlive();
-
             assert (n1 != n2);
             long length = n2 - n1;
 
@@ -449,9 +447,7 @@ public class Pi
             time = System.currentTimeMillis();
             Apfloat t = T.getApfloat(),
                     q = Q.getApfloat();
-            checkAlive();
             Apfloat factor = ApfloatMath.inverseRoot(new Apfloat(1823176476672000L, this.precision, this.radix), 2);
-            checkAlive();
             Apfloat pi = ApfloatMath.inverseRoot(factor.multiply(t), 1).multiply(q);
             time = System.currentTimeMillis() - time;
 
@@ -529,9 +525,7 @@ public class Pi
             time = System.currentTimeMillis();
             Apfloat t = T.getApfloat(),
                     q = Q.getApfloat();
-            checkAlive();
             Apfloat factor = ApfloatMath.inverseRoot(new Apfloat(8, this.precision, this.radix), 2);
-            checkAlive();
             Apfloat pi = ApfloatMath.inverseRoot(t, 1).multiply(factor).multiply(new Apfloat(9801, Apfloat.INFINITE, this.radix)).multiply(q);
             time = System.currentTimeMillis() - time;
 
@@ -691,28 +685,21 @@ public class Pi
 
             for (int i = 0; i < iterations; i++)
             {
-                checkAlive();
-
                 Pi.err.printf("Iteration " + (i + 1) + " ");
 
                 time = System.currentTimeMillis();
 
                 Apfloat tmp = a;
                 a = a.add(b).divide(two);
-                checkAlive();
                 b = tmp.multiply(b);
-                checkAlive();
                 b = ApfloatMath.sqrt(b);
 
-                checkAlive();
                 t = t.subtract(new Apfloat(1L << i, this.precision, this.radix).multiply(ApfloatMath.pow(tmp.subtract(a), 2)));
 
                 time = System.currentTimeMillis() - time;
 
                 Pi.err.println("took " + time / 1000.0 + " seconds");
             }
-
-            checkAlive();
 
             Pi.err.printf("Final value ");
 
@@ -791,33 +778,24 @@ public class Pi
 
             for (int i = 0; i < iterations; i++)
             {
-                checkAlive();
-
                 Pi.err.printf("Iteration " + (i + 1) + " ");
 
                 time = System.currentTimeMillis();
 
                 Apfloat tmp = ApfloatMath.pow(y, 4);
                 y = one.subtract(tmp);
-                checkAlive();
                 y = ApfloatMath.inverseRoot(y, 4);
-                checkAlive();
                 y = y.subtract(one).divide(y.add(one));
 
-                checkAlive();
                 tmp = ApfloatMath.pow(y.add(one), 2);
-                checkAlive();
                 a = a.multiply(tmp).multiply(tmp);
 
-                checkAlive();
                 a = a.subtract(new Apfloat(1L << (2 * i + 3), this.precision, this.radix).multiply(y).multiply(tmp.subtract(y)));
 
                 time = System.currentTimeMillis() - time;
 
                 Pi.err.println("took " + time / 1000.0 + " seconds");
             }
-
-            checkAlive();
 
             Pi.err.printf("Final value ");
 
@@ -1004,17 +982,6 @@ public class Pi
         return Pi.err;
     }
 
-    /**
-     * Set whether the program should stop executing.
-     *
-     * @param isAlive <code>true</code> to keep running the program, <code>false</code> to stop.
-     */
-
-    public static void setAlive(boolean isAlive)
-    {
-        Pi.isAlive = isAlive;
-    }
-
     Pi()
     {
     }
@@ -1070,20 +1037,6 @@ public class Pi
     }
 
     /**
-     * Check whether the program should stop executing.
-     *
-     * @exception ThreadDeath in case {@link #setAlive(boolean)} has been set to <code>false</code>.
-     */
-
-    protected static void checkAlive()
-    {
-        if (!Pi.isAlive)
-        {
-            throw new ThreadDeath();
-        }
-    }
-
-    /**
      * Output stream for the result printout.
      */
 
@@ -1094,7 +1047,4 @@ public class Pi
      */
 
     protected static PrintWriter err;
-
-    // Interactive execution stop check
-    private static volatile boolean isAlive = true;
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,9 @@
  */
 package org.apfloat.samples;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.ExecutionException;
 
 import org.apfloat.ApfloatContext;
@@ -35,7 +35,7 @@ import org.apfloat.ApfloatContext;
  * The operation is executed using the ExecutorService retrieved from
  * {@link ApfloatContext#getExecutorService()}.
  *
- * @version 1.9.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -52,9 +52,10 @@ public class BackgroundOperation<T>
     {
         ApfloatContext ctx = ApfloatContext.getContext();
         ExecutorService executorService = ctx.getExecutorService();
-        Callable<T> callable = () -> operation.execute();
+        FutureTask<T> futureTask = new FutureTask<>(operation::execute);
+        executorService.execute(futureTask);
 
-        this.future = executorService.submit(callable);
+        this.future = futureTask;
     }
 
     /**
@@ -66,6 +67,17 @@ public class BackgroundOperation<T>
     public boolean isFinished()
     {
         return this.future.isDone();
+    }
+
+    /**
+     * Cancel the operation by interrupting the thread executing it.
+     *
+     * @since 1.14.0
+     */
+
+    public void cancel()
+    {
+        this.future.cancel(true);
     }
 
     /**

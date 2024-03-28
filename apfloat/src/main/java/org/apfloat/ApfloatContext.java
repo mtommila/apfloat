@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -192,7 +192,7 @@ import org.apfloat.spi.Util;
  * If these features are added to the Java platform in the future, they
  * may be added to the <code>ApfloatContext</code> API as well.
  *
- * @version 1.9.1
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -345,6 +345,8 @@ public class ApfloatContext
 
     public static ApfloatContext getContext()
     {
+        checkInterrupted();
+
         ApfloatContext ctx = getThreadContext();
 
         if (ctx == null)
@@ -1134,6 +1136,25 @@ public class ApfloatContext
     public void wait(Future<?> future)
     {
         getBuilderFactory().getExecutionBuilder().createExecution().wait(future);
+    }
+
+    /**
+     * Checks if the current thread was interrupted. If yes, throws an
+     * {@link ApfloatInterruptedException}.<p>
+     *
+     * This method calls {@link Thread#interrupted()} so if the thread was
+     * interrupted, it clears the interrupted status.
+     *
+     * @throws ApfloatInterruptedException If the current thread was interrupted.
+     */
+
+    public static void checkInterrupted()
+        throws ApfloatInterruptedException
+    {
+        if (Thread.interrupted())
+        {
+            throw new ApfloatInterruptedException();
+        }
     }
 
     /**

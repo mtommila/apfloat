@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Helper methods for parallel algorithms.
  *
  * @since 1.8.0
- * @version 1.9.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -130,7 +130,7 @@ class ParallelHelper
         }
         catch (InterruptedException ie)
         {
-            throw new ApfloatRuntimeException("Waiting for dispatched task to complete was interrupted", ie);
+            throw new ApfloatInterruptedException("Waiting for dispatched task to complete was interrupted", ie);
         }
         catch (ExecutionException ee)
         {

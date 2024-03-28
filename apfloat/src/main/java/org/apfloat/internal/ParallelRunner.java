@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,16 @@
  */
 package org.apfloat.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import org.apfloat.ApfloatContext;
+import org.apfloat.ApfloatInterruptedException;
 import org.apfloat.ApfloatRuntimeException;
 
 /**
@@ -43,7 +47,7 @@ import org.apfloat.ApfloatRuntimeException;
  * number of processors.
  *
  * @since 1.1
- * @version 1.9.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -112,6 +116,7 @@ public class ParallelRunner
         ApfloatContext ctx = ApfloatContext.getContext();
         int numberOfProcessors = ctx.getNumberOfProcessors();
 
+        List<Future<?>> futures = new ArrayList<>();
         if (numberOfProcessors > 1)
         {
             ExecutorService executorService = ctx.getExecutorService();
@@ -119,12 +124,22 @@ public class ParallelRunner
             for (int i = 0; i < numberOfProcessors - 1; i++)
             {
                 // Process the task also in other threads
-                executorService.execute(runnable);
+                FutureTask<?> futureTask = new FutureTask<>(runnable, null);
+                executorService.execute(futureTask);
+                futures.add(futureTask);
             }
         }
 
         // Also process the task in the current thread, until it is finished
-        runnable.run();
+        try
+        {
+            runnable.run();
+        }
+        catch (ApfloatInterruptedException aie)
+        {
+            futures.forEach(future -> future.cancel(true));
+            throw aie;
+        }
     }
 
     // Implemented as a List because the assumption is that the number of concurrent tasks is very small

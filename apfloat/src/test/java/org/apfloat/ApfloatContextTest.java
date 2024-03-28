@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package org.apfloat;
 import java.util.Properties;
 import java.util.Enumeration;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 
 import org.apfloat.internal.Java9ClassLoader;
 
@@ -35,7 +36,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.11.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -64,6 +65,7 @@ public class ApfloatContextTest
         suite.addTest(new ApfloatContextTest("testException"));
         suite.addTest(new ApfloatContextTest("testThreadContexts"));
         suite.addTest(new ApfloatContextTest("testSystemOverride"));
+        suite.addTest(new ApfloatContextTest("testCheckInterrupted"));
 
         return suite;
     }
@@ -275,5 +277,71 @@ public class ApfloatContextTest
 
         System.clearProperty("apfloat.cacheBurst");
         System.clearProperty("apfloat.cleanupAtExit");
+    }
+
+    public static void testCheckInterrupted()
+    {
+        Object a = withTimeout(ApfloatContextTest::slowApfloatCalculation);
+        assertNull("Slow result", a);
+
+        a = withTimeout(ApfloatContextTest::fastApfloatCalculation);
+        assertNotNull("Fast result", a);
+    }
+
+    private static <T> T withTimeout(Supplier<T> supplier)
+    {
+        final long TIMEOUT_MILLIS = 3000;
+        Thread currentThread = Thread.currentThread();
+        Thread timeoutThread = new Thread(() ->
+        {
+            try
+            {
+                Thread.sleep(TIMEOUT_MILLIS);
+            }
+            catch (InterruptedException e)
+            {
+                return; // Calculation finished in time
+            }
+            currentThread.interrupt();  // Indicate a timeout to the calculation thread
+        });
+        timeoutThread.start();
+        T result;
+        try
+        {
+            // Perform calculation
+            result = supplier.get();
+        }
+        catch (ApfloatInterruptedException e)
+        {
+            // Too slow calculation timed out
+            result = null;
+        }
+        timeoutThread.interrupt();
+        try
+        {
+            timeoutThread.join();
+        }
+        catch (InterruptedException e)
+        {
+            // Ignore - race condition
+        }
+        Thread.interrupted();   // Clear interrupted state of current thread if calculation actually finished at the same time it timed out (it's a race)
+        return result;
+    }
+
+    private static Object slowApfloatCalculation()
+        throws ApfloatInterruptedException
+    {
+        int hash = 0;
+        while (Boolean.TRUE)
+        {
+            hash += ApfloatContext.getContext().hashCode();
+        }
+        return hash;
+    }
+
+    private static Object fastApfloatCalculation()
+    {
+        return new Object();
     }
 }

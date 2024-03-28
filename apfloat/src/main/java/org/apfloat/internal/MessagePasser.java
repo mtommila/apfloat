@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package org.apfloat.internal;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.apfloat.ApfloatInterruptedException;
 import org.apfloat.ApfloatRuntimeException;
 
 /**
@@ -37,7 +38,7 @@ import org.apfloat.ApfloatRuntimeException;
  * @param <V> The message type for this message passer.
  *
  * @since 1.6
- * @version 1.9.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -106,7 +107,7 @@ public class MessagePasser<K, V>
             }
             catch (InterruptedException ie)
             {
-                throw new ApfloatInternalException("Wait for received message interrupted", ie);
+                throw new ApfloatInterruptedException("Wait for received message interrupted", ie);
             }
         }
 

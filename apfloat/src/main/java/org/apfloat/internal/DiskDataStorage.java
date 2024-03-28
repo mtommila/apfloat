@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apfloat.ApfloatContext;
+import org.apfloat.ApfloatInterruptedException;
 import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.ArrayAccess;
 import org.apfloat.spi.DataStorage;
@@ -51,7 +52,7 @@ import org.apfloat.spi.MatrixStrategy;
  * Abstract base class for disk-based data storage, containing the common
  * functionality independent of the element type.
  *
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -205,11 +206,6 @@ public abstract class DiskDataStorage
             {
                 throw new BackingStorageException("Unable to read from file \"" + this.file.getAbsolutePath() + '\"', ioe);
             }
-        }
-
-        public String getFilename()
-        {
-            return this.filename;
         }
 
         public File getFile()
@@ -860,7 +856,7 @@ public abstract class DiskDataStorage
         }
         catch (InterruptedException ie)
         {
-            throw new ApfloatInternalException("Reference queue polling was interrupted", ie);
+            throw new ApfloatInterruptedException("Reference queue polling was interrupted", ie);
         }
     }
 

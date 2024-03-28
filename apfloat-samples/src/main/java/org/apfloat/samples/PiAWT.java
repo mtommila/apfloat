@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,13 +45,14 @@ import java.io.PrintWriter;
 
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatContext;
+import org.apfloat.ApfloatInterruptedException;
 import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.BuilderFactory;
 
 /**
  * Graphical AWT elements for calculating pi using four different algorithms.
  *
- * @version 1.9.1
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -384,7 +385,7 @@ public class PiAWT
                 {
                     Pi.run(precision, radix, operation);
                 }
-                catch (ThreadDeath td)
+                catch (ApfloatInterruptedException aie)
                 {
                     aborted();
                 }
@@ -403,14 +404,13 @@ public class PiAWT
             }
         };
 
-        Pi.setAlive(true);
         this.calculatorThread.start();
         this.abortButton.setEnabled(true);
     }
 
     private void stopThread()
     {
-        Pi.setAlive(false);
+        this.calculatorThread.interrupt();
     }
 
     private void aborted()

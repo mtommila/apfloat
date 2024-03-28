@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package org.apfloat.internal;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apfloat.ApfloatContext;
 import org.apfloat.spi.Util;
 
 /**
@@ -36,7 +37,7 @@ import org.apfloat.spi.Util;
  * only returns when all batches are completed.
  *
  * @since 1.1
- * @version 1.9.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -75,6 +76,8 @@ public abstract class ParallelRunnable
         // threads have happened-before we get here and see that the task is completed
         while (isWorkToBeCompleted())
         {
+            ApfloatContext.checkInterrupted();
+
             Thread.yield();     // Do not waste time
         }
     }
@@ -93,6 +96,8 @@ public abstract class ParallelRunnable
 
     public final boolean runBatch()
     {
+        ApfloatContext.checkInterrupted();
+
         boolean isRun = false;
         if (isWorkToBeStarted())
         {
