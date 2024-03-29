@@ -23,10 +23,9 @@
  */
 package org.apfloat.internal;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -240,6 +239,9 @@ public class ParallelRunnerTest
             final int LENGTH = 10000;
             Map<String, String> threadNames = new ConcurrentHashMap<>();
             AtomicBoolean done = new AtomicBoolean();
+            CountDownLatch startLatch = new CountDownLatch(threads),
+                           endLatch = new CountDownLatch(threads),
+                           otherLatch = new CountDownLatch(1);
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
                 @Override
@@ -248,7 +250,11 @@ public class ParallelRunnerTest
                     return () ->
                     {
                         threadNames.put(Thread.currentThread().getName(), "");
-                        sleepUninterrupted(20);
+                        startLatch.countDown();
+                        awaitUninterrupted(startLatch);
+                        done.set(true);
+                        endLatch.countDown();
+                        awaitUninterrupted(endLatch);
                     };
                 }
             };
@@ -256,7 +262,6 @@ public class ParallelRunnerTest
             // In some other thread, steal some work for the entire execution time (do not let the ExecutorService use this thread for anything else)
             Runnable otherTask = () ->
             {
-                sleepUninterrupted(10);
                 Future<?> dummyFuture = new DummyFuture()
                 {
                     @Override
@@ -266,11 +271,12 @@ public class ParallelRunnerTest
                     }
                 };
                 ctx.wait(dummyFuture);
+                otherLatch.countDown();
             };
 
             ctx.getExecutorService().execute(otherTask);
             ParallelRunner.runParallel(parallelRunnable);
-            done.set(true);
+            awaitUninterrupted(otherLatch);
 
             assertEquals(threads + " threads (" + threadNames + ")", threads, threadNames.size());
         }
@@ -285,7 +291,8 @@ public class ParallelRunnerTest
             ctx.setExecutorService(ApfloatContext.getDefaultExecutorService());
 
             final long LENGTH = 1000000000000000000L;
-            List<Integer> interrupted = new Vector<>();
+            CountDownLatch startLatch = new CountDownLatch(threads),
+                           endLatch = new CountDownLatch(threads);
             ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
             {
                 @Override
@@ -293,6 +300,7 @@ public class ParallelRunnerTest
                 {
                     return () ->
                     {
+                        startLatch.countDown();
                         int hash = 0;
                         while (true)
                         {
@@ -302,7 +310,8 @@ public class ParallelRunnerTest
                             }
                             catch (ApfloatInterruptedException aie)
                             {
-                                interrupted.add(hash);
+                                endLatch.countDown();
+                                aie.addSuppressed(new Exception("Hash: " + hash));
                                 throw aie;
                             }
                             Thread.yield();
@@ -314,7 +323,7 @@ public class ParallelRunnerTest
             Thread currentThread = Thread.currentThread();
             new Thread(() ->
             {
-                sleepUninterrupted(100);
+                awaitUninterrupted(startLatch);
                 currentThread.interrupt();
             }).start();
             try
@@ -326,17 +335,18 @@ public class ParallelRunnerTest
             {
                 // Ok, should be thrown
             }
-            sleepUninterrupted(100);
+            awaitUninterrupted(endLatch);
 
-            assertEquals(threads + " threads, interrupted threads", threads, interrupted.size());
+            assertEquals(threads + " threads, start latch count", 0, startLatch.getCount());
+            assertEquals(threads + " threads, end latch count", 0, endLatch.getCount());
         }
     }
 
-    private static void sleepUninterrupted(long time)
+    private static void awaitUninterrupted(CountDownLatch latch)
     {
         try
         {
-            Thread.sleep(time);
+            latch.await();
         }
         catch (InterruptedException ie)
         {
