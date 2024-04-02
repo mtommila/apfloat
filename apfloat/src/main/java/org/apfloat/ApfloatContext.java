@@ -1146,6 +1146,8 @@ public class ApfloatContext
      * interrupted, it clears the interrupted status.
      *
      * @throws ApfloatInterruptedException If the current thread was interrupted.
+     *
+     * @since 1.14.0
      */
 
     public static void checkInterrupted()
@@ -1153,7 +1155,7 @@ public class ApfloatContext
     {
         if (Thread.interrupted())
         {
-            throw new ApfloatInterruptedException();
+            throw new ApfloatInterruptedException("Interrupted");
         }
     }
 

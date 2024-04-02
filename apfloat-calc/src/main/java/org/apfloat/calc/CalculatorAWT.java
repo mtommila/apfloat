@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 /**
  * Graphical AWT elements for the calculator.
  *
- * @version 1.9.1
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -83,8 +83,12 @@ public class CalculatorAWT
         add(this.inputField, constraints);
 
         this.calculateButton = new Button("Calculate");
-        constraints.gridwidth = GridBagConstraints.REMAINDER;
         add(this.calculateButton, constraints);
+
+        this.abortButton = new Button("Abort");
+        this.abortButton.setEnabled(false);
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        add(this.abortButton, constraints);
 
         this.outputArea = new TextArea(null, 20, 60, TextArea.SCROLLBARS_VERTICAL_ONLY);
         this.outputArea.setEditable(false);
@@ -143,6 +147,9 @@ public class CalculatorAWT
         // Calculate current input by hitting enter in the input field
         this.inputField.addActionListener((actionEvent) -> processInput());
 
+        // Abort button
+        this.abortButton.addActionListener((actionEvent) -> abortCalculation());
+
         // Command history handler for up and down arrow keys
         this.inputField.addKeyListener(new KeyAdapter()
         {
@@ -173,6 +180,8 @@ public class CalculatorAWT
 
     private void processInput()
     {
+        this.calculateButton.setEnabled(false);
+
         Long inputPrecision;
         if (this.inputPrecisionArbitrary.getState())
         {
@@ -196,17 +205,27 @@ public class CalculatorAWT
         this.out.println(text);
 
         // Parse the input line; the parser prints the output
-        try
+        this.calculatorImpl.setFormat(this.fixed.getState());
+        this.calculatorImpl.setInputPrecision(inputPrecision);
+        CalculatorParser calculatorParser = new CalculatorParser(new StringReader(text), this.out, this.calculatorImpl);
+        this.calculatorThread = new Thread(() ->
         {
-            this.calculatorImpl.setFormat(this.fixed.getState());
-            this.calculatorImpl.setInputPrecision(inputPrecision);
-            CalculatorParser calculatorParser = new CalculatorParser(new StringReader(text), this.out, this.calculatorImpl);
-            calculatorParser.parseOneLine();
-        }
-        catch (Exception e)
-        {
-            this.out.println(e.getMessage());
-        }
+            try
+            {
+                calculatorParser.parseOneLine();
+            }
+            catch (Exception e)
+            {
+                this.out.println(e.getMessage());
+            }
+            finally
+            {
+                this.abortButton.setEnabled(false);
+                this.calculateButton.setEnabled(true);
+            }
+        });
+        this.calculatorThread.start();
+        this.abortButton.setEnabled(true);
 
         // Show the bottom part of the output area
         this.outputArea.requestFocus();
@@ -216,6 +235,11 @@ public class CalculatorAWT
         // Add last command to history and reset history position
         this.history.add(text);
         this.historyPosition = this.history.size();
+    }
+
+    private void abortCalculation()
+    {
+        this.calculatorThread.interrupt();
     }
 
     // Prints output to a text area
@@ -261,6 +285,8 @@ public class CalculatorAWT
     private Button clearButton;
     private TextField inputField;
     private Button calculateButton;
+    private Button abortButton;
 
     private PrintWriter out;
+    private Thread calculatorThread;
 }
