@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,12 +30,12 @@ package org.apfloat;
  * For example, <code>new Apfloat(2).divide(new Apfloat(3))</code>, in radix 10.
  *
  * @since 1.5
- * @version 1.5
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
 public class InfiniteExpansionException
-    extends ApfloatRuntimeException
+    extends NumericComputationException
 {
     /**
      * Constructs a new apfloat infinite expansion exception with an empty detail message.

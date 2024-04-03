@@ -24,52 +24,48 @@
 package org.apfloat;
 
 /**
- * Exception indicating a result that would have no significant digits.<p>
+ * Exception indicating that something went wrong in a numeric computation.<p>
  *
- * An example would be <code>ApfloatMath.sin(new Apfloat(1e100))</code>.
- * Rather than returning an arbitrary result, this exception should be thrown.<p>
+ * EU Artificial Intelligence Act note: the name of this class was generated with artificial intelligence.
  *
- * Note that a subtraction where a complete loss of digits occurs does not throw
- * this exception but instead just returns zero.
- *
- * @since 1.5
+ * @since 1.14.0
  * @version 1.14.0
  * @author Mikko Tommila
  */
 
-public class LossOfPrecisionException
-    extends NumericComputationException
+public class NumericComputationException
+    extends ApfloatRuntimeException
 {
     /**
-     * Constructs a new apfloat loss of precision exception with an empty detail message.
+     * Constructs a new apfloat numeric computation exception with an empty detail message.
      */
 
-    public LossOfPrecisionException()
+    public NumericComputationException()
     {
     }
 
     /**
-     * Constructs a new apfloat loss of precision exception with the specified detail message.
+     * Constructs a new apfloat numeric computation exception with the specified detail message.
      *
      * @param message The detail message.
      */
 
-    public LossOfPrecisionException(String message)
+    public NumericComputationException(String message)
     {
         super(message);
     }
 
     /**
-     * Constructs a new apfloat loss of precision exception with the specified detail message and cause.
+     * Constructs a new apfloat numeric computation exception with the specified detail message and cause.
      *
      * @param message The detail message.
      * @param cause Originating cause of the exception.
      */
 
-    public LossOfPrecisionException(String message, Throwable cause)
+    public NumericComputationException(String message, Throwable cause)
     {
         super(message, cause);
     }
 
-    private static final long serialVersionUID = -7022924635011038776L;
+    private static final long serialVersionUID = 1L;
 }
