@@ -178,6 +178,7 @@ public abstract class FunctionCalculatorImpl
         public Number cosh(Number x);
         public Number coshIntegral(Number x);
         public Number digamma(Number x);
+        public Number doubleFactorial(Number x);
         public Number e(Number x);
         public Number ellipticE(Number x);
         public Number ellipticK(Number x);
@@ -319,6 +320,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("cosh", fixedFunction("cosh", 1, (functions, arguments) -> functions.cosh(arguments.get(0))));
         setFunction("coshIntegral", fixedFunction("coshIntegral", 1, (functions, arguments) -> functions.coshIntegral(arguments.get(0))));
         setFunction("digamma", fixedFunction("digamma", 1, (functions, arguments) -> functions.digamma(arguments.get(0))));
+        setFunction("doubleFactorial", fixedFunction("doubleFactorial", 1, (functions, arguments) -> functions.doubleFactorial(arguments.get(0))));
         setFunction("e", fixedFunction("e", 0, 1, (functions, arguments) -> functions.e(argumentOrInputPrecision(arguments))));
         setFunction("ellipticE", fixedFunction("ellipticE", 1, (functions, arguments) -> functions.ellipticE(arguments.get(0))));
         setFunction("ellipticK", fixedFunction("ellipticK", 1, (functions, arguments) -> functions.ellipticK(arguments.get(0))));

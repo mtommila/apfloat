@@ -79,6 +79,7 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testMultiplySubtract"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testAgm"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testFactorial"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testDoubleFactorial"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testPi"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testLogRadix"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testLog"));
@@ -554,6 +555,28 @@ public class FixedPrecisionApfloatHelperTest
         try
         {
             helper.factorial(7, 1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
+    }
+
+    public static void testDoubleFactorial()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(10);
+        Apfloat result = helper.doubleFactorial(100);
+        assertEquals("value", new Apfloat(3.424322470e79), result, new Apfloat("5e70"));
+        assertEquals("precision", 10, result.precision());
+
+        result = helper.doubleFactorial(10, 16);
+        assertEquals("value 16", new Apfloat(0xF00, Apfloat.DEFAULT, 16), result);
+        assertEquals("precision 16", 10, result.precision());
+
+        try
+        {
+            helper.doubleFactorial(7, 1);
             fail("Radix 1 accepted");
         }
         catch (NumberFormatException nfe)

@@ -73,6 +73,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testMultiplySubtract"));
         suite.addTest(new ApfloatMathTest("testAgm"));
         suite.addTest(new ApfloatMathTest("testFactorial"));
+        suite.addTest(new ApfloatMathTest("testDoubleFactorial"));
         suite.addTest(new ApfloatMathTest("testPi"));
         suite.addTest(new ApfloatMathTest("testLog"));
         suite.addTest(new ApfloatMathTest("testLogBase"));
@@ -1020,6 +1021,27 @@ public class ApfloatMathTest
         try
         {
             ApfloatMath.factorial(7, 10, 1);
+            fail("Radix 1 accepted");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK; invalid radix
+        }
+    }
+
+    public static void testDoubleFactorial()
+    {
+        Apfloat result = ApfloatMath.doubleFactorial(99, 10);
+        assertEquals("value", new Apfloat(2.725392140e78), result, new Apfloat("5e69"));
+        assertEquals("precision", 10, result.precision());
+
+        result = ApfloatMath.doubleFactorial(11, Apfloat.INFINITE, 16);
+        assertEquals("value 16", new Apfloat(0x289B, Apfloat.DEFAULT, 16), result);
+        assertEquals("precision 16", Apfloat.INFINITE, result.precision());
+
+        try
+        {
+            ApfloatMath.doubleFactorial(7, 10, 1);
             fail("Radix 1 accepted");
         }
         catch (NumberFormatException nfe)

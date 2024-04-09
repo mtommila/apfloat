@@ -336,6 +336,17 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number doubleFactorial(Number x)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Double factorial can only be used with a valid integer argument");
+            }
+            long n = x.longValue();
+            return ApintMath.doubleFactorial(n);
+        }
+
+        @Override
         public Number e(Number x)
         {
             if (!isLong(x))

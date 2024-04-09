@@ -29,7 +29,7 @@ import java.util.Map;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -62,6 +62,7 @@ public class ApintMathTest
         suite.addTest(new ApintMathTest("testModMultiply"));
         suite.addTest(new ApintMathTest("testModPow"));
         suite.addTest(new ApintMathTest("testFactorial"));
+        suite.addTest(new ApintMathTest("testDoubleFactorial"));
         suite.addTest(new ApintMathTest("testProduct"));
         suite.addTest(new ApintMathTest("testBinomial"));
         suite.addTest(new ApintMathTest("testSum"));
@@ -486,6 +487,30 @@ public class ApintMathTest
         catch (ArithmeticException ae)
         {
             // OK: factorial of negative number
+        }
+    }
+
+    public static void testDoubleFactorial()
+    {
+        assertEquals("0!!", new Apint(1), ApintMath.doubleFactorial(0));
+        assertEquals("1!!", new Apint(1), ApintMath.doubleFactorial(1));
+        assertEquals("2!!", new Apint(2), ApintMath.factorial(2));
+        assertEquals("3!!", new Apint(3), ApintMath.doubleFactorial(3));
+        assertEquals("7!!", new Apint(105), ApintMath.doubleFactorial(7));
+        assertEquals("7!! radix", 10, ApintMath.doubleFactorial(7).radix());
+        assertEquals("7!! radix 7", new Apint(105, 7), ApintMath.doubleFactorial(7, 7));
+        assertEquals("7!! radix 7 radix", 7, ApintMath.doubleFactorial(7, 7).radix());
+        assertEquals("20!!", new Apint("3715891200"), ApintMath.doubleFactorial(20));
+        assertEquals("29!!", new Apint("6190283353629375"), ApintMath.doubleFactorial(29));
+
+        try
+        {
+            ApintMath.doubleFactorial(-1);
+            fail("Double factorial of negative number allowed");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK: double factorial of negative number
         }
     }
 

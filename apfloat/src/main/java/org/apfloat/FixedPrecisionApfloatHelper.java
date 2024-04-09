@@ -875,6 +875,39 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
+     * Double factorial.
+     *
+     * @param n The operand.
+     *
+     * @return <code>n!!</code>.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat doubleFactorial(long n)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.doubleFactorial(n, precision()));
+    }
+
+    /**
+     * Double factorial.
+     *
+     * @param n The operand.
+     * @param radix The radix of the result.
+     *
+     * @return <code>n!!</code>.
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat doubleFactorial(long n, int radix)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.doubleFactorial(n, precision(), radix));
+    }
+
+    /**
      * &pi;.
      *
      * @return <code>&pi;</code>.

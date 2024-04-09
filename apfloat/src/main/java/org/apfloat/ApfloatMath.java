@@ -4785,6 +4785,30 @@ public class ApfloatMath
         }
     }
 
+    static Apfloat doubleFactorial(long n, long precision)
+        throws ArithmeticException, NumberFormatException, ApfloatRuntimeException
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return doubleFactorial(n, precision, radix);
+    }
+
+    static Apfloat doubleFactorial(long n, long precision, int radix)
+        throws ArithmeticException, NumberFormatException, ApfloatRuntimeException
+    {
+        if (n < 0)
+        {
+            throw new ArithmeticException("Double factorial of negative number");
+        }
+        if ((n & 1) == 1)
+        {
+            return oddProduct(1, n, precision, radix);
+        }
+        long n2 = n >>> 1;
+        return pow(new Apfloat(2, precision, radix), n2).multiply(factorial(n2, precision, radix));
+    }
+
     // Clean up static maps at shutdown, to allow garbage collecting temporary files
     static void cleanUp()
     {

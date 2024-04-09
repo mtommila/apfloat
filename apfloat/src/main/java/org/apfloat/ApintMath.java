@@ -31,7 +31,7 @@ import java.util.Random;
 /**
  * Various mathematical functions for arbitrary precision integers.
  *
- * @version 1.13.0
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -645,6 +645,45 @@ public class ApintMath
         throws ArithmeticException, NumberFormatException, ApfloatRuntimeException
     {
         return new Apint(ApfloatMath.factorial(n, Apfloat.INFINITE, radix));
+    }
+
+    /**
+     * Double factorial function. Uses the default radix.
+     *
+     * @param n The number whose double factorial is to be calculated. Should be non-negative.
+     *
+     * @return <code>n!!</code>
+     *
+     * @exception ArithmeticException If <code>n</code> is negative.
+     * @exception NumberFormatException If the default radix is not valid.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apint doubleFactorial(long n)
+        throws ArithmeticException, NumberFormatException, ApfloatRuntimeException
+    {
+        return new Apint(ApfloatMath.doubleFactorial(n, Apfloat.INFINITE));
+    }
+
+    /**
+     * Double factorial function. Returns a number in the specified radix.
+     *
+     * @param n The number whose double factorial is to be calculated. Should be non-negative.
+     * @param radix The radix to use.
+     *
+     * @return <code>n!!</code>
+     *
+     * @exception ArithmeticException If <code>n</code> is negative.
+     * @exception NumberFormatException If the radix is not valid.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apint doubleFactorial(long n, int radix)
+        throws ArithmeticException, NumberFormatException, ApfloatRuntimeException
+    {
+        return new Apint(ApfloatMath.doubleFactorial(n, Apfloat.INFINITE, radix));
     }
 
     /**
