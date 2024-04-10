@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import java.util.Map;
  * Provides a storage for variables, and maps
  * the elementary operators to function calls.
  *
- * @version 1.9.1
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -101,6 +101,20 @@ public abstract class AbstractCalculatorImpl
         throws ParseException
     {
         return function("pow", toList(x, y));
+    }
+
+    @Override
+    public Number factorial(Number x)
+        throws ParseException
+    {
+        return function("factorial", toList(x));
+    }
+
+    @Override
+    public Number doubleFactorial(Number x)
+        throws ParseException
+    {
+        return function("doubleFactorial", toList(x));
     }
 
     @Override

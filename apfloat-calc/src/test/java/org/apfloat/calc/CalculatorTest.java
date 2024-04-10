@@ -167,6 +167,20 @@ public class CalculatorTest
         assertCalculation("8.8080652584e646456992", "2^2147483647.0");
         assertCalculation("-1", "i^2");
         assertCalculation("1", "1^2i");
+        assertCalculation("2417851639229258349412352", "2^3^4");
+        assertCalculation("120", "5!");
+        assertCalculation("15", "5!!");
+        assertCalculation("64", "2^3!");
+        assertCalculation("8", "2^3!!");
+        assertCalculation("1307674368000", "5!!!");
+        assertCalculation("2027025", "5!!!!");
+        assertCalculation("-24", "-4!");
+        assertCalculation("1/16777216", "2^-4!");
+        assertCalculation("-1/16777216", "-2^-4!");
+        assertCalculation("8", "2^3!!!!");
+        assertCalculation("-1/8", "-2^-3!!!!");
+        assertCalculation("4", "2!^2!");
+        assertCalculation("4", "2!!^2!!");
 
         assertCalculationFailure("6%i");
         assertCalculationFailure("5e");
@@ -184,6 +198,11 @@ public class CalculatorTest
         assertCalculationFailure("6%");
         assertCalculationFailure("2-");
         assertCalculationFailure("bogus^5");
+        assertCalculationFailure("!");
+        assertCalculationFailure("bogus!");
+        assertCalculationFailure("bogus!!");
+        assertCalculationFailure("5!=");
+        assertCalculationFailure("5!=4");
     }
 
     public static void testFunctions()

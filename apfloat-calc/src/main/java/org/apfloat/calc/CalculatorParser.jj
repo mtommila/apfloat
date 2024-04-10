@@ -163,10 +163,23 @@ Number powerExpression():
     Number b;
 }
 {
-    a = element()
+    a = factorialExpression()
     (
         "^" b = unaryExpression()               { a = this.calculatorImpl.pow(a, b); }
     )?
+                                                { return a; }
+}
+
+Number factorialExpression():
+{
+    Number a;
+}
+{
+    a = element()
+    (
+        "!!"                                    { a = this.calculatorImpl.doubleFactorial(a); }
+      | "!"                                     { a = this.calculatorImpl.factorial(a); }
+    )*
                                                 { return a; }
 }
 

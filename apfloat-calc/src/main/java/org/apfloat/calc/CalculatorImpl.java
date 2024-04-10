@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import java.util.List;
  * Calculator implementation interface.
  * The calculator parser uses this interface to perform the actual calculations.
  *
- * @version 1.9.1
+ * @version 1.14.0
  * @author Mikko Tommila
  */
 
@@ -130,6 +130,32 @@ public interface CalculatorImpl
      */
 
     public Number pow(Number x, Number y)
+        throws ParseException;
+
+    /**
+     * Factorial.
+     *
+     * @param x The argument.
+     *
+     * @return <code>x!</code>
+     *
+     * @exception ParseException In case of invalid arguments.
+     */
+
+    public Number factorial(Number x)
+        throws ParseException;
+
+    /**
+     * Double factorial.
+     *
+     * @param x The argument.
+     *
+     * @return <code>x!!</code>
+     *
+     * @exception ParseException In case of invalid arguments.
+     */
+
+    public Number doubleFactorial(Number x)
         throws ParseException;
 
     /**
