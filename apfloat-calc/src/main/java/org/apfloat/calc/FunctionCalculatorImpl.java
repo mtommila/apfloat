@@ -226,6 +226,7 @@ public abstract class FunctionCalculatorImpl
         public Number log(Number x, Number y);
         public Number logGamma(Number x);
         public Number logIntegral(Number x);
+        public Number logisticSigmoid(Number x);
         public Number max(Number x, Number y);
         public Number min(Number x, Number y);
         public Number nextAfter(Number x, Number y);
@@ -244,6 +245,7 @@ public abstract class FunctionCalculatorImpl
         public Number roundToPlaces(Number x, Number y);
         public Number roundToMultiple(Number x, Number y);
         public Number sin(Number x);
+        public Number sinc(Number x);
         public Number sinIntegral(Number x);
         public Number sinh(Number x);
         public Number sinhIntegral(Number x);
@@ -360,6 +362,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
         setFunction("logGamma", fixedFunction("logGamma", 1, (functions, arguments) -> functions.logGamma(arguments.get(0))));
         setFunction("logIntegral", fixedFunction("logIntegral", 1, (functions, arguments) -> functions.logIntegral(arguments.get(0))));
+        setFunction("logisticSigmoid", fixedFunction("logisticSigmoid", 1, (functions, arguments) -> functions.logisticSigmoid(arguments.get(0))));
         setFunction("max", fixedFunction("max", 2, (functions, arguments) -> functions.max(arguments.get(0), arguments.get(1))));
         setFunction("min", fixedFunction("min", 2, (functions, arguments) -> functions.min(arguments.get(0), arguments.get(1))));
         setFunction("nextAfter", fixedFunction("nextAfter", 2, (functions, arguments) -> functions.nextAfter(arguments.get(0), arguments.get(1))));
@@ -377,6 +380,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("roundToPlaces", fixedFunction("roundToPlaces", 2, (functions, arguments) -> functions.roundToPlaces(arguments.get(0), arguments.get(1))));
         setFunction("roundToMultiple", fixedFunction("roundToMultiple", 2, (functions, arguments) -> functions.roundToMultiple(arguments.get(0), arguments.get(1))));
         setFunction("sin", fixedFunction("sin", 1, (functions, arguments) -> functions.sin(arguments.get(0))));
+        setFunction("sinc", fixedFunction("sinc", 1, (functions, arguments) -> functions.sinc(arguments.get(0))));
         setFunction("sinIntegral", fixedFunction("sinIntegral", 1, (functions, arguments) -> functions.sinIntegral(arguments.get(0))));
         setFunction("sinh", fixedFunction("sinh", 1, (functions, arguments) -> functions.sinh(arguments.get(0))));
         setFunction("sinhIntegral", fixedFunction("sinhIntegral", 1, (functions, arguments) -> functions.sinhIntegral(arguments.get(0))));

@@ -544,6 +544,22 @@ public class FixedPrecisionApcomplexHelper
     }
 
     /**
+     * Sinc.
+     *
+     * @param z The argument.
+     *
+     * @return sinc(z)
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex sinc(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.sinc(setTrigExpPrecision(z)));
+    }
+
+    /**
      * Arithmetic-geometric mean.
      *
      * @param a The first operand.
@@ -2081,6 +2097,24 @@ public class FixedPrecisionApcomplexHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApcomplexMath.polylog(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Logistic sigmoid.
+     *
+     * @param z The argument.
+     *
+     * @return &sigma;(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is an odd integer multiple of &pi; i.
+     *
+     * @since 1.14.0
+     */
+
+    public Apcomplex logisticSigmoid(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.logisticSigmoid(setExpTrigPrecision(z)));
     }
 
     /**

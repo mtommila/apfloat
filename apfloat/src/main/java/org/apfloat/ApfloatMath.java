@@ -1931,6 +1931,26 @@ public class ApfloatMath
     }
 
     /**
+     * Sinc.
+     *
+     * @param x The argument.
+     *
+     * @return sinc(x)
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat sinc(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        if (x.isZero())
+        {
+            return Apfloat.ONES[x.radix()];
+        }
+        return sin(x).divide(x);
+    }
+
+    /**
      * Lambert W function. The W function gives the solution to the equation
      * <code>W e<sup>W</sup> = x</code>. Also known as the product logarithm.<p>
      *
@@ -4391,6 +4411,33 @@ public class ApfloatMath
             throw new ArithmeticException("Result would be complex");
         }
         return ApcomplexMath.polylog(ν, x).real();
+    }
+
+    /**
+     * Logistic sigmoid.
+     *
+     * @param x The argument.
+     *
+     * @return &sigma;(x)
+     *
+     * @since 1.14.0
+     */
+
+    public static Apfloat logisticSigmoid(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        int radix = x.radix();
+        Apint one = Apint.ONES[radix];
+        if (x.isZero())
+        {
+            Apint two = new Apint(2, radix);
+            return new Aprational(one, two);
+        }
+
+        long precision = x.precision();
+        Apint minusOne = new Apint(-1, radix);
+        Apfloat e = (x.scale() < -precision ? one : exp(x.negate()));
+        return one.precision(precision).divide(one.precision(ApfloatHelper.extendPrecision(precision, e.equalDigits(minusOne))).add(e));
     }
 
     /**

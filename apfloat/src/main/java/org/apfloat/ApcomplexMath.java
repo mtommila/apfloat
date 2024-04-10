@@ -1604,6 +1604,26 @@ public class ApcomplexMath
     }
 
     /**
+     * Sinc.
+     *
+     * @param z The argument.
+     *
+     * @return sinc(z)
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex sinc(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        if (z.isZero())
+        {
+            return Apcomplex.ONES[z.radix()];
+        }
+        return sin(z).divide(z);
+    }
+
+    /**
      * Lambert W function. The W function gives the solution to the equation
      * <code>W e<sup>W</sup> = z</code>. Also known as the product logarithm.<p>
      *
@@ -4757,6 +4777,35 @@ public class ApcomplexMath
                   result = pow(two.multiply(pi), ν1).multiply(i).multiply(gamma(ApfloatHelper.ensureGammaPrecision(ν1.negate(), precision))).multiply(zeta(ν1.negate(), logznpi2i).divide(epiνi2).subtract(epiνi2.multiply(zeta(ν1.negate(), oneMinusLogznpi2i))));
         targetPrecision = ApfloatHelper.reducePrecision(targetPrecision, Math.max(0, (long) Math.log(result.scale() * 0.3)));
         return ApfloatHelper.limitPrecision(result, targetPrecision);
+    }
+
+    /**
+     * Logistic sigmoid.
+     *
+     * @param z The argument.
+     *
+     * @return &sigma;(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is an odd integer multiple of &pi; i.
+     *
+     * @since 1.14.0
+     */
+
+    public static Apcomplex logisticSigmoid(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        Apint one = Apint.ONES[radix];
+        if (z.isZero())
+        {
+            Apint two = new Apint(2, radix);
+            return new Aprational(one, two);
+        }
+
+        long precision = z.precision();
+        Apint minusOne = new Apint(-1, radix);
+        Apcomplex e = (z.scale() < -precision ? one : exp(z.negate()));
+        return one.precision(precision).divide(one.precision(ApfloatHelper.extendPrecision(precision, e.equalDigits(minusOne))).add(e));
     }
 
     /**

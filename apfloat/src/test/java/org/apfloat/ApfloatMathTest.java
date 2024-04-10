@@ -92,6 +92,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testCos"));
         suite.addTest(new ApfloatMathTest("testSin"));
         suite.addTest(new ApfloatMathTest("testTan"));
+        suite.addTest(new ApfloatMathTest("testSinc"));
         suite.addTest(new ApfloatMathTest("testW"));
         suite.addTest(new ApfloatMathTest("testToRadians"));
         suite.addTest(new ApfloatMathTest("testToDegrees"));
@@ -164,6 +165,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testHarmonicNumber"));
         suite.addTest(new ApfloatMathTest("testHarmonicNumberGeneralized"));
         suite.addTest(new ApfloatMathTest("testPolylog"));
+        suite.addTest(new ApfloatMathTest("testLogisticSigmoid"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
         suite.addTest(new ApfloatMathTest("testContinuedFraction"));
@@ -1894,6 +1896,22 @@ public class ApfloatMathTest
         {
             // OK; loss of precision
         }
+    }
+
+    public static void testSinc()
+    {
+        Apfloat a = ApfloatMath.sinc(new Apfloat(4, 20));
+        assertEquals("4 precision", 20, a.precision());
+        assertEquals("4 value", new Apfloat("-0.18920062382698206284"), a, new Apfloat("5e-20"));
+
+        a = ApfloatMath.sinc(new Apfloat("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apint(1), a);
+
+        a = ApfloatMath.sinc(new Apint(0, 2));
+        assertEquals("0 radix 2 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 radix 2 radix", 2, a.radix());
+        assertEquals("0 radix 2 value", new Apint(1, 2), a);
     }
 
     public static void testW()
@@ -4734,6 +4752,39 @@ public class ApfloatMathTest
         {
             // OK, result would be infinite
         }
+    }
+
+    public static void testLogisticSigmoid()
+    {
+        Apfloat a = ApfloatMath.logisticSigmoid(new Apfloat(4, 19));
+        assertEquals("4 precision", 19, a.precision());
+        assertEquals("4 value", new Apfloat("0.9820137900379084420"), a, new Apfloat("5e-19"));
+
+        a = ApfloatMath.logisticSigmoid(new Apfloat(3000, 19));
+        assertEquals("3000 precision", 19, a.precision());
+        assertEquals("3000 value", new Apfloat("1.000000000000000000"), a, new Apfloat("5e-18"));
+
+        a = ApfloatMath.logisticSigmoid(new Apfloat(-3000, 19));
+        assertEquals("-3000 precision", 16, a.precision());
+        assertEquals("-3000 value", new Apfloat("1.3078390189212504e-1303"), a, new Apfloat("5e-1319"));
+
+        a = ApfloatMath.logisticSigmoid(new Apfloat("1.000000000000000000e-1000000000000000000"));
+        assertEquals("1e-1000000000000000000 precision", 19, a.precision());
+        assertEquals("1e-1000000000000000000 value", new Apfloat("0.5000000000000000000"), a, new Apfloat("5e-19"));
+
+        a = ApfloatMath.logisticSigmoid(new Apfloat("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Aprational("1/2"), a);
+
+        a = ApfloatMath.logisticSigmoid(new Apint(0, 9));
+        assertEquals("0 radix 9 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 radix 9 radix", 9, a.radix());
+        assertEquals("0 radix 9 value", new Aprational("1/2", 9), a);
+
+        a = ApfloatMath.logisticSigmoid(new Apfloat("0.1", 18, 2));
+        assertEquals("0.5 precision", 18, a.precision());
+        assertEquals("0.5 radix", 2, a.radix());
+        assertEquals("0.5 value", new Apfloat("0.10011111010110011", 18, 2), a, new Apfloat("1e-18", 1, 2));
     }
 
     public static void testRandom()

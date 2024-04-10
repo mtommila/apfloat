@@ -659,6 +659,12 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number logisticSigmoid(Number x)
+        {
+            return ApcomplexMath.logisticSigmoid((Apcomplex) x);
+        }
+
+        @Override
         public Number max(Number x, Number y)
         {
             throw new IllegalArgumentException("Max can only be used with scalar values");
@@ -778,6 +784,12 @@ public class ApfloatCalculatorImpl
         public Number sin(Number x)
         {
             return ApcomplexMath.sin((Apcomplex) x);
+        }
+
+        @Override
+        public Number sinc(Number x)
+        {
+            return ApcomplexMath.sinc((Apcomplex) x);
         }
 
         @Override

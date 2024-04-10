@@ -83,6 +83,7 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testCos"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testSin"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testTan"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testSinc"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testW"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testProduct"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testSum"));
@@ -147,6 +148,7 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testHarmonicNumber"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testHarmonicNumberGeneralized"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testPolylog"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testLogisticSigmoid"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testUlp"));
 
         return suite;
@@ -640,6 +642,23 @@ public class FixedPrecisionApcomplexHelperTest
 
         // Loss of precision
         helper.tan(new Apcomplex(new Apfloat("1e1000", 3), new Apfloat("1.5")));
+    }
+
+    public static void testSinc()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(20);
+        Apcomplex z = new Apcomplex(new Apfloat(2), new Apfloat(3));
+        Apcomplex result = helper.sinc(z);
+        assertEquals("value", new Apcomplex("(0.446329031840243546,-2.753947027743647494)"), result, new Apfloat("1e-19"));
+        assertEquals("precision", 20, result.precision());
+
+        z = new Apcomplex("(3e-1000000000000,4e-1000000000000)");
+        result = helper.sinc(z);
+        assertEquals("small value", new Apcomplex("1").precision(20), result, new Apfloat("1e-19"));
+        assertEquals("small precision", 20, result.precision());
+
+        // Loss of precision
+        helper.sinc(new Apcomplex(new Apfloat("1e1000", 3), new Apfloat("1.5")));
     }
 
     public static void testW()
@@ -1526,6 +1545,15 @@ public class FixedPrecisionApcomplexHelperTest
                   z = new Apcomplex("(5.6,7.8)");
         Apcomplex result = helper.polylog(ν, z);
         assertEquals("value", new Apcomplex("(-64.9686,18.3633)"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLogisticSigmoid()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex z = new Apcomplex("(2.3,4.5)");
+        Apcomplex result = helper.logisticSigmoid(z);
+        assertEquals("value", new Apcomplex("(1.01145,-0.101269)"), result, new Apfloat("5e-5"));
         assertEquals("precision", 6, result.precision());
     }
 

@@ -74,6 +74,7 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testSin"));
         suite.addTest(new ApcomplexMathTest("testTan"));
         suite.addTest(new ApcomplexMathTest("testCot"));
+        suite.addTest(new ApcomplexMathTest("testSinc"));
         suite.addTest(new ApcomplexMathTest("testW"));
         suite.addTest(new ApcomplexMathTest("testProduct"));
         suite.addTest(new ApcomplexMathTest("testSum"));
@@ -138,6 +139,7 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testHarmonicNumber"));
         suite.addTest(new ApcomplexMathTest("testHarmonicNumberGeneralized"));
         suite.addTest(new ApcomplexMathTest("testPolylog"));
+        suite.addTest(new ApcomplexMathTest("testLogisticSigmoid"));
         suite.addTest(new ApcomplexMathTest("testUlp"));
 
         return suite;
@@ -1710,6 +1712,22 @@ public class ApcomplexMathTest
         {
             // OK; loss of precision
         }
+    }
+
+    public static void testSinc()
+    {
+        Apcomplex a = ApcomplexMath.sinc(new Apcomplex(new Apfloat(3, 20), new Apfloat(4, 20)));
+        assertEquals("(3,4), 20 precision", 20, a.precision());
+        assertEquals("(3,4), 20 value", new Apcomplex("(-3.860241556730304240,-3.858615677027572510)"), a, new Apfloat("5e-19"));
+
+        a = ApcomplexMath.sinc(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apint(1), a);
+
+        a = ApcomplexMath.sinc(new Apint(0, 2));
+        assertEquals("0 radix 2 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 radix 2 radix", 2, a.radix());
+        assertEquals("0 radix 2 value", new Apint(1, 2), a);
     }
 
     public static void testW()
@@ -6157,6 +6175,49 @@ public class ApcomplexMathTest
         {
             ApcomplexMath.polylog(new Apcomplex("(-3.00000,4.00000)"), new Apcomplex("1.00000"));
             fail("-3 + 4i, 1 accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK, result is infinite
+        }
+    }
+
+    public static void testLogisticSigmoid()
+    {
+        Apcomplex a = ApcomplexMath.logisticSigmoid(new Apcomplex(new Apfloat(3, 20), new Apfloat(4, 20)));
+        assertEquals("(3,4), precision", 19, a.precision());
+        assertEquals("(3,4), value", new Apcomplex("(1.032072199588268518,-0.040195507655084086)"), a, new Apfloat("5e-18"));
+
+        a = ApcomplexMath.logisticSigmoid(new Apcomplex(new Apfloat(3000, 19), new Apfloat(4, 19)));
+        assertEquals("(3000,4), precision", 19, a.precision());
+        assertEquals("(3000,4), value", new Apcomplex("1.000000000000000000"), a, new Apfloat("5e-18"));
+
+        a = ApcomplexMath.logisticSigmoid(new Apcomplex(new Apfloat(-3000, 19), new Apfloat(4, 19)));
+        assertEquals("(-3000,4), precision", 16, a.precision());
+        assertEquals("(-3000,4), value", new Apcomplex("(-8.54860631834400e-1304,-9.89775832980675e-1304)"), a, new Apfloat("5e-1319"));
+
+        a = ApcomplexMath.logisticSigmoid(new Apcomplex("(1.000000000000000000e-1000000000000000000,1.000000000000000000e-1000000000000000000)"));
+        assertEquals("(1e-1000000000000000000,1e-1000000000000000000), precision", 19, a.precision());
+        assertEquals("(1e-1000000000000000000,1e-1000000000000000000), value", new Apcomplex("0.5000000000000000000"), a, new Apfloat("5e-19"));
+
+        a = ApcomplexMath.logisticSigmoid(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Aprational("1/2"), a);
+
+        a = ApcomplexMath.logisticSigmoid(new Apint(0, 9));
+        assertEquals("0 radix 9 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 radix 9 radix", 9, a.radix());
+        assertEquals("0 radix 9 value", new Aprational("1/2", 9), a);
+
+        a = ApcomplexMath.logisticSigmoid(new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)));
+        assertEquals("0.5 + 0.75i precision", 18, a.precision());
+        assertEquals("0.5 + 0.75i radix", 2, a.radix());
+        assertEquals("0.5 + 0.75i value", new Apcomplex(new Apfloat("0.1010001111011111101", 18, 2), new Apfloat("0.0010111011101101", 18, 2)), a, new Apfloat("1e-18", 1, 2));
+
+        try
+        {
+            ApcomplexMath.logisticSigmoid(new Apcomplex(Apfloat.ZERO, ApfloatMath.pi(25)));
+            fail("i pi accepted");
         }
         catch (ArithmeticException ae)
         {

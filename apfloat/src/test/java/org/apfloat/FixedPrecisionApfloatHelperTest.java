@@ -99,6 +99,7 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testCos"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testSin"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testTan"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testSinc"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testW"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testToDegrees"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testToRadians"));
@@ -172,6 +173,7 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testHarmonicNumber"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testHarmonicNumberGeneralized"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testPolylog"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testLogisticSigmoid"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testContinuedFraction"));
@@ -1001,6 +1003,31 @@ public class FixedPrecisionApfloatHelperTest
 
         // Loss of precision
         helper.tan(new Apfloat("1e1000"));
+    }
+
+    public static void testSinc()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(100);
+        Apfloat x = new Apfloat(2);
+        Apfloat result = helper.sinc(x);
+        assertEquals("value", new Apfloat("0.4546487134128408476980099329558724213511274857239451341894865057654836507703917723100633444624796902"), result, new Apfloat("1e-100"));
+        assertEquals("precision", 100, result.precision());
+
+        x = new Apfloat(3).add(ApfloatMath.scale(ApfloatMath.pi(200), 100));
+        result = helper.sinc(x);
+        assertEquals("value 100", new Apfloat("4.491989370379195769076292132633729542441923579269675954842294682403756171256157205040164432640257852e-102"), result, new Apfloat("1e-201"));
+        assertEquals("precision 100", 100, result.precision());
+
+        result = helper.sinc(new Apfloat(0));
+        assertEquals("value 0", new Apfloat(1), result);
+
+        x = new Apfloat("2e-1000000000000");
+        result = helper.sinc(x);
+        assertEquals("small value", new Apfloat(1, 100), result, new Apfloat("1e-99"));
+        assertEquals("small precision", 100, result.precision());
+
+        // Loss of precision
+        helper.sinc(new Apfloat("1e1000"));
     }
 
     public static void testW()
@@ -1939,6 +1966,15 @@ public class FixedPrecisionApfloatHelperTest
                 x = new Apfloat("0.9");
         Apfloat result = helper.polylog(ν, x);
         assertEquals("value", new Apfloat("368.902"), result, new Apfloat("5e-3"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLogisticSigmoid()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("0.9");
+        Apfloat result = helper.logisticSigmoid(x);
+        assertEquals("value", new Apfloat("0.710950"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
     }
 

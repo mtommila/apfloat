@@ -305,6 +305,7 @@ public class CalculatorTest
         assertCalculation("4.1358", "legendreQ(1.20000,1.70000,0.900000)");
         assertCalculation("-4.371-3.651i", "logGamma(-1.234+2.345i)");
         assertCalculation("1.04516", "logIntegral(2.000000)");
+        assertCalculation("8.80797e-1", "logisticSigmoid(2.00000)");
         assertCalculation("1.23", "n(1.23456, 3)");
         assertCalculation("1.04748", "pochhammer(1.20000,0.700000)");
         assertCalculation("280/81", "pochhammer(1/3,4)");
@@ -349,6 +350,7 @@ public class CalculatorTest
         assertCalculation("2.1e10", "scale(2.1, 10)");
         assertCalculation("2.5e10+1.5e10i", "scale(2.5+1.5i, 10)");
         assertCalculation("200000/3", "scale(2/3, 5)");
+        assertCalculation("4.54649e-1", "sinc(2.00000)");
         assertCalculation("1.60541", "sinIntegral(2.00000)");
         assertCalculation("2.50157", "sinhIntegral(2.00000)");
         assertCalculation("4.33712e-1-1.30178e-1i", "sphericalHarmonicY(1.20000,1.50000,0.900000,1.90000)");
@@ -599,6 +601,8 @@ public class CalculatorTest
         assertCalculationFailure("logGamma(2,2)");
         assertCalculationFailure("logIntegral()");
         assertCalculationFailure("logIntegral(1.0,1.0)");
+        assertCalculationFailure("logisticSigmoid()");
+        assertCalculationFailure("logisticSigmoid(2.0,2.0)");
         assertCalculationFailure("n(1.23456, i)");
         assertCalculationFailure("n(1.23456, 0.5)");
         assertCalculationFailure("n(1.23456)");
@@ -647,6 +651,8 @@ public class CalculatorTest
         assertCalculationFailure("scale(1.23456, 0.5)");
         assertCalculationFailure("scale(1.23456)");
         assertCalculationFailure("scale(1.23456, 2, 2)");
+        assertCalculationFailure("sinc()");
+        assertCalculationFailure("sinc(1.0,1.0)");
         assertCalculationFailure("sinIntegral()");
         assertCalculationFailure("sinIntegral(1.0,1.0)");
         assertCalculationFailure("sinhIntegral()");

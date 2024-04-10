@@ -488,6 +488,22 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
+     * Sinc.
+     *
+     * @param x The argument.
+     *
+     * @return sinc(x)
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat sinc(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.sinc(setTrigonometricPrecision(x)));
+    }
+
+    /**
      * Arithmetic-geometric mean.
      *
      * @param a The first operand.
@@ -2150,6 +2166,22 @@ public class FixedPrecisionApfloatHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApfloatMath.polylog(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Logistic sigmoid.
+     *
+     * @param x The argument.
+     *
+     * @return &sigma;(x)
+     *
+     * @since 1.14.0
+     */
+
+    public Apfloat logisticSigmoid(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.logisticSigmoid(setExponentialPrecision(x)));
     }
 
     /**
