@@ -302,7 +302,7 @@
               <target>
                 <ac:for xmlns:ac="antlib:net.sf.antcontrib" param="filename">
                   <path>
-                    <fileset dir="${project.build.directory}/site/apidocs" />
+                    <fileset dir="${project.build.directory}/site/apidocs" includes="*.html" />
                   </path>
                   <sequential>
                     <local name="filename" />
@@ -323,6 +323,9 @@
                     </copy>
                   </sequential>
                 </ac:for>
+                <copy todir="${project.build.directory}/site/docs">
+                  <fileset dir="${project.build.directory}/site/apidocs" excludes="*.html" />
+                </copy>
                 <zip destfile="${project.build.directory}/apfloat-${project.version}.zip">
                   <fileset dir="." includes="readme.html,LICENSE.txt" />
                   <fileset dir="src/site/resources" />
