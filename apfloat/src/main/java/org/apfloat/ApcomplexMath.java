@@ -39,7 +39,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApfloatMath
  *
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -1227,6 +1227,8 @@ public class ApcomplexMath
      * @param z The argument.
      *
      * @return Inverse cosine of <code>z</code>.
+     *
+     * @exception InfiniteExpansionException If <code>z</code> is zero.
      */
 
     public static Apcomplex acos(Apcomplex z)
@@ -1271,6 +1273,8 @@ public class ApcomplexMath
      * @param z The argument.
      *
      * @return Inverse hyperbolic cosine of <code>z</code>.
+     *
+     * @exception InfiniteExpansionException If <code>z</code> is zero.
      */
 
     public static Apcomplex acosh(Apcomplex z)

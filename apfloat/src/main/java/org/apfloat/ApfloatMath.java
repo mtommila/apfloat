@@ -50,7 +50,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApintMath
  *
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -1765,6 +1765,7 @@ public class ApfloatMath
      * @return Inverse cosine of <code>x</code>.
      *
      * @exception ArithmeticException If <code>abs(x) &gt; 1</code>.
+     * @exception InfiniteExpansionException If <code>x</code> is zero.
      */
 
     public static Apfloat acos(Apfloat x)

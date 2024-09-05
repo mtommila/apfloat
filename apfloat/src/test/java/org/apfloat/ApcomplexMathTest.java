@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -1220,6 +1220,16 @@ public class ApcomplexMathTest
 
         a = ApcomplexMath.acosh(new Apcomplex(new Apfloat(1, 100)));
         assertEquals("1, 100 value", new Apfloat(0), a);
+
+        try
+        {
+            ApcomplexMath.acosh(new Apcomplex("0"));
+            fail("acosh(0) accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; result would have infinite precision
+        }
     }
 
     public static void testAsinh()

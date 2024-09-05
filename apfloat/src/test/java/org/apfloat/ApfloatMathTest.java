@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
 import static java.math.RoundingMode.*;
 
 /**
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -1525,6 +1525,16 @@ public class ApfloatMathTest
 
         a = ApfloatMath.acosh(new Apfloat(1, 100));
         assertEquals("1, 100 value", new Apfloat(0), a);
+
+        try
+        {
+            ApfloatMath.acosh(new Apfloat("0"));
+            fail("acosh(0) accepted");
+        }
+        catch (ArithmeticException ae)
+        {
+            // OK; result would be complex
+        }
 
         try
         {
