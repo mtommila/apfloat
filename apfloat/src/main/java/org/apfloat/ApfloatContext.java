@@ -307,7 +307,6 @@ public class ApfloatContext
             ApfloatMath.cleanUp();      // Clear references to static cached apfloats
             System.gc();
             System.gc();
-            System.runFinalization();
             this.builderFactory.shutdown();
         }
 

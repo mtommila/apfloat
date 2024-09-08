@@ -39,7 +39,7 @@ import org.apfloat.spi.ExecutionBuilder;
  * Factory class for getting instances of the various builder classes needed
  * to build an <code>ApfloatImpl</code> with the <code>rawtype</code> data element type.
  *
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -147,7 +147,6 @@ public class RawtypeBuilderFactory
     {
         System.gc();
         System.gc();
-        System.runFinalization();
         DiskDataStorage.gc();
     }
 
