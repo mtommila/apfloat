@@ -33,7 +33,7 @@ import org.apfloat.OverflowException;
 /**
  * Miscellaneous utility methods.
  *
- * @version 1.13.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -531,7 +531,7 @@ public class Util
         }
         catch (ArithmeticException ae)
         {
-            throw new OverflowException("Overflow", ae);
+            throw new OverflowException("Overflow", ae, "overflow");
         }
     }
 
@@ -555,7 +555,7 @@ public class Util
         }
         catch (ArithmeticException ae)
         {
-            throw new OverflowException("Overflow", ae);
+            throw new OverflowException("Overflow", ae, "overflow");
         }
     }
 
@@ -579,7 +579,7 @@ public class Util
         }
         catch (ArithmeticException ae)
         {
-            throw new OverflowException("Overflow", ae);
+            throw new OverflowException("Overflow", ae, "overflow");
         }
     }
 

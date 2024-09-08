@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import java.util.Set;
  * has been initiated to prevent other threads from performing any operations.
  *
  * @since 1.6.2
- * @version 1.6.2
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -47,12 +47,12 @@ class ShutdownMap<K, V>
     @Override
     public Set<Map.Entry<K, V>> entrySet()
     {
-        throw new ApfloatRuntimeException("Shutdown in progress");
+        throw new ApfloatRuntimeException("Shutdown in progress", "shutdown");
     }
 
     @Override
     public V put(K key, V value)
     {
-        throw new ApfloatRuntimeException("Shutdown in progress");
+        throw new ApfloatRuntimeException("Shutdown in progress", "shutdown");
     }
 }

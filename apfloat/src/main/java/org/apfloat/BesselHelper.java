@@ -41,7 +41,7 @@ import static org.apfloat.ApfloatMath.sqrt;
  * Helper class for Bessel functions.
  *
  * @since 1.13.0
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -137,7 +137,7 @@ class BesselHelper
     {
         if (z.isZero())
         {
-            throw new ArithmeticException("Bessel Y of zero");
+            throw new ApfloatArithmeticException("Bessel Y of zero", "besselY.ofZero");
         }
         return besselSecondKind((ν, z) ->
         {
@@ -152,7 +152,7 @@ class BesselHelper
     {
         if (z.isZero())
         {
-            throw new ArithmeticException("Bessel K of zero");
+            throw new ApfloatArithmeticException("Bessel K of zero", "besselK.ofZero");
         }
         Apint one = Apint.ONES[radix];
         Apfloat half = one.precision(workingPrecision).divide(two);

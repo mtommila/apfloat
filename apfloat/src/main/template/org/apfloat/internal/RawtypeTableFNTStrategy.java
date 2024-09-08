@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import static org.apfloat.internal.RawtypeModConstants.*;
  *
  * All access to this class must be externally synchronized.
  *
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -60,11 +60,11 @@ public class RawtypeTableFNTStrategy
 
         if (length > MAX_TRANSFORM_LENGTH)
         {
-            throw new TransformLengthExceededException("Maximum transform length exceeded: " + length + " > " + MAX_TRANSFORM_LENGTH);
+            throw new TransformLengthExceededException("Maximum transform length exceeded: " + length + " > " + MAX_TRANSFORM_LENGTH, "maximumTransformLengthExceeded", length, MAX_TRANSFORM_LENGTH);
         }
         else if (length > Integer.MAX_VALUE)
         {
-            throw new ApfloatInternalException("Maximum array length exceeded: " + length);
+            throw new ApfloatInternalException("Maximum array length exceeded: " + length, "maximumArraySizeExceeded", length);
         }
 
         setModulus(MODULUS[modulus]);                                       // Modulus
@@ -82,13 +82,14 @@ public class RawtypeTableFNTStrategy
     {
         long length = dataStorage.getSize();            // Transform length n
 
-        if (Math.max(length, totalTransformLength) > MAX_TRANSFORM_LENGTH)
+        long maxLength = Math.max(length, totalTransformLength);
+        if (maxLength > MAX_TRANSFORM_LENGTH)
         {
-            throw new TransformLengthExceededException("Maximum transform length exceeded: " + Math.max(length, totalTransformLength) + " > " + MAX_TRANSFORM_LENGTH);
+            throw new TransformLengthExceededException("Maximum transform length exceeded: " + maxLength + " > " + MAX_TRANSFORM_LENGTH, "maximumTransformLengthExceeded", maxLength, MAX_TRANSFORM_LENGTH);
         }
         else if (length > Integer.MAX_VALUE)
         {
-            throw new ApfloatInternalException("Maximum array length exceeded: " + length);
+            throw new ApfloatInternalException("Maximum array length exceeded: " + length, "maximumArraySizeExceeded", length);
         }
 
         setModulus(MODULUS[modulus]);                                       // Modulus

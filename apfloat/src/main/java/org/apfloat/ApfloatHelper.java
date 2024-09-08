@@ -41,7 +41,7 @@ import static org.apfloat.spi.RadixConstants.*;
 /**
  * Various utility methods related to apfloats.
  *
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -225,7 +225,7 @@ class ApfloatHelper
         }
         catch (IOException ioe)
         {
-            throw new ApfloatRuntimeException("Should not occur", ioe);
+            throw new ApfloatRuntimeException("Should not occur", ioe, "shouldNotOccur");
         }
         precision = (precision == Apfloat.DEFAULT ? Apfloat.INFINITE : precision);
         return a.toRadix(radix).getImpl(precision);
@@ -406,7 +406,7 @@ class ApfloatHelper
     {
         if (targetPrecision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate power to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate power to infinite precision", "pow.infinitePrecision");
         }
     }
 
@@ -417,7 +417,7 @@ class ApfloatHelper
         {
             if (z.isZero())
             {
-                throw new ArithmeticException("Zero to power zero");
+                throw new ApfloatArithmeticException("Zero to power zero", "pow.zeroToZero");
             }
 
             return new Apcomplex(new Apfloat(1, Apfloat.INFINITE, z.radix()));
@@ -426,7 +426,7 @@ class ApfloatHelper
         {
             if (w.real().signum() <= 0)
             {
-                throw new ArithmeticException("Zero to power of " + (w.imag().signum() == 0 ? "negative number" : "number with nonpositive real part"));
+                throw new ApfloatArithmeticException("Zero to power of " + (w.imag().signum() == 0 ? "negative number" : "number with nonpositive real part"), w.imag().signum() == 0 ? "pow.zeroToNegative" : "pow.zeroToNonpositiveReal");
             }
 
             return z;
@@ -463,7 +463,7 @@ class ApfloatHelper
         }
         else if (x.signum() < 0 && !y.isInteger())
         {
-            throw new ArithmeticException("Power of negative number to non-integer; result would be complex");
+            throw new ApfloatArithmeticException("Power of negative number to non-integer; result would be complex", "pow.negativeToNonInteger");
         }
 
         checkPowPrecision(targetPrecision);
@@ -533,7 +533,7 @@ class ApfloatHelper
         precision = precision - extraPrecision;
         if (precision <= 0)
         {
-            throw new LossOfPrecisionException("Complete loss of precision");
+            throw new LossOfPrecisionException("Complete loss of accurate digits", "lossOfPrecision");
         }
         return precision;
     }
@@ -747,7 +747,7 @@ class ApfloatHelper
         }
         catch (IOException ioe)
         {
-            throw new ApfloatRuntimeException("Should not occur", ioe);
+            throw new ApfloatRuntimeException("Should not occur", ioe, "shouldNotOccur");
         }
 
         BigInteger b = new BigInteger(x.signum(), bytes);
@@ -822,7 +822,7 @@ class ApfloatHelper
         }
         catch (ArithmeticException ae)
         {
-            throw new OverflowException("Overflow", ae);
+            throw new OverflowException("Overflow", ae, "overflow");
         }
     }
 

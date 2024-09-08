@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -73,7 +73,7 @@ import org.apfloat.spi.Util;
  * can even make the execution slower due to increased cache contention.
  *
  * @since 1.7.0
- * @version 1.7.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -114,7 +114,7 @@ public class RawtypeMatrixStrategy
             n2 != (n2 & -n2) ||
             n1 <= 0 || n2 <= 0)
         {
-            throw new ApfloatInternalException("Matrix size must be a power of two, not " + n1 + " x " + n2);
+            throw new ApfloatInternalException("Matrix size must be a power of two, not " + n1 + " x " + n2, "matrix.sizePow2", n1, n2);
         }
         if (n1 == n2)
         {
@@ -142,7 +142,7 @@ public class RawtypeMatrixStrategy
         }
         else
         {
-            throw new ApfloatInternalException("Must be n1 = n2, n1 = 2*n2 or n2 = 2*n1; matrix is " + n1 + " x " + n2);
+            throw new ApfloatInternalException("Must be n1 = n2, n1 = 2*n2 or n2 = 2*n1; matrix is " + n1 + " x " + n2, "matrix.sizeDouble", n1, n2);
         }
     }
 
@@ -216,11 +216,11 @@ public class RawtypeMatrixStrategy
             n2 != (n2 & -n2) ||
             n1 <= 0 || n2 <= 0)
         {
-            throw new ApfloatInternalException("Matrix size must be a power of two, not " + n1 + " x " + n2);
+            throw new ApfloatInternalException("Matrix size must be a power of two, not " + n1 + " x " + n2, "matrix.sizePow2", n1, n2);
         }
         if (n1 < 2)
         {
-            throw new ApfloatInternalException("Matrix height must be at least 2.");
+            throw new ApfloatInternalException("Matrix height must be at least 2", "matrix.heightMin");
         }
         permuteToDoubleWidth(arrayAccess.getRawtypeData(), arrayAccess.getOffset(), n1, n2);
     }
@@ -276,7 +276,7 @@ public class RawtypeMatrixStrategy
             n2 != (n2 & -n2) ||
             n1 <= 0 || n2 <= 0)
         {
-            throw new ApfloatInternalException("Matrix size must be a power of two, not " + n1 + " x " + n2);
+            throw new ApfloatInternalException("Matrix size must be a power of two, not " + n1 + " x " + n2, "matrix.sizePow2", n1, n2);
         }
         permuteToHalfWidth(arrayAccess.getRawtypeData(), arrayAccess.getOffset(), n1, n2);
     }

@@ -44,7 +44,7 @@ import static java.util.FormattableFlags.*;
  * @see Apfloat
  * @see ApcomplexMath
  *
- * @version 1.13.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -520,7 +520,7 @@ public class Apcomplex
     {
         if (z.isZero())
         {
-            throw new ArithmeticException(isZero() ? "Zero divided by zero" : "Division by zero");
+            throw new ApfloatArithmeticException(isZero() ? "Zero divided by zero" : "Division by zero", isZero() ? "divide.zeroByZero" : "divide.byZero");
         }
 
         Apfloat tmpReal,
@@ -691,7 +691,7 @@ public class Apcomplex
         long value = longValueExact();
         if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE)
         {
-            throw new ArithmeticException("Out of range");
+            throw new ApfloatArithmeticException("Out of range", "outOfRange");
         }
         return (byte) value;
     }
@@ -715,7 +715,7 @@ public class Apcomplex
         long value = longValueExact();
         if (value > Short.MAX_VALUE || value < Short.MIN_VALUE)
         {
-            throw new ArithmeticException("Out of range");
+            throw new ApfloatArithmeticException("Out of range", "outOfRange");
         }
         return (short) value;
     }
@@ -739,7 +739,7 @@ public class Apcomplex
         long value = longValueExact();
         if (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE)
         {
-            throw new ArithmeticException("Out of range");
+            throw new ApfloatArithmeticException("Out of range", "outOfRange");
         }
         return (int) value;
     }
@@ -762,7 +762,7 @@ public class Apcomplex
     {
         if (imag().signum() != 0)
         {
-            throw new ArithmeticException("Out of range");
+            throw new ApfloatArithmeticException("Out of range", "outOfRange");
         }
         return real().longValueExact();
     }

@@ -35,7 +35,7 @@ import static org.apfloat.ApcomplexMath.isNonPositiveInteger;
  * Helper class for the incomplete gamma function.
  *
  * @since 1.10.0
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -227,7 +227,7 @@ class IncompleteGammaHelper
         {
             if (a.real().signum() <= 0)
             {
-                throw new ArithmeticException("Upper gamma with first argument real part nonpositive and second argment zero");
+                throw new ApfloatArithmeticException("Upper gamma with first argument real part nonpositive and second argment zero", "gammaIncomplete.upperOffNonpositive");
             }
             return ApcomplexMath.gamma(a);
         }
@@ -240,7 +240,7 @@ class IncompleteGammaHelper
     {
         if (a.isZero() && z0.isZero() && z1.isZero())
         {
-            throw new ArithmeticException("Gamma of zero");
+            throw new ApfloatArithmeticException("Gamma of zero", "gamma.ofZero");
         }
         if (z0.equals(z1))
         {
@@ -269,7 +269,7 @@ class IncompleteGammaHelper
         long precision = Arrays.stream(z).mapToLong(Apcomplex::precision).min().getAsLong();
         if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate incomplete gamma function to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate incomplete gamma function to infinite precision", "gammaIncomplete.infinitePrecision");
         }
     }
 
@@ -331,7 +331,7 @@ class IncompleteGammaHelper
     {
         if (isNonPositiveInteger(a))
         {
-            throw new ArithmeticException("Lower gamma with first argument nonpositive integer");
+            throw new ApfloatArithmeticException("Lower gamma with first argument nonpositive integer", "gammaIncomplete.lowerOffNonpositive");
         }
         if (useSum(z))
         {

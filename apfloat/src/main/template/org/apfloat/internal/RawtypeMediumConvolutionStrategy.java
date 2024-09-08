@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import org.apfloat.spi.DataStorage;
  * Medium-length convolution strategy.
  * Performs a simple O(n<sup>2</sup>) multiplication when the size of one operand is relatively short.
  *
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -79,7 +79,7 @@ public class RawtypeMediumConvolutionStrategy
 
         if (shortSize > Integer.MAX_VALUE)
         {
-            throw new ApfloatInternalException("Too long shorter number, size = " + shortSize);
+            throw new ApfloatInternalException("Too long shorter number, size = " + shortSize, "short.size", shortSize);
         }
 
         int bufferSize = (int) shortSize;

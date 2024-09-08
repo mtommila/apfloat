@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import static org.apfloat.ApfloatMath.abs;
  * Helper class for rounding functions.
  *
  * @since 1.7.0
- * @version 1.11.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -50,7 +50,7 @@ class RoundingHelper
         }
         else if (y.signum() == 0)
         {
-            throw new ArithmeticException("Non-zero as multiple of zero");
+            throw new ApfloatArithmeticException("Non-zero as multiple of zero", "round.ofZero");
         }
 
         // Get rid of residual digits
@@ -101,7 +101,7 @@ class RoundingHelper
         }
         else if (y.signum() == 0)
         {
-            throw new ArithmeticException("Non-zero as multiple of zero");
+            throw new ApfloatArithmeticException("Non-zero as multiple of zero", "round.ofZero");
         }
 
         y = AprationalMath.abs(y);
@@ -126,7 +126,7 @@ class RoundingHelper
         if (x.signum() == 0)
         {
             // Underflow now, and might overflow later
-            throw new OverflowException("Underflow / overflow");
+            throw new OverflowException("Underflow / overflow", "underflow.overflow");
         }
 
         x = roundToInteger(x, roundingMode);
@@ -227,7 +227,7 @@ class RoundingHelper
             case UNNECESSARY:
                 if (x.size() > x.scale())
                 {
-                    throw new ArithmeticException("Rounding necessary");
+                    throw new ApfloatArithmeticException("Rounding necessary", "roundingNecessary");
                 }
                 i = x.truncate();   // To get rid of any residual digits
                 break;

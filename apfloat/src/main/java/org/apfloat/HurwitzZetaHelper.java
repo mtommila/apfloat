@@ -33,7 +33,7 @@ import static org.apfloat.ApcomplexMath.isNonPositiveInteger;
  * Helper class for the Hurwitz zeta function.
  *
  * @since 1.11.0
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -48,7 +48,7 @@ class HurwitzZetaHelper
         Apint one = new Apint(1, radix);
         if (s.equals(one))
         {
-            throw new ArithmeticException("Zeta of first argument one");
+            throw new ApfloatArithmeticException("Zeta of first argument one", "zeta.ofFirstOne");
         }
         if (s.isZero() && a.isZero())
         {
@@ -90,11 +90,11 @@ class HurwitzZetaHelper
                 return t.add(ApfloatHelper.ensurePrecision(z, precision));
             }
 
-            throw new ArithmeticException("Zeta of second argument nonpositive integer");
+            throw new ApfloatArithmeticException("Zeta of second argument nonpositive integer", "zeta.ofSecondNonpositive");
         }
         if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate zeta function to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate zeta function to infinite precision", "zeta.infinitePrecision");
         }
         long doublePrecision = ApfloatHelper.getDoublePrecision(radix);
         // Must be: ℜ(a) + N > 1 and ℜ(s) + 2M > 1

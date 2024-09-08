@@ -192,7 +192,7 @@ import org.apfloat.spi.Util;
  * If these features are added to the Java platform in the future, they
  * may be added to the <code>ApfloatContext</code> API as well.
  *
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -1028,7 +1028,7 @@ public class ApfloatContext
         }
         catch (Exception e)
         {
-            throw new ApfloatConfigurationException("Error setting property \"" + propertyName + "\" to value \"" + propertyValue + '\"', e);
+            throw new ApfloatConfigurationException("Error setting property \"" + propertyName + "\" to value \"" + propertyValue + '\"', e, "configurationProperty", propertyName, propertyValue);
         }
     }
 
@@ -1155,7 +1155,7 @@ public class ApfloatContext
     {
         if (Thread.interrupted())
         {
-            throw new ApfloatInterruptedException("Interrupted");
+            throw new ApfloatInterruptedException("Interrupted", "interrupted");
         }
     }
 

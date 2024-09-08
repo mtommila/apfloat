@@ -29,7 +29,7 @@ import org.apfloat.spi.Util;
  * Helper class for the Riemann zeta function.
  *
  * @since 1.11.0
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -47,7 +47,7 @@ class ZetaHelper
         Apint one = Apint.ONES[radix];
         if (s.equals(one))
         {
-            throw new ArithmeticException("Zeta of one");
+            throw new ApfloatArithmeticException("Zeta of one", "zeta.ofOne");
         }
         Apint two = new Apint(2, radix);
         if (s.isZero())
@@ -76,7 +76,7 @@ class ZetaHelper
         }
         if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate zeta function to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate zeta function to infinite precision", "zeta.infinitePrecision");
         }
         if (s.real().signum() < 0)
         {
@@ -91,7 +91,7 @@ class ZetaHelper
         }
         if (s.imag().doubleValue() == Double.POSITIVE_INFINITY)
         {
-            throw new OverflowException("Imaginary part too large");
+            throw new OverflowException("Imaginary part too large", "imag.overflow");
         }
 
         if (s.real().compareTo(one) < 0 && s.imag().compareTo(new Apint(50000, radix)) > 0)

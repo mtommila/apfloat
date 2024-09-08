@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -77,7 +77,7 @@ import org.apfloat.spi.Util;
  * @see DataStorage#getTransposedArray(int,int,int,int)
  *
  * @since 1.7.0
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -103,7 +103,7 @@ public class TwoPassFNTStrategy
 
         if (n1 > maxBlockSize || n2 > maxBlockSize)
         {
-            throw new ApfloatInternalException("Not enough memory available to fit one row or column of matrix to memory; n1=" + n1 + ", n2=" + n2 + ", available=" + maxBlockSize);
+            throw new ApfloatInternalException("Not enough memory available to fit one row or column of matrix to memory; n1=" + n1 + ", n2=" + n2 + ", available=" + maxBlockSize, "twoPass.memory", n1, n2, maxBlockSize);
         }
 
         b = maxBlockSize / n1;
@@ -145,7 +145,7 @@ public class TwoPassFNTStrategy
 
         if (n1 > maxBlockSize || n2 > maxBlockSize)
         {
-            throw new ApfloatInternalException("Not enough memory available to fit one row or column of matrix to memory; n1=" + n1 + ", n2=" + n2 + ", available=" + maxBlockSize);
+            throw new ApfloatInternalException("Not enough memory available to fit one row or column of matrix to memory; n1=" + n1 + ", n2=" + n2 + ", available=" + maxBlockSize, "twoPass.memory", n1, n2, maxBlockSize);
         }
 
         b = maxBlockSize / n2;

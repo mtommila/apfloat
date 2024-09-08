@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,12 +40,13 @@ package org.apfloat;
  *   <li>Some other internal limitation.</li>
  * </ul>
  *
- * @version 1.1
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
 public class ApfloatRuntimeException
     extends RuntimeException
+    implements ApfloatLocalizedException
 {
     /**
      * Constructs a new apfloat runtime exception with an empty detail message.
@@ -78,5 +79,77 @@ public class ApfloatRuntimeException
         super(message, cause);
     }
 
+    /**
+     * Constructs a new apfloat runtime exception with the specified detail message and localization data.
+     *
+     * @param message The detail message.
+     * @param localizationKey The localization key.
+     * @param localizationArgs The localization arguments.
+     *
+     * @since 1.15.0
+     */
+
+    public ApfloatRuntimeException(String message, String localizationKey, Object... localizationArgs)
+    {
+        super(message);
+        this.localizationKey = localizationKey;
+        this.localizationArgs = localizationArgs.clone();
+    }
+
+    /**
+     * Constructs a new apfloat runtime exception with the specified detail message, cause and localization data.
+     *
+     * @param message The detail message.
+     * @param cause Originating cause of the exception.
+     * @param localizationKey The localization key.
+     * @param localizationArgs The localization arguments.
+     *
+     * @since 1.15.0
+     */
+
+    public ApfloatRuntimeException(String message, Throwable cause, String localizationKey, Object... localizationArgs)
+    {
+        super(message, cause);
+        this.localizationKey = localizationKey;
+        this.localizationArgs = localizationArgs.clone();
+    }
+
+    @Override
+    public String getLocalizedMessage()
+    {
+        return ApfloatLocalizedException.super.getLocalizedMessage();
+    }
+
+    /**
+     * Returns the localization key.
+     *
+     * @return The localization key.
+     *
+     * @since 1.15.0
+     */
+
+    @Override
+    public String getLocalizationKey()
+    {
+        return this.localizationKey;
+    }
+
+    /**
+     * Returns the localization arguments.
+     *
+     * @return The localization arguments.
+     *
+     * @since 1.15.0
+     */
+
+    @Override
+    public Object[] getLocalizationArgs()
+    {
+        return this.localizationArgs.clone();
+    }
+
     private static final long serialVersionUID = -7022924635011038776L;
+
+    private String localizationKey;
+    private Object[] localizationArgs;
 }

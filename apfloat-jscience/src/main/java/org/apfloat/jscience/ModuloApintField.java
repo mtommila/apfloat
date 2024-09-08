@@ -27,6 +27,7 @@ import javolution.context.LocalContext;
 
 import org.apfloat.Apint;
 import org.apfloat.ApintMath;
+import org.apfloat.ApfloatArithmeticException;
 
 /**
  * This class represents an arbitrary precision modulo integer.
@@ -34,7 +35,7 @@ import org.apfloat.ApintMath;
  * the modulo reduction is not done.
  *
  * @since 1.8.0
- * @version 1.8.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -133,7 +134,7 @@ public class ModuloApintField
         Apint modulus = MODULUS.get();
         if (modulus == null)
         {
-            throw new ArithmeticException("Modulus is not set");
+            throw new ApfloatArithmeticException("Modulus is not set");
         }
         return new ModuloApintField(ApintMath.modPow(value(), new Apint(-1), modulus));
     }

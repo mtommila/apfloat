@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import org.apfloat.spi.Util;
  * Helper class for Lambert W function.
  *
  * @since 1.8.0
- * @version 1.10.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -85,7 +85,7 @@ class LambertWHelper {
 
         if ((this.z.real().signum() != 0 || this.z.imag().signum() != 0) && this.precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate W to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate W to infinite precision", "w.infinitePrecision");
         }
     }
 
@@ -247,7 +247,7 @@ class LambertWHelper {
             }
             else
             {
-                throw new ArithmeticException("W_" + this.k + " of zero");
+                throw new ApfloatArithmeticException("W_" + this.k + " of zero", "w.ofZero", this.k);
             }
         }
 

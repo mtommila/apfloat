@@ -30,7 +30,7 @@ package org.apfloat;
  * except that it's a runtime exception and not a checked exception.<p>
  *
  * @since 1.14.0
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -66,6 +66,37 @@ public class ApfloatInterruptedException
     public ApfloatInterruptedException(String message, Throwable cause)
     {
         super(message, cause);
+    }
+
+    /**
+     * Constructs a new apfloat interrupted exception with the specified detail message and localization data.
+     *
+     * @param message The detail message.
+     * @param localizationKey The localization key.
+     * @param localizationArgs The localization arguments.
+     *
+     * @since 1.15.0
+     */
+
+    public ApfloatInterruptedException(String message, String localizationKey, Object... localizationArgs)
+    {
+        super(message, localizationKey, localizationArgs);
+    }
+
+    /**
+     * Constructs a new apfloat interrupted exception with the specified detail message, cause and localization data.
+     *
+     * @param message The detail message.
+     * @param cause Originating cause of the exception.
+     * @param localizationKey The localization key.
+     * @param localizationArgs The localization arguments.
+     *
+     * @since 1.15.0
+     */
+
+    public ApfloatInterruptedException(String message, Throwable cause, String localizationKey, Object... localizationArgs)
+    {
+        super(message, cause, localizationKey, localizationArgs);
     }
 
     private static final long serialVersionUID = 1L;

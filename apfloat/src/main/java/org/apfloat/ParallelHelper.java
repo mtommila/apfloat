@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Helper methods for parallel algorithms.
  *
  * @since 1.8.0
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -130,11 +130,11 @@ class ParallelHelper
         }
         catch (InterruptedException ie)
         {
-            throw new ApfloatInterruptedException("Waiting for dispatched task to complete was interrupted", ie);
+            throw new ApfloatInterruptedException("Waiting for dispatched task to complete was interrupted", ie, "task.interrupted");
         }
         catch (ExecutionException ee)
         {
-            throw new ApfloatRuntimeException("Task execution failed", ee);
+            throw new ApfloatRuntimeException("Task execution failed", ee, "task.error");
         }
     }
 

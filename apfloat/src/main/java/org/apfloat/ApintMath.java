@@ -31,7 +31,7 @@ import java.util.Random;
 /**
  * Various mathematical functions for arbitrary precision integers.
  *
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -59,7 +59,7 @@ public class ApintMath
         {
             if (x.signum() == 0)
             {
-                throw new ArithmeticException("Zero to power zero");
+                throw new ApfloatArithmeticException("Zero to power zero", "pow.zeroToZero");
             }
 
             return new Apint(1, x.radix());
@@ -148,7 +148,7 @@ public class ApintMath
         {
             if (x.signum() == 0)
             {
-                throw new ArithmeticException("Zeroth root of zero");
+                throw new ApfloatArithmeticException("Zeroth root of zero", "root.zerothOfZero");
             }
 
             Apint one = new Apint(1, x.radix());
@@ -349,7 +349,7 @@ public class ApintMath
     {
         if (y.signum() == 0)
         {
-            throw new ArithmeticException("Division by zero");
+            throw new ApfloatArithmeticException("Division by zero", "divide.byZero");
         }
         else if (x.signum() == 0)
         {
@@ -517,7 +517,7 @@ public class ApintMath
         {
             if (a.signum() == 0)
             {
-                throw new ArithmeticException("Zero to power zero");
+                throw new ApfloatArithmeticException("Zero to power zero", "pow.zeroToZero");
             }
 
             return new Apint(1, a.radix());
@@ -596,7 +596,7 @@ public class ApintMath
         if (!abs(a).equals(one))
         {
             // GCD is not 1
-            throw new ArithmeticException("Modular inverse does not exist");
+            throw new ApfloatArithmeticException("Modular inverse does not exist", "modInverse.notExists");
         }
 
         if (oldX.signum() != oldA.signum())
@@ -983,7 +983,7 @@ public class ApintMath
         }
         else if (digits == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot generate an infinite number of random digits");
+            throw new InfiniteExpansionException("Cannot generate an infinite number of random digits", "random.infinitePrecision");
         }
         PushbackReader reader = new PushbackReader(new Reader()
         {
@@ -1016,7 +1016,7 @@ public class ApintMath
         }
         catch (IOException ioe)
         {
-            throw new ApfloatRuntimeException("Error generating random number");
+            throw new ApfloatRuntimeException("Error generating random number", ioe, "random.error");
         }
         
     }

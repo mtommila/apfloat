@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ import org.apfloat.spi.ApfloatImpl;
  *
  * @see ApintMath
  *
- * @version 1.10.1
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -376,7 +376,7 @@ public class Apint
     {
         if (x.signum() == 0)
         {
-            throw new ArithmeticException(signum() == 0 ? "Zero divided by zero" : "Division by zero");
+            throw new ApfloatArithmeticException(signum() == 0 ? "Zero divided by zero" : "Division by zero", signum() == 0 ? "divide.zeroByZero" : "divide.byZero");
         }
         else if (signum() == 0)
         {

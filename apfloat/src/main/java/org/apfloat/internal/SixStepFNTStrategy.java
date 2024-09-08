@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +57,7 @@ import org.apfloat.spi.MatrixStrategy;
  * All access to this class must be externally synchronized.
  *
  * @since 1.7.0
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -80,7 +80,7 @@ public class SixStepFNTStrategy
     {
         if (length > Integer.MAX_VALUE)
         {
-            throw new ApfloatInternalException("Maximum array length exceeded: " + length);
+            throw new ApfloatInternalException("Maximum array size exceeded: " + length, "maximumArraySizeExceeded", length);
         }
 
         assert (n2 >= n1);
@@ -117,7 +117,7 @@ public class SixStepFNTStrategy
     {
         if (length > Integer.MAX_VALUE)
         {
-            throw new ApfloatInternalException("Maximum array length exceeded: " + length);
+            throw new ApfloatInternalException("Maximum array size exceeded: " + length, "maximumArraySizeExceeded", length);
         }
 
         assert (n2 >= n1);

@@ -36,7 +36,7 @@ import org.apfloat.spi.Util;
 /**
  * Various mathematical functions for arbitrary precision rational numbers.
  *
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -64,7 +64,7 @@ public class AprationalMath
         {
             if (x.signum() == 0)
             {
-                throw new ArithmeticException("Zero to power zero");
+                throw new ApfloatArithmeticException("Zero to power zero", "pow.zeroToZero");
             }
 
             return new Apint(1, x.radix());
@@ -485,7 +485,7 @@ public class AprationalMath
         }
         if (n.isInteger() && n.signum() < 0 && !k.isInteger())
         {
-            throw new ArithmeticException("Binomial coefficient is not finite");
+            throw new ApfloatArithmeticException("Binomial coefficient is not finite", "binomial.infinite");
         }
         if (!k.isInteger())
         {
@@ -493,7 +493,7 @@ public class AprationalMath
         }
         if (!k.isInteger())
         {
-            throw new ArithmeticException("Binomial coefficient is not a rational number");
+            throw new ApfloatArithmeticException("Binomial coefficient is not a rational number", "binomial.nonRational");
         }
         int radix = n.radix();
         if (k.signum() < 0)
@@ -866,7 +866,7 @@ public class AprationalMath
         {
             if (r.signum() > 0)
             {
-                throw new ArithmeticException("Negative harmonic number");
+                throw new ApfloatArithmeticException("Negative harmonic number", "harmonicNumber.negative");
             }
             return harmonicNumber(n.negate().subtract(one), r).negate();
         }

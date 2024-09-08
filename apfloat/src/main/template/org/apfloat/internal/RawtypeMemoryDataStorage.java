@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import org.apfloat.spi.ArrayAccess;
  * Memory based data storage implementation for the <code>rawtype</code>
  * element type.
  *
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -85,7 +85,7 @@ public class RawtypeMemoryDataStorage
 
         if (size > Integer.MAX_VALUE)
         {
-            throw new ApfloatInternalException("Size too big for memory array: " + size);
+            throw new ApfloatInternalException("Maximum array size exceeded: " + size, "maximumArraySizeExceeded", size);
         }
 
         if (dataStorage == this)
@@ -136,7 +136,7 @@ public class RawtypeMemoryDataStorage
 
         if (size > Integer.MAX_VALUE)
         {
-            throw new ApfloatInternalException("Size too big for memory array: " + size);
+            throw new ApfloatInternalException("Maximum array size exceeded: " + size, "maximumArraySizeExceeded", size);
         }
 
         int newSize = (int) size;
@@ -157,14 +157,14 @@ public class RawtypeMemoryDataStorage
     protected ArrayAccess implGetArray(int mode, int startColumn, int columns, int rows)
         throws ApfloatRuntimeException
     {
-        throw new ApfloatInternalException("Method not implemented - would be sub-optimal; change the apfloat configuration settings");
+        throw new ApfloatInternalException("Method not implemented - would be sub-optimal; change the apfloat configuration settings", "method.suboptimal");
     }
 
     @Override
     protected ArrayAccess implGetTransposedArray(int mode, int startColumn, int columns, int rows)
         throws ApfloatRuntimeException
     {
-        throw new ApfloatInternalException("Method not implemented - would be sub-optimal; change the apfloat configuration settings");
+        throw new ApfloatInternalException("Method not implemented - would be sub-optimal; change the apfloat configuration settings", "method.suboptimal");
     }
 
     private class ReadWriteIterator

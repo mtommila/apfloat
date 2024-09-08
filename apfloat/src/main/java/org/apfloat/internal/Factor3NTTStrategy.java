@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import org.apfloat.spi.Util;
  * @see Factor3NTTStepStrategy
  *
  * @since 1.7.0
- * @version 1.8.3
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -67,9 +67,10 @@ public class Factor3NTTStrategy
         long length = dataStorage.getSize(),
              power2length = (length & -length);
 
-        if (length > this.stepStrategy.getMaxTransformLength())
+        long maxTransformLength = this.stepStrategy.getMaxTransformLength();
+        if (length > maxTransformLength)
         {
-            throw new TransformLengthExceededException("Maximum transform length exceeded: " + length + " > " + this.stepStrategy.getMaxTransformLength());
+            throw new TransformLengthExceededException("Maximum transform length exceeded: " + length + " > " + maxTransformLength, "maximumTransformLengthExceeded", length, maxTransformLength);
         }
 
         if (length == power2length)
@@ -103,9 +104,11 @@ public class Factor3NTTStrategy
         long length = dataStorage.getSize(),
              power2length = (length & -length);
 
-        if (Math.max(length, totalTransformLength) > this.stepStrategy.getMaxTransformLength())
+        long maxLength = Math.max(length, totalTransformLength),
+             maxTransformLength = this.stepStrategy.getMaxTransformLength();
+        if (maxLength > maxTransformLength)
         {
-            throw new TransformLengthExceededException("Maximum transform length exceeded: " + Math.max(length, totalTransformLength) + " > " + this.stepStrategy.getMaxTransformLength());
+            throw new TransformLengthExceededException("Maximum transform length exceeded: " + maxLength + " > " + maxTransformLength, "maximumTransformLengthExceeded", maxLength, maxTransformLength);
         }
 
         if (length == power2length)

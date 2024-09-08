@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ import static org.apfloat.internal.RawtypeRadixConstants.*;
  * This implementation doesn't necessarily store any extra digits for added
  * precision, so the last digit of any operation may be inaccurate.
  *
- * @version 1.11.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -260,7 +260,7 @@ public class RawtypeApfloatImpl
         // Check for overflow in exponent as represented in base units
         if (baseExp > MAX_EXPONENT[this.radix])
         {
-            throw new OverflowException("Overflow");
+            throw new OverflowException("Overflow", "overflow");
         }
         else if (baseExp < -MAX_EXPONENT[this.radix])
         {
@@ -786,7 +786,7 @@ public class RawtypeApfloatImpl
         // Check for overflow in exponent as represented in base units
         if (baseExp > MAX_EXPONENT[this.radix])
         {
-            throw new OverflowException("Overflow");
+            throw new OverflowException("Overflow", "overflow");
         }
         else if (baseExp < -MAX_EXPONENT[this.radix])
         {
@@ -889,14 +889,14 @@ public class RawtypeApfloatImpl
     {
         if (!(x instanceof RawtypeApfloatImpl))
         {
-            throw new ImplementationMismatchException("Wrong operand type: " + x.getClass().getName());
+            throw new ImplementationMismatchException("Wrong operand type: " + x.getClass().getName(), "type.mismatch", x.getClass().getName());
         }
 
         RawtypeApfloatImpl that = (RawtypeApfloatImpl) x;
 
         if (this.radix != that.radix)
         {
-            throw new RadixMismatchException("Cannot use numbers with different radixes: " + this.radix + " and " + that.radix);
+            throw new RadixMismatchException("Cannot use numbers with different radixes: " + this.radix + " and " + that.radix, "radix.mismatch", this.radix, that.radix);
         }
 
         assert (this.sign != 0);
@@ -956,7 +956,7 @@ public class RawtypeApfloatImpl
 
                 if (this.exponent == MAX_EXPONENT[this.radix] && carrySize > 0)
                 {
-                    throw new OverflowException("Overflow");
+                    throw new OverflowException("Overflow", "overflow");
                 }
 
                 if (precision != Apfloat.INFINITE &&
@@ -1144,7 +1144,7 @@ public class RawtypeApfloatImpl
 
                 if (this.exponent == MAX_EXPONENT[this.radix] && leadingZeros == 0)
                 {
-                    throw new OverflowException("Overflow");
+                    throw new OverflowException("Overflow", "overflow");
                 }
             }
 
@@ -1184,14 +1184,14 @@ public class RawtypeApfloatImpl
     {
         if (!(x instanceof RawtypeApfloatImpl))
         {
-            throw new ImplementationMismatchException("Wrong operand type: " + x.getClass().getName());
+            throw new ImplementationMismatchException("Wrong operand type: " + x.getClass().getName(), "type.mismatch", x.getClass().getName());
         }
 
         RawtypeApfloatImpl that = (RawtypeApfloatImpl) x;
 
         if (this.radix != that.radix)
         {
-            throw new RadixMismatchException("Cannot multiply numbers with different radixes: " + this.radix + " and " + that.radix);
+            throw new RadixMismatchException("Cannot use numbers with different radixes: " + this.radix + " and " + that.radix, "radix.mismatch", this.radix, that.radix);
         }
 
         int sign = this.sign * that.sign;
@@ -1205,7 +1205,7 @@ public class RawtypeApfloatImpl
 
         if (exponent > MAX_EXPONENT[this.radix])
         {
-            throw new OverflowException("Overflow");
+            throw new OverflowException("Overflow", "overflow");
         }
         else if (exponent < -MAX_EXPONENT[this.radix])
         {
@@ -1270,14 +1270,14 @@ public class RawtypeApfloatImpl
     {
         if (!(x instanceof RawtypeApfloatImpl))
         {
-            throw new ImplementationMismatchException("Wrong operand type: " + x.getClass().getName());
+            throw new ImplementationMismatchException("Wrong operand type: " + x.getClass().getName(), "type.mismatch", x.getClass().getName());
         }
 
         RawtypeApfloatImpl that = (RawtypeApfloatImpl) x;
 
         if (this.radix != that.radix)
         {
-            throw new RadixMismatchException("Cannot divide numbers with different radixes: " + this.radix + " and " + that.radix);
+            throw new RadixMismatchException("Cannot use numbers with different radixes: " + this.radix + " and " + that.radix, "radix.mismatch", this.radix, that.radix);
         }
 
         assert (this.sign != 0);
@@ -1289,7 +1289,7 @@ public class RawtypeApfloatImpl
 
         if (exponent > MAX_EXPONENT[this.radix])
         {
-            throw new OverflowException("Overflow");
+            throw new OverflowException("Overflow", "overflow");
         }
         else if (exponent < -MAX_EXPONENT[this.radix])
         {
@@ -1345,7 +1345,7 @@ public class RawtypeApfloatImpl
 
                 if (basePrecision == Apfloat.INFINITE)
                 {
-                    throw new InfiniteExpansionException("Cannot perform inexact division to infinite precision");
+                    throw new InfiniteExpansionException("Cannot perform inexact division to infinite precision", "divide.infinitePrecision");
                 }
 
                 size = basePrecision;
@@ -1751,7 +1751,7 @@ public class RawtypeApfloatImpl
     {
         if (!(x instanceof RawtypeApfloatImpl))
         {
-            throw new ImplementationMismatchException("Wrong operand type: " + x.getClass().getName());
+            throw new ImplementationMismatchException("Wrong operand type: " + x.getClass().getName(), "type.mismatch", x.getClass().getName());
         }
 
         RawtypeApfloatImpl that = (RawtypeApfloatImpl) x;
@@ -1766,7 +1766,7 @@ public class RawtypeApfloatImpl
         }
         else if (this.radix != that.radix)
         {
-            throw new RadixMismatchException("Cannot compare values with different radixes: " + this.radix + " and " + that.radix);
+            throw new RadixMismatchException("Cannot use numbers with different radixes: " + this.radix + " and " + that.radix, "radix.mismatch", this.radix, that.radix);
         }
 
         long thisScale = scale(),
@@ -1893,7 +1893,7 @@ public class RawtypeApfloatImpl
     {
         if (!(x instanceof RawtypeApfloatImpl))
         {
-            throw new ImplementationMismatchException("Wrong operand type: " + x.getClass().getName());
+            throw new ImplementationMismatchException("Wrong operand type: " + x.getClass().getName(), "type.mismatch", x.getClass().getName());
         }
 
         RawtypeApfloatImpl that = (RawtypeApfloatImpl) x;
@@ -1912,7 +1912,7 @@ public class RawtypeApfloatImpl
         }
         else if (this.radix != that.radix)
         {
-            throw new RadixMismatchException("Cannot compare values with different radixes: " + this.radix + " and " + that.radix);
+            throw new RadixMismatchException("Cannot use numbers with different radixes: " + this.radix + " and " + that.radix, "radix.mismatch", this.radix, that.radix);
         }
         else if (scale() < that.scale())                // Now we know that both have same sign (which is not zero)
         {
@@ -2183,7 +2183,7 @@ public class RawtypeApfloatImpl
 
         if (length > Integer.MAX_VALUE || length < 0)           // Detect overflow
         {
-            throw new ApfloatInternalException("Number is too large to fit in a String");
+            throw new ApfloatInternalException("Number is too large to fit in a String", "stringSizeExceeded");
         }
 
         StringWriter writer = new StringWriter((int) length);
@@ -2194,7 +2194,7 @@ public class RawtypeApfloatImpl
         }
         catch (IOException ioe)
         {
-            throw new ApfloatInternalException("Unexpected I/O error writing to StringWriter", ioe);
+            throw new ApfloatInternalException("Unexpected I/O error writing to StringWriter", ioe, "string.error");
         }
 
         String value = writer.toString();

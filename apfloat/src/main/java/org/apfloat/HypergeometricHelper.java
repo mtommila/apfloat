@@ -47,7 +47,7 @@ import static org.apfloat.ApfloatMath.scale;
  * Helper class for hypergeometric functions.
  *
  * @since 1.11.0
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -583,7 +583,7 @@ class HypergeometricHelper
             {
                 return new Apfloat(1, targetPrecision, radix);
             }
-            throw new ArithmeticException("Series does not converge");
+            throw new ApfloatArithmeticException("Series does not converge", "hypergeometric.nonconvergence");
         }
         if (a.length == 0 && b.length == 0)
         {
@@ -809,7 +809,7 @@ class HypergeometricHelper
         {
             if (a.real().add(b.real()).subtract(c.real()).signum() >= 0)
             {
-                throw new ArithmeticException("Does not converge");
+                throw new ApfloatArithmeticException("Series does not converge", "hypergeometric.nonconvergence");
             }
             Apcomplex s = c.subtract(a),
                       t = c.subtract(b);
@@ -866,7 +866,7 @@ class HypergeometricHelper
                 minNonPositiveIntegerB = maxNonPositiveInteger(b);
         if (minNonPositiveIntegerB != null && (minNonPositiveIntegerA == null || minNonPositiveIntegerA.compareTo(minNonPositiveIntegerB) < 0))
         {
-            throw new ArithmeticException("Division by zero");
+            throw new ApfloatArithmeticException("Division by zero", "divide.byZero");
         }
         if (z.isZero())
         {
@@ -874,7 +874,7 @@ class HypergeometricHelper
         }
         if (targetPrecision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate hypergeometric function to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate hypergeometric function to infinite precision", "hypergeometric.infinitePrecision");
         }
         if (minNonPositiveIntegerA != null)
         {

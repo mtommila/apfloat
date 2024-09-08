@@ -78,7 +78,7 @@ public class ApfloatMath
         {
             if (x.signum() == 0)
             {
-                throw new ArithmeticException("Zero to power zero");
+                throw new ApfloatArithmeticException("Zero to power zero", "pow.zeroToZero");
             }
 
             return new Apfloat(1, Apfloat.INFINITE, x.radix());
@@ -166,7 +166,7 @@ public class ApfloatMath
     {
         if (n == 0)
         {
-            throw new ArithmeticException("Zeroth root");
+            throw new ApfloatArithmeticException("Zeroth root", "root.zeroth");
         }
         else if (x.signum() == 0)
         {
@@ -280,15 +280,15 @@ public class ApfloatMath
     {
         if (x.signum() == 0)
         {
-            throw new ArithmeticException("Inverse root of zero");
+            throw new ApfloatArithmeticException("Inverse root of zero", "inverseRoot.ofZero");
         }
         else if (n == 0)
         {
-            throw new ArithmeticException("Inverse zeroth root");
+            throw new ApfloatArithmeticException("Inverse zeroth root", "inverseRoot.zeroth");
         }
         else if ((n & 1) == 0 && x.signum() < 0)
         {
-            throw new ArithmeticException("Even root of negative number; result would be complex");
+            throw new ApfloatArithmeticException("Even root of negative number; result would be complex", "root.evenOfNegative");
         }
         else if (targetPrecision <= 0)
         {
@@ -301,7 +301,7 @@ public class ApfloatMath
         }
         else if (targetPrecision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate inverse root to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate inverse root to infinite precision", "inverseRoot.infinitePrecision");
         }
         else if (n == 0x8000000000000000L)
         {
@@ -868,7 +868,7 @@ public class ApfloatMath
 
         if (a.signum() != b.signum())
         {
-            throw new ArithmeticException("Non-real result");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
 
         boolean negate = a.signum() < 0;                // Thanks to Marko Gaspersic for finding several bugs in issue #12
@@ -883,7 +883,7 @@ public class ApfloatMath
 
         if (workingPrecision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate agm to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate agm to infinite precision", "agm.infinitePrecision");
         }
 
         // Some extra precision is required for the algorithm to work accurately
@@ -993,7 +993,7 @@ public class ApfloatMath
         }
         else if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate pi to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate pi to infinite precision", "pi.infinitePrecision");
         }
 
         // Get synchronization lock - getting the lock is also synchronized
@@ -1292,7 +1292,7 @@ public class ApfloatMath
     {
         if (x.signum() <= 0)
         {
-            throw new ArithmeticException("Logarithm of " + (x.signum() == 0 ? "zero" : "negative number; result would be complex"));
+            throw new ApfloatArithmeticException("Logarithm of " + (x.signum() == 0 ? "zero" : "negative number; result would be complex"), x.signum() == 0 ? "log.ofZero" : "log.ofNegative");
         }
         else if (x.equals(Apfloat.ONE))
         {
@@ -1341,7 +1341,7 @@ public class ApfloatMath
 
         if (targetPrecision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate logarithm to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate logarithm to infinite precision", "log.infinitePrecision");
         }
 
         Apfloat one = new Apfloat(1, Apfloat.INFINITE, x.radix());
@@ -1472,18 +1472,18 @@ public class ApfloatMath
         {
             if (x.scale() - 1 >= targetPrecision)
             {
-                throw new LossOfPrecisionException("Complete loss of accurate digits");
+                throw new LossOfPrecisionException("Complete loss of accurate digits", "lossOfPrecision");
             }
             finalPrecision = Util.ifFinite(targetPrecision, targetPrecision - (x.scale() - 1));
         }
 
         if (targetPrecision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate exponent to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate exponent to infinite precision", "exp.infinitePrecision");
         }
         else if (x.compareTo(new Apfloat((double) Long.MAX_VALUE * Math.log((double) radix), doublePrecision, radix)) >= 0)
         {
-            throw new OverflowException("Overflow");
+            throw new OverflowException("Overflow", "overflow");
         }
         else if (x.scale() <= Long.MIN_VALUE / 2 + Apfloat.EXTRA_PRECISION)
         {
@@ -1848,7 +1848,7 @@ public class ApfloatMath
         {
             if (y.signum() == 0)
             {
-                throw new ArithmeticException("Angle of (0, 0)");
+                throw new ApfloatArithmeticException("Angle of (0, 0)", "atan2.ofOrigin");
             }
 
             Apfloat pi = pi(y.precision(), y.radix()),
@@ -1867,7 +1867,7 @@ public class ApfloatMath
         }
         else if (Math.min(y.precision(), x.precision()) == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate atan2 to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate atan2 to infinite precision", "atan2.infinitePrecision");
         }
         else if (x.signum() > 0 && y.scale() < x.scale())
         {
@@ -2237,7 +2237,7 @@ public class ApfloatMath
         }
         else if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate e to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate e to infinite precision", "e.infinitePrecision");
         }
 
         long terms = inverseFactorial(precision, radix);
@@ -2319,7 +2319,7 @@ public class ApfloatMath
         }
         else if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate Euler gamma to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate Euler gamma to infinite precision", "euler.infinitePrecision");
         }
 
         return (precision <= 2000 ? eulerSmall(precision, radix) : EulerHelper.euler(precision, radix));
@@ -2407,7 +2407,7 @@ public class ApfloatMath
         }
         else if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate C to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate C to infinite precision", "catalan.infinitePrecision");
         }
 
         long workingPrecision = ApfloatHelper.extendPrecision(precision);
@@ -2471,7 +2471,7 @@ public class ApfloatMath
         }
         else if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate A to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate A to infinite precision", "glaisher.infinitePrecision");
         }
 
         // Calculated using A = exp(euler/12 - zeta'(2)/(2 pi^2)) (2 pi)^(1/12)
@@ -2554,7 +2554,7 @@ public class ApfloatMath
         }
         else if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate K to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate K to infinite precision", "khinchin.infinitePrecision");
         }
 
         // log(K) = 1/log(2) sum((zeta(2n) - 1) / n sum((-1)^k / k, k=1..2n-1), n=1..infinity)
@@ -2633,7 +2633,7 @@ public class ApfloatMath
         if (x.signum() < 0 && !(a.signum() > 0 && a.isInteger()))
         {
             // For a real result, in the case x < 0, a must be a positive integer
-            throw new ArithmeticException("Non-real result");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.gamma(a, x).real();
     }
@@ -2668,7 +2668,7 @@ public class ApfloatMath
         if ((x0.signum() < 0 || x1.signum() < 0) && !(a.signum() > 0 && a.isInteger()))
         {
             // For a real result, in the case x < 0, a must be a positive integer
-            throw new ArithmeticException("Non-real result");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.gamma(a, x0, x1).real();
     }
@@ -2696,7 +2696,7 @@ public class ApfloatMath
     {
         if (x.signum() < 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.logGamma(x).real();
     }
@@ -2801,7 +2801,7 @@ public class ApfloatMath
         if (x.signum() == 0 && a.signum() < 0 && !a.isInteger() ||
             x.signum() < 0 && !a.isInteger())
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         Apint one = Apint.ONES[x.radix()];
         checkHypergeometric2F1(a, one.subtract(b), x);
@@ -2835,7 +2835,7 @@ public class ApfloatMath
         if ((x1.signum() == 0 || x2.signum() == 0) && a.signum() < 0 && !a.isInteger() ||
             (x1.signum() < 0 || x2.signum() < 0) && !a.isInteger())
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         Apint one = Apint.ONES[x1.radix()];
         checkHypergeometric2F1(a, one.subtract(b), x1);
@@ -2942,7 +2942,7 @@ public class ApfloatMath
     {
         if (!s.isInteger() && a.signum() < 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return HurwitzZetaHelper.zeta(s, a).real();
     }
@@ -3078,7 +3078,7 @@ public class ApfloatMath
         Apint one = Apint.ONES[x.radix()];
         if (x.compareTo(one) > 0 && HypergeometricHelper.maxNonPositiveInteger(a, b) == null)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
     }
 
@@ -3108,7 +3108,7 @@ public class ApfloatMath
         Apint one = Apint.ONES[x.radix()];
         if (x.compareTo(one) > 0 && HypergeometricHelper.maxNonPositiveInteger(a, b) == null)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.hypergeometric2F1Regularized(a, b, c, x).real();
     }
@@ -3142,7 +3142,7 @@ public class ApfloatMath
         {
             return ApcomplexMath.hypergeometricU(a, b, x).real();
         }
-        throw new ArithmeticException("Result would be complex");
+        throw new ApfloatArithmeticException("Result would be complex", "complex");
     }
 
     /**
@@ -3258,7 +3258,7 @@ public class ApfloatMath
         Apint one = Apint.ONES[radix];
         if (x.compareTo(one) >= 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         long targetPrecision = x.precision();
         Apint two = new Apint(2, radix);
@@ -3396,7 +3396,7 @@ public class ApfloatMath
     {
         if (ν.signum() != 0 && x.signum() < 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.expIntegralE(ν, x).real();
     }
@@ -3446,7 +3446,7 @@ public class ApfloatMath
     {
         if (x.signum() < 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.logIntegral(x).real();
     }
@@ -3494,7 +3494,7 @@ public class ApfloatMath
     {
         if (x.signum() < 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.cosIntegral(x).real();
     }
@@ -3542,7 +3542,7 @@ public class ApfloatMath
     {
         if (x.signum() < 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.coshIntegral(x).real();
     }
@@ -3686,7 +3686,7 @@ public class ApfloatMath
     {
         if (x.signum() < 0 && !ν.isInteger())
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.besselJ(ν, x).real();
     }
@@ -3714,7 +3714,7 @@ public class ApfloatMath
     {
         if (x.signum() < 0 && !ν.isInteger())
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.besselI(ν, x).real();
     }
@@ -3742,7 +3742,7 @@ public class ApfloatMath
     {
         if (x.signum() < 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.besselY(ν, x).real();
     }
@@ -3770,7 +3770,7 @@ public class ApfloatMath
     {
         if (x.signum() < 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.besselK(ν, x).real();
     }
@@ -3853,7 +3853,7 @@ public class ApfloatMath
     {
         if (x.compareTo(Apfloat.ONES[x.radix()]) > 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.ellipticK(x, precision).real();
     }
@@ -3933,7 +3933,7 @@ public class ApfloatMath
     {
         if (x.compareTo(Apfloat.ONES[x.radix()]) > 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.ellipticE(x, precision).real();
     }
@@ -4031,7 +4031,7 @@ public class ApfloatMath
             Apfloat minusOne = Apint.ONES[ν.radix()].negate();
             if (x.compareTo(minusOne) < 0)
             {
-                throw new ArithmeticException("Result would be complex");
+                throw new ApfloatArithmeticException("Result would be complex", "complex");
             }
         }
         return ApcomplexMath.legendreP(ν, x).real();
@@ -4066,7 +4066,7 @@ public class ApfloatMath
             boolean isReal = (isEven(μ) && (ν.isInteger() || x.signum() > 0) || ν.isInteger() && μ.isInteger() && μ.signum() > 0 && ν.compareTo(μ) < 0 && ν.compareTo(μ.negate()) >= 0);
             if (!isReal)
             {
-                throw new ArithmeticException("Result would be complex");
+                throw new ApfloatArithmeticException("Result would be complex", "complex");
             }
         }
         return ApcomplexMath.legendreP(ν, μ, x).real();
@@ -4102,7 +4102,7 @@ public class ApfloatMath
         if (x.compareTo(one.negate()) < 0 ||
             x.compareTo(one) > 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.legendreQ(ν, x).real();
     }
@@ -4133,7 +4133,7 @@ public class ApfloatMath
         if (x.compareTo(one.negate()) < 0 ||
             x.compareTo(one) > 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.legendreQ(ν, μ, x).real();
     }
@@ -4163,7 +4163,7 @@ public class ApfloatMath
         Apfloat one = Apint.ONES[ν.radix()];
         if (x.compareTo(one.negate()) < 0 && !ν.isInteger())
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
     }
 
@@ -4409,7 +4409,7 @@ public class ApfloatMath
         Apfloat one = Apint.ONES[ν.radix()];
         if (x.compareTo(one) > 0)
         {
-            throw new ArithmeticException("Result would be complex");
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.polylog(ν, x).real();
     }
@@ -4779,7 +4779,7 @@ public class ApfloatMath
     {
         if (n < 0)
         {
-            throw new ArithmeticException("Factorial of negative number");
+            throw new ApfloatArithmeticException("Factorial of negative number", "factorial.ofNegative");
         }
         else if (n < 2)
         {
@@ -4847,7 +4847,7 @@ public class ApfloatMath
     {
         if (n < 0)
         {
-            throw new ArithmeticException("Double factorial of negative number");
+            throw new ApfloatArithmeticException("Double factorial of negative number", "doubleFactorial.ofNegative");
         }
         if ((n & 1) == 1)
         {

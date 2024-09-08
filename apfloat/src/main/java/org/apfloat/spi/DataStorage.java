@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ import org.apfloat.ApfloatRuntimeException;
  * iterators over non-overlapping parts is permitted. Invoking
  * other methods must generally be externally synchronized.
  *
- * @version 1.8.1
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -922,7 +922,7 @@ public abstract class DataStorage
         }
         else if (size > Integer.MAX_VALUE)
         {
-            throw new ApfloatRuntimeException("Block too large to fit in an array: " + size);
+            throw new ApfloatRuntimeException("Block too large to fit in an array: " + size, "blockSizeExceeded", size);
         }
 
         return implGetArray(mode, startColumn, columns, rows);
@@ -1088,7 +1088,7 @@ public abstract class DataStorage
         }
         else if (size > Integer.MAX_VALUE)
         {
-            throw new ApfloatRuntimeException("Block too large to fit in an array: " + size);
+            throw new ApfloatRuntimeException("Block too large to fit in an array: " + size, "blockSizeExceeded", size);
         }
 
         return implGetTransposedArray(mode, startColumn, columns, rows);

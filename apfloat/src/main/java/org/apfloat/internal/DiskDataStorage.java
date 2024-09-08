@@ -52,7 +52,7 @@ import org.apfloat.spi.MatrixStrategy;
  * Abstract base class for disk-based data storage, containing the common
  * functionality independent of the element type.
  *
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -82,7 +82,7 @@ public abstract class DiskDataStorage
             {
                 if (!this.file.createNewFile())
                 {
-                    throw new BackingStorageException("Failed to create new file \"" + this.file.getAbsolutePath() + '\"');
+                    throw new BackingStorageException("Failed to create new file \"" + this.file.getAbsolutePath() + '\"', "file.create", this.file.getAbsolutePath());
                 }
 
                 // Ensure file is deleted always
@@ -92,7 +92,7 @@ public abstract class DiskDataStorage
             }
             catch (IOException ioe)
             {
-                throw new BackingStorageException("Unable to access file \"" + this.file.getAbsolutePath() + '\"', ioe);
+                throw new BackingStorageException("Unable to access file \"" + this.file.getAbsolutePath() + '\"', ioe, "file.access", this.file.getAbsolutePath());
             }
 
             this.fileChannel = this.randomAccessFile.getChannel();
@@ -158,7 +158,7 @@ public abstract class DiskDataStorage
             }
             catch (IOException ioe)
             {
-                throw new BackingStorageException("Unable to write to file \"" + this.file.getAbsolutePath() + '\"', ioe);
+                throw new BackingStorageException("Unable to write to file \"" + this.file.getAbsolutePath() + '\"', ioe, "file.write", this.file.getAbsolutePath());
             }
         }
 
@@ -204,7 +204,7 @@ public abstract class DiskDataStorage
             }
             catch (IOException ioe)
             {
-                throw new BackingStorageException("Unable to read from file \"" + this.file.getAbsolutePath() + '\"', ioe);
+                throw new BackingStorageException("Unable to read from file \"" + this.file.getAbsolutePath() + '\"', ioe, "file.read", this.file.getAbsolutePath());
             }
         }
 
@@ -391,7 +391,7 @@ public abstract class DiskDataStorage
         }
         catch (IOException ioe)
         {
-            throw new BackingStorageException("Unable to copy to file \"" + getFilename() + '\"', ioe);
+            throw new BackingStorageException("Unable to copy to file \"" + getFilename() + '\"', ioe, "file.copy", getFilename());
         }
     }
 
@@ -405,7 +405,7 @@ public abstract class DiskDataStorage
         }
         catch (IOException ioe)
         {
-            throw new BackingStorageException("Unable to access file \"" + getFilename() + '\"', ioe);
+            throw new BackingStorageException("Unable to access file \"" + getFilename() + '\"', ioe, "file.access", getFilename());
         }
     }
 
@@ -430,7 +430,7 @@ public abstract class DiskDataStorage
         }
         catch (IOException ioe)
         {
-            throw new BackingStorageException("Unable to access file \"" + getFilename() + '\"', ioe);
+            throw new BackingStorageException("Unable to access file \"" + getFilename() + '\"', ioe, "file.access", getFilename());
         }
     }
 
@@ -442,7 +442,7 @@ public abstract class DiskDataStorage
 
         if (columns != (columns & -columns) || rows != (rows & -rows) || startColumn + columns > width)
         {
-            throw new ApfloatInternalException("Invalid size");
+            throw new ApfloatInternalException("Invalid size", "size.error");
         }
 
         ArrayAccess arrayAccess = createArrayAccess(mode, startColumn, columns, rows);
@@ -471,7 +471,7 @@ public abstract class DiskDataStorage
 
         if (columns != (columns & -columns) || rows != (rows & -rows) || startColumn + columns > width)
         {
-            throw new ApfloatInternalException("Invalid size");
+            throw new ApfloatInternalException("Invalid size", "size.error");
         }
 
         int blockSize = columns * rows,
@@ -804,7 +804,7 @@ public abstract class DiskDataStorage
     {
         if (DiskDataStorage.cleanUp)
         {
-            throw new ApfloatInternalException("Shutdown has been initiated, clean-up is in progress");
+            throw new ApfloatInternalException("Shutdown has been initiated, clean-up is in progress", "shutdown.cleanup");
         }
 
         freeFileStorage();                  // Before creating new files, delete the ones that have been garbage collected
@@ -819,7 +819,7 @@ public abstract class DiskDataStorage
         if (DiskDataStorage.cleanUp)
         {
             new FileStorageReference(fileStorage, null).dispose();      // Delete the file immediately; it skipped the clean-up procedure
-            throw new ApfloatInternalException("Shutdown has been initiated, clean-up is in progress");
+            throw new ApfloatInternalException("Shutdown has been initiated, clean-up is in progress", "shutdown.cleanup");
         }
 
         // The reference might not really be needed for anything else than queuing in the reference queue,
@@ -856,7 +856,7 @@ public abstract class DiskDataStorage
         }
         catch (InterruptedException ie)
         {
-            throw new ApfloatInterruptedException("Reference queue polling was interrupted", ie);
+            throw new ApfloatInterruptedException("Reference queue polling was interrupted", ie, "referenceQueue.interrupted");
         }
     }
 

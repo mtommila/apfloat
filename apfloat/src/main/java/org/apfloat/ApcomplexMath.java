@@ -155,7 +155,7 @@ public class ApcomplexMath
         {
             if (z.isZero())
             {
-                throw new ArithmeticException("Zero to power zero");
+                throw new ApfloatArithmeticException("Zero to power zero", "pow.zeroToZero");
             }
 
             return new Apcomplex(new Apfloat(1, Apfloat.INFINITE, z.radix()));
@@ -270,13 +270,13 @@ public class ApcomplexMath
     {
         if (n == 0)
         {
-            throw new ArithmeticException("Zeroth root");
+            throw new ApfloatArithmeticException("Zeroth root", "root.zeroth");
         }
         else if (z.isZero())
         {
             if (n < 0)
             {
-                throw new ArithmeticException("Inverse root of zero");
+                throw new ApfloatArithmeticException("Inverse root of zero", "inverseRoot.ofZero");
             }
             return Apcomplex.ZEROS[z.radix()];  // Avoid division by zero
         }
@@ -354,11 +354,11 @@ public class ApcomplexMath
     {
         if (z.isZero())
         {
-            throw new ArithmeticException("Inverse root of zero");
+            throw new ApfloatArithmeticException("Inverse root of zero", "inverseRoot.ofZero");
         }
         else if (n == 0)
         {
-            throw new ArithmeticException("Inverse zeroth root");
+            throw new ApfloatArithmeticException("Inverse zeroth root", "inverseRoot.zeroth");
         }
         k %= n;
         if (z.imag().signum() == 0 && z.real().signum() > 0 && k == 0)
@@ -393,7 +393,7 @@ public class ApcomplexMath
 
         if (targetPrecision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate inverse root to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate inverse root to infinite precision", "inverseRoot.infinitePrecision");
         }
 
         Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix()),
@@ -605,7 +605,7 @@ public class ApcomplexMath
     {
         if (n == 0)
         {
-            throw new ArithmeticException("Zeroth root");
+            throw new ApfloatArithmeticException("Zeroth root", "root.zeroth");
         }
         else if (n == 1)
         {
@@ -613,13 +613,13 @@ public class ApcomplexMath
         }
         else if (n == 0x80000000)
         {
-            throw new ApfloatRuntimeException("Maximum array size exceeded");
+            throw new ApfloatRuntimeException("Maximum array size exceeded: " + -(long) n, "maximumArraySizeExceeded", -(long) n);
         }
         else if (z.isZero())
         {
             if (n < 0)
             {
-                throw new ArithmeticException("Inverse root of zero");
+                throw new ApfloatArithmeticException("Inverse root of zero", "inverseRoot.ofZero");
             }
             Apcomplex[] allRoots = new Apcomplex[n];
             Arrays.fill(allRoots, Apcomplex.ZEROS[z.radix()]);
@@ -691,7 +691,7 @@ public class ApcomplexMath
 
         if (workingPrecision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate agm to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate agm to infinite precision", "agm.infinitePrecision");
         }
 
         // Some minimum precision is required for the algorithm to work
@@ -822,7 +822,7 @@ public class ApcomplexMath
 
         if (targetPrecision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate logarithm to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate logarithm to infinite precision", "log.infinitePrecision");
         }
 
         // If the absolute value of the argument is very big, the result is more accurate
@@ -997,12 +997,12 @@ public class ApcomplexMath
         // If the real part of the argument is close to 0, the result is more accurate; if it's very big the result is less accurate
         if (z.real().precision() < z.real().scale() - 1)
         {
-            throw new LossOfPrecisionException("Complete loss of accurate digits in real part");
+            throw new LossOfPrecisionException("Complete loss of accurate digits in real part", "real.lossOfPrecision");
         }
         // The imaginary part must be scaled to the range of -pi ... pi, which may limit the precision
         if (z.imag().precision() < z.imag().scale())
         {
-            throw new LossOfPrecisionException("Complete loss of accurate digits in imaginary part");
+            throw new LossOfPrecisionException("Complete loss of accurate digits in imaginary part", "imag.lossOfPrecision");
         }
         long realPrecision = Util.ifFinite(z.real().precision(), z.real().precision() + 1 - z.real().scale()),
              imagPrecision = Util.ifFinite(z.imag().precision(), 1 + z.imag().precision() - z.imag().scale()),
@@ -1010,11 +1010,11 @@ public class ApcomplexMath
 
         if (targetPrecision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate exponent to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate exponent to infinite precision", "exp.infinitePrecision");
         }
         else if (z.real().compareTo(new Apfloat((double) Long.MAX_VALUE * Math.log((double) radix), doublePrecision, radix)) >= 0)
         {
-            throw new OverflowException("Overflow");
+            throw new OverflowException("Overflow", "overflow");
         }
 
         boolean negateResult = false;                           // If the final result is to be negated
@@ -1804,13 +1804,13 @@ public class ApcomplexMath
         {
             if (z.real().signum() == 0)
             {
-                throw new ArithmeticException("Gamma of zero");
+                throw new ApfloatArithmeticException("Gamma of zero", "gamma.ofZero");
             }
             if (z.real().isInteger())
             {
                 if (z.real().signum() < 0)
                 {
-                    throw new ArithmeticException("Gamma of negative integer");
+                    throw new ApfloatArithmeticException("Gamma of negative integer", "gamma.ofNegativeInteger");
                 }
                 long n = ApfloatHelper.longValueExact(z.real().truncate());
                 // If n is extremely large and precision is relatively low, then computing it as gamma is faster
@@ -1825,7 +1825,7 @@ public class ApcomplexMath
         }
         if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate gamma function to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate gamma function to infinite precision", "gamma.infinitePrecision");
         }
         if (z.real().signum() < 0)
         {
@@ -1837,7 +1837,7 @@ public class ApcomplexMath
                 long digitLoss = -z.subtract(zRounded).scale();
                 if (digitLoss >= targetPrecision)
                 {
-                    throw new ArithmeticException("Gamma of negative integer within precision");
+                    throw new ApfloatArithmeticException("Gamma of negative integer within precision", "gamma.ofNegativeIntegerWithinPrecision");
                 }
                 if (digitLoss > 0)
                 {
@@ -1885,7 +1885,7 @@ public class ApcomplexMath
         }
         if (precision <= 0)
         {
-            throw new LossOfPrecisionException("Complete loss of accurate digits");
+            throw new LossOfPrecisionException("Complete loss of accurate digits", "lossOfPrecision");
         }
         return ApfloatHelper.limitPrecision(result, precision);
     }
@@ -2017,16 +2017,16 @@ public class ApcomplexMath
         {
             if (z.real().signum() == 0)
             {
-                throw new ArithmeticException("Log gamma of zero");
+                throw new ApfloatArithmeticException("Log gamma of zero", "logGamma.ofZero");
             }
             if (z.real().isInteger() && z.real().signum() < 0)
             {
-                throw new ArithmeticException("Log gamma of negative integer");
+                throw new ApfloatArithmeticException("Log gamma of negative integer", "logGammagamma.ofNegativeInteger");
             }
         }
         if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate log gamma function to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate log gamma function to infinite precision", "logGamma.infinitePrecision");
         }
 
         int radix = z.radix();
@@ -2266,11 +2266,11 @@ public class ApcomplexMath
         {
             if (z.real().isInteger() && z.imag().signum() == 0)
             {
-                throw new ArithmeticException("Digamma of nonpositive integer");
+                throw new ApfloatArithmeticException("Digamma of nonpositive integer", "digamma.ofNonpositiveInteger");
             }
             if (precision == Apfloat.INFINITE)
             {
-                throw new InfiniteExpansionException("Cannot calculate digamma function to infinite precision");
+                throw new InfiniteExpansionException("Cannot calculate digamma function to infinite precision", "digamma.infinitePrecision");
             }
 
             long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix);
@@ -2291,7 +2291,7 @@ public class ApcomplexMath
         }
         if (precision == Apfloat.INFINITE)
         {
-            throw new InfiniteExpansionException("Cannot calculate digamma function to infinite precision");
+            throw new InfiniteExpansionException("Cannot calculate digamma function to infinite precision", "digamma.infinitePrecision");
         }
 
         double adjust = Math.log(precision) + 1,    // Adjustment for the sqrt(n) factor in bernoulli numbers
@@ -2359,11 +2359,11 @@ public class ApcomplexMath
     {
         if (n < 0)
         {
-            throw new ArithmeticException("Polygamma of negative order");
+            throw new ApfloatArithmeticException("Polygamma of negative order", "polygamma.ofNegativeOrder");
         }
         if (isNonPositiveInteger(z))
         {
-            throw new ArithmeticException("Polygamma of nonpositive integer");
+            throw new ApfloatArithmeticException("Polygamma of nonpositive integer", "polygamma.ofNonpositiveInteger");
         }
         if (n == 0)
         {
@@ -2411,7 +2411,7 @@ public class ApcomplexMath
             aNonpositiveInteger && bNonpositiveInteger)
         {
             // Infinite divided by finite, or two infinities divided by one infinity
-            throw new ArithmeticException("Beta is infinite");
+            throw new ApfloatArithmeticException("Beta is infinite", "beta.infinite");
         }
         int radix = a.radix();
         if (!aOrBNonpositiveInteger && abNonpositiveInteger)
@@ -2467,7 +2467,7 @@ public class ApcomplexMath
     {
         if (isNonPositiveInteger(a))
         {
-            throw new ArithmeticException("Incomplete beta with a nonpositive integer");
+            throw new ApfloatArithmeticException("Incomplete beta with a nonpositive integer", "betaIncomplete.withNonpositiveInteger");
         }
         int radix = z.radix();
         long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
@@ -2510,7 +2510,7 @@ public class ApcomplexMath
         }
         if (isNonPositiveInteger(a))
         {
-            throw new ArithmeticException("Generalized incomplete beta with a nonpositive integer");
+            throw new ApfloatArithmeticException("Generalized incomplete beta with a nonpositive integer", "betaIncompleteGeneralized.withNonpositiveInteger");
         }
         long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
              precision = ApfloatHelper.extendPrecision(Util.min(z1.precision(), z2.precision(), a.precision(), b.precision()), extraPrecision);
@@ -4744,7 +4744,7 @@ public class ApcomplexMath
               two = new Apint(2, radix);
         if (z.equals(one) && ν.real().compareTo(one) <= 0)
         {
-            throw new ArithmeticException("Polylogarithm is infinite");
+            throw new ApfloatArithmeticException("Polylogarithm is infinite", "polylog.infinite");
         }
         if (ν.isInteger() && ν.real().signum() > 0)
         {

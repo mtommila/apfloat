@@ -29,7 +29,7 @@ package org.apfloat;
  * EU Artificial Intelligence Act note: the name of this class was generated with artificial intelligence.
  *
  * @since 1.14.0
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -65,6 +65,37 @@ public class NumericComputationException
     public NumericComputationException(String message, Throwable cause)
     {
         super(message, cause);
+    }
+
+    /**
+     * Constructs a new apfloat numeric computation exception with the specified detail message and localization data.
+     *
+     * @param message The detail message.
+     * @param localizationKey The localization key.
+     * @param localizationArgs The localization arguments.
+     *
+     * @since 1.15.0
+     */
+
+    public NumericComputationException(String message, String localizationKey, Object... localizationArgs)
+    {
+        super(message, localizationKey, localizationArgs);
+    }
+
+    /**
+     * Constructs a new apfloat numeric computation exception with the specified detail message, cause and localization data.
+     *
+     * @param message The detail message.
+     * @param cause Originating cause of the exception.
+     * @param localizationKey The localization key.
+     * @param localizationArgs The localization arguments.
+     *
+     * @since 1.15.0
+     */
+
+    public NumericComputationException(String message, Throwable cause, String localizationKey, Object... localizationArgs)
+    {
+        super(message, cause, localizationKey, localizationArgs);
     }
 
     private static final long serialVersionUID = 1L;

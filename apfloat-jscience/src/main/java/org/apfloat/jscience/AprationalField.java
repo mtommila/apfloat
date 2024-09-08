@@ -24,12 +24,13 @@
 package org.apfloat.jscience;
 
 import org.apfloat.Aprational;
+import org.apfloat.ApfloatArithmeticException;
 
 /**
  * This class represents an arbitrary precision rational number.
  *
  * @since 1.8.0
- * @version 1.8.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -71,7 +72,7 @@ public class AprationalField
     {
         if (value().signum() == 0)
         {
-            throw new ArithmeticException("Inverse of zero");
+            throw new ApfloatArithmeticException("Division by zero", "divide.byZero");
         }
         return new AprationalField(new Aprational(value().denominator(), value().numerator()));
     }

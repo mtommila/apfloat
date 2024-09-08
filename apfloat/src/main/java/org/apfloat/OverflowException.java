@@ -33,7 +33,7 @@ package org.apfloat;
  * "infinity" apfloat value that could be returned as the result.
  *
  * @since 1.5
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -69,6 +69,37 @@ public class OverflowException
     public OverflowException(String message, Throwable cause)
     {
         super(message, cause);
+    }
+
+    /**
+     * Constructs a new apfloat overflow exception with the specified detail message and localization data.
+     *
+     * @param message The detail message.
+     * @param localizationKey The localization key.
+     * @param localizationArgs The localization arguments.
+     *
+     * @since 1.15.0
+     */
+
+    public OverflowException(String message, String localizationKey, Object... localizationArgs)
+    {
+        super(message, localizationKey, localizationArgs);
+    }
+
+    /**
+     * Constructs a new apfloat overflow exception with the specified detail message, cause and localization data.
+     *
+     * @param message The detail message.
+     * @param cause Originating cause of the exception.
+     * @param localizationKey The localization key.
+     * @param localizationArgs The localization arguments.
+     *
+     * @since 1.15.0
+     */
+
+    public OverflowException(String message, Throwable cause, String localizationKey, Object... localizationArgs)
+    {
+        super(message, cause, localizationKey, localizationArgs);
     }
 
     private static final long serialVersionUID = -7022924635011038776L;

@@ -38,7 +38,7 @@ import org.apfloat.ApfloatRuntimeException;
  * @param <V> The message type for this message passer.
  *
  * @since 1.6
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -107,7 +107,7 @@ public class MessagePasser<K, V>
             }
             catch (InterruptedException ie)
             {
-                throw new ApfloatInterruptedException("Wait for received message interrupted", ie);
+                throw new ApfloatInterruptedException("Wait for received message interrupted", ie, "message.interrupted");
             }
         }
 
