@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -436,9 +436,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.pow(new Apcomplex(new Apfloat(0)), new Apcomplex(new Apfloat(0)));
             fail("0^0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
         }
 
         try
@@ -493,9 +494,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.atanh(new Apcomplex("1"));
             fail("atanh(1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be infinite
+            assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
 
         try
@@ -503,9 +505,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.atanh(new Apcomplex("-1"));
             fail("atanh(-1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be infinite
+            assertEquals("Localization key", "log.ofZero", aae.getLocalizationKey());
         }
     }
 
@@ -743,9 +746,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.logGamma(new Apcomplex("0"));
             fail("logGamma(0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "logGamma.ofZero", aae.getLocalizationKey());
         }
     }
 
@@ -762,9 +766,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.digamma(new Apcomplex("0"));
             fail("digamma(0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "digamma.ofNonpositiveInteger", aae.getLocalizationKey());
         }
     }
 
@@ -781,9 +786,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.polygamma(1, new Apcomplex("0"));
             fail("polygamma(1, 0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "polygamma.ofNonpositiveInteger", aae.getLocalizationKey());
         }
 
         try
@@ -791,9 +797,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.polygamma(-1, new Apcomplex("1"));
             fail("polygamma(-1, 1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "polygamma.ofNegativeOrder", aae.getLocalizationKey());
         }
     }
 
@@ -811,9 +818,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.beta(new Apcomplex("0"), new Apcomplex("0"));
             fail("beta(0, 0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "beta.infinite", aae.getLocalizationKey());
         }
     }
 
@@ -832,9 +840,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.beta(new Apcomplex("0"), new Apcomplex("0"), new Apcomplex("0"));
             fail("beta(0, 0, 0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "betaIncomplete.withNonpositiveInteger", aae.getLocalizationKey());
         }
     }
 
@@ -854,9 +863,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.beta(new Apcomplex("0"), new Apcomplex("1"), new Apcomplex("0"), new Apcomplex("0"));
             fail("beta(0, 1, 0, 0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "betaIncompleteGeneralized.withNonpositiveInteger", aae.getLocalizationKey());
         }
     }
 
@@ -874,9 +884,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.pochhammer(new Apcomplex("-0.5"), new Apcomplex("0.5"));
             fail("pochhammer(-0.5, 0.5) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "gamma.ofZero", aae.getLocalizationKey());
         }
     }
 
@@ -894,9 +905,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.binomial(new Apcomplex("-3"), new Apcomplex("(0,1)"));
             fail("binomial(-3,i) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "gamma.ofNegativeInteger", aae.getLocalizationKey());
         }
     }
 
@@ -1023,9 +1035,10 @@ public class FixedPrecisionApcomplexHelperTest
             helper.hypergeometricU(new Apcomplex("1"), new Apcomplex("2"), new Apcomplex("0"));
             fail("U(1, 2, 0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
     }
 

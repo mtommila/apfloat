@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.11.1
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -756,9 +756,10 @@ public class ApfloatTest
             a.divide(new Apfloat(0));
             fail("Division by zero allowed");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: division by zero
+            assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
         assertEquals("long / long", new Apfloat(1), new Apfloat("101010101010101010101010101010101010101").divide(new Apfloat("101010101010101010101010101010101010101")), new Apfloat(2e-38));
     }
@@ -907,36 +908,40 @@ public class ApfloatTest
             new Apfloat("5.5").longValueExact();
             fail("Non-integer number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
         try
         {
             new Apfloat("5.5").intValueExact();
             fail("Non-integer number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
         try
         {
             new Apfloat("5.5").shortValueExact();
             fail("Non-integer number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
         try
         {
             new Apfloat("5.5").byteValueExact();
             fail("Non-integer number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
 
         try
@@ -944,72 +949,80 @@ public class ApfloatTest
             new Apfloat(Long.MAX_VALUE).add(new Apfloat(1)).longValueExact();
             fail("Value out of range accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
         try
         {
             new Apfloat(Long.MIN_VALUE).subtract(new Apfloat(1)).longValueExact();
             fail("Value out of range accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
         try
         {
             new Apfloat(Integer.MAX_VALUE + 1L).intValueExact();
             fail("Value out of range accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
         try
         {
             new Apfloat(Integer.MIN_VALUE - 1L).intValueExact();
             fail("Value out of range accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
         try
         {
             new Apfloat(Short.MAX_VALUE + 1L).shortValueExact();
             fail("Value out of range accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
         try
         {
             new Apfloat(Short.MIN_VALUE- 1L).shortValueExact();
             fail("Value out of range accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
         try
         {
             new Apfloat(Byte.MAX_VALUE + 1L).byteValueExact();
             fail("Value out of range accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
         try
         {
             new Apfloat(Byte.MIN_VALUE - 1L).byteValueExact();
             fail("Value out of range accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
     }
 

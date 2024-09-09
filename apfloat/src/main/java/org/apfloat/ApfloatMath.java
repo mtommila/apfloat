@@ -4407,7 +4407,7 @@ public class ApfloatMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         Apfloat one = Apint.ONES[ν.radix()];
-        if (x.compareTo(one) > 0)
+        if (!(ν.isInteger() && ν.signum() <= 0) && x.compareTo(one) > 0)
         {
             throw new ApfloatArithmeticException("Result would be complex", "complex");
         }

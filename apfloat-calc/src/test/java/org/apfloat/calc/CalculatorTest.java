@@ -28,11 +28,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 
+import org.apfloat.ApfloatArithmeticException;
+import org.apfloat.ApfloatRuntimeException;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -116,7 +119,7 @@ public class CalculatorTest
         {
             // OK: syntax error
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result is not a number
         }
@@ -124,7 +127,7 @@ public class CalculatorTest
         {
             // OK: invalid parameter
         }
-        catch (org.apfloat.ApfloatRuntimeException are)
+        catch (ApfloatRuntimeException are)
         {
             // OK: attempt invalid calculation
         }

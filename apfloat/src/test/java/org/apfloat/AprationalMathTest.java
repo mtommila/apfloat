@@ -31,7 +31,7 @@ import java.util.NoSuchElementException;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -92,9 +92,10 @@ public class AprationalMathTest
             AprationalMath.pow(new Aprational(new Apint(0)), 0);
             fail("0^0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
         }
     }
 
@@ -155,9 +156,10 @@ public class AprationalMathTest
             AprationalMath.roundToPrecision(new Aprational("1/3"), 1000, RoundingMode.UNNECESSARY);
             fail("rounding accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; rounding needed
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
     }
 
@@ -186,9 +188,10 @@ public class AprationalMathTest
             AprationalMath.roundToInteger(new Aprational("1/2"), RoundingMode.UNNECESSARY);
             fail("rounding accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; rounding needed
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
     }
 
@@ -242,9 +245,10 @@ public class AprationalMathTest
             AprationalMath.roundToPlaces(new Aprational("1/3"), 1000, RoundingMode.UNNECESSARY);
             fail("rounding accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; rounding needed
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
     }
 
@@ -309,9 +313,10 @@ public class AprationalMathTest
             AprationalMath.roundToMultiple(new Aprational("1/3"), new Aprational("1/2"), RoundingMode.UNNECESSARY);
             fail("rounding accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; rounding needed
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
 
         try
@@ -319,9 +324,10 @@ public class AprationalMathTest
             AprationalMath.roundToMultiple(new Aprational("1/3"), new Aprational("0"), RoundingMode.UP);
             fail("Non-zero as multiple of zero");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; impossible
+            assertEquals("Localization key", "round.ofZero", aae.getLocalizationKey());
         }
     }
 
@@ -554,36 +560,40 @@ public class AprationalMathTest
             AprationalMath.binomial(new Aprational("9"), new Aprational("4/3"));
             fail("9,4/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is not a rational number
+            assertEquals("Localization key", "binomial.nonRational", aae.getLocalizationKey());
         }
         try
         {
             AprationalMath.binomial(new Aprational("9"), new Aprational("-4/3"));
             fail("9,-4/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is not a rational number
+            assertEquals("Localization key", "binomial.nonRational", aae.getLocalizationKey());
         }
         try
         {
             AprationalMath.binomial(new Aprational("-9"), new Aprational("4/3"));
             fail("-9,4/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is infinite
+            assertEquals("Localization key", "binomial.infinite", aae.getLocalizationKey());
         }
         try
         {
             AprationalMath.binomial(new Aprational("-9"), new Aprational("-4/3"));
             fail("-9,-4/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is infinite
+            assertEquals("Localization key", "binomial.infinite", aae.getLocalizationKey());
         }
 
         try
@@ -591,36 +601,40 @@ public class AprationalMathTest
             AprationalMath.binomial(new Aprational("2"), new Aprational("19/3"));
             fail("2,19/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is not a rational number
+            assertEquals("Localization key", "binomial.nonRational", aae.getLocalizationKey());
         }
         try
         {
             AprationalMath.binomial(new Aprational("2"), new Aprational("-19/3"));
             fail("2,-19/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is not a rational number
+            assertEquals("Localization key", "binomial.nonRational", aae.getLocalizationKey());
         }
         try
         {
             AprationalMath.binomial(new Aprational("-2"), new Aprational("19/3"));
             fail("-2,19/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is infinite
+            assertEquals("Localization key", "binomial.infinite", aae.getLocalizationKey());
         }
         try
         {
             AprationalMath.binomial(new Aprational("-2"), new Aprational("-19/3"));
             fail("-2,-19/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is infinite
+            assertEquals("Localization key", "binomial.infinite", aae.getLocalizationKey());
         }
 
         try
@@ -628,36 +642,40 @@ public class AprationalMathTest
             AprationalMath.binomial(new Aprational("-19/3"), new Aprational("4/3"));
             fail("-19/3,4/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is not a rational number
+            assertEquals("Localization key", "binomial.nonRational", aae.getLocalizationKey());
         }
         try
         {
             AprationalMath.binomial(new Aprational("19/3"), new Aprational("-4/3"));
             fail("19/3,-4/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is not a rational number
+            assertEquals("Localization key", "binomial.nonRational", aae.getLocalizationKey());
         }
         try
         {
             AprationalMath.binomial(new Aprational("-4/3"), new Aprational("19/3"));
             fail("-4/3,19/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is not a rational number
+            assertEquals("Localization key", "binomial.nonRational", aae.getLocalizationKey());
         }
         try
         {
             AprationalMath.binomial(new Aprational("4/3"), new Aprational("-19/3"));
             fail("4/3,-19/3 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is not a rational number
+            assertEquals("Localization key", "binomial.nonRational", aae.getLocalizationKey());
         }
 
         try
@@ -856,9 +874,10 @@ public class AprationalMathTest
             AprationalMath.harmonicNumber(new Apint(-1));
             fail("-1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be infinite
+            assertEquals("Localization key", "harmonicNumber.negative", aae.getLocalizationKey());
         }
     }
 
@@ -897,9 +916,10 @@ public class AprationalMathTest
             AprationalMath.harmonicNumber(new Apint(-1), new Apint(2));
             fail("-1, 2 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be infinite
+            assertEquals("Localization key", "harmonicNumber.negative", aae.getLocalizationKey());
         }
     }
 }

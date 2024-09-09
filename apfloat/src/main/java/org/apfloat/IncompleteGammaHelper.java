@@ -227,7 +227,7 @@ class IncompleteGammaHelper
         {
             if (a.real().signum() <= 0)
             {
-                throw new ApfloatArithmeticException("Upper gamma with first argument real part nonpositive and second argment zero", "gammaIncomplete.upperOffNonpositive");
+                throw new ApfloatArithmeticException("Upper gamma with first argument real part nonpositive and second argment zero", "gammaIncomplete.upperOfNonpositive");
             }
             return ApcomplexMath.gamma(a);
         }
@@ -331,7 +331,7 @@ class IncompleteGammaHelper
     {
         if (isNonPositiveInteger(a))
         {
-            throw new ApfloatArithmeticException("Lower gamma with first argument nonpositive integer", "gammaIncomplete.lowerOffNonpositive");
+            throw new ApfloatArithmeticException("Lower gamma with first argument nonpositive integer", "gammaIncomplete.lowerOfNonpositiveInteger");
         }
         if (useSum(z))
         {

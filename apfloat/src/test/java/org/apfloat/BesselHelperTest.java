@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -151,18 +151,20 @@ public class BesselHelperTest
             BesselHelper.besselJ(new Apcomplex("-0.1"), new Apcomplex("0"));
             fail("-0.1, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
         try
         {
             BesselHelper.besselJ(new Apcomplex("(0,0.1)"), new Apcomplex("0"));
             fail("0.1i, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "pow.zeroToNonpositiveReal", aae.getLocalizationKey());
         }
 
         try
@@ -173,6 +175,7 @@ public class BesselHelperTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -238,18 +241,20 @@ public class BesselHelperTest
             BesselHelper.besselI(new Apcomplex("-0.1"), new Apcomplex("0"));
             fail("-0.1, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
         try
         {
             BesselHelper.besselI(new Apcomplex("(0,0.1)"), new Apcomplex("0"));
             fail("0.1i, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "pow.zeroToNonpositiveReal", aae.getLocalizationKey());
         }
 
         try
@@ -260,6 +265,7 @@ public class BesselHelperTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -319,36 +325,40 @@ public class BesselHelperTest
             BesselHelper.besselY(new Apcomplex("0"), new Apcomplex("0"));
             fail("0, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "besselY.ofZero", aae.getLocalizationKey());
         }
         try
         {
             BesselHelper.besselY(new Apcomplex("1"), new Apcomplex("0"));
             fail("1, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "besselY.ofZero", aae.getLocalizationKey());
         }
         try
         {
             BesselHelper.besselY(new Apcomplex("-0.1"), new Apcomplex("0"));
             fail("-0.1, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "besselY.ofZero", aae.getLocalizationKey());
         }
         try
         {
             BesselHelper.besselY(new Apcomplex("(0,0.1)"), new Apcomplex("0"));
             fail("0.1i, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "besselY.ofZero", aae.getLocalizationKey());
         }
 
         try
@@ -359,6 +369,7 @@ public class BesselHelperTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -418,36 +429,40 @@ public class BesselHelperTest
             BesselHelper.besselK(new Apcomplex("0"), new Apcomplex("0"));
             fail("0, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "besselK.ofZero", aae.getLocalizationKey());
         }
         try
         {
             BesselHelper.besselK(new Apcomplex("1"), new Apcomplex("0"));
             fail("1, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "besselK.ofZero", aae.getLocalizationKey());
         }
         try
         {
             BesselHelper.besselK(new Apcomplex("-0.1"), new Apcomplex("0"));
             fail("-0.1, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "besselK.ofZero", aae.getLocalizationKey());
         }
         try
         {
             BesselHelper.besselK(new Apcomplex("(0,0.1)"), new Apcomplex("0"));
             fail("0.1i, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "besselK.ofZero", aae.getLocalizationKey());
         }
 
         try
@@ -458,6 +473,7 @@ public class BesselHelperTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "inverseRoot.infinitePrecision", iee.getLocalizationKey());
         }
     }
 }

@@ -29,7 +29,7 @@ import java.util.Map;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -89,9 +89,10 @@ public class ApintMathTest
             ApintMath.pow(new Apint(0), 0);
             fail("0^0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
         }
     }
 
@@ -196,9 +197,10 @@ public class ApintMathTest
             ApintMath.root(new Apint(-2), 2);
             fail("sqrt of -2 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result would be imaginary
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
 
         try
@@ -206,9 +208,10 @@ public class ApintMathTest
             ApintMath.root(new Apint(0), 0);
             fail("0th root of 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result would be undefined
+            assertEquals("Localization key", "root.zerothOfZero", aae.getLocalizationKey());
         }
     }
 
@@ -338,9 +341,10 @@ public class ApintMathTest
             ApintMath.div(new Apint(3), new Apint(0));
             fail("3 div 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result would be infinite
+            assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
     }
 
@@ -440,9 +444,10 @@ public class ApintMathTest
             ApintMath.modPow(new Apint(14), new Apint(-1), new Apint(65536));
             fail("Non-existent modular inverse allowed");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: modular inverse does not exist
+            assertEquals("Localization key", "modInverse.notExists", aae.getLocalizationKey());
         }
 
         try
@@ -450,9 +455,10 @@ public class ApintMathTest
             ApintMath.modPow(new Apint(0), new Apint(-1), new Apint(2));
             fail("Non-existent modular inverse allowed");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: modular inverse does not exist
+            assertEquals("Localization key", "modInverse.notExists", aae.getLocalizationKey());
         }
 
         try
@@ -460,9 +466,10 @@ public class ApintMathTest
             ApintMath.modPow(new Apint(0), new Apint(0), new Apint(7));
             fail("0^0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
         }
     }
 
@@ -484,9 +491,10 @@ public class ApintMathTest
             ApintMath.factorial(-1);
             fail("Factorial of negative number allowed");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: factorial of negative number
+            assertEquals("Localization key", "factorial.ofNegative", aae.getLocalizationKey());
         }
     }
 
@@ -508,9 +516,10 @@ public class ApintMathTest
             ApintMath.doubleFactorial(-1);
             fail("Double factorial of negative number allowed");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: double factorial of negative number
+            assertEquals("Localization key", "doubleFactorial.ofNegative", aae.getLocalizationKey());
         }
     }
 
@@ -662,6 +671,7 @@ public class ApintMathTest
         catch (OverflowException oe)
         {
             // OK: overflow
+            assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
     }
 
@@ -759,6 +769,7 @@ public class ApintMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK: Infinite size
+            assertEquals("Localization key", "random.infinitePrecision", iee.getLocalizationKey());
         }
     }
 

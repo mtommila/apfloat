@@ -90,7 +90,7 @@ class HurwitzZetaHelper
                 return t.add(ApfloatHelper.ensurePrecision(z, precision));
             }
 
-            throw new ApfloatArithmeticException("Zeta of second argument nonpositive integer", "zeta.ofSecondNonpositive");
+            throw new ApfloatArithmeticException("Zeta of second argument nonpositive integer", "zeta.ofSecondNonpositiveInteger");
         }
         if (precision == Apfloat.INFINITE)
         {

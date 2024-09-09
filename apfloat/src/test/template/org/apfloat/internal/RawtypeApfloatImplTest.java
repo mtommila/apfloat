@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import org.apfloat.spi.*;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.11.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -1160,6 +1160,7 @@ public class RawtypeApfloatImplTest
         catch (OverflowException oe)
         {
             // OK: overflow
+            assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
 
         a = new RawtypeApfloatImpl("1e" + (Long.MAX_VALUE - 400), Apfloat.INFINITE, 2, false);
@@ -1171,9 +1172,10 @@ public class RawtypeApfloatImplTest
             }
             fail("No overflow doubling");
         }
-        catch (OverflowException are)
+        catch (OverflowException oe)
         {
             // OK: overflow
+            assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
 
         a = new RawtypeApfloatImpl(999999999, 9, 10);
@@ -1287,7 +1289,8 @@ public class RawtypeApfloatImplTest
         }
         catch (RadixMismatchException rme)
         {
-            // OK: overflow
+            // OK: radix mismatch
+            assertEquals("Localization key", "radix.mismatch", rme.getLocalizationKey());
         }
 
         b = (RawType.TYPE.equals(Integer.TYPE) ? new LongApfloatImpl(0, Apfloat.INFINITE, 10) : new IntApfloatImpl(0, Apfloat.INFINITE, 10));
@@ -1299,6 +1302,7 @@ public class RawtypeApfloatImplTest
         catch (ImplementationMismatchException ime)
         {
             // OK: wrong implementation class
+            assertEquals("Localization key", "type.mismatch", ime.getLocalizationKey());
         }
     }
 
@@ -1595,7 +1599,8 @@ public class RawtypeApfloatImplTest
         }
         catch (RadixMismatchException rme)
         {
-            // OK: overflow
+            // OK: radix mismatch
+            assertEquals("Localization key", "radix.mismatch", rme.getLocalizationKey());
         }
     }
 
@@ -1643,6 +1648,7 @@ public class RawtypeApfloatImplTest
                 catch (OverflowException oe)
                 {
                     // OK: overflow
+                    assertEquals("Localization key", "overflow", oe.getLocalizationKey());
                 }
             }
 
@@ -1780,7 +1786,8 @@ public class RawtypeApfloatImplTest
         }
         catch (RadixMismatchException rme)
         {
-            // OK: overflow
+            // OK: radix mismatch
+            assertEquals("Localization key", "radix.mismatch", rme.getLocalizationKey());
         }
 
         b = (RawType.TYPE.equals(Integer.TYPE) ? new LongApfloatImpl(0, Apfloat.INFINITE, 10) : new IntApfloatImpl(0, Apfloat.INFINITE, 10));
@@ -1792,6 +1799,7 @@ public class RawtypeApfloatImplTest
         catch (ImplementationMismatchException ime)
         {
             // OK: wrong implementation class
+            assertEquals("Localization key", "type.mismatch", ime.getLocalizationKey());
         }
     }
 
@@ -1849,6 +1857,7 @@ public class RawtypeApfloatImplTest
                 catch (OverflowException oe)
                 {
                     // OK: overflow
+                    assertEquals("Localization key", "overflow", oe.getLocalizationKey());
                 }
             }
 
@@ -1980,6 +1989,7 @@ public class RawtypeApfloatImplTest
         catch (InfiniteExpansionException iee)
         {
             // OK: would be an infinite expansion
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
         }
 
         a = new RawtypeApfloatImpl("1e5", Apfloat.INFINITE, 2, false);
@@ -1991,7 +2001,8 @@ public class RawtypeApfloatImplTest
         }
         catch (RadixMismatchException rme)
         {
-            // OK: overflow
+            // OK: radix mismatch
+            assertEquals("Localization key", "radix.mismatch", rme.getLocalizationKey());
         }
 
         b = (RawType.TYPE.equals(Integer.TYPE) ? new LongApfloatImpl(0, Apfloat.INFINITE, 10) : new IntApfloatImpl(0, Apfloat.INFINITE, 10));
@@ -2003,6 +2014,7 @@ public class RawtypeApfloatImplTest
         catch (ImplementationMismatchException ime)
         {
             // OK: wrong implementation class
+            assertEquals("Localization key", "type.mismatch", ime.getLocalizationKey());
         }
     }
 
@@ -2581,7 +2593,8 @@ public class RawtypeApfloatImplTest
         }
         catch (RadixMismatchException rme)
         {
-            // OK: overflow
+            // OK: radix mismatch
+            assertEquals("Localization key", "radix.mismatch", rme.getLocalizationKey());
         }
 
         b = (RawType.TYPE.equals(Integer.TYPE) ? new LongApfloatImpl(0, Apfloat.INFINITE, 10) : new IntApfloatImpl(0, Apfloat.INFINITE, 10));
@@ -2593,6 +2606,7 @@ public class RawtypeApfloatImplTest
         catch (ImplementationMismatchException ime)
         {
             // OK: wrong implementation class
+            assertEquals("Localization key", "type.mismatch", ime.getLocalizationKey());
         }
     }
 
@@ -2709,7 +2723,8 @@ public class RawtypeApfloatImplTest
         }
         catch (RadixMismatchException rme)
         {
-            // OK: overflow
+            // OK: radix mismatch
+            assertEquals("Localization key", "radix.mismatch", rme.getLocalizationKey());
         }
 
         b = (RawType.TYPE.equals(Integer.TYPE) ? new LongApfloatImpl(0, Apfloat.INFINITE, 10) : new IntApfloatImpl(0, Apfloat.INFINITE, 10));
@@ -2721,6 +2736,7 @@ public class RawtypeApfloatImplTest
         catch (ImplementationMismatchException ime)
         {
             // OK: wrong implementation class
+            assertEquals("Localization key", "type.mismatch", ime.getLocalizationKey());
         }
     }
 

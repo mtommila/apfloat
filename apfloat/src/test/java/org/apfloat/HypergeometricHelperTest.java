@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.13.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -81,9 +81,10 @@ public class HypergeometricHelperTest
             HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("1.00000"), new Apcomplex("42.0000"), new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000") }, new Apcomplex("0.10000"));
             fail("p > q + 1 accepted with z != 0 and not polynomial");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "hypergeometric.nonconvergence", aae.getLocalizationKey());
         }
     }
 

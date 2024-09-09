@@ -2021,7 +2021,7 @@ public class ApcomplexMath
             }
             if (z.real().isInteger() && z.real().signum() < 0)
             {
-                throw new ApfloatArithmeticException("Log gamma of negative integer", "logGammagamma.ofNegativeInteger");
+                throw new ApfloatArithmeticException("Log gamma of negative integer", "logGamma.ofNegativeInteger");
             }
         }
         if (precision == Apfloat.INFINITE)

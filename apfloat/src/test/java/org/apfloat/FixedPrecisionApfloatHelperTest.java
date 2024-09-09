@@ -28,7 +28,7 @@ import java.math.RoundingMode;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -250,9 +250,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.pow(new Apfloat(0), 0);
             fail("0^0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
         }
     }
 
@@ -278,9 +279,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.inverseRoot(x, 0);
             fail("inverse zeroth root accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: inverse zeroth root
+            assertEquals("Localization key", "inverseRoot.zeroth", aae.getLocalizationKey());
         }
 
         try
@@ -288,9 +290,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.inverseRoot(new Apfloat(-2), 2);
             fail("inverse sqrt of -2 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result would be imaginary
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
 
         try
@@ -298,9 +301,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.inverseRoot(new Apfloat(0), 2);
             fail("inverse sqrt of 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result would be infinite
+            assertEquals("Localization key", "inverseRoot.ofZero", aae.getLocalizationKey());
         }
     }
 
@@ -317,9 +321,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.root(x, 0);
             fail("zeroth root accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: zeroth root
+            assertEquals("Localization key", "root.zeroth", aae.getLocalizationKey());
         }
 
         try
@@ -327,9 +332,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.root(new Apfloat(-2), 2);
             fail("sqrt of -2 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result would be imaginary
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
 
         try
@@ -337,9 +343,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.root(new Apfloat(0), 0);
             fail("0th root of 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result would be undefined
+            assertEquals("Localization key", "root.zeroth", aae.getLocalizationKey());
         }
     }
 
@@ -645,9 +652,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.log(new Apfloat(0));
             fail("log of zero accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be -infinite
+            assertEquals("Localization key", "log.ofZero", aae.getLocalizationKey());
         }
 
         try
@@ -655,9 +663,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.log(new Apfloat(-1));
             fail("log of -1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "log.ofNegative", aae.getLocalizationKey());
         }
     }
 
@@ -738,9 +747,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.pow(new Apfloat(0), new Apfloat(0));
             fail("0^0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
         }
 
         try
@@ -758,9 +768,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.pow(new Apfloat(-2), new Apfloat("1.3"));
             fail("pow of negative number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "pow.negativeToNonInteger", aae.getLocalizationKey());
         }
     }
 
@@ -777,9 +788,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.acosh(new Apfloat("0.9"));
             fail("acosh(0.9) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
 
         try
@@ -787,9 +799,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.acosh(new Apfloat("-0.5"));
             fail("acosh(-0.5) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
     }
 
@@ -815,9 +828,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.atanh(new Apfloat("1"));
             fail("atanh(1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be infinite
+            assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
 
         try
@@ -825,9 +839,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.atanh(new Apfloat("-1"));
             fail("atanh(-1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be infinite
+            assertEquals("Localization key", "log.ofZero", aae.getLocalizationKey());
         }
     }
 
@@ -890,9 +905,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.acos(new Apfloat("1.1"));
             fail("acos(1.1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
     }
 
@@ -909,9 +925,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.asin(new Apfloat("1.1"));
             fail("asin(1.1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
     }
 
@@ -937,9 +954,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.atan2(new Apfloat(0), new Apfloat(0));
             fail("atan2(0,0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "atan2.ofOrigin", aae.getLocalizationKey());
         }
     }
 
@@ -1237,9 +1255,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.logGamma(new Apfloat(0));
             fail("logGamma(0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "logGamma.ofZero", aae.getLocalizationKey());
         }
     }
 
@@ -1256,9 +1275,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.digamma(new Apfloat(0));
             fail("digamma(0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "digamma.ofNonpositiveInteger", aae.getLocalizationKey());
         }
     }
 
@@ -1296,9 +1316,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.beta(new Apfloat("1.5"), new Apfloat("-1.5"), new Apfloat("2.5"));
             fail("beta(1.5, -1.5, 2.5) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
     }
 
@@ -1346,9 +1367,10 @@ public class FixedPrecisionApfloatHelperTest
             helper.binomial(new Apfloat(-1), new Apfloat("-1.1"));
             fail("binomial(-1,-1.1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "gamma.ofZero", aae.getLocalizationKey());
         }
     }
 

@@ -205,9 +205,10 @@ public class ApfloatMathTest
             ApfloatMath.pow(new Apfloat(0), 0);
             fail("0^0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
         }
     }
 
@@ -287,9 +288,10 @@ public class ApfloatMathTest
             ApfloatMath.inverseRoot(x, 0);
             fail("inverse zeroth root accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: inverse zeroth root
+            assertEquals("Localization key", "inverseRoot.zeroth", aae.getLocalizationKey());
         }
 
         try
@@ -297,9 +299,10 @@ public class ApfloatMathTest
             ApfloatMath.inverseRoot(new Apfloat(-2), 2);
             fail("inverse sqrt of -2 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result would be imaginary
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
 
         try
@@ -307,9 +310,10 @@ public class ApfloatMathTest
             ApfloatMath.inverseRoot(new Apfloat(0), 2);
             fail("inverse sqrt of 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result would be infinite
+            assertEquals("Localization key", "inverseRoot.ofZero", aae.getLocalizationKey());
         }
 
         try
@@ -330,6 +334,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK: can't have infinite memory
+            assertEquals("Localization key", "inverseRoot.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -356,9 +361,10 @@ public class ApfloatMathTest
             ApfloatMath.root(new Apfloat(2), 0);
             fail("zeroth root accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: zeroth root
+            assertEquals("Localization key", "root.zeroth", aae.getLocalizationKey());
         }
 
         try
@@ -366,9 +372,10 @@ public class ApfloatMathTest
             ApfloatMath.root(new Apfloat(-2), 2);
             fail("sqrt of -2 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result would be imaginary
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
 
         try
@@ -376,9 +383,10 @@ public class ApfloatMathTest
             ApfloatMath.root(new Apfloat(0), 0);
             fail("0th root of 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: result would be undefined
+            assertEquals("Localization key", "root.zeroth", aae.getLocalizationKey());
         }
 
         try
@@ -389,6 +397,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK: can't have infinite memory
+            assertEquals("Localization key", "inverseRoot.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -478,8 +487,9 @@ public class ApfloatMathTest
                 {
                     result = ApfloatMath.round(input, 1, roundingMode);
                 }
-                catch (ArithmeticException ae)
+                catch (ApfloatArithmeticException aae)
                 {
+                    assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
                     result = null;
                 }
                 assertEquals(expected[i][j], result);
@@ -618,9 +628,10 @@ public class ApfloatMathTest
             ApfloatMath.roundToInteger(new Apfloat("1.1"), RoundingMode.UNNECESSARY);
             fail("rounding accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; rounding necessary
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
     }
 
@@ -674,6 +685,7 @@ public class ApfloatMathTest
         catch (OverflowException oe)
         {
             // OK; underflow / overflow
+            assertEquals("Localization key", "underflow.overflow", oe.getLocalizationKey());
         }
 
         try
@@ -684,6 +696,7 @@ public class ApfloatMathTest
         catch (OverflowException oe)
         {
             // OK; underflow / overflow
+            assertEquals("Localization key", "underflow.overflow", oe.getLocalizationKey());
         }
 
         try
@@ -691,9 +704,10 @@ public class ApfloatMathTest
             ApfloatMath.roundToPlaces(new Apfloat("1.2345"), 2, RoundingMode.UNNECESSARY);
             fail("rounding accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; rounding necessary
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
     }
 
@@ -756,9 +770,10 @@ public class ApfloatMathTest
             ApfloatMath.roundToMultiple(new Apfloat("1.2345"), new Apfloat(0), RoundingMode.UP);
             fail("Non-zero as multiple of zero");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; impossible
+            assertEquals("Localization key", "round.ofZero", aae.getLocalizationKey());
         }
 
         try
@@ -769,6 +784,7 @@ public class ApfloatMathTest
         catch (OverflowException oe)
         {
             // OK; too big scale difference
+            assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
     }
 
@@ -994,9 +1010,10 @@ public class ApfloatMathTest
             ApfloatMath.agm(new Apfloat(1.0), new Apfloat(-2.0));
             fail("AGM with complex result accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; non-real result
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
 
         try
@@ -1007,6 +1024,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; can't calculate this to infinite precision
+            assertEquals("Localization key", "agm.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -1091,6 +1109,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; invalid precision
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
 
         try
@@ -1186,9 +1205,10 @@ public class ApfloatMathTest
             ApfloatMath.log(new Apfloat(0));
             fail("log of zero accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be -infinite
+            assertEquals("Localization key", "log.ofZero", aae.getLocalizationKey());
         }
 
         try
@@ -1196,9 +1216,10 @@ public class ApfloatMathTest
             ApfloatMath.log(new Apfloat(-1));
             fail("log of -1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "log.ofNegative", aae.getLocalizationKey());
         }
 
         try
@@ -1209,6 +1230,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; can't calculate this to infinite precision
+            assertEquals("Localization key", "log.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -1343,6 +1365,7 @@ public class ApfloatMathTest
         catch (OverflowException oe)
         {
             // OK; result would overflow
+            assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
 
         try
@@ -1353,6 +1376,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; can't calculate this to infinite precision
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -1397,6 +1421,7 @@ public class ApfloatMathTest
         catch (LossOfPrecisionException lope)
         {
             // OK
+            assertEquals("Localization key", "lossOfPrecision", lope.getLocalizationKey());
         }
 
         a = ApfloatMath.pow(new Apfloat("1.02"), new Apfloat("57"));
@@ -1450,36 +1475,40 @@ public class ApfloatMathTest
             ApfloatMath.pow(new Apfloat(0), new Apfloat(0));
             fail("0^0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.pow(new Apfloat(0), new Apfloat("-1.0"));
             fail("0^-1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.pow(new Apfloat(0), new Apfloat("-1.5"));
             fail("0^-1.5 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.pow(new Apfloat(0), new Apfloat("-2.0"));
             fail("0^-2 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
 
         try
@@ -1490,6 +1519,7 @@ public class ApfloatMathTest
         catch (OverflowException oe)
         {
             // OK; result would overflow
+            assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
 
         try
@@ -1497,9 +1527,10 @@ public class ApfloatMathTest
             ApfloatMath.pow(new Apfloat(-2), new Apfloat("1.3"));
             fail("pow of negative number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "pow.negativeToNonInteger", aae.getLocalizationKey());
         }
 
         try
@@ -1510,6 +1541,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; can't calculate this to infinite precision
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -1531,9 +1563,10 @@ public class ApfloatMathTest
             ApfloatMath.acosh(new Apfloat("0"));
             fail("acosh(0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
 
         try
@@ -1541,9 +1574,10 @@ public class ApfloatMathTest
             ApfloatMath.acosh(new Apfloat("0.9"));
             fail("acosh(0.9) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
 
         try
@@ -1551,9 +1585,21 @@ public class ApfloatMathTest
             ApfloatMath.acosh(new Apfloat("-0.5"));
             fail("acosh(-0.5) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.acosh(new Apfloat(2));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; can't calculate this to infinite precision
+            assertEquals("Localization key", "inverseRoot.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -1573,6 +1619,17 @@ public class ApfloatMathTest
 
         a = ApfloatMath.asinh(new Apfloat(0));
         assertEquals("0, 100 value", new Apfloat(0), a);
+
+        try
+        {
+            ApfloatMath.asinh(new Apfloat(2));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; can't calculate this to infinite precision
+            assertEquals("Localization key", "inverseRoot.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testAtanh()
@@ -1593,9 +1650,10 @@ public class ApfloatMathTest
             ApfloatMath.atanh(new Apfloat("1"));
             fail("atanh(1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be infinite
+            assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
 
         try
@@ -1603,9 +1661,21 @@ public class ApfloatMathTest
             ApfloatMath.atanh(new Apfloat("-1"));
             fail("atanh(-1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be infinite
+            assertEquals("Localization key", "log.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.atanh(new Apfloat("0.5", Apfloat.INFINITE));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; can't calculate this to infinite precision
+            assertEquals("Localization key", "log.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -1625,6 +1695,17 @@ public class ApfloatMathTest
 
         a = ApfloatMath.cosh(new Apfloat(0));
         assertEquals("0, 100 value", new Apfloat(1), a);
+
+        try
+        {
+            ApfloatMath.cosh(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; can't calculate this to infinite precision
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testSinh()
@@ -1643,6 +1724,17 @@ public class ApfloatMathTest
 
         a = ApfloatMath.sinh(new Apfloat(0));
         assertEquals("0, 100 value", new Apfloat(0), a);
+
+        try
+        {
+            ApfloatMath.sinh(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; can't calculate this to infinite precision
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testTanh()
@@ -1661,6 +1753,17 @@ public class ApfloatMathTest
 
         a = ApfloatMath.tanh(new Apfloat(0));
         assertEquals("0, 100 value", new Apfloat(0), a);
+
+        try
+        {
+            ApfloatMath.tanh(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; can't calculate this to infinite precision
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testAcos()
@@ -1688,6 +1791,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; result would have infinite precision
+            assertEquals("Localization key", "log.infinitePrecision", iee.getLocalizationKey());
         }
 
         try
@@ -1695,9 +1799,10 @@ public class ApfloatMathTest
             ApfloatMath.acos(new Apfloat("1.1"));
             fail("acos(1.1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
         }
     }
 
@@ -1727,9 +1832,21 @@ public class ApfloatMathTest
             ApfloatMath.asin(new Apfloat("1.1"));
             fail("asin(1.1) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be complex
+            assertEquals("Localization key", "root.evenOfNegative", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.asin(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; result would have infinite precision
+            assertEquals("Localization key", "log.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -1745,6 +1862,17 @@ public class ApfloatMathTest
 
         a = ApfloatMath.atan(new Apfloat(0));
         assertEquals("0, 100 value", new Apfloat(0), a);
+
+        try
+        {
+            ApfloatMath.atan(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; result would have infinite precision
+            assertEquals("Localization key", "log.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testAtan2()
@@ -1800,9 +1928,10 @@ public class ApfloatMathTest
             ApfloatMath.atan2(new Apfloat(0), new Apfloat(0));
             fail("atan2(0,0) accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result would be undefined
+            assertEquals("Localization key", "atan2.ofOrigin", aae.getLocalizationKey());
         }
 
         try
@@ -1813,6 +1942,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; result would have infinite precision
+            assertEquals("Localization key", "atan2.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -1847,6 +1977,18 @@ public class ApfloatMathTest
         catch (LossOfPrecisionException lope)
         {
             // OK; loss of precision
+            assertEquals("Localization key", "imag.lossOfPrecision", lope.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.cos(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; result would have infinite precision
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -1881,6 +2023,18 @@ public class ApfloatMathTest
         catch (LossOfPrecisionException lope)
         {
             // OK; loss of precision
+            assertEquals("Localization key", "imag.lossOfPrecision", lope.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.sin(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; result would have infinite precision
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -1905,6 +2059,18 @@ public class ApfloatMathTest
         catch (LossOfPrecisionException lope)
         {
             // OK; loss of precision
+            assertEquals("Localization key", "imag.lossOfPrecision", lope.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.tan(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; result would have infinite precision
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -1922,6 +2088,17 @@ public class ApfloatMathTest
         assertEquals("0 radix 2 precision", Apfloat.INFINITE, a.precision());
         assertEquals("0 radix 2 radix", 2, a.radix());
         assertEquals("0 radix 2 value", new Apint(1, 2), a);
+
+        try
+        {
+            ApfloatMath.sinc(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; result would have infinite precision
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testW()
@@ -1931,6 +2108,17 @@ public class ApfloatMathTest
         assertEquals("value", new Apfloat("1.023055505635040031000066002051603260046346014422202623", 55, 7), w, new Apfloat("5e-54", 1, 7));
         assertEquals("radix", 7, w.radix());
         assertEquals("precision", 55, w.precision());
+
+        try
+        {
+            ApfloatMath.w(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; result would have infinite precision
+            assertEquals("Localization key", "w.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testToRadians()
@@ -1946,6 +2134,17 @@ public class ApfloatMathTest
         a = ApfloatMath.toRadians(new Apfloat(0));
         assertEquals("0 precision", Apfloat.INFINITE, a.precision());
         assertEquals("0 value", new Apfloat(0), a);
+
+        try
+        {
+            ApfloatMath.toRadians(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; result would have infinite precision
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testToDegrees()
@@ -1961,6 +2160,17 @@ public class ApfloatMathTest
         a = ApfloatMath.toDegrees(new Apfloat(0));
         assertEquals("0 precision", Apfloat.INFINITE, a.precision());
         assertEquals("0 value", new Apfloat(0), a);
+
+        try
+        {
+            ApfloatMath.toDegrees(new Apfloat(1));
+            fail("Infinite precision accepted");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK; result would have infinite precision
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testProduct()
@@ -2139,6 +2349,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; invalid precision
+            assertEquals("Localization key", "e.infinitePrecision", iee.getLocalizationKey());
         }
 
         try
@@ -2209,6 +2420,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; invalid precision
+            assertEquals("Localization key", "euler.infinitePrecision", iee.getLocalizationKey());
         }
 
         try
@@ -2265,6 +2477,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; invalid precision
+            assertEquals("Localization key", "catalan.infinitePrecision", iee.getLocalizationKey());
         }
 
         try
@@ -2321,6 +2534,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; invalid precision
+            assertEquals("Localization key", "glaisher.infinitePrecision", iee.getLocalizationKey());
         }
 
         try
@@ -2377,6 +2591,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK; invalid precision
+            assertEquals("Localization key", "khinchin.infinitePrecision", iee.getLocalizationKey());
         }
 
         try
@@ -2445,27 +2660,30 @@ public class ApfloatMathTest
             ApfloatMath.gamma(new Apfloat("0"));
             fail("Gamma of zero");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "gamma.ofZero", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gamma(new Apfloat("-1"));
             fail("Gamma of -1");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "gamma.ofNegativeInteger", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gamma(new Apfloat("1e100", 100));
             fail("Gamma overflow");
         }
-        catch (OverflowException are)
+        catch (OverflowException oe)
         {
             // OK
+            assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
         try
         {
@@ -2475,6 +2693,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "gamma.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -2560,45 +2779,50 @@ public class ApfloatMathTest
             ApfloatMath.gamma(Apfloat.ZERO, Apfloat.ZERO);
             fail("Gamma of zero");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "gammaIncomplete.upperOfNonpositive", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gamma(new Apfloat("-0.500000"), new Apfloat("-0.500000"));
             fail("Non-real result");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gamma(new Apfloat(-1, 10), new Apfloat(-2, 10));
             fail("Non-real result");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK non-real result
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gamma(new Apfloat(0, 10), new Apfloat(-1, 10));
             fail("Non-real result");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK non-real result
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gamma(new Apfloat("1e100", 100), new Apfloat("1.000e102"));
             fail("Overflow");
         }
-        catch (OverflowException are)
+        catch (OverflowException oe)
         {
             // OK
+            assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
         try
         {
@@ -2608,6 +2832,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "gammaIncomplete.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -2673,45 +2898,50 @@ public class ApfloatMathTest
             ApfloatMath.gamma(Apfloat.ZERO, Apfloat.ZERO, Apfloat.ZERO);
             fail("Gamma of zero");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "gamma.ofZero", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gamma(new Apfloat(-1, 10), Apfloat.ZERO, new Apfloat(1, 10));
             fail("Lower gamma of non-positive integer");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK a is non-positive integer
+            assertEquals("Localization key", "gammaIncomplete.lowerOfNonpositiveInteger", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gamma(Apfloat.ZERO, new Apfloat(-1, 10), Apfloat.ZERO);
             fail("Lower gamma of non-positive integer");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK a is non-positive integer
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gamma(Apfloat.ZERO, Apfloat.ZERO, new Apfloat(-1, 10));
             fail("Lower gamma of non-positive integer");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK a is non-positive integer
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gamma(new Apfloat("1e100", 100), new Apfloat("1.000e102"), new Apfloat("1.000e103"));
             fail("Overflow");
         }
-        catch (OverflowException are)
+        catch (OverflowException oe)
         {
             // OK
+            assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
         try
         {
@@ -2721,6 +2951,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "gammaIncomplete.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -2743,18 +2974,31 @@ public class ApfloatMathTest
             ApfloatMath.logGamma(new Apfloat("-0.1"));
             fail("Log gamma of non-positive value");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK a is negative
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.logGamma(Apfloat.ZERO);
             fail("Lower gamma of zero");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK a is zero
+            assertEquals("Localization key", "logGamma.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.logGamma(new Apfloat(2));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "logGamma.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -2789,18 +3033,20 @@ public class ApfloatMathTest
             ApfloatMath.digamma(new Apfloat(0));
             fail("Digamma of zero");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "digamma.ofNonpositiveInteger", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.digamma(new Apfloat(-6));
             fail("Digamma of -6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "digamma.ofNonpositiveInteger", aae.getLocalizationKey());
         }
 
         try
@@ -2811,6 +3057,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "digamma.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -2819,6 +3066,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.polygamma(3, new Apfloat(6, 30, 10));
         assertEquals("3, 6 precision", 30, a.precision(), 1);
         assertEquals("3, 6 value", new Apfloat("0.0118278281927550750219481051729"), a, new Apfloat("5e-31"));
+
+        try
+        {
+            ApfloatMath.polygamma(3, new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "zeta.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testBeta()
@@ -2826,6 +3084,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.beta(new Apfloat(5, 6), new Apfloat(6, 6));
         assertEquals("5, 6 precision", 6, a.precision(), 1);
         assertEquals("5, 6 value", new Apfloat("0.000793651"), a, new Apfloat("5e-9"));
+
+        try
+        {
+            ApfloatMath.beta(new Apfloat("2.5", Apfloat.INFINITE), new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "gamma.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testBetaIncomplete()
@@ -2851,54 +3120,71 @@ public class ApfloatMathTest
             ApfloatMath.beta(new Apfloat("0.1"), new Apfloat(0), new Apfloat("1"));
             fail("Beta of 0.1, 0, 1");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "betaIncomplete.withNonpositiveInteger", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("4"), new Apfloat(0), new Apfloat("6"));
             fail("Beta of 4, 0, 6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "betaIncomplete.withNonpositiveInteger", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("0"), new Apfloat("-0.1"), new Apfloat("6"));
             fail("Beta of 0, -0.1, 6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("0"), new Apfloat("-1"), new Apfloat("6"));
             fail("Beta of 0, -1, 6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "betaIncomplete.withNonpositiveInteger", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("-0.1"), new Apfloat("0.1"), new Apfloat("6"));
             fail("Beta of -0.1, 0.1, 6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("1.50000"), new Apfloat("-1.50000"), new Apfloat("2.50000"));
             fail("Beta of 1.5, -1.5, 2.5");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.beta(new Apfloat(2), new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -2933,90 +3219,111 @@ public class ApfloatMathTest
             ApfloatMath.beta(new Apfloat("0.1"), new Apfloat("0.2"), new Apfloat(0), new Apfloat("1"));
             fail("Beta of 0.1, 0.2, 0, 1");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "betaIncompleteGeneralized.withNonpositiveInteger", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("3"), new Apfloat("4"), new Apfloat(0), new Apfloat("6"));
             fail("Beta of 3, 4, 0, 6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "betaIncompleteGeneralized.withNonpositiveInteger", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("0"), new Apfloat("1"), new Apfloat("-0.1"), new Apfloat("6"));
             fail("Beta of 0, 1, -0.1, 6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("1"), new Apfloat("0"), new Apfloat("-0.1"), new Apfloat("6"));
             fail("Beta of 1, 0, -0.1, 6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("0"), new Apfloat("1"), new Apfloat("-1"), new Apfloat("6"));
             fail("Beta of 0, 1, -1, 6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "betaIncompleteGeneralized.withNonpositiveInteger", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("1"), new Apfloat("0"), new Apfloat("-1"), new Apfloat("6"));
             fail("Beta of 1, 0, -1, 6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "betaIncompleteGeneralized.withNonpositiveInteger", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("-0.1"), new Apfloat("1"), new Apfloat("0.1"), new Apfloat("6"));
             fail("Beta of -0.1, 1, 0.1, 6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("1"), new Apfloat("-0.1"), new Apfloat("0.1"), new Apfloat("6"));
             fail("Beta of 1, -0.1, 0.1, 6");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("1.50000"), new Apfloat("0.500000"), new Apfloat("-1.50000"), new Apfloat("2.50000"));
             fail("Beta of 1.5, 0.5, -1.5, 2.5");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.beta(new Apfloat("0.500000"), new Apfloat("1.50000"), new Apfloat("-1.50000"), new Apfloat("2.50000"));
             fail("Beta of 0.5, 1.5, -1.5, 2.5");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.beta(new Apfloat(2), new Apfloat(3), new Apfloat(4), new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3039,9 +3346,21 @@ public class ApfloatMathTest
             ApfloatMath.pochhammer(new Apfloat("-3.50000"), new Apfloat("-2.50000"));
             fail("Infinite allowed");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "gamma.ofNegativeInteger", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.pochhammer(new Apfloat(-2), new Apfloat(-3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3088,9 +3407,21 @@ public class ApfloatMathTest
             ApfloatMath.binomial(new Apfloat("-3.0"), new Apfloat("4.2"));
             fail("Binomial of -3,4.2");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK; result is infinite
+            assertEquals("Localization key", "gamma.ofNegativeInteger", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.binomial(new Apfloat(2), new Apfloat("2.5", Apfloat.INFINITE));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "gamma.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3129,9 +3460,10 @@ public class ApfloatMathTest
             ApfloatMath.zeta(new Apint(1, 11));
             fail("Zeta of one");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "zeta.ofOne", aae.getLocalizationKey());
         }
         try
         {
@@ -3141,6 +3473,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "zeta.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3203,45 +3536,61 @@ public class ApfloatMathTest
             ApfloatMath.zeta(new Apint(1, 11), new Apint(2, 11));
             fail("Zeta of s one");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "zeta.ofFirstOne", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.zeta(new Apfloat("-3.2"), new Apfloat("-4.2"));
             fail("Zeta of s noninteger and a nonpositive");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.zeta(new Apfloat("-3.2"), new Apfloat("-4.0"));
             fail("Zeta of s noninteger and a nonpositive");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.zeta(new Apfloat("-3.2"), new Apfloat("-4.2"));
             fail("Zeta of s noninteger and a nonpositive");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.zeta(new Apfloat("3.0"), new Apfloat("-3.0"));
             fail("3, -3 division by zero");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "zeta.ofSecondNonpositiveInteger", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.zeta(new Apfloat(2), new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "zeta.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3264,6 +3613,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "hypergeometric.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3286,6 +3636,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "hypergeometric.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3322,27 +3673,30 @@ public class ApfloatMathTest
             ApfloatMath.hypergeometric2F1(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("1.000001"));
             fail("2F1 of x > 1");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.hypergeometric2F1(new Apfloat(1), new Apfloat(2), new Apfloat(4), new Apfloat(2));
             fail("2F1 of x > 1 with infinite precision");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.hypergeometric2F1(new Apfloat("-2.00000"), new Apfloat("2.20000"), new Apfloat("-1.00000"), new Apfloat("0.000001"));
             fail("Infinite accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK result would be infinite
+            assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
 
         try
@@ -3353,6 +3707,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "hypergeometric.infinitePrecision", iee.getLocalizationKey());
         }
 
         try
@@ -3360,9 +3715,10 @@ public class ApfloatMathTest
             ApfloatMath.hypergeometric2F1(new Apfloat(-3), new Apfloat(-2), new Apfloat(-1), new Apfloat(1));
             fail("Division by zero accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
     }
 
@@ -3389,6 +3745,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3415,6 +3772,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3456,18 +3814,20 @@ public class ApfloatMathTest
             ApfloatMath.hypergeometric2F1Regularized(new Apfloat("1.00000"), new Apfloat("2.20000"), new Apfloat("3.30000"), new Apfloat("1.000001"));
             fail("2F1 of x > 1");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.hypergeometric2F1Regularized(new Apfloat(1), new Apfloat(2), new Apfloat(4), new Apfloat(2));
             fail("2F1 of x > 1 with infinite precision");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
 
         try
@@ -3478,6 +3838,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "hypergeometric.infinitePrecision", iee.getLocalizationKey());
         }
 
         try
@@ -3488,6 +3849,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "hypergeometric.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3544,36 +3906,40 @@ public class ApfloatMathTest
             ApfloatMath.hypergeometricU(new Apfloat("1.1"), new Apfloat("2.1"), new Apfloat("-0.10"));
             fail("x < 0 and not polynomial");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.hypergeometricU(new Apfloat("1.0"), new Apfloat("2.1"), new Apfloat("-0.10"));
             fail("x < 0 and not polynomial");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.hypergeometricU(new Apfloat("3.0"), new Apfloat("2.0"), new Apfloat("-1.0"));
             fail("x < 0 and not polynomial");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.hypergeometricU(new Apfloat("-0.50"), new Apfloat("1.0"), new Apfloat("0"));
             fail("x == 0 and not polynomial");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK result would be infinite
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
 
         try
@@ -3584,6 +3950,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3592,6 +3959,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.erf(new Apfloat("2.00000"));
         assertEquals("2 precision", 8, a.precision());
         assertEquals("2 value", new Apfloat("0.99532226"), a, new Apfloat("5e-8"));
+
+        try
+        {
+            ApfloatMath.erf(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testErfc()
@@ -3599,6 +3977,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.erfc(new Apfloat("2.00000"));
         assertEquals("2 precision", 6, a.precision());
         assertEquals("2 value", new Apfloat("0.00467773"), a, new Apfloat("5e-8"));
+
+        try
+        {
+            ApfloatMath.erfc(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testErfi()
@@ -3606,6 +3995,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.erfi(new Apfloat("2.00000"));
         assertEquals("2 precision", 6, a.precision());
         assertEquals("2 value", new Apfloat("18.5648"), a, new Apfloat("5e-4"));
+
+        try
+        {
+            ApfloatMath.erfi(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testInverseErf()
@@ -3644,36 +4044,40 @@ public class ApfloatMathTest
             ApfloatMath.inverseErf(new Apfloat("1"));
             fail("1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.inverseErf(new Apfloat("-1"));
             fail("-1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.inverseErf(new Apfloat("1.1"));
             fail("1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.inverseErf(new Apfloat("-1.1"));
             fail("-1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
 
         try
@@ -3684,6 +4088,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3727,36 +4132,40 @@ public class ApfloatMathTest
             ApfloatMath.inverseErfc(new Apfloat("0"));
             fail("0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.inverseErfc(new Apfloat("2"));
             fail("2 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.inverseErfc(new Apfloat("-0.1"));
             fail("-0.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.inverseErfc(new Apfloat("2.1"));
             fail("2.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
 
         try
@@ -3767,6 +4176,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3779,6 +4189,17 @@ public class ApfloatMathTest
         a = ApfloatMath.fresnelS(new Apfloat("200000.00000000000000"));
         assertEquals("200000 precision", 15, a.precision());
         assertEquals("200000 value", new Apfloat("0.4999984084505691190421"), a, new Apfloat("5e-15"));
+
+        try
+        {
+            ApfloatMath.fresnelS(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testFresnelC()
@@ -3790,6 +4211,17 @@ public class ApfloatMathTest
         a = ApfloatMath.fresnelC(new Apfloat("200000.00000000000000"));
         assertEquals("200000 precision", 15, a.precision());
         assertEquals("200000 value", new Apfloat("0.500000000000000"), a, new Apfloat("5e-15"));
+
+        try
+        {
+            ApfloatMath.fresnelC(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testExpIntegralE()
@@ -3811,9 +4243,10 @@ public class ApfloatMathTest
             ApfloatMath.expIntegralE(new Apfloat("0"), new Apfloat("0"));
             fail("0, 0");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
 
         try
@@ -3821,9 +4254,21 @@ public class ApfloatMathTest
             ApfloatMath.expIntegralE(new Apfloat("0.100000"), new Apfloat("-0.100000"));
             fail("x negative");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.expIntegralE(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3842,9 +4287,21 @@ public class ApfloatMathTest
             ApfloatMath.expIntegralEi(new Apfloat("0"));
             fail("Ei of zero");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "gammaIncomplete.upperOfNonpositive", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.expIntegralEi(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3867,18 +4324,31 @@ public class ApfloatMathTest
             ApfloatMath.logIntegral(new Apfloat("1"));
             fail("li of 1");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "gammaIncomplete.upperOfNonpositive", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.logIntegral(new Apfloat("-0.1"));
             fail("li of negative number");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.logIntegral(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "log.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3887,6 +4357,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.sinIntegral(new Apfloat("-3.00000"));
         assertEquals("-3 precision", 6, a.precision());
         assertEquals("-3 value", new Apfloat("-1.84865"), a, new Apfloat("5e-5"));
+
+        try
+        {
+            ApfloatMath.sinIntegral(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testCosIntegral()
@@ -3900,18 +4381,31 @@ public class ApfloatMathTest
             ApfloatMath.cosIntegral(new Apfloat("0"));
             fail("Ci of zero");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "log.ofZero", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.cosIntegral(new Apfloat("-0.1"));
             fail("Ci of negative number");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.cosIntegral(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "gammaIncomplete.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3920,6 +4414,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.sinhIntegral(new Apfloat("-3.00000"));
         assertEquals("-3 precision", 6, a.precision());
         assertEquals("-3 value", new Apfloat("-4.97344"), a, new Apfloat("5e-5"));
+
+        try
+        {
+            ApfloatMath.sinhIntegral(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testCoshIntegral()
@@ -3933,18 +4438,31 @@ public class ApfloatMathTest
             ApfloatMath.coshIntegral(new Apfloat("0"));
             fail("Chi of zero");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "log.ofZero", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.coshIntegral(new Apfloat("-0.1"));
             fail("Chi of negative number");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.coshIntegral(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "gammaIncomplete.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -3953,6 +4471,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.airyAi(new Apfloat("-3.00000"));
         assertEquals("-3 precision", 6, a.precision());
         assertEquals("-3 value", new Apfloat("-0.378814"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.airyAi(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testAiryAiPrime()
@@ -3960,6 +4489,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.airyAiPrime(new Apfloat("-3.00000"));
         assertEquals("-3 precision", 6, a.precision());
         assertEquals("-3 value", new Apfloat("0.314584"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.airyAiPrime(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testAiryBi()
@@ -3967,6 +4507,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.airyBi(new Apfloat("-3.00000"));
         assertEquals("-3 precision", 6, a.precision());
         assertEquals("-3 value", new Apfloat("-0.198290"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.airyBi(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testAiryBiPrime()
@@ -3974,6 +4525,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.airyBiPrime(new Apfloat("-3.00000"));
         assertEquals("-3 precision", 6, a.precision());
         assertEquals("-3 value", new Apfloat("-0.675611"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.airyBiPrime(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testBesselJ()
@@ -3991,18 +4553,31 @@ public class ApfloatMathTest
             ApfloatMath.besselJ(new Apfloat("-0.1"), new Apfloat("0"));
             fail("-0.1, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.besselJ(new Apfloat("0.1"), new Apfloat("-0.1"));
             fail("0.1, -0.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.besselJ(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4021,18 +4596,31 @@ public class ApfloatMathTest
             ApfloatMath.besselI(new Apfloat("-0.1"), new Apfloat("0"));
             fail("-0.1, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.besselI(new Apfloat("0.1"), new Apfloat("-0.1"));
             fail("0.1, -0.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.besselI(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4047,18 +4635,31 @@ public class ApfloatMathTest
             ApfloatMath.besselY(new Apfloat("1"), new Apfloat("0"));
             fail("1, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "besselY.ofZero", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.besselY(new Apfloat("1"), new Apfloat("-0.1"));
             fail("1, -0.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.besselY(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4073,18 +4674,31 @@ public class ApfloatMathTest
             ApfloatMath.besselK(new Apfloat("1"), new Apfloat("0"));
             fail("1, 0 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "besselK.ofZero", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.besselK(new Apfloat("1"), new Apfloat("-0.1"));
             fail("1, -0.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.besselK(new Apfloat(-3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "gamma.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4103,18 +4717,20 @@ public class ApfloatMathTest
             ApfloatMath.ellipticK(new Apfloat("1.10000", 6, 2));
             fail("1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.ellipticK(new Apfloat("1.00000"));
             fail("1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result is infinite
+            assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
 
         try
@@ -4125,6 +4741,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
         try
         {
@@ -4134,6 +4751,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4156,9 +4774,10 @@ public class ApfloatMathTest
             ApfloatMath.ellipticE(new Apfloat("1.10000", 6, 2));
             fail("1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
 
         try
@@ -4169,6 +4788,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
         try
         {
@@ -4178,6 +4798,7 @@ public class ApfloatMathTest
         catch (InfiniteExpansionException iee)
         {
             // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4186,6 +4807,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.hermiteH(new Apfloat("2.00000"), new Apfloat("3.00000"));
         assertEquals("2, 3 precision", 6, a.precision());
         assertEquals("2, 3 value", new Apfloat("34.0000"), a, new Apfloat("5e-4"));
+
+        try
+        {
+            ApfloatMath.hermiteH(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "gamma.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testLaguerreL()
@@ -4193,6 +4825,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.laguerreL(new Apfloat("2.00000"), new Apfloat("3.00000"));
         assertEquals("2, 3 precision", 6, a.precision());
         assertEquals("2, 3 value", new Apfloat("-0.500000"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.laguerreL(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "hypergeometric.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testLaguerreLGeneralized()
@@ -4200,6 +4843,17 @@ public class ApfloatMathTest
         Apfloat a = ApfloatMath.laguerreL(new Apfloat("2.00000"), new Apfloat("3.00000"), new Apfloat("4.00000"));
         assertEquals("2, 3, 4 precision", 6, a.precision());
         assertEquals("2, 3, 4 value", new Apfloat("-2.00000"), a, new Apfloat("5e-5"));
+
+        try
+        {
+            ApfloatMath.laguerreL(new Apfloat(3), new Apfloat(4), new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "hypergeometric.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testLegendreP()
@@ -4226,18 +4880,31 @@ public class ApfloatMathTest
             ApfloatMath.legendreP(new Apfloat("2.10000"), new Apfloat("-1.00000"));
             fail("2.1, -1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "hypergeometric.nonconvergence", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.legendreP(new Apfloat("2.10000"), new Apfloat("-1.10000"));
             fail("2.1, -1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.legendreP(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "hypergeometric.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4285,54 +4952,71 @@ public class ApfloatMathTest
             ApfloatMath.legendreP(new Apfloat("1.10000"), new Apfloat("1.00000"), new Apfloat("1.100000"));
             fail("1.1, 1, 1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.legendreP(new Apfloat("1.00000"), new Apfloat("1.10000"), new Apfloat("1.100000"));
             fail("1, 1.1, 1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.legendreP(new Apfloat("2.10000"), new Apfloat("4.00000"), new Apfloat("-1.10000"));
             fail("2.1, 4, -1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.legendreP(new Apfloat("-4.00000"), new Apfloat("-3.00000"), new Apfloat("-1.10000"));
             fail("-4, -3, -1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.legendreP(new Apfloat("1.00000"), new Apfloat("1.00000"), new Apfloat("1.100000"));
             fail("1, 1, 1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.legendreP(new Apfloat("-6.00000"), new Apfloat("5.00000"), new Apfloat("1.100000"));
             fail("-6, 5, 1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.legendreP(new Apfloat(3), new Apfloat(4), new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4349,30 +5033,54 @@ public class ApfloatMathTest
 
         try
         {
+            ApfloatMath.legendreQ(new Apfloat("2.10000"), new Apfloat("1.10000"));
+            fail("2.1, 1.1 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+        try
+        {
             ApfloatMath.legendreQ(new Apfloat("2.00000"), new Apfloat("1.00000"));
             fail("2, 1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "hypergeometric.nonconvergence", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.legendreQ(new Apfloat("2.10000"), new Apfloat("-1.00000"));
             fail("2.1, -1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "hypergeometric.nonconvergence", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.legendreQ(new Apfloat("2.10000"), new Apfloat("-1.10000"));
             fail("2.1, -1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.legendreQ(new Apfloat(0), new Apfloat(1));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4389,30 +5097,54 @@ public class ApfloatMathTest
 
         try
         {
+            ApfloatMath.legendreQ(new Apfloat("2.10000"), new Apfloat("3.00000"), new Apfloat("1.10000"));
+            fail("2.1, 3, 1.1 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+        try
+        {
             ApfloatMath.legendreQ(new Apfloat("2.00000"), new Apfloat("3.00000"), new Apfloat("1.00000"));
             fail("2, 3, 1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.legendreQ(new Apfloat("2.10000"), new Apfloat("3.00000"), new Apfloat("-1.00000"));
             fail("2.1, 3, -1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "pow.zeroToNegative", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.legendreQ(new Apfloat("2.10000"), new Apfloat("3.00000"), new Apfloat("-1.10000"));
             fail("2.1, 3, -1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.legendreQ(new Apfloat(0), new Apfloat(2), new Apfloat(1));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4440,9 +5172,21 @@ public class ApfloatMathTest
             ApfloatMath.chebyshevT(new Apfloat("2.30000"), new Apfloat("-1.00001"));
             fail("2.3, -1.00001 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.chebyshevT(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "inverseRoot.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4470,18 +5214,31 @@ public class ApfloatMathTest
             ApfloatMath.chebyshevU(new Apfloat("2.10000"), new Apfloat("-1.00000"));
             fail("2.1, -1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "inverseRoot.ofZero", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.chebyshevU(new Apfloat("2.10000"), new Apfloat("-1.00001"));
             fail("2.1, -1.00001 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.chebyshevU(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "inverseRoot.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4509,18 +5266,31 @@ public class ApfloatMathTest
             ApfloatMath.gegenbauerC(new Apfloat("0"), new Apfloat("1.00000"));
             fail("0, 1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gegenbauerC(new Apfloat("2.10000"), new Apfloat("-1.00001"));
             fail("2.1, -1.00001 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.gegenbauerC(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4556,27 +5326,41 @@ public class ApfloatMathTest
             ApfloatMath.gegenbauerC(new Apfloat("2.10000"), new Apfloat("3.10000"), new Apfloat("-1.00000"));
             fail("2.1, 3.1, -1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "hypergeometric.nonconvergence", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gegenbauerC(new Apfloat("-2.10000"), new Apfloat("0.500000"), new Apfloat("-1.00000"));
             fail("-2.1, 0.5, -1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "hypergeometric.nonconvergence", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.gegenbauerC(new Apfloat("2.10000"), new Apfloat("1"), new Apfloat("-1.00001"));
             fail("2.1, 1, -1.00001 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.gegenbauerC(new Apfloat(3), new Apfloat(4), new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4604,27 +5388,41 @@ public class ApfloatMathTest
             ApfloatMath.jacobiP(new Apfloat("2.10000"), new Apfloat("-1.00000"), new Apfloat("0.100000"), new Apfloat("-1.00000"));
             fail("2.1, -1, 0.1, -1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "hypergeometric.nonconvergence", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.jacobiP(new Apfloat("2.10000"), new Apfloat("-1.00000"), new Apfloat("-1.00000"), new Apfloat("-1.10000"));
             fail("2.1, -1, -1, -1.1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.jacobiP(new Apfloat("-0.50000"), new Apfloat("-0.50000"), new Apfloat("1.00000"), new Apfloat("1.00000"));
             fail("-0.5, -0.5, 1, 1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "gamma.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.jacobiP(new Apfloat(3), new Apfloat(4), new Apfloat(5), new Apfloat(6));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4637,6 +5435,17 @@ public class ApfloatMathTest
         a = ApfloatMath.fibonacci(new Apfloat("5.60000"), new Apfloat("7.80000"));
         assertEquals("5.6, 7.8 precision", 6, a.precision());
         assertEquals("5.6, 7.8 value", new Apfloat("13453.4"), a, new Apfloat("5e-1"));
+
+        try
+        {
+            ApfloatMath.fibonacci(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testEulerE()
@@ -4648,6 +5457,17 @@ public class ApfloatMathTest
         a = ApfloatMath.eulerE(56, new Apfloat("7.80000"));
         assertEquals("56, 7.8 precision", 6, a.precision());
         assertEquals("56, 7.8 value", new Apfloat("6.61538e45"), a, new Apfloat("5e40"));
+
+        try
+        {
+            ApfloatMath.eulerE(3, new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testBernoulliB()
@@ -4659,6 +5479,17 @@ public class ApfloatMathTest
         a = ApfloatMath.bernoulliB(56, new Apfloat("7.80000"));
         assertEquals("56, 7.8 precision", 6, a.precision());
         assertEquals("56, 7.8 value", new Apfloat("3.43754e47"), a, new Apfloat("5e42"));
+
+        try
+        {
+            ApfloatMath.bernoulliB(3, new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "divide.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testHarmonicNumber()
@@ -4672,9 +5503,21 @@ public class ApfloatMathTest
             ApfloatMath.harmonicNumber(new Apfloat("-1.0000"));
             fail("-1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "digamma.ofNonpositiveInteger", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.harmonicNumber(new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "euler.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4710,18 +5553,31 @@ public class ApfloatMathTest
             ApfloatMath.harmonicNumber(new Apfloat("-1.0000"), new Apfloat("1.0000"));
             fail("-1, 1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
-            // OK, result would be complex
+            // OK, result would be infinite
+            assertEquals("Localization key", "digamma.ofNonpositiveInteger", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.harmonicNumber(new Apfloat("-1.10000"), new Apfloat("1.10000"));
             fail("-1.1, 1,1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.harmonicNumber(new Apfloat(3), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "zeta.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4735,32 +5591,64 @@ public class ApfloatMathTest
         assertEquals("2, -3.4 precision", 6, a.precision());
         assertEquals("2, -3.4 value", new Apfloat("-2.11882"), a, new Apfloat("5e-5"));
 
+        a = ApfloatMath.polylog(new Apfloat("-2.00000"), new Apfloat("-3.40000"));
+        assertEquals("-2, -3.4 precision", 6, a.precision());
+        assertEquals("-2, -3.4 value", new Apfloat("0.0957926"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.polylog(new Apfloat("-2.00000"), new Apfloat("3.40000"));
+        assertEquals("-2, 3.4 precision", 6, a.precision());
+        assertEquals("-2, 3.4 value", new Apfloat("-1.08218"), a, new Apfloat("5e-5"));
+
         try
         {
             ApfloatMath.polylog(new Apfloat("3.40000"), new Apfloat("5.60000"));
             fail("3.4, 5.6 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+        try
+        {
+            ApfloatMath.polylog(new Apfloat("-3.40000"), new Apfloat("5.60000"));
+            fail("-3.4, 5.6 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.polylog(new Apfloat("1.00000"), new Apfloat("1.00000"));
             fail("1, 1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be infinite
+            assertEquals("Localization key", "polylog.infinite", aae.getLocalizationKey());
         }
         try
         {
             ApfloatMath.polylog(new Apfloat("0.900000"), new Apfloat("1.00000"));
             fail("0.9, 1 accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK, result would be infinite
+            assertEquals("Localization key", "polylog.infinite", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.polylog(new Apfloat(-2), new Apfloat(4));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
@@ -4795,6 +5683,17 @@ public class ApfloatMathTest
         assertEquals("0.5 precision", 18, a.precision());
         assertEquals("0.5 radix", 2, a.radix());
         assertEquals("0.5 value", new Apfloat("0.10011111010110011", 18, 2), a, new Apfloat("1e-18", 1, 2));
+
+        try
+        {
+            ApfloatMath.logisticSigmoid(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testRandom()

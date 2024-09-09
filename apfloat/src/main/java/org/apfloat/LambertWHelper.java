@@ -138,7 +138,7 @@ class LambertWHelper {
         if (this.x.compareTo(this.minusOnePerE) < 0)
         {
             // We know for sure here, but it could still be, even if we don't notice it here
-            throw new ComplexException(new ArithmeticException("Result would be complex"));
+            throw new ComplexException(new ApfloatArithmeticException("Result would be complex", "complex"));
         }
         else if (this.k == -1 && !this.close)
         {
@@ -217,7 +217,7 @@ class LambertWHelper {
             // If x was close to the limit and we did not notice it earlier, w may now have diverged
             if (this.k == 0 && w.compareTo(this.minusOne) < 0 || this.k == -1 && w.compareTo(this.minusOne) > 0)
             {
-                throw new ComplexException(new ArithmeticException("Result would be complex"));
+                throw new ComplexException(new ApfloatArithmeticException("Result would be complex", "complex"));
             }
 
             // Check the convergence
@@ -462,7 +462,7 @@ class LambertWHelper {
     {
         if (p.imag().signum() != 0)
         {
-            throw new ComplexException(new ArithmeticException("Result would be complex"));
+            throw new ComplexException(new ApfloatArithmeticException("Result would be complex", "complex"));
         }
         return complexSeries(p).real();
     }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2024 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import java.util.IllegalFormatException;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.10.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -520,9 +520,10 @@ public class AprationalTest
             a.divide(new Aprational("0"));
             fail("Division by zero allowed");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: division by zero
+            assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
     }
 

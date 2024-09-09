@@ -38,7 +38,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.13.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -545,9 +545,10 @@ public class ApcomplexTest
             a.divide(new Apcomplex("0"));
             fail("Division by zero allowed");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK: division by zero
+            assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
     }
 
@@ -581,9 +582,10 @@ public class ApcomplexTest
             new Apcomplex("5.5").longValueExact();
             fail("Non-integer number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
 
         try
@@ -591,9 +593,10 @@ public class ApcomplexTest
             new Apcomplex("5.5").intValueExact();
             fail("Non-integer number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
 
         try
@@ -601,9 +604,10 @@ public class ApcomplexTest
             new Apcomplex("5.5").shortValueExact();
             fail("Non-integer number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
 
         try
@@ -611,9 +615,10 @@ public class ApcomplexTest
             new Apcomplex("5.5").byteValueExact();
             fail("Non-integer number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "roundingNecessary", aae.getLocalizationKey());
         }
 
         try
@@ -621,9 +626,10 @@ public class ApcomplexTest
             new Apcomplex("(5,6)").longValueExact();
             fail("Nonreal number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
 
         try
@@ -631,9 +637,10 @@ public class ApcomplexTest
             new Apcomplex("(5,6)").intValueExact();
             fail("Nonreal number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
 
         try
@@ -641,9 +648,10 @@ public class ApcomplexTest
             new Apcomplex("(5,6)").shortValueExact();
             fail("Nonreal number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
 
         try
@@ -651,9 +659,10 @@ public class ApcomplexTest
             new Apcomplex("(5,6)").byteValueExact();
             fail("Nonreal number accepted");
         }
-        catch (ArithmeticException ae)
+        catch (ApfloatArithmeticException aae)
         {
             // OK
+            assertEquals("Localization key", "outOfRange", aae.getLocalizationKey());
         }
     }
 
