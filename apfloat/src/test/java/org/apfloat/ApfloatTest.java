@@ -1189,8 +1189,6 @@ public class ApfloatTest
     public static void testFormatTo()
         throws IOException
     {
-        System.setProperty("java.locale.providers", "COMPAT,SPI"); // Required since Java 10 to have all locale providers available
-
         Locale locale = null;
         assertEquals("null %s", "1.234567890123456e5", String.format(locale, "%s", new Apfloat("123456.7890123456")));
         assertEquals("null %S", "1.234567890123456E5", String.format(locale, "%S", new Apfloat("123456.7890123456")));
@@ -1207,7 +1205,7 @@ public class ApfloatTest
         assertEquals("fi_FI %s radix 11", "1,23456e5", String.format(locale, "%s", new Apfloat("123456", 6, 11)));
         assertEquals("fi_FI %S radix 11", "1,23456789AE9", String.format(locale, "%S", new Apfloat("123456789a", 10, 11)));
 
-        locale = new Locale("hi", "IN");
+        locale = new Locale.Builder().setLanguage("hi").setRegion("IN").setExtension('u', "nu-deva").build();
         assertEquals("hi_IN %#.6s", "१२३४५६", String.format(locale, "%#.6s", new Apfloat("123456.7890123456")));
         assertEquals("hi_IN %#s radix 9", "१२३४५६", String.format(locale, "%#s", new Apfloat("123456", 6, 9)));
         assertEquals("hi_IN %s radix 11", "1.23456e5", String.format(locale, "%s", new Apfloat("123456", 6, 11)));

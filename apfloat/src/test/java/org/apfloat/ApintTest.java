@@ -634,15 +634,13 @@ public class ApintTest
     public static void testFormatTo()
         throws IOException
     {
-        System.setProperty("java.locale.providers", "COMPAT,SPI"); // Required since Java 10 to have all locale providers available
-
         Locale locale = null;
         assertEquals("null %s", "123456789", String.format(locale, "%s", new Apint("123456789")));
         assertEquals("null %S", "123456789A", String.format(locale, "%S", new Apint("123456789a", 11)));
         assertEquals("null %10s", " 123456789", String.format(locale, "%10s", new Apint("123456789")));
         assertEquals("null %-10s", "123456789 ", String.format(locale, "%-10s", new Apint("123456789")));
 
-        locale = new Locale("hi", "IN");
+        locale = new Locale.Builder().setLanguage("hi").setRegion("IN").setExtension('u', "nu-deva").build();
         assertEquals("hi_IN %s", "१२३४५६७८९", String.format(locale, "%s", new Apint("123456789")));
         assertEquals("hi_IN %s radix 9", "१२३४५६७८", String.format(locale, "%s", new Apint("12345678", 9)));
         assertEquals("hi_IN %s radix 11", "123456789", String.format(locale, "%s", new Apint("123456789", 11)));

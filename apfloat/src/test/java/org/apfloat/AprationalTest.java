@@ -853,8 +853,6 @@ public class AprationalTest
     public static void testFormatTo()
         throws IOException
     {
-        System.setProperty("java.locale.providers", "COMPAT,SPI"); // Required since Java 10 to have all locale providers available
-
         Locale locale = null;
         assertEquals("null %s", "123456789/1234", String.format(locale, "%s", new Aprational("123456789/1234")));
         assertEquals("null %S", "123456789/123A", String.format(locale, "%S", new Aprational("123456789/123a", 11)));
@@ -863,7 +861,7 @@ public class AprationalTest
 
         assertEquals("null %s apint", "123456789", String.format(locale, "%s", new Aprational("123456789")));
 
-        locale = new Locale("hi", "IN");
+        locale = new Locale.Builder().setLanguage("hi").setRegion("IN").setExtension('u', "nu-deva").build();
         assertEquals("hi_IN %s", "१२३४५६७८९/१२३४", String.format(locale, "%s", new Aprational("123456789/1234")));
         assertEquals("hi_IN %s radix 9", "१२३४५६७८/१२४", String.format(locale, "%s", new Aprational("12345678/124", 9)));
         assertEquals("hi_IN %s radix 11", "12345678/124", String.format(locale, "%s", new Aprational("12345678/124", 11)));

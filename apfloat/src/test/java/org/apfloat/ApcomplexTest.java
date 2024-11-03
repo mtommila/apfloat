@@ -853,8 +853,6 @@ public class ApcomplexTest
     public static void testFormatTo()
         throws IOException
     {
-        System.setProperty("java.locale.providers", "COMPAT,SPI"); // Required since Java 10 to have all locale providers available
-
         Locale locale = null;
         assertEquals("null %s", "(1.23456789e5, 1.23456e2)", String.format(locale, "%s", new Apcomplex("(123456.789,123.456)")));
         assertEquals("null %S", "(1.23456789E5, 1.23456E2)", String.format(locale, "%S", new Apcomplex("(123456.789,123.456)")));
@@ -872,7 +870,7 @@ public class ApcomplexTest
         assertEquals("fi_FI %s", "(1,23456789e5, 1,23456e2)", String.format(locale, "%s", new Apcomplex("(123456.789,123.456)")));
         assertEquals("fi_FI %s radix 11", "(1,23456e5, 1,23456e5)", String.format(locale, "%s", new Apcomplex(new Apfloat("123456", 6, 11), new Apfloat("123456", 6, 11))));
 
-        locale = new Locale("hi", "IN");
+        locale = new Locale.Builder().setLanguage("hi").setRegion("IN").setExtension('u', "nu-deva").build();
         assertEquals("hi_IN %#.6s", "(१२३४५६, १२३४५६)", String.format(locale, "%#.6s", new Apcomplex(new Apfloat("123456.7890123456"), new Apfloat("123456.7890123456"))));
         assertEquals("hi_IN %#s radix 9", "(१२३४५६, १२३४५६)", String.format(locale, "%#s", new Apcomplex(new Apfloat("123456", 6, 9), new Apfloat("123456", 6, 9))));
         assertEquals("hi_IN %s radix 11", "(1.23456e5, 1.23456e5)", String.format(locale, "%s", new Apcomplex(new Apfloat("123456", 6, 11), new Apfloat("123456", 6, 11))));
