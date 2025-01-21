@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.apfloat.internal;
 
+import org.apfloat.ApfloatContext;
 import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.DataStorage;
 
@@ -32,7 +33,7 @@ import org.apfloat.spi.DataStorage;
  * @see RawtypeMemoryDataStorage
  * @see RawtypeDiskDataStorage
  *
- * @version 1.8.2
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -64,6 +65,11 @@ public class RawtypeDataStorageBuilder
     protected DataStorage createNonCachedDataStorage()
         throws ApfloatRuntimeException
     {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        if (!ctx.getCleanupAtExit())
+        {
+            throw new BackingStorageException("Not allowed to use file storage", "file.allow");
+        }
         return new RawtypeDiskDataStorage();
     }
 

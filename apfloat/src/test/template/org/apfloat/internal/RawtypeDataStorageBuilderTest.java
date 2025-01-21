@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import org.apfloat.spi.*;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -69,10 +69,30 @@ public class RawtypeDataStorageBuilderTest
         ctx.setMemoryThreshold(65536);
         dataStorage.setSize(ctx.getMemoryThreshold() + 1);
         dataStorage = dataStorageBuilder.createDataStorage(dataStorage);
-        assertFalse("Not cached", dataStorage.isCached());
+        assertFalse("Not cached from another", dataStorage.isCached());
 
         dataStorage = dataStorageBuilder.createCachedDataStorage(ctx.getMemoryThreshold() + 1);
         assertTrue("Not cached although might", dataStorage.isCached());
+
+        dataStorage = dataStorageBuilder.createDataStorage(ctx.getMemoryThreshold() + 1);
+        assertFalse("Not cached", dataStorage.isCached());
+
+        boolean cleanupAtExit = ctx.getCleanupAtExit();
+        try
+        {
+            ctx.setCleanupAtExit(false);
+            dataStorageBuilder.createDataStorage(ctx.getMemoryThreshold() + 1);
+            fail("Allowed");
+        }
+        catch (BackingStorageException bse)
+        {
+            // OK; not allowed
+            assertEquals("Localization key", "file.allow", bse.getLocalizationKey());
+        }
+        finally
+        {
+            ctx.setCleanupAtExit(cleanupAtExit);
+        }
 
         ctx.setMemoryThreshold(memoryThreshold);
     }
