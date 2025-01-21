@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1108,6 +1108,8 @@ public class Apfloat
      * Convert this apfloat to the specified radix.
      *
      * @param radix The radix.
+     *
+     * @return This number in the specified radix.
      *
      * @exception NumberFormatException If the radix is invalid.
      *
