@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -66,6 +66,8 @@ public class ConcurrentWeakHashMapTest
         assertEquals("Size after put", 1, map.size());
         assertFalse("Not empty after put empty", map.isEmpty());
         assertEquals("Value after put", "First", map.get(thread));
+        assertEquals("Values size after put", 1, map.values().size());
+        assertEquals("Values after put", "First", map.values().iterator().next());
 
         thread = null;
         System.gc();

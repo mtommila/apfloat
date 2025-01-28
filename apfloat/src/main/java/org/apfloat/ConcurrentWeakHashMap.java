@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package org.apfloat;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.AbstractMap;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * providing weak keys and non-blocking access.
  *
  * @since 1.5
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -97,6 +98,13 @@ class ConcurrentWeakHashMap<K, V>
     public Set<Map.Entry<K, V>> entrySet()
     {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Collection<V> values()
+    {
+        expungeStaleEntries();
+        return this.map.values();
     }
 
     @Override

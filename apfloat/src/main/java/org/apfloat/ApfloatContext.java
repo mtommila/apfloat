@@ -304,6 +304,8 @@ public class ApfloatContext
         @Override
         public void run()
         {
+            ApfloatContext.threadContexts.values().stream().map(ApfloatContext::getExecutorService).forEach(this::shutdown);
+            shutdown(ApfloatContext.globalContext.getExecutorService());
             ApfloatMath.cleanUp();      // Clear references to static cached apfloats
             System.gc();
             System.gc();
@@ -313,6 +315,21 @@ public class ApfloatContext
         public void setBuilderFactory(BuilderFactory builderFactory)
         {
             this.builderFactory = builderFactory;
+        }
+
+        private void shutdown(ExecutorService executorService)
+        {
+            if (executorService != null)
+            {
+                try
+                {
+                    executorService.shutdownNow();
+                }
+                catch (SecurityException se)
+                {
+                    // Ignore
+                }
+            }
         }
 
         private BuilderFactory builderFactory;
