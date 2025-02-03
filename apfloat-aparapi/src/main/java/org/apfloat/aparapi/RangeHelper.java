@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import com.aparapi.Range;
  * Range helper methods.
  *
  * @since 1.11.0
+ * @version 1.15.0
  *
  * @author Mikko Tommila
  */
@@ -75,5 +76,9 @@ class RangeHelper
         return Range.create2D(width, height, localWidth, localHeight);
     }
 
-    private static final int MAX_LOCAL_SIZE = 256;
+    /**
+     * Maximum OpenCL work-group size. Note that this is the local sizes in all dimensions multiplied together.
+     */
+
+    public static final int MAX_LOCAL_SIZE = 256;
 }

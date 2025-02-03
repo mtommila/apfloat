@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import org.apfloat.internal.*;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.3
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -64,7 +64,7 @@ public class LongAparapiTwoPassFNTStrategyTest
         ctx.setMaxMemoryBlockSize(65536);
         ctx.setMemoryThreshold(1024);
         ctx.setBlockSize(256);
-        runRoundTrip(131072);
+        runRoundTrip(131072, false);
     }
 
     public static void testRoundTripBig()
@@ -74,11 +74,11 @@ public class LongAparapiTwoPassFNTStrategyTest
         ctx.setMaxMemoryBlockSize(65536);
         ctx.setMemoryThreshold(1024);
         ctx.setBlockSize(256);
-        runRoundTrip((int) Math.min(1 << 21, Util.round2down(LongModConstants.MAX_TRANSFORM_LENGTH)));
+        runRoundTrip((int) Math.min(1 << 21, Util.round2down(LongModConstants.MAX_TRANSFORM_LENGTH)), false);
     }
 
-    private static void runRoundTrip(int size)
+    private static void runRoundTrip(int size, boolean rowOrientation)
     {
-        runRoundTrip(new ColumnTwoPassFNTStrategy(new LongAparapiNTTStepStrategy()), size);
+        runRoundTrip(new ColumnTwoPassFNTStrategy(new LongAparapiNTTStepStrategy(rowOrientation)), size);
     }
 }

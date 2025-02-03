@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,6 +58,19 @@ public class Factor3NTTStrategy
         this.factor2Strategy = factor2Strategy;
         ApfloatContext ctx = ApfloatContext.getContext();
         this.stepStrategy = ctx.getBuilderFactory().getNTTBuilder().createFactor3NTTSteps();
+    }
+
+    /**
+     * Creates a new factor-3 transform strategy on top of an existing factor-2 transform and a factor-3 step strategy.
+     *
+     * @param factor2Strategy The underlying transformation strategy, that can be capable of only doing radix-2 transforms.
+     * @param stepStrategy The factor-3 step strategy.
+     */
+
+    public Factor3NTTStrategy(NTTStrategy factor2Strategy, Factor3NTTStepStrategy stepStrategy)
+    {
+        this(factor2Strategy);
+        this.stepStrategy = stepStrategy;
     }
 
     @Override

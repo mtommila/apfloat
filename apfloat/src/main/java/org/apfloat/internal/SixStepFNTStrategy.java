@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.DataStorage;
 import org.apfloat.spi.ArrayAccess;
 import org.apfloat.spi.MatrixStrategy;
+import org.apfloat.spi.NTTStepStrategy;
 
 /**
  * Fast Number Theoretic Transform that uses a "six-step"
@@ -72,6 +73,19 @@ public class SixStepFNTStrategy
     {
         ApfloatContext ctx = ApfloatContext.getContext();
         this.matrixStrategy = ctx.getBuilderFactory().getMatrixBuilder().createMatrix();
+    }
+
+    /**
+     * Constructor with specific strategies.
+     * 
+     * @param stepStrategy The step strategy to use.
+     * @param matrixStrategy The matrix strategy to use.
+     */
+
+    public SixStepFNTStrategy(NTTStepStrategy stepStrategy, MatrixStrategy matrixStrategy)
+    {
+        super(stepStrategy);
+        this.matrixStrategy = matrixStrategy;
     }
 
     @Override

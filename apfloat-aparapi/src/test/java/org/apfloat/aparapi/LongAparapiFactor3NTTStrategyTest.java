@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-20215 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import org.apfloat.internal.*;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -62,6 +62,12 @@ public class LongAparapiFactor3NTTStrategyTest
 
     public static void testForward()
     {
+        runForward(false);
+        //runForward(true);
+    }
+
+    private static void runForward(boolean rowOrientation)
+    {
         ApfloatContext ctx = ApfloatContext.getContext();
         ctx.setMemoryThreshold(Long.MAX_VALUE);
 
@@ -74,7 +80,7 @@ public class LongAparapiFactor3NTTStrategyTest
                       expectedTransform = ntt(data, modulus);
             Arrays.sort(expectedTransform);
 
-            NTTStrategy nttStrategy = new LongAparapiFactor3NTTStrategy();
+            NTTStrategy nttStrategy = new LongAparapiFactor3NTTStrategy(rowOrientation);
 
             nttStrategy.transform(dataStorage, modulus);
 
@@ -98,19 +104,20 @@ public class LongAparapiFactor3NTTStrategyTest
         ctx.setNumberOfProcessors(1);
         ctx.setMemoryThreshold(Long.MAX_VALUE);
 
-        runRoundTrip();
+        runRoundTrip(false);
+        //runRoundTrip(true);
 
         ctx.setNumberOfProcessors(numberOfProcessors);
     }
 
-    private static void runRoundTrip()
+    private static void runRoundTrip(boolean rowOrientation)
     {
         int size = (int) Math.min(3 * 1048576, LongModConstants.MAX_TRANSFORM_LENGTH);       // Will use six-step transform
         DataStorage dataStorage = createDataStorage(size + 5).subsequence(5, size);
 
         for (int modulus = 0; modulus < 3; modulus++)
         {
-            Factor3NTTStrategy nttStrategy = new LongAparapiFactor3NTTStrategy();
+            Factor3NTTStrategy nttStrategy = new LongAparapiFactor3NTTStrategy(rowOrientation);
 
             nttStrategy.transform(dataStorage, modulus);
 
@@ -142,19 +149,20 @@ public class LongAparapiFactor3NTTStrategyTest
         ctx.setNumberOfProcessors(1);
         ctx.setMemoryThreshold(Long.MAX_VALUE);
 
-        runRoundTrip2();
+        runRoundTrip2(false);
+        //runRoundTrip2(true);
 
         ctx.setNumberOfProcessors(numberOfProcessors);
     }
 
-    private static void runRoundTrip2()
+    private static void runRoundTrip2(boolean rowOrientation)
     {
         int size = 2048;                                                        // Will fall back to the power-of-two length transform
         DataStorage dataStorage = createDataStorage(size + 5).subsequence(5, size);
 
         for (int modulus = 0; modulus < 3; modulus++)
         {
-            Factor3NTTStrategy nttStrategy = new LongAparapiFactor3NTTStrategy();
+            Factor3NTTStrategy nttStrategy = new LongAparapiFactor3NTTStrategy(rowOrientation);
 
             nttStrategy.transform(dataStorage, modulus);
 

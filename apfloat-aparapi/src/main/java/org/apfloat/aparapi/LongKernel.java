@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,10 +29,22 @@ import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.ArrayAccess;
 
 /**
- * Kernel for the <code>long</code> element type. Contains everything needed for the NTT.
- * The data is organized in columns, not rows, for efficient processing on the GPU.
+ * Kernel for the <code>long</code> element type. Contains everything needed for the NTT.<p>
  *
- * Due to the extreme parallelization requirements (global size should be at lest 1024)
+ * There are two ways the data can be organized:
+ * <ul>
+ *   <li>In columns: this is more efficient on older GPUs that don't have a cache</li>
+ *   <li>In rows: this is more efficient on newer GPUs that have large high-bandwidth caches</li>
+ * </ul>
+ *
+ * When the data is organized in columns, the NTT algorithm makes O(log n) passes through
+ * the main memory of the GPU.<p>
+ *
+ * When the data is organized in rows, and the GPU cache is sufficiently large, the algorithm
+ * makes a fixed number of passes through the main memory of the GPU (and O(log n) passes
+ * through the GPU cache.)<p>
+ *
+ * Due to the extreme parallelization requirements (global size should be at least 1024)
  * this algorithm works efficiently only with 8 million decimal digit calculations or bigger.
  * However with 8 million digits, it's only approximately as fast as the pure-Java
  * version (depending on the GPU and CPU hardware). Depending on the total amount of memory
@@ -55,7 +67,7 @@ import org.apfloat.spi.ArrayAccess;
  * </ul>
  *
  * @since 1.8.3
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -76,6 +88,9 @@ class LongKernel
     // Methods for calculating the column transforms in parallel
     public static final int TRANSFORM_ROWS = 1;
     public static final int INVERSE_TRANSFORM_ROWS = 2;
+    // Methods for calculating the row transforms in parallel
+    public static final int TRANSFORM_ROWS_ROWORIENTATION = 100001;
+    public static final int INVERSE_TRANSFORM_ROWS_ROWORIENTATION = 100002;
 
     public void setLength(int length)
     {
@@ -157,6 +172,61 @@ class LongKernel
         }
     }
 
+    private void rowTableFNT()
+    {
+        int nn, offset, istep, mmax, r;
+
+        long[] data = this.data;
+        offset = this.offset + getGlobalId(1) * this.length;
+        nn     = this.length;
+
+        if (nn >= 2)
+        {
+            r = 1;
+            mmax = nn >> 1;
+            while (mmax > 0)
+            {
+                istep = mmax << 1;
+
+                /*
+                int t = 0;
+
+                for (int m = 0; m < mmax; m++)
+                {
+                    for (int i = offset + m; i < offset + nn; i += istep)
+                    {
+                        int j = i + mmax;
+                        long a = data[i];
+                        long b = data[j];
+                        data[i] = modAdd(a, b);
+                        data[j] = modMultiply(this.wTable[t], modSubtract(a, b));
+                    }
+                    t += r;
+                }
+                */
+                for (int k = getGlobalId(0); k < nn / 2; k += getGlobalSize(0))
+                {
+                    int m = k / r;
+                    int t = m * r;
+                    int i = offset + m + k % r * istep;
+                    int j = i + mmax;
+                    long a = data[i];
+                    long b = data[j];
+                    data[i] = modAdd(a, b);
+                    data[j] = modMultiply(wTable[t], modSubtract(a, b));
+                }
+                r <<= 1;
+                mmax >>= 1;
+                localBarrier(); // Use a local barrier to synchronize memory writes within the same work-group but don't force memory to be written from the GPU cache to the GPU global memory
+            }
+
+            if (this.permutationTableLength > 0)
+            {
+                rowScramble(offset);
+            }
+        }
+    }
+
     private void inverseColumnTableFNT()
     {
         int nn, istep = 0, mmax = 0, r = 0;
@@ -208,6 +278,60 @@ class LongKernel
         }
     }
 
+    private void inverseRowTableFNT()
+    {
+        int nn, offset, istep, mmax, r;
+
+        long[] data = this.data;
+        offset = this.offset + getGlobalId(1) * this.length;
+        nn     = this.length;
+
+        if (nn >= 2)
+        {
+            if (permutationTableLength > 0)
+            {
+                rowScramble(offset);
+            }
+
+            r = nn;
+            mmax = 1;
+            while (nn > mmax)
+            {
+                istep = mmax << 1;
+                r >>= 1;
+
+                /*
+                int t = 0;
+
+                for (int m = 0; m < mmax; m++)
+                {
+                    for (int i = offset + m; i < offset + nn; i += istep)
+                    {
+                        int j = i + mmax;
+                        long wTemp = modMultiply(this.wTable[t], data[j]);
+                        data[j] = modSubtract(data[i], wTemp);
+                        data[i] = modAdd(data[i], wTemp);
+                    }
+                    t += r;
+                }
+                */
+                //for (int k = 0; k < nn / 2; k++)
+                for (int k = getGlobalId(0); k < nn / 2; k += getGlobalSize(0))
+                {
+                    int m = k / r;
+                    int t = m * r;
+                    int i = offset + m + k % r * istep;
+                    int j = i + mmax;
+                    long wTemp = modMultiply(wTable[t], data[j]);
+                    data[j] = modSubtract(data[i], wTemp);
+                    data[i] = modAdd(data[i], wTemp);
+                }
+                mmax = istep;
+                localBarrier(); // Use a local barrier to synchronize memory writes within the same work-group but don't force memory to be written from the GPU cache to the GPU global memory
+            }
+        }
+    }
+
     private void columnScramble(int offset)
     {
         for (int k = 0; k < this.permutationTableLength; k += 2)
@@ -218,6 +342,19 @@ class LongKernel
             this.data[i] = this.data[j];
             this.data[j] = tmp;
         }
+    }
+
+    private void rowScramble(int offset)
+    {
+        for (int k = 2 * getGlobalId(0); k < this.permutationTableLength; k += 2 * getGlobalSize(0))
+        {
+            int i = offset + this.permutationTable[k],
+                j = offset + this.permutationTable[k + 1];
+            long tmp = this.data[i];
+            this.data[i] = this.data[j];
+            this.data[j] = tmp;
+        }
+        localBarrier();
     }
 
     private long modMultiply(long a, long b)
@@ -447,6 +584,14 @@ class LongKernel
         else if (this.op == INVERSE_TRANSFORM_ROWS)
         {
             inverseColumnTableFNT();
+        }
+        else if (this.op == TRANSFORM_ROWS_ROWORIENTATION)
+        {
+            rowTableFNT();
+        }
+        else if (this.op == INVERSE_TRANSFORM_ROWS_ROWORIENTATION)
+        {
+            inverseRowTableFNT();
         }
         else if (this.op == TRANSPOSE)
         {

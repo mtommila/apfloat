@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package org.apfloat.internal;
 import org.apfloat.ApfloatContext;
 import org.apfloat.ApfloatRuntimeException;
 import org.apfloat.spi.DataStorage;
+import org.apfloat.spi.NTTStepStrategy;
 import org.apfloat.spi.ArrayAccess;
 import org.apfloat.spi.Util;
 
@@ -90,6 +91,17 @@ public class TwoPassFNTStrategy
 
     public TwoPassFNTStrategy()
     {
+    }
+
+    /**
+     * Constructor with step strategy.
+     *
+     * @param stepStrategy The step strategy to use.
+     */
+
+    public TwoPassFNTStrategy(NTTStepStrategy stepStrategy)
+    {
+        super(stepStrategy);
     }
 
     @Override
