@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-20215 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,34 +24,33 @@
 package org.apfloat.aparapi;
 
 import org.apfloat.spi.ArrayAccess;
-import org.apfloat.internal.SixStepFNTStrategy;
 
 /**
- * Six-step NTT implementation for the <code>int</code> element type using row orientation.<p>
+ * Six-step NTT implementation for the <code>long</code> element type using column orientation.<p>
  *
- * @since 1.8.3
+ * @since 1.15.0
  * @version 1.15.0
  * @author Mikko Tommila
  */
 
-public class IntAparapiSixStepFNTStrategy
-    extends SixStepFNTStrategy
+public class LongAparapiColumnSixStepFNTStrategy
+    extends ColumnSixStepFNTStrategy
 {
     /**
      * Default constructor.
      */
 
-    public IntAparapiSixStepFNTStrategy()
+    public LongAparapiColumnSixStepFNTStrategy()
     {
-        super(new IntAparapiNTTStepStrategy(true), new IntAparapiMatrixStrategy());
+        super(new LongAparapiNTTStepStrategy(false), new LongAparapiMatrixStrategy());
     }
 
     @Override
     protected void preTransform(ArrayAccess arrayAccess)
     {
-        IntKernel kernel = IntKernel.getInstance();
+        LongKernel kernel = LongKernel.getInstance();
         kernel.setExplicit(true);
-        kernel.put(arrayAccess.getIntData());
+        kernel.put(arrayAccess.getLongData());
 
         super.preTransform(arrayAccess);
     }
@@ -61,8 +60,8 @@ public class IntAparapiSixStepFNTStrategy
     {
         super.postTransform(arrayAccess);
 
-        IntKernel kernel = IntKernel.getInstance();
-        kernel.get(arrayAccess.getIntData());
+        LongKernel kernel = LongKernel.getInstance();
+        kernel.get(arrayAccess.getLongData());
         kernel.cleanUpArrays();
     }
 }

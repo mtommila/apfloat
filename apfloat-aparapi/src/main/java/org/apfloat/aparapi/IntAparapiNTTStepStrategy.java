@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import static org.apfloat.internal.IntModConstants.*;
  * NTT steps for the <code>int</code> element type aparapi transforms.
  *
  * @since 1.8.3
- * @version 1.8.3
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -46,11 +46,14 @@ public class IntAparapiNTTStepStrategy
     extends IntNTTStepStrategy
 {
     /**
-     * Default constructor.
+     * Basic constructor.
+     *
+     * @param rowOrientation If the data is using row orientation.
      */
 
-    public IntAparapiNTTStepStrategy()
+    public IntAparapiNTTStepStrategy(boolean rowOrientation)
     {
+        this.rowOrientation = rowOrientation;
     }
 
     @Override
@@ -81,14 +84,13 @@ public class IntAparapiNTTStepStrategy
     }
 
     /**
-     * Transform the columns of the data matrix. Note that this method expects the data
-     * to be organized in columns, not rows. The arguments <code>length</code> and
-     * <code>count</code> still mean the length of one transform and number of transforms
-     * to be done.
+     * Transform the rows or columns of the data matrix.
+     * If the data is oriented in rows, transforms physically the rows.
+     * If the data is oriented in columns, transforms physically columns.
      *
-     * @param arrayAccess The memory array to split to columns and to transform.
-     * @param length Length of one transform (one columns).
-     * @param count Number of columns.
+     * @param arrayAccess The memory array to split and transform.
+     * @param length Length of one transform.
+     * @param count Number of transforms to be done.
      * @param isInverse <code>true</code> if an inverse transform is performed, <code>false</code> if a forward transform is performed.
      * @param permute If permutation should be done.
      * @param modulus Index of the modulus.
@@ -104,7 +106,8 @@ public class IntAparapiNTTStepStrategy
         int[] permutationTable = (permute ? Scramble.createScrambleTable(length) : null);
 
         IntKernel kernel = IntKernel.getInstance();
-        kernel.setOp(isInverse ? IntKernel.INVERSE_TRANSFORM_ROWS : IntKernel.TRANSFORM_ROWS);
+        kernel.setOp(this.rowOrientation ? (isInverse ? IntKernel.INVERSE_TRANSFORM_ROWS_ROWORIENTATION : IntKernel.TRANSFORM_ROWS_ROWORIENTATION) :
+                                           (isInverse ? IntKernel.INVERSE_TRANSFORM_ROWS : IntKernel.TRANSFORM_ROWS));
         kernel.setLength(length);
         kernel.setArrayAccess(arrayAccess);
         kernel.setWTable(wTable);
@@ -117,7 +120,18 @@ public class IntAparapiNTTStepStrategy
             kernel.put(permutationTable);
         }
 
-        Range range = RangeHelper.create(count);
+        Range range;
+        if (this.rowOrientation)
+        {
+            int width = Math.min(length, RangeHelper.MAX_LOCAL_SIZE);
+            range = Range.create2D(width, count, width, 1);
+        }
+        else
+        {
+            range = RangeHelper.create(count);
+        }
         kernel.execute(range);
     }
+
+    private boolean rowOrientation;
 }

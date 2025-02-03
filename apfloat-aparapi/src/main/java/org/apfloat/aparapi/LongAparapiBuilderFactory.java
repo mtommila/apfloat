@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package org.apfloat.aparapi;
 
+import org.apfloat.ApfloatContext;
 import org.apfloat.spi.NTTBuilder;
 import org.apfloat.internal.LongBuilderFactory;
 
@@ -30,7 +31,7 @@ import org.apfloat.internal.LongBuilderFactory;
  * Builder factory for aparapi transform implementations for the <code>long</code> element type.
  *
  * @since 1.8.3
- * @version 1.8.3
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -48,8 +49,10 @@ public class LongAparapiBuilderFactory
     @Override
     public NTTBuilder getNTTBuilder()
     {
-        return LongAparapiBuilderFactory.nttBuilder;
+        boolean rowOrientation = Boolean.parseBoolean(ApfloatContext.getContext().getProperty("rowOrientation", "true"));
+        return (rowOrientation ? LongAparapiBuilderFactory.rowNttBuilder : LongAparapiBuilderFactory.columnNttBuilder);
     }
 
-    private static NTTBuilder nttBuilder = new LongAparapiNTTBuilder();
+    private static NTTBuilder rowNttBuilder = new LongAparapiNTTBuilder(true);
+    private static NTTBuilder columnNttBuilder = new LongAparapiNTTBuilder(false);
 }

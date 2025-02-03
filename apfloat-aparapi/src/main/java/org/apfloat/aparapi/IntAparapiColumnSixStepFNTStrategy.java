@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-20215 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,26 +24,25 @@
 package org.apfloat.aparapi;
 
 import org.apfloat.spi.ArrayAccess;
-import org.apfloat.internal.SixStepFNTStrategy;
 
 /**
- * Six-step NTT implementation for the <code>int</code> element type using row orientation.<p>
+ * Six-step NTT implementation for the <code>int</code> element type using column orientation.<p>
  *
- * @since 1.8.3
+ * @since 1.15.0
  * @version 1.15.0
  * @author Mikko Tommila
  */
 
-public class IntAparapiSixStepFNTStrategy
-    extends SixStepFNTStrategy
+public class IntAparapiColumnSixStepFNTStrategy
+    extends ColumnSixStepFNTStrategy
 {
     /**
      * Default constructor.
      */
 
-    public IntAparapiSixStepFNTStrategy()
+    public IntAparapiColumnSixStepFNTStrategy()
     {
-        super(new IntAparapiNTTStepStrategy(true), new IntAparapiMatrixStrategy());
+        super(new IntAparapiNTTStepStrategy(false), new IntAparapiMatrixStrategy());
     }
 
     @Override

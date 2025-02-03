@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,12 +27,13 @@ import org.apfloat.spi.BuilderFactory;
 import org.apfloat.spi.NTTStrategy;
 import org.apfloat.ApfloatContext;
 import org.apfloat.internal.IntNTTBuilder;
+import org.apfloat.internal.TwoPassFNTStrategy;
 
 /**
  * NTT Builder for aparapi transform implementations for the <code>int</code> element type.
  *
  * @since 1.8.3
- * @version 1.8.3
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -42,11 +43,14 @@ public class IntAparapiNTTBuilder
     private static final int MIN_GPU_LENGTH = 1048576;
 
     /**
-     * Default constructor.
+     * Basic constructor.
+     *
+     * @param rowOrientation If the data is using row orientation.
      */
 
-    public IntAparapiNTTBuilder()
+    public IntAparapiNTTBuilder(boolean rowOrientation)
     {
+        this.rowOrientation = rowOrientation;
     }
 
     @Override
@@ -57,7 +61,7 @@ public class IntAparapiNTTBuilder
         {
             return super.createSixStepFNTStrategy(size); 
         }
-        return new IntAparapiSixStepFNTStrategy();
+        return this.rowOrientation ? new IntAparapiSixStepFNTStrategy() : new IntAparapiColumnSixStepFNTStrategy();
     }
 
     @Override
@@ -68,7 +72,8 @@ public class IntAparapiNTTBuilder
         {
             return super.createTwoPassFNTStrategy(size);
         }
-        return new ColumnTwoPassFNTStrategy(new IntAparapiNTTStepStrategy());
+        IntAparapiNTTStepStrategy stepStrategy = new IntAparapiNTTStepStrategy(this.rowOrientation);
+        return (this.rowOrientation ? new TwoPassFNTStrategy(stepStrategy) : new ColumnTwoPassFNTStrategy(stepStrategy));
     }
 
     @Override
@@ -82,9 +87,11 @@ public class IntAparapiNTTBuilder
 
             if (size <= maxMemoryBlockSize && size <= Integer.MAX_VALUE)
             {
-                return new IntAparapiFactor3NTTStrategy();
+                return new IntAparapiFactor3NTTStrategy(this.rowOrientation);
             }
         }
         return super.createFactor3NTTStrategy(size, nttStrategy);
     }
+
+    private boolean rowOrientation;
 }

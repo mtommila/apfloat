@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,12 +28,13 @@ import org.apfloat.spi.ArrayAccess;
 import org.apfloat.spi.DataStorage;
 import org.apfloat.internal.ApfloatInternalException;
 import org.apfloat.internal.Factor3NTTStrategy;
+import org.apfloat.internal.SixStepFNTStrategy;
 
 /**
  * Factor-3 NTT implementation for the <code>int</code> element type.<p>
  *
  * @since 1.8.3
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -41,13 +42,17 @@ public class IntAparapiFactor3NTTStrategy
     extends Factor3NTTStrategy
 {
     /**
-     * Default constructor.
+     * Basic constructor.
+     * 
+     * @param rowOrientation If the data is using row orientation.
      */
 
-    public IntAparapiFactor3NTTStrategy()
+    public IntAparapiFactor3NTTStrategy(boolean rowOrientation)
     {
-        super(new ColumnSixStepFNTStrategy(new IntAparapiNTTStepStrategy(), new IntAparapiMatrixStrategy()));
-        super.stepStrategy = new IntAparapiFactor3NTTStepStrategy();
+        super(rowOrientation ?
+              new SixStepFNTStrategy(new IntAparapiNTTStepStrategy(rowOrientation), new IntAparapiMatrixStrategy()) :
+              new ColumnSixStepFNTStrategy(new IntAparapiNTTStepStrategy(rowOrientation), new IntAparapiMatrixStrategy()),
+              new IntAparapiFactor3NTTStepStrategy());
     }
 
     @Override

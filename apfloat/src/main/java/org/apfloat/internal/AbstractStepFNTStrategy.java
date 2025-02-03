@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,6 +53,17 @@ public abstract class AbstractStepFNTStrategy
     {
         ApfloatContext ctx = ApfloatContext.getContext();
         this.stepStrategy = ctx.getBuilderFactory().getNTTBuilder().createNTTSteps();
+    }
+
+    /**
+     * Subclass constructor with step strategy.
+     *
+     * @param stepStrategy The step strategy to use.
+     */
+
+    protected AbstractStepFNTStrategy(NTTStepStrategy stepStrategy)
+    {
+        this.stepStrategy = stepStrategy;
     }
 
     @Override
