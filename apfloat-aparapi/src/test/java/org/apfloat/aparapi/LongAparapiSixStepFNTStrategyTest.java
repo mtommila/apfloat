@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import org.apfloat.internal.*;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.8.3
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -76,6 +76,11 @@ public class LongAparapiSixStepFNTStrategyTest
 
     private static void runTestForward(int size)
     {
+        runTestForward(new LongAparapiSixStepFNTStrategy(), size);
+    }
+
+    protected static void runTestForward(AbstractStepFNTStrategy nttStrategy, int size)
+    {
         for (int modulus = 0; modulus < 3; modulus++)
         {
             DataStorage dataStorage = createDataStorage(size + 5).subsequence(5, size);
@@ -84,8 +89,6 @@ public class LongAparapiSixStepFNTStrategyTest
                       expectedTransform = ntt(data, modulus);
             LongScramble.scramble(expectedTransform, 0, Scramble.createScrambleTable(size));
             Arrays.sort(expectedTransform);
-
-            AbstractStepFNTStrategy nttStrategy = new LongAparapiSixStepFNTStrategy();
 
             nttStrategy.transform(dataStorage, modulus);
 

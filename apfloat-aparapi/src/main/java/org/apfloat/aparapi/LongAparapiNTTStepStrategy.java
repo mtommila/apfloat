@@ -34,6 +34,8 @@ import org.apfloat.internal.Scramble;
 
 import static org.apfloat.internal.LongModConstants.*;
 
+import org.apfloat.ApfloatContext;
+
 /**
  * NTT steps for the <code>long</code> element type aparapi transforms.
  *
@@ -107,7 +109,7 @@ public class LongAparapiNTTStepStrategy
 
         LongKernel kernel = LongKernel.getInstance();
         kernel.setOp(this.rowOrientation ? (isInverse ? LongKernel.INVERSE_TRANSFORM_ROWS_ROWORIENTATION : LongKernel.TRANSFORM_ROWS_ROWORIENTATION) :
-                                           (isInverse ? LongKernel.INVERSE_TRANSFORM_ROWS : LongKernel.TRANSFORM_ROWS));
+                                           (isInverse ? LongKernel.INVERSE_TRANSFORM_ROWS_COLUMNORIENTATION : LongKernel.TRANSFORM_ROWS_COLUMNORIENTATION));
         kernel.setLength(length);
         kernel.setArrayAccess(arrayAccess);
         kernel.setWTable(wTable);
@@ -123,7 +125,8 @@ public class LongAparapiNTTStepStrategy
         Range range;
         if (this.rowOrientation)
         {
-            int width = Math.min(length, RangeHelper.MAX_LOCAL_SIZE);
+            int workGroupSize = Integer.parseInt(ApfloatContext.getContext().getProperty("workGroupSize", String.valueOf(RangeHelper.MAX_LOCAL_SIZE)));
+            int width = Math.min(length, workGroupSize);
             range = Range.create2D(width, count, width, 1);
         }
         else
