@@ -34,6 +34,8 @@ import org.apfloat.internal.Scramble;
 
 import static org.apfloat.internal.IntModConstants.*;
 
+import org.apfloat.ApfloatContext;
+
 /**
  * NTT steps for the <code>int</code> element type aparapi transforms.
  *
@@ -107,7 +109,7 @@ public class IntAparapiNTTStepStrategy
 
         IntKernel kernel = IntKernel.getInstance();
         kernel.setOp(this.rowOrientation ? (isInverse ? IntKernel.INVERSE_TRANSFORM_ROWS_ROWORIENTATION : IntKernel.TRANSFORM_ROWS_ROWORIENTATION) :
-                                           (isInverse ? IntKernel.INVERSE_TRANSFORM_ROWS : IntKernel.TRANSFORM_ROWS));
+                                           (isInverse ? IntKernel.INVERSE_TRANSFORM_ROWS_COLUMNORIENTATION : IntKernel.TRANSFORM_ROWS_COLUMNORIENTATION));
         kernel.setLength(length);
         kernel.setArrayAccess(arrayAccess);
         kernel.setWTable(wTable);
@@ -123,7 +125,8 @@ public class IntAparapiNTTStepStrategy
         Range range;
         if (this.rowOrientation)
         {
-            int width = Math.min(length, RangeHelper.MAX_LOCAL_SIZE);
+            int workGroupSize = Integer.parseInt(ApfloatContext.getContext().getProperty("workGroupSize", String.valueOf(RangeHelper.MAX_LOCAL_SIZE)));
+            int width = Math.min(length, workGroupSize);
             range = Range.create2D(width, count, width, 1);
         }
         else

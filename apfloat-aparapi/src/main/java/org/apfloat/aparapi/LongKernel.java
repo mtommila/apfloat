@@ -86,8 +86,8 @@ class LongKernel
     private static ThreadLocal<LongKernel> kernel = ThreadLocal.withInitial(LongKernel::new);
 
     // Methods for calculating the column transforms in parallel
-    public static final int TRANSFORM_ROWS = 1;
-    public static final int INVERSE_TRANSFORM_ROWS = 2;
+    public static final int TRANSFORM_ROWS_COLUMNORIENTATION = 1;
+    public static final int INVERSE_TRANSFORM_ROWS_COLUMNORIENTATION = 2;
     // Methods for calculating the row transforms in parallel
     public static final int TRANSFORM_ROWS_ROWORIENTATION = 100001;
     public static final int INVERSE_TRANSFORM_ROWS_ROWORIENTATION = 100002;
@@ -577,11 +577,11 @@ class LongKernel
     @Override
     public void run()
     {
-        if (this.op == TRANSFORM_ROWS)
+        if (this.op == TRANSFORM_ROWS_COLUMNORIENTATION)
         {
             columnTableFNT();
         }
-        else if (this.op == INVERSE_TRANSFORM_ROWS)
+        else if (this.op == INVERSE_TRANSFORM_ROWS_COLUMNORIENTATION)
         {
             inverseColumnTableFNT();
         }

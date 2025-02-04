@@ -248,7 +248,7 @@ public class TwoPassFNTStrategy
      * order so the element-by-element multiplication is simpler.
      *
      * @param arrayAccess The memory array to split to columns and to transform.
-     * @param length Length of one transform (one columns).
+     * @param length Length of one transform (one column).
      * @param count Number of columns.
      * @param isInverse <code>true</code> if an inverse transform is performed, <code>false</code> if a forward transform is performed.
      * @param modulus Index of the modulus.

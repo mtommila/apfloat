@@ -63,7 +63,7 @@ public class IntAparapiFactor3NTTStrategyTest
     public static void testForward()
     {
         runForward(false);
-        //runForward(true);
+        runForward(true);
     }
 
     private static void runForward(boolean rowOrientation)
@@ -105,7 +105,7 @@ public class IntAparapiFactor3NTTStrategyTest
         ctx.setMemoryThreshold(Long.MAX_VALUE);
 
         runRoundTrip(false);
-        //runRoundTrip(true);
+        runRoundTrip(true);
 
         ctx.setNumberOfProcessors(numberOfProcessors);
     }
@@ -150,7 +150,7 @@ public class IntAparapiFactor3NTTStrategyTest
         ctx.setMemoryThreshold(Long.MAX_VALUE);
 
         runRoundTrip2(false);
-        //runRoundTrip2(true);
+        runRoundTrip2(true);
 
         ctx.setNumberOfProcessors(numberOfProcessors);
     }

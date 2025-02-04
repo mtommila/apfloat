@@ -44,15 +44,15 @@ public class IntAparapiBuilderFactory
 
     public IntAparapiBuilderFactory()
     {
+        boolean rowOrientation = Boolean.parseBoolean(ApfloatContext.getContext().getProperty("rowOrientation", "true"));
+        this.nttBuilder = new IntAparapiNTTBuilder(rowOrientation);
     }
 
     @Override
     public NTTBuilder getNTTBuilder()
     {
-        boolean rowOrientation = Boolean.parseBoolean(ApfloatContext.getContext().getProperty("rowOrientation", "true"));
-        return (rowOrientation ? IntAparapiBuilderFactory.rowNttBuilder : IntAparapiBuilderFactory.columnNttBuilder);
+        return this.nttBuilder;
     }
 
-    private static NTTBuilder rowNttBuilder = new IntAparapiNTTBuilder(true);
-    private static NTTBuilder columnNttBuilder = new IntAparapiNTTBuilder(false);
+    private NTTBuilder nttBuilder;
 }
