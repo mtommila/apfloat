@@ -34,10 +34,10 @@ import junit.framework.TestSuite;
  * @author Mikko Tommila
  */
 
-public class IntAparapiTwoPassFNTStrategyTest
+public class IntAparapiColumnTwoPassFNTStrategyTest
     extends IntNTTStrategyTestCase
 {
-    public IntAparapiTwoPassFNTStrategyTest(String methodName)
+    public IntAparapiColumnTwoPassFNTStrategyTest(String methodName)
     {
         super(methodName);
     }
@@ -51,8 +51,8 @@ public class IntAparapiTwoPassFNTStrategyTest
     {
         TestSuite suite = new TestSuite();
 
-        suite.addTest(new IntAparapiTwoPassFNTStrategyTest("testRoundTrip"));
-        suite.addTest(new IntAparapiTwoPassFNTStrategyTest("testRoundTripBig"));
+        suite.addTest(new IntAparapiColumnTwoPassFNTStrategyTest("testRoundTrip"));
+        suite.addTest(new IntAparapiColumnTwoPassFNTStrategyTest("testRoundTripBig"));
 
         return suite;
     }
@@ -80,6 +80,6 @@ public class IntAparapiTwoPassFNTStrategyTest
 
     private static void runRoundTrip(int size)
     {
-        runRoundTrip(new IntAparapiTwoPassFNTStrategy(), size);
+        runRoundTrip(new IntAparapiColumnTwoPassFNTStrategy(), size);
     }
 }

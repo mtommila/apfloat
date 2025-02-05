@@ -44,7 +44,7 @@ public class LongAparapiBuilderFactory
 
     public LongAparapiBuilderFactory()
     {
-        boolean rowOrientation = Boolean.parseBoolean(ApfloatContext.getContext().getProperty("rowOrientation", "true"));
+        boolean rowOrientation = Boolean.parseBoolean(ApfloatContext.getContext().getProperty("rowOrientation"));
         this.nttBuilder = new LongAparapiNTTBuilder(rowOrientation);
     }
 

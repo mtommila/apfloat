@@ -34,10 +34,10 @@ import junit.framework.TestSuite;
  * @author Mikko Tommila
  */
 
-public class IntAparapiTwoPassFNTStrategyTest
-    extends IntNTTStrategyTestCase
+public class LongAparapiColumnTwoPassFNTStrategyTest
+    extends LongNTTStrategyTestCase
 {
-    public IntAparapiTwoPassFNTStrategyTest(String methodName)
+    public LongAparapiColumnTwoPassFNTStrategyTest(String methodName)
     {
         super(methodName);
     }
@@ -51,8 +51,8 @@ public class IntAparapiTwoPassFNTStrategyTest
     {
         TestSuite suite = new TestSuite();
 
-        suite.addTest(new IntAparapiTwoPassFNTStrategyTest("testRoundTrip"));
-        suite.addTest(new IntAparapiTwoPassFNTStrategyTest("testRoundTripBig"));
+        suite.addTest(new LongAparapiColumnTwoPassFNTStrategyTest("testRoundTrip"));
+        suite.addTest(new LongAparapiColumnTwoPassFNTStrategyTest("testRoundTripBig"));
 
         return suite;
     }
@@ -74,12 +74,12 @@ public class IntAparapiTwoPassFNTStrategyTest
         ctx.setMaxMemoryBlockSize(65536);
         ctx.setMemoryThreshold(1024);
         ctx.setBlockSize(256);
-        int size = (int) Math.min(1 << 21, Util.round2down(IntModConstants.MAX_TRANSFORM_LENGTH));
+        int size = (int) Math.min(1 << 21, Util.round2down(LongModConstants.MAX_TRANSFORM_LENGTH));
         runRoundTrip(size);
     }
 
     private static void runRoundTrip(int size)
     {
-        runRoundTrip(new IntAparapiTwoPassFNTStrategy(), size);
+        runRoundTrip(new LongAparapiColumnTwoPassFNTStrategy(), size);
     }
 }

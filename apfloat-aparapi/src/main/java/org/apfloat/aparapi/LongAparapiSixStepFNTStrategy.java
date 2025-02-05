@@ -23,7 +23,6 @@
  */
 package org.apfloat.aparapi;
 
-import org.apfloat.spi.ArrayAccess;
 import org.apfloat.internal.SixStepFNTStrategy;
 
 /**
@@ -36,6 +35,7 @@ import org.apfloat.internal.SixStepFNTStrategy;
 
 public class LongAparapiSixStepFNTStrategy
     extends SixStepFNTStrategy
+    implements LongAparapiNTTStrategy
 {
     /**
      * Default constructor.
@@ -44,25 +44,5 @@ public class LongAparapiSixStepFNTStrategy
     public LongAparapiSixStepFNTStrategy()
     {
         super(new LongAparapiNTTStepStrategy(true), new LongAparapiMatrixStrategy());
-    }
-
-    @Override
-    protected void preTransform(ArrayAccess arrayAccess)
-    {
-        LongKernel kernel = LongKernel.getInstance();
-        kernel.setExplicit(true);
-        kernel.put(arrayAccess.getLongData());
-
-        super.preTransform(arrayAccess);
-    }
-
-    @Override
-    protected void postTransform(ArrayAccess arrayAccess)
-    {
-        super.postTransform(arrayAccess);
-
-        LongKernel kernel = LongKernel.getInstance();
-        kernel.get(arrayAccess.getLongData());
-        kernel.cleanUpArrays();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-20215 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
  */
 package org.apfloat.aparapi;
 
-import org.apfloat.spi.ArrayAccess;
 import org.apfloat.internal.SixStepFNTStrategy;
 
 /**
@@ -36,6 +35,7 @@ import org.apfloat.internal.SixStepFNTStrategy;
 
 public class IntAparapiSixStepFNTStrategy
     extends SixStepFNTStrategy
+    implements IntAparapiNTTStrategy
 {
     /**
      * Default constructor.
@@ -44,25 +44,5 @@ public class IntAparapiSixStepFNTStrategy
     public IntAparapiSixStepFNTStrategy()
     {
         super(new IntAparapiNTTStepStrategy(true), new IntAparapiMatrixStrategy());
-    }
-
-    @Override
-    protected void preTransform(ArrayAccess arrayAccess)
-    {
-        IntKernel kernel = IntKernel.getInstance();
-        kernel.setExplicit(true);
-        kernel.put(arrayAccess.getIntData());
-
-        super.preTransform(arrayAccess);
-    }
-
-    @Override
-    protected void postTransform(ArrayAccess arrayAccess)
-    {
-        super.postTransform(arrayAccess);
-
-        IntKernel kernel = IntKernel.getInstance();
-        kernel.get(arrayAccess.getIntData());
-        kernel.cleanUpArrays();
     }
 }

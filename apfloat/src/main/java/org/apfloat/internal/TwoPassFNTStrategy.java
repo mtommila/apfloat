@@ -84,6 +84,7 @@ import org.apfloat.spi.Util;
 
 public class TwoPassFNTStrategy
     extends AbstractStepFNTStrategy
+    implements DecorableNTTStrategy
 {
     /**
      * Default constructor.
@@ -125,8 +126,12 @@ public class TwoPassFNTStrategy
             // Read the data in n1 x b blocks, transposed
             try (ArrayAccess arrayAccess = getColumns(dataStorage, i, b, n1))
             {
+                preTransform(arrayAccess);
+
                 // Do b transforms of size n1
                 transformColumns(arrayAccess, n1, b, false, modulus);
+
+                postTransform(arrayAccess);
             }
         }
 
@@ -137,11 +142,15 @@ public class TwoPassFNTStrategy
             // Read the data in b x n2 blocks
             try (ArrayAccess arrayAccess = getRows(dataStorage, i, b, n2))
             {
+                preTransform(arrayAccess);
+
                 // Multiply each matrix element by w^(i*j)
                 multiplyElements(arrayAccess, i, 0, b, n2, length, 1, false, modulus);
 
                 // Do b transforms of size n2
                 transformRows(arrayAccess, n2, b, false, modulus);
+
+                postTransform(arrayAccess);
             }
         }
     }
@@ -167,11 +176,15 @@ public class TwoPassFNTStrategy
             // Read the data in b x n2 blocks
             try (ArrayAccess arrayAccess = getRows(dataStorage, i, b, n2))
             {
+                preTransform(arrayAccess);
+
                 // Do b transforms of size n2
                 transformRows(arrayAccess, n2, b, true, modulus);
 
                 // Multiply each matrix element by w^(i*j) / n
                 multiplyElements(arrayAccess, i, 0, b, n2, length, totalTransformLength, true, modulus);
+
+                postTransform(arrayAccess);
             }
         }
 
@@ -182,8 +195,12 @@ public class TwoPassFNTStrategy
             // Read the data in n1 x b blocks, transposed
             try (ArrayAccess arrayAccess = getColumns(dataStorage, i, b, n1))
             {
+                preTransform(arrayAccess);
+
                 // Do b transforms of size n1
                 transformColumns(arrayAccess, n1, b, true, modulus);
+
+                postTransform(arrayAccess);
             }
         }
     }

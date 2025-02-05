@@ -64,6 +64,7 @@ import org.apfloat.spi.NTTStepStrategy;
 
 public class SixStepFNTStrategy
     extends AbstractStepFNTStrategy
+    implements DecorableNTTStrategy
 {
     /**
      * Default constructor.
@@ -160,17 +161,6 @@ public class SixStepFNTStrategy
 
             postTransform(arrayAccess);
         }
-    }
-
-    /**
-     * Prepare the data for the (inverse) transform.
-     * 
-     * @param arrayAccess The data to prepare.
-     */
-
-    protected void preTransform(ArrayAccess arrayAccess)
-    {
-        // By default does nothing
     }
 
     /**
@@ -282,17 +272,6 @@ public class SixStepFNTStrategy
     protected void multiplyElements(ArrayAccess arrayAccess, int rows, int columns, long length, long totalTransformLength, boolean isInverse, int modulus)
     {
         super.stepStrategy.multiplyElements(arrayAccess, 0, 0, rows, columns, length, totalTransformLength, isInverse, modulus);
-    }
-
-    /**
-     * Finish processing the data after the (inverse) transform.
-     * 
-     * @param arrayAccess The data to finish.
-     */
-
-    protected void postTransform(ArrayAccess arrayAccess)
-    {
-        // By default does nothing
     }
 
     /**

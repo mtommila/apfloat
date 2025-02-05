@@ -62,11 +62,10 @@ public class IntAparapiFactor3NTTStrategyTest
 
     public static void testForward()
     {
-        runForward(false);
-        runForward(true);
+        runForward();
     }
 
-    private static void runForward(boolean rowOrientation)
+    private static void runForward()
     {
         ApfloatContext ctx = ApfloatContext.getContext();
         ctx.setMemoryThreshold(Long.MAX_VALUE);
@@ -80,7 +79,7 @@ public class IntAparapiFactor3NTTStrategyTest
                       expectedTransform = ntt(data, modulus);
             Arrays.sort(expectedTransform);
 
-            NTTStrategy nttStrategy = new IntAparapiFactor3NTTStrategy(rowOrientation);
+            NTTStrategy nttStrategy = new IntAparapiFactor3NTTStrategy(new IntAparapiColumnSixStepFNTStrategy());
 
             nttStrategy.transform(dataStorage, modulus);
 
@@ -104,20 +103,19 @@ public class IntAparapiFactor3NTTStrategyTest
         ctx.setNumberOfProcessors(1);
         ctx.setMemoryThreshold(Long.MAX_VALUE);
 
-        runRoundTrip(false);
-        runRoundTrip(true);
+        runRoundTrip();
 
         ctx.setNumberOfProcessors(numberOfProcessors);
     }
 
-    private static void runRoundTrip(boolean rowOrientation)
+    private static void runRoundTrip()
     {
         int size = (int) Math.min(3 * 1048576, IntModConstants.MAX_TRANSFORM_LENGTH);       // Will use six-step transform
         DataStorage dataStorage = createDataStorage(size + 5).subsequence(5, size);
 
         for (int modulus = 0; modulus < 3; modulus++)
         {
-            Factor3NTTStrategy nttStrategy = new IntAparapiFactor3NTTStrategy(rowOrientation);
+            Factor3NTTStrategy nttStrategy = new IntAparapiFactor3NTTStrategy(new IntAparapiColumnSixStepFNTStrategy());
 
             nttStrategy.transform(dataStorage, modulus);
 
@@ -149,20 +147,19 @@ public class IntAparapiFactor3NTTStrategyTest
         ctx.setNumberOfProcessors(1);
         ctx.setMemoryThreshold(Long.MAX_VALUE);
 
-        runRoundTrip2(false);
-        runRoundTrip2(true);
+        runRoundTrip2();
 
         ctx.setNumberOfProcessors(numberOfProcessors);
     }
 
-    private static void runRoundTrip2(boolean rowOrientation)
+    private static void runRoundTrip2()
     {
         int size = 2048;                                                        // Will fall back to the power-of-two length transform
         DataStorage dataStorage = createDataStorage(size + 5).subsequence(5, size);
 
         for (int modulus = 0; modulus < 3; modulus++)
         {
-            Factor3NTTStrategy nttStrategy = new IntAparapiFactor3NTTStrategy(rowOrientation);
+            Factor3NTTStrategy nttStrategy = new IntAparapiFactor3NTTStrategy(new IntAparapiSixStepFNTStrategy());
 
             nttStrategy.transform(dataStorage, modulus);
 

@@ -27,7 +27,6 @@ import org.apfloat.spi.BuilderFactory;
 import org.apfloat.spi.NTTStrategy;
 import org.apfloat.ApfloatContext;
 import org.apfloat.internal.IntNTTBuilder;
-import org.apfloat.internal.TwoPassFNTStrategy;
 
 /**
  * NTT Builder for aparapi transform implementations for the <code>int</code> element type.
@@ -72,14 +71,13 @@ public class IntAparapiNTTBuilder
         {
             return super.createTwoPassFNTStrategy(size);
         }
-        IntAparapiNTTStepStrategy stepStrategy = new IntAparapiNTTStepStrategy(this.rowOrientation);
-        return (this.rowOrientation ? new TwoPassFNTStrategy(stepStrategy) : new ColumnTwoPassFNTStrategy(stepStrategy));
+        return (this.rowOrientation ? new IntAparapiTwoPassFNTStrategy() : new IntAparapiColumnTwoPassFNTStrategy());
     }
 
     @Override
     protected NTTStrategy createFactor3NTTStrategy(long size, NTTStrategy nttStrategy)
     {
-        if (nttStrategy instanceof IntAparapiSixStepFNTStrategy)
+        if (nttStrategy instanceof IntAparapiNTTStrategy)
         {
             ApfloatContext ctx = ApfloatContext.getContext();
             BuilderFactory builderFactory = ctx.getBuilderFactory();
@@ -87,7 +85,7 @@ public class IntAparapiNTTBuilder
 
             if (size <= maxMemoryBlockSize && size <= Integer.MAX_VALUE)
             {
-                return new IntAparapiFactor3NTTStrategy(this.rowOrientation);
+                return new IntAparapiFactor3NTTStrategy(nttStrategy);
             }
         }
         return super.createFactor3NTTStrategy(size, nttStrategy);

@@ -24,23 +24,23 @@
 package org.apfloat.aparapi;
 
 /**
- * Six-step NTT implementation for the <code>long</code> element type using column orientation.<p>
+ * Two-pass NTT implementation for the <code>long</code> element type using column orientation.<p>
  *
  * @since 1.15.0
  * @version 1.15.0
  * @author Mikko Tommila
  */
 
-public class LongAparapiColumnSixStepFNTStrategy
-    extends ColumnSixStepFNTStrategy
+public class LongAparapiColumnTwoPassFNTStrategy
+    extends ColumnTwoPassFNTStrategy
     implements LongAparapiNTTStrategy
 {
     /**
      * Default constructor.
      */
 
-    public LongAparapiColumnSixStepFNTStrategy()
+    public LongAparapiColumnTwoPassFNTStrategy()
     {
-        super(new LongAparapiNTTStepStrategy(false), new LongAparapiMatrixStrategy());
+        super(new LongAparapiNTTStepStrategy(false));
     }
 }
