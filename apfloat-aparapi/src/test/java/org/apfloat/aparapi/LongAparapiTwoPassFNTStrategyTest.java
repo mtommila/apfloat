@@ -64,8 +64,7 @@ public class LongAparapiTwoPassFNTStrategyTest
         ctx.setMaxMemoryBlockSize(65536);
         ctx.setMemoryThreshold(1024);
         ctx.setBlockSize(256);
-        runRoundTrip(131072, false);
-        runRoundTrip(131072, true);
+        runRoundTrip(131072);
     }
 
     public static void testRoundTripBig()
@@ -76,12 +75,11 @@ public class LongAparapiTwoPassFNTStrategyTest
         ctx.setMemoryThreshold(1024);
         ctx.setBlockSize(256);
         int size = (int) Math.min(1 << 21, Util.round2down(LongModConstants.MAX_TRANSFORM_LENGTH));
-        runRoundTrip(size, false);
-        runRoundTrip(size, true);
+        runRoundTrip(size);
     }
 
-    private static void runRoundTrip(int size, boolean rowOrientation)
+    private static void runRoundTrip(int size)
     {
-        runRoundTrip(new ColumnTwoPassFNTStrategy(new LongAparapiNTTStepStrategy(rowOrientation)), size);
+        runRoundTrip(new LongAparapiTwoPassFNTStrategy(), size);
     }
 }

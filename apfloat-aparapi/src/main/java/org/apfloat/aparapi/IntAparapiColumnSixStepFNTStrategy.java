@@ -23,8 +23,6 @@
  */
 package org.apfloat.aparapi;
 
-import org.apfloat.spi.ArrayAccess;
-
 /**
  * Six-step NTT implementation for the <code>int</code> element type using column orientation.<p>
  *
@@ -35,6 +33,7 @@ import org.apfloat.spi.ArrayAccess;
 
 public class IntAparapiColumnSixStepFNTStrategy
     extends ColumnSixStepFNTStrategy
+    implements IntAparapiNTTStrategy
 {
     /**
      * Default constructor.
@@ -43,25 +42,5 @@ public class IntAparapiColumnSixStepFNTStrategy
     public IntAparapiColumnSixStepFNTStrategy()
     {
         super(new IntAparapiNTTStepStrategy(false), new IntAparapiMatrixStrategy());
-    }
-
-    @Override
-    protected void preTransform(ArrayAccess arrayAccess)
-    {
-        IntKernel kernel = IntKernel.getInstance();
-        kernel.setExplicit(true);
-        kernel.put(arrayAccess.getIntData());
-
-        super.preTransform(arrayAccess);
-    }
-
-    @Override
-    protected void postTransform(ArrayAccess arrayAccess)
-    {
-        super.postTransform(arrayAccess);
-
-        IntKernel kernel = IntKernel.getInstance();
-        kernel.get(arrayAccess.getIntData());
-        kernel.cleanUpArrays();
     }
 }

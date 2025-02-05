@@ -23,12 +23,7 @@
  */
 package org.apfloat.aparapi;
 
-import org.apfloat.ApfloatRuntimeException;
-import org.apfloat.spi.ArrayAccess;
-import org.apfloat.spi.DataStorage;
-import org.apfloat.internal.ApfloatInternalException;
-import org.apfloat.internal.Factor3NTTStrategy;
-import org.apfloat.internal.SixStepFNTStrategy;
+import org.apfloat.spi.NTTStrategy;
 
 /**
  * Factor-3 NTT implementation for the <code>int</code> element type.<p>
@@ -39,66 +34,19 @@ import org.apfloat.internal.SixStepFNTStrategy;
  */
 
 public class IntAparapiFactor3NTTStrategy
-    extends Factor3NTTStrategy
+    extends DecorableFactor3NTTStrategy
+    implements IntAparapiNTTStrategy
 {
     /**
-     * Basic constructor.
-     * 
-     * @param rowOrientation If the data is using row orientation.
+     * Creates a new factor-3 transform strategy on top of an existing transform.
+     * The underlying transform needs to be capable of only doing transforms of
+     * length 2<sup>n</sup>.
+     *
+     * @param factor2Strategy The underlying transformation strategy, that can be capable of only doing radix-2 transforms.
      */
 
-    public IntAparapiFactor3NTTStrategy(boolean rowOrientation)
+    public IntAparapiFactor3NTTStrategy(NTTStrategy factor2Strategy)
     {
-        super(rowOrientation ?
-              new SixStepFNTStrategy(new IntAparapiNTTStepStrategy(rowOrientation), new IntAparapiMatrixStrategy()) :
-              new ColumnSixStepFNTStrategy(new IntAparapiNTTStepStrategy(rowOrientation), new IntAparapiMatrixStrategy()),
-              new IntAparapiFactor3NTTStepStrategy());
-    }
-
-    @Override
-    public void transform(DataStorage dataStorage, int modulus)
-        throws ApfloatRuntimeException
-    {
-        preTransform(dataStorage);
-        super.transform(dataStorage, modulus);
-        postTransform(dataStorage);
-    }
-
-    @Override
-    public void inverseTransform(DataStorage dataStorage, int modulus, long totalTransformLength)
-        throws ApfloatRuntimeException
-    {
-        preTransform(dataStorage);
-        super.inverseTransform(dataStorage, modulus, totalTransformLength);
-        postTransform(dataStorage);
-    }
-
-    private void preTransform(DataStorage dataStorage)
-    {
-        long length = dataStorage.getSize();
-
-        if (length > Integer.MAX_VALUE)
-        {
-            throw new ApfloatInternalException("Maximum array length exceeded: " + length);
-        }
-
-        ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length);
-
-        IntKernel kernel = IntKernel.getInstance();
-        kernel.setExplicit(true);
-        kernel.put(arrayAccess.getIntData());
-    }
-
-    private void postTransform(DataStorage dataStorage)
-    {
-        long length = dataStorage.getSize();
-
-        assert (length <= Integer.MAX_VALUE);
-
-        ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length);
-
-        IntKernel kernel = IntKernel.getInstance();
-        kernel.get(arrayAccess.getIntData());
-        kernel.cleanUpArrays();
+        super(factor2Strategy, new IntAparapiFactor3NTTStepStrategy());
     }
 }

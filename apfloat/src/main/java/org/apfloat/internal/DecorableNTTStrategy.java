@@ -21,26 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.apfloat.aparapi;
+package org.apfloat.internal;
+
+import org.apfloat.spi.ArrayAccess;
 
 /**
- * Six-step NTT implementation for the <code>long</code> element type using column orientation.<p>
+ * NTT strategy that can be decorated with a decorator. The decorator must be the object itself.
  *
  * @since 1.15.0
  * @version 1.15.0
  * @author Mikko Tommila
  */
 
-public class LongAparapiColumnSixStepFNTStrategy
-    extends ColumnSixStepFNTStrategy
-    implements LongAparapiNTTStrategy
+public interface DecorableNTTStrategy
 {
     /**
-     * Default constructor.
+     * Prepare the data for the (inverse) transform.
+     * 
+     * @param arrayAccess The data to prepare.
      */
 
-    public LongAparapiColumnSixStepFNTStrategy()
+    default public void preTransform(ArrayAccess arrayAccess)
     {
-        super(new LongAparapiNTTStepStrategy(false), new LongAparapiMatrixStrategy());
+        if (this instanceof NTTStrategyDecorator)
+        {
+            ((NTTStrategyDecorator) this).beforeTransform(arrayAccess);
+        }
+    }
+
+    /**
+     * Finish processing the data after the (inverse) transform.
+     * 
+     * @param arrayAccess The data to finish.
+     */
+
+    default public void postTransform(ArrayAccess arrayAccess)
+    {
+        if (this instanceof NTTStrategyDecorator)
+        {
+            ((NTTStrategyDecorator) this).afterTransform(arrayAccess);
+        }
     }
 }

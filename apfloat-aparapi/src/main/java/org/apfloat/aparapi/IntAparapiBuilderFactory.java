@@ -44,7 +44,7 @@ public class IntAparapiBuilderFactory
 
     public IntAparapiBuilderFactory()
     {
-        boolean rowOrientation = Boolean.parseBoolean(ApfloatContext.getContext().getProperty("rowOrientation", "true"));
+        boolean rowOrientation = Boolean.parseBoolean(ApfloatContext.getContext().getProperty("rowOrientation"));
         this.nttBuilder = new IntAparapiNTTBuilder(rowOrientation);
     }
 
