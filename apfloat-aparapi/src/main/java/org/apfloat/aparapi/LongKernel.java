@@ -206,9 +206,9 @@ class LongKernel
                 */
                 for (int k = getGlobalId(0); k < nn / 2; k += getGlobalSize(0))
                 {
-                    int m = k / r;
+                    int m = k % mmax;
                     int t = m * r;
-                    int i = offset + m + k % r * istep;
+                    int i = offset + m + k / mmax * istep;
                     int j = i + mmax;
                     long a = data[i];
                     long b = data[j];
@@ -315,12 +315,11 @@ class LongKernel
                     t += r;
                 }
                 */
-                //for (int k = 0; k < nn / 2; k++)
                 for (int k = getGlobalId(0); k < nn / 2; k += getGlobalSize(0))
                 {
-                    int m = k / r;
+                    int m = k % mmax;
                     int t = m * r;
-                    int i = offset + m + k % r * istep;
+                    int i = offset + m + k / mmax * istep;
                     int j = i + mmax;
                     long wTemp = modMultiply(wTable[t], data[j]);
                     data[j] = modSubtract(data[i], wTemp);
