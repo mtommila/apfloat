@@ -174,7 +174,7 @@ class LongKernel
 
     private void rowTableFNT()
     {
-        int nn, offset, istep, mmax, r;
+        int nn, offset, istepbits, mmax, mmaxbits, mmaxmask, r;
 
         long[] data = this.data;
         offset = this.offset + getGlobalId(1) * this.length;
@@ -184,9 +184,11 @@ class LongKernel
         {
             r = 1;
             mmax = nn >> 1;
+            mmaxbits = numberOfTrailingZeros(mmax);
             while (mmax > 0)
             {
-                istep = mmax << 1;
+                istepbits = mmaxbits + 1;
+                mmaxmask = mmax - 1;
 
                 /*
                 int t = 0;
@@ -206,9 +208,9 @@ class LongKernel
                 */
                 for (int k = getGlobalId(0); k < nn / 2; k += getGlobalSize(0))
                 {
-                    int m = k % mmax;
+                    int m = k & mmaxmask;
                     int t = m * r;
-                    int i = offset + m + k / mmax * istep;
+                    int i = offset + m + ((k >> mmaxbits) << istepbits);
                     int j = i + mmax;
                     long a = data[i];
                     long b = data[j];
@@ -217,6 +219,7 @@ class LongKernel
                 }
                 r <<= 1;
                 mmax >>= 1;
+                mmaxbits--;
                 localBarrier(); // Use a local barrier to synchronize memory writes within the same work-group but don't force memory to be written from the GPU cache to the GPU global memory
             }
 
@@ -225,6 +228,22 @@ class LongKernel
                 rowScramble(offset);
             }
         }
+    }
+
+    // Copied from Integer.numberOfTrailingZeros()
+    private int numberOfTrailingZeros(int i)
+    {
+        i = ~i & (i - 1);
+        if (i <= 0)
+        {
+            return i & 32;
+        }
+        int n = 1;
+        if (i > 1 << 16) { n += 16; i >>>= 16; }
+        if (i > 1 <<  8) { n +=  8; i >>>=  8; }
+        if (i > 1 <<  4) { n +=  4; i >>>=  4; }
+        if (i > 1 <<  2) { n +=  2; i >>>=  2; }
+        return n + (i >>> 1);
     }
 
     private void inverseColumnTableFNT()
@@ -280,7 +299,7 @@ class LongKernel
 
     private void inverseRowTableFNT()
     {
-        int nn, offset, istep, mmax, r;
+        int nn, offset, istepbits, mmax, mmaxbits, mmaxmask, r;
 
         long[] data = this.data;
         offset = this.offset + getGlobalId(1) * this.length;
@@ -295,9 +314,11 @@ class LongKernel
 
             r = nn;
             mmax = 1;
+            mmaxbits = 0;
             while (nn > mmax)
             {
-                istep = mmax << 1;
+                istepbits = mmaxbits + 1;
+                mmaxmask = mmax - 1;
                 r >>= 1;
 
                 /*
@@ -317,15 +338,16 @@ class LongKernel
                 */
                 for (int k = getGlobalId(0); k < nn / 2; k += getGlobalSize(0))
                 {
-                    int m = k % mmax;
+                    int m = k & mmaxmask;
                     int t = m * r;
-                    int i = offset + m + k / mmax * istep;
+                    int i = offset + m + ((k >> mmaxbits) << istepbits);
                     int j = i + mmax;
                     long wTemp = modMultiply(wTable[t], data[j]);
                     data[j] = modSubtract(data[i], wTemp);
                     data[i] = modAdd(data[i], wTemp);
                 }
-                mmax = istep;
+                mmax <<= 1;
+                mmaxbits++;
                 localBarrier(); // Use a local barrier to synchronize memory writes within the same work-group but don't force memory to be written from the GPU cache to the GPU global memory
             }
         }
