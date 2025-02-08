@@ -154,6 +154,7 @@
           <configuration>
             <reuseForks>false</reuseForks>
             <argLine>-Dcom.aparapi.executionMode=JTP</argLine>
+            <argLine>-Dapfloat.workGroupSize=4</argLine>
             <includes>
               <include>**/*Test.java</include>
             </includes>
