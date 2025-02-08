@@ -23,6 +23,8 @@
  */
 package org.apfloat.aparapi;
 
+import org.apfloat.spi.Util;
+
 import com.aparapi.Range;
 
 /**
@@ -71,7 +73,7 @@ class RangeHelper
     {
         assert (width == (width & -width));     // Must be a power of two
         assert (height == (height & -height));  // Must be a power of two
-        int localWidth = Math.min(width, MAX_LOCAL_SIZE),
+        int localWidth = Math.min(width, Util.sqrt4up(MAX_LOCAL_SIZE)),
             localHeight = Math.min(height, MAX_LOCAL_SIZE / localWidth);
         return Range.create2D(width, height, localWidth, localHeight);
     }
