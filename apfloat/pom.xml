@@ -42,109 +42,39 @@
             <configuration>
               <target>
                 <loadproperties srcFile="serialver.properties" />
-                <copy todir="target/generated-sources/main">
-                  <fileset dir="src/main/template" />
-                  <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Int\2" />
-                  <filterchain>
-                    <tokenfilter>
-                      <replacestring from="rawtype" to="int" />
-                      <replacestring from="Rawtype" to="Int" />
-                      <replacestring from="RawType" to="Integer" />
-                    </tokenfilter>
-                    <expandproperties />
-                  </filterchain>
-                </copy>
-                <copy todir="target/generated-sources/main">
-                  <fileset dir="src/main/template" />
-                  <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Long\2" />
-                  <filterchain>
-                    <tokenfilter>
-                      <replacestring from="rawtype" to="long" />
-                      <replacestring from="Rawtype" to="Long" />
-                      <replacestring from="RawType" to="Long" />
-                    </tokenfilter>
-                    <expandproperties />
-                  </filterchain>
-                </copy>
-                <copy todir="target/generated-sources/main">
-                  <fileset dir="src/main/template" />
-                  <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Float\2" />
-                  <filterchain>
-                    <tokenfilter>
-                      <replacestring from="rawtype" to="float" />
-                      <replacestring from="Rawtype" to="Float" />
-                      <replacestring from="RawType" to="Float" />
-                    </tokenfilter>
-                    <expandproperties />
-                  </filterchain>
-                </copy>
-                <copy todir="target/generated-sources/main">
-                  <fileset dir="src/main/template" />
-                  <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Double\2" />
-                  <filterchain>
-                    <tokenfilter>
-                      <replacestring from="rawtype" to="double" />
-                      <replacestring from="Rawtype" to="Double" />
-                      <replacestring from="RawType" to="Double" />
-                    </tokenfilter>
-                    <expandproperties />
-                  </filterchain>
-                </copy>
-              </target>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-test-sources</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <copy todir="target/generated-sources/test">
-                  <fileset dir="src/test/template" />
-                  <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Int\2" />
-                  <filterchain>
-                    <tokenfilter>
-                      <replacestring from="rawtype" to="int" />
-                      <replacestring from="Rawtype" to="Int" />
-                      <replacestring from="RawType" to="Integer" />
-                    </tokenfilter>
-                  </filterchain>
-                </copy>
-                <copy todir="target/generated-sources/test">
-                  <fileset dir="src/test/template" />
-                  <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Long\2" />
-                  <filterchain>
-                    <tokenfilter>
-                      <replacestring from="rawtype" to="long" />
-                      <replacestring from="Rawtype" to="Long" />
-                      <replacestring from="RawType" to="Long" />
-                    </tokenfilter>
-                  </filterchain>
-                </copy>
-                <copy todir="target/generated-sources/test">
-                  <fileset dir="src/test/template" />
-                  <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Float\2" />
-                  <filterchain>
-                    <tokenfilter>
-                      <replacestring from="rawtype" to="float" />
-                      <replacestring from="Rawtype" to="Float" />
-                      <replacestring from="RawType" to="Float" />
-                    </tokenfilter>
-                  </filterchain>
-                </copy>
-                <copy todir="target/generated-sources/test">
-                  <fileset dir="src/test/template" />
-                  <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1Double\2" />
-                  <filterchain>
-                    <tokenfilter>
-                      <replacestring from="rawtype" to="double" />
-                      <replacestring from="Rawtype" to="Double" />
-                      <replacestring from="RawType" to="Double" />
-                    </tokenfilter>
-                  </filterchain>
-                </copy>
+                <macrodef name="copy-template">
+                  <attribute name="fromdir" />
+                  <attribute name="todir" />
+                  <attribute name="primitivetype" />
+                  <attribute name="shortobjecttype" />
+                  <attribute name="longobjecttype" />
+                  <sequential>
+                    <copy todir="@{todir}">
+                      <fileset dir="@{fromdir}" />
+                      <mapper type="regexp" from="(.*)Rawtype(.*)" to="\1@{shortobjecttype}\2" />
+                      <filterchain>
+                        <tokenfilter>
+                          <replacestring from="rawtype" to="@{primitivetype}" />
+                          <replacestring from="Rawtype" to="@{shortobjecttype}" />
+                          <replacestring from="RawType" to="@{longobjecttype}" />
+                        </tokenfilter>
+                        <expandproperties />
+                      </filterchain>
+                    </copy>
+                  </sequential>
+                </macrodef>
+                <macrodef name="copy-templates">
+                  <attribute name="fromdir" />
+                  <attribute name="todir"/>
+                  <sequential>
+                    <copy-template fromdir="@{fromdir}" todir="@{todir}" primitivetype="int" shortobjecttype="Int" longobjecttype="Integer" />
+                    <copy-template fromdir="@{fromdir}" todir="@{todir}" primitivetype="long" shortobjecttype="Long" longobjecttype="Long" />
+                    <copy-template fromdir="@{fromdir}" todir="@{todir}" primitivetype="float" shortobjecttype="Float" longobjecttype="Float" />
+                    <copy-template fromdir="@{fromdir}" todir="@{todir}" primitivetype="double" shortobjecttype="Double" longobjecttype="Double" />
+                  </sequential>
+                </macrodef>
+                <copy-templates fromdir="src/main/template" todir="target/generated-sources/main" />
+                <copy-templates fromdir="src/test/template" todir="target/generated-sources/test" />
               </target>
             </configuration>
           </execution>
