@@ -73,8 +73,8 @@
                     <copy-template fromdir="@{fromdir}" todir="@{todir}" primitivetype="double" shortobjecttype="Double" longobjecttype="Double" />
                   </sequential>
                 </macrodef>
-                <copy-templates fromdir="src/main/template" todir="target/generated-sources/main" />
-                <copy-templates fromdir="src/test/template" todir="target/generated-sources/test" />
+                <copy-templates fromdir="src/main/template" todir="${project.build.directory}/generated-sources/main" />
+                <copy-templates fromdir="src/test/template" todir="${project.build.directory}/generated-sources/test" />
               </target>
             </configuration>
           </execution>
@@ -92,7 +92,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>target/generated-sources/main</source>
+                <source>${project.build.directory}/generated-sources/main</source>
               </sources>
             </configuration>
           </execution>
@@ -104,7 +104,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>target/generated-sources/test</source>
+                <source>${project.build.directory}/generated-sources/test</source>
               </sources>
             </configuration>
           </execution>
