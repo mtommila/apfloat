@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -70,7 +70,7 @@ import java.math.BigInteger;
  * It is then easy to detect the case when the approximate division was off by one
  * as the final step of the algorithm.
  *
- * @version 1.9.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -152,7 +152,7 @@ public class LongElementaryModMath
      * @param modulus The modulus.
      */
 
-    public final void setModulus(long modulus)
+    public void setModulus(long modulus)
     {
         if (modulus == MODULUS[0])
         {
