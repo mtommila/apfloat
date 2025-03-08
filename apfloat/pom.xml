@@ -17,6 +17,11 @@
   <properties>
     <java9.build.sourceDirectory>${project.build.sourceDirectory}9</java9.build.sourceDirectory>
     <java9.build.outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</java9.build.outputDirectory>
+    <java17.build.sourceDirectory>${project.build.sourceDirectory}17</java17.build.sourceDirectory>
+    <java17.build.generatedSourceDirectory>${project.build.directory}/generated-sources17/main</java17.build.generatedSourceDirectory>
+    <java17.build.outputDirectory>${project.build.outputDirectory}/META-INF/versions/17</java17.build.outputDirectory>
+    <java17.build.testSourceDirectory>${project.build.testSourceDirectory}17</java17.build.testSourceDirectory>
+    <java17.build.generatedTestSourceDirectory>${project.build.directory}/generated-sources17/test</java17.build.generatedTestSourceDirectory>
   </properties>
 
   <dependencies>
@@ -75,6 +80,8 @@
                 </macrodef>
                 <copy-templates fromdir="src/main/template" todir="${project.build.directory}/generated-sources/main" />
                 <copy-templates fromdir="src/test/template" todir="${project.build.directory}/generated-sources/test" />
+                <copy-templates fromdir="src/main/template17" todir="${java17.build.generatedSourceDirectory}" />
+                <copy-templates fromdir="src/test/template17" todir="${java17.build.generatedTestSourceDirectory}" />
               </target>
             </configuration>
           </execution>
@@ -242,6 +249,90 @@
                       <fileset dir="${java9.build.outputDirectory}" />
                     </copy>
                   </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>java17</id>
+      <activation>
+        <property>
+          <name>!skipJava17</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>compile-java17</id>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <configuration>
+                  <compileSourceRoots>
+                    <compileSourceRoot>${java17.build.sourceDirectory}</compileSourceRoot>
+                    <compileSourceRoot>${java17.build.generatedSourceDirectory}</compileSourceRoot>
+                  </compileSourceRoots>
+                  <compilerArgs>
+                    <arg>--add-modules=jdk.incubator.vector</arg>
+                  </compilerArgs>
+                  <multiReleaseOutput>true</multiReleaseOutput>
+                  <release>17</release>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>java17-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-java17-classes</id>
+                <phase>process-test-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <copy overwrite="on" todir="${project.build.outputDirectory}">
+                      <fileset dir="${java17.build.outputDirectory}" />
+                    </copy>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>test-compile-java17</id>
+                <goals>
+                  <goal>testCompile</goal>
+                </goals>
+                <configuration>
+                  <compileSourceRoots>
+                    <compileSourceRoot>${java17.build.testSourceDirectory}</compileSourceRoot>
+                    <compileSourceRoot>${java17.build.generatedTestSourceDirectory}</compileSourceRoot>
+                  </compileSourceRoots>
+                  <compilerArgs>
+                    <arg>--add-modules=jdk.incubator.vector</arg>
+                  </compilerArgs>
+                  <release>17</release>
                 </configuration>
               </execution>
             </executions>

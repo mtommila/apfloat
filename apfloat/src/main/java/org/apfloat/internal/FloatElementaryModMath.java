@@ -145,7 +145,7 @@ public class FloatElementaryModMath
      * @param modulus The modulus.
      */
 
-    public final void setModulus(float modulus)
+    public void setModulus(float modulus)
     {
         this.inverseModulus = 1.0 / (double) modulus;
         this.modulus = modulus;

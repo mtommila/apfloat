@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -75,7 +75,7 @@ package org.apfloat.internal;
  * It is then easy to detect the case when the approximate division was off by one (and the
  * remainder is <code>&#177;modulus</code> off) as the final step of the algorithm.
  *
- * @version 1.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -158,7 +158,7 @@ public class LongElementaryModMath
      * @param modulus The modulus.
      */
 
-    public final void setModulus(long modulus)
+    public void setModulus(long modulus)
     {
         this.inverseModulus = 1.0 / modulus;
         this.modulus = modulus;

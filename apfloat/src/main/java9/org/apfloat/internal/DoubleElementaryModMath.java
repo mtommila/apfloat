@@ -159,7 +159,7 @@ public class DoubleElementaryModMath
      * @param modulus The modulus.
      */
 
-    public final void setModulus(double modulus)
+    public void setModulus(double modulus)
     {
         this.inverseModulus = 1.0 / (modulus + 0.5);    // Round down
         this.longModulus = (long) modulus;

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -71,7 +71,7 @@ package org.apfloat.internal;
  * <code>int</code>, the approximate result of <code>a * b / modulus</code>
  * will always be either correct or one too small (but never one too big).
  *
- * @version 1.0.2
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -153,7 +153,7 @@ public class IntElementaryModMath
      * @param modulus The modulus.
      */
 
-    public final void setModulus(int modulus)
+    public void setModulus(int modulus)
     {
         this.inverseModulus = 1.0 / (modulus + 0.5);    // Round down
         this.modulus = modulus;
