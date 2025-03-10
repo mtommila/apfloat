@@ -83,9 +83,9 @@ public class FloatVectorModMath
 
     public FloatVector modAdd(FloatVector a, FloatVector b)
     {
-        FloatVector r = a.add(b);
+        FloatVector r = a.sub(this.modulus).add(b);
 
-        return r.sub(this.modulus, r.compare(VectorOperators.GE, this.modulus));
+        return r.add(this.modulus, r.compare(VectorOperators.LT, 0.0f));
     }
 
     /**
