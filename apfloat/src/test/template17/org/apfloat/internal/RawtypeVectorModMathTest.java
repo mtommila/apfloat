@@ -112,24 +112,31 @@ public class RawtypeVectorModMathTest
     {
         RawtypeVectorModMath math = new RawtypeVectorModMath();
 
-        math.setModulus(MODULUS[0]);
+        for (int modulus = 0; modulus < 3; modulus++)
+        {
+            math.setModulus(MODULUS[modulus]);
 
-        assertEquals("no overflow", v(MODULUS[0] - 5), math.modAdd(v(MODULUS[0] - 8), v(3)));
-        assertEquals("just no overflow", v(MODULUS[0] - 1), math.modAdd(v(MODULUS[0] - 4), v(3)));
-        assertEquals("just overflow", v(0), math.modAdd(v(MODULUS[0] - 3), v(3)));
-        assertEquals("overflow", v(5), math.modAdd(v(MODULUS[0] - 3), v(8)));
+            assertEquals("no overflow", v(MODULUS[modulus] - 5), math.modAdd(v(MODULUS[modulus] - 8), v(3)));
+            assertEquals("just no overflow", v(MODULUS[modulus] - 1), math.modAdd(v(MODULUS[modulus] - 4), v(3)));
+            assertEquals("just overflow", v(0), math.modAdd(v(MODULUS[modulus] - 3), v(3)));
+            assertEquals("overflow", v(5), math.modAdd(v(MODULUS[modulus] - 3), v(8)));
+            assertEquals("max", v(MODULUS[modulus] - 2), math.modAdd(v(MODULUS[modulus] - 1), v(MODULUS[modulus] - 1)));
+        }
     }
 
     public static void testSubtract()
     {
         RawtypeVectorModMath math = new RawtypeVectorModMath();
 
-        math.setModulus(MODULUS[0]);
+        for (int modulus = 0; modulus < 3; modulus++)
+        {
+            math.setModulus(MODULUS[modulus]);
 
-        assertEquals("no overflow", v(5), math.modSubtract(v(8), v(3)));
-        assertEquals("just no overflow", v(0), math.modSubtract(v(3), v(3)));
-        assertEquals("just overflow", v(MODULUS[0] - 1), math.modSubtract(v(3), v(4)));
-        assertEquals("overflow", v(MODULUS[0] - 5), math.modSubtract(v(3), v(8)));
+            assertEquals("no overflow", v(5), math.modSubtract(v(8), v(3)));
+            assertEquals("just no overflow", v(0), math.modSubtract(v(3), v(3)));
+            assertEquals("just overflow", v(MODULUS[modulus] - 1), math.modSubtract(v(3), v(4)));
+            assertEquals("overflow", v(MODULUS[modulus] - 5), math.modSubtract(v(3), v(8)));
+        }
     }
 
     private static RawtypeVector v(rawtype v)
