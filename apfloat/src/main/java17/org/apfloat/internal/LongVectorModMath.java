@@ -23,7 +23,6 @@
  */
 package org.apfloat.internal;
 
-import static org.apfloat.internal.VectorUtil.floor;
 import static org.apfloat.internal.VectorUtil.toDouble;
 import static org.apfloat.internal.VectorUtil.toLong;
 
