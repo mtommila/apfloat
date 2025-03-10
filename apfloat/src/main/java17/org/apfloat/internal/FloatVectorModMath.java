@@ -23,7 +23,7 @@
  */
 package org.apfloat.internal;
 
-import static org.apfloat.internal.VectorUtil.floor;
+import static org.apfloat.internal.VectorUtil.rint;
 import static org.apfloat.internal.VectorUtil.toDouble;
 import static org.apfloat.internal.VectorUtil.toFloat;
 
@@ -66,10 +66,15 @@ public class FloatVectorModMath
         DoubleVector r1 = toDouble(a, 0).mul(toDouble(b, 0));
         DoubleVector r2 = toDouble(a, 1).mul(toDouble(b, 1));
 
-        r1 = r1.sub(floor(r1.mul(this.inverseModulus)).mul(this.modulusDouble));
-        r2 = r2.sub(floor(r2.mul(this.inverseModulus)).mul(this.modulusDouble));
+        r1 = r1.sub(rint(r1.mul(this.inverseModulus)).mul(this.modulusDouble));
+        r2 = r2.sub(rint(r2.mul(this.inverseModulus)).mul(this.modulusDouble));
 
-        return toFloat(r1, 0).add(toFloat(r2, -1));
+        FloatVector r = toFloat(r1, 0).add(toFloat(r2, -1));
+
+        r = r.sub(this.modulus, r.compare(VectorOperators.GE, this.modulus));
+        r = r.add(this.modulus, r.compare(VectorOperators.LT, 0.0f));
+
+        return r;
     }
 
     /**

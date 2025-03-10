@@ -67,6 +67,7 @@ public class IntVectorModMath
                               .sub(toInt(toDouble(a, 1).mul(toDouble(b, 1)).mul(this.inverseModulus), -1).mul(this.modulus));
 
         r = r.sub(this.modulus, r.compare(VectorOperators.UNSIGNED_GE, this.modulus));
+        r = r.add(this.modulus, r.compare(VectorOperators.LT, 0));
 
         return r;
     }

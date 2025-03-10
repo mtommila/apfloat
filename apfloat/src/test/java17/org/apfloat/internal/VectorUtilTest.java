@@ -53,7 +53,7 @@ public class VectorUtilTest
     {
         TestSuite suite = new TestSuite();
 
-        suite.addTest(new VectorUtilTest("testFloor"));
+        suite.addTest(new VectorUtilTest("testRint"));
         suite.addTest(new VectorUtilTest("testToDouble"));
         suite.addTest(new VectorUtilTest("testToFloat"));
         suite.addTest(new VectorUtilTest("testToInt"));
@@ -62,9 +62,10 @@ public class VectorUtilTest
         return suite;
     }
 
-    public static void testFloor()
+    public static void testRint()
     {
-        assertEquals("floor", v(0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0), VectorUtil.floor(v(0.1, 0.5, 0.9, 0, 1, 1.1, 1.5, 1.9)));
+        assertEquals("rint", v(0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 2.0, 2.0), VectorUtil.rint(v(0.1, 0.5, 0.9, 0, 1, 1.1, 1.5, 1.9)));
+        assertEquals("rint", v(4503599627370495.0, 4503599627370495.0, 4503599627370495.0, 4503599627370494.0, 4503599627370494.0, 2251799813685248.0, 2251799813685247.0, 2251799813685246.0), VectorUtil.rint(v(4503599627370495.25, 4503599627370495.0, 4503599627370494.75, 4503599627370494.5, 4503599627370494.25, 2251799813685247.5, 2251799813685246.75, 2251799813685246.5)));
     }
 
     public static void testToDouble()
@@ -74,6 +75,9 @@ public class VectorUtilTest
         assertEquals("I2D 0", v(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0), VectorUtil.toDouble(v(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), 0));
         assertEquals("I2D 1", v(9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0), VectorUtil.toDouble(v(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), 1));
         assertEquals("L2D", v(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0), VectorUtil.toDouble(v(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)));
+        assertEquals("L2D", v(-1.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0, -8.0), VectorUtil.toDouble(v(-1L, -2L, -3L, -4L, -5L, -6L, -7L, -8L)));
+        assertEquals("L2D", v(0x7FFFFFFFFFFFFC00P0, 0x7FFFFFFFFFFFFC00P0, 0x7FFFFFFFFFFFF800P0, 0x0200000000000000P0, 0x01FFFFFFFFFFFFF0P0, 0x0010000000000000P0, 0x000FFFFFFFFFFFFFP0, 0.0), VectorUtil.toDouble(v(Long.MAX_VALUE, 0x7FFFFFFFFFFFFC00L, 0x7FFFFFFFFFFFF800L, 0x0200000000000000L, 0x01FFFFFFFFFFFFFFL, 0x0010000000000000L, 0x000FFFFFFFFFFFFFL, 0L)));
+        assertEquals("L2D", v(-0x8000000000000000P0, -0x7FFFFFFFFFFFFC00P0, -0x7FFFFFFFFFFFFC00P0, -0x7FFFFFFFFFFFE800P0, -0x0200000000000000P0, -0x01FFFFFFFFFFFFF0P0, -0x0010000000000000P0, -0x000FFFFFFFFFFFFFP0), VectorUtil.toDouble(v(Long.MIN_VALUE, -Long.MAX_VALUE, -0x7FFFFFFFFFFFFC00L, -0x7FFFFFFFFFFFE800L, -0x0200000000000000L, -0x01FFFFFFFFFFFFFFL, -0x0010000000000000L, -0x000FFFFFFFFFFFFFL)));
     }
 
     public static void testToFloat()
@@ -91,6 +95,9 @@ public class VectorUtilTest
     public static void testToLong()
     {
         assertEquals("D2L", v(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L), VectorUtil.toLong(v(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)));
+        assertEquals("D2L", v(-1L, -2L, -3L, -4L, -5L, -6L, -7L, -8L), VectorUtil.toLong(v(-1.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0, -8.0)));
+        assertEquals("D2L", v(0x7FFFFFFFFFFFF800L, 0x7FFFFFFFFFFFF000L, 0x7FFFFFFFFFFFE000L, 0x0200000000000000L, 0x01FFFFFFFFFFFFE0L, 0x0010000000000000L, 0x000FFFFFFFFFFFFFL, 0L), VectorUtil.toLong(v(0x7FFFFFFFFFFFF800P0, 0x7FFFFFFFFFFFF000P0, 0x7FFFFFFFFFFFE000P0, 0x0200000000000000P0, 0x01FFFFFFFFFFFFE0P0, 0x0010000000000000P0, 0x000FFFFFFFFFFFFFP0, 0.0)));
+        assertEquals("D2L", v(-0x8000000000000000L, -0x7FFFFFFFFFFFF800L, -0x7FFFFFFFFFFFF000L, -0x7FFFFFFFFFFFE000L, -0x0200000000000000L, -0x01FFFFFFFFFFFFE0L, -0x0010000000000000L, -0x000FFFFFFFFFFFFFL), VectorUtil.toLong(v(-0x8000000000000000P0, -0x7FFFFFFFFFFFF800P0, -0x7FFFFFFFFFFFF000P0, -0x7FFFFFFFFFFFE000P0, -0x0200000000000000P0, -0x01FFFFFFFFFFFFE0P0, -0x0010000000000000P0, -0x000FFFFFFFFFFFFFP0)));
     }
 
     private static DoubleVector v(double... v)

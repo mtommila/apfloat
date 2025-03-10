@@ -23,7 +23,7 @@
  */
 package org.apfloat.internal;
 
-import static org.apfloat.internal.VectorUtil.floor;
+import static org.apfloat.internal.VectorUtil.rint;
 
 import jdk.incubator.vector.DoubleVector;
 import jdk.incubator.vector.VectorOperators;
@@ -60,13 +60,14 @@ public class DoubleVectorModMath
 
     public DoubleVector modMultiply(DoubleVector a, DoubleVector b)
     {
-        DoubleVector c = floor(a.mul(b).mul(this.inverseModulus));
+        DoubleVector c = rint(a.mul(b).mul(this.inverseModulus));
         DoubleVector d = this.modulus;
 
         DoubleVector w = c.mul(d);
         DoubleVector r = a.fma(b, w.neg()).add(c.fma(d.neg(), w));
 
         r = r.sub(this.modulus, r.compare(VectorOperators.GE, this.modulus));
+        r = r.add(this.modulus, r.compare(VectorOperators.LT, 0.0));
 
         return r;
     }
