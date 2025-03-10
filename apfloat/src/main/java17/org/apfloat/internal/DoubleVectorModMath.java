@@ -27,7 +27,6 @@ import static org.apfloat.internal.VectorUtil.floor;
 
 import jdk.incubator.vector.DoubleVector;
 import jdk.incubator.vector.VectorOperators;
-import jdk.incubator.vector.VectorSpecies;
 
 /**
  * Vector modulo arithmetic functions for <code>double</code> data.<p>
@@ -101,7 +100,7 @@ public class DoubleVectorModMath
     {
         DoubleVector r = a.sub(b);
 
-        return r.add(this.modulus, r.compare(VectorOperators.LT, 0));
+        return r.add(this.modulus, r.compare(VectorOperators.LT, 0.0));
     }
 
     @Override
@@ -109,9 +108,8 @@ public class DoubleVectorModMath
     {
         super.setModulus(modulus);
 
-        VectorSpecies<Double> species = DoubleVector.SPECIES_PREFERRED;
-        this.modulus = DoubleVector.broadcast(species, modulus);
-        this.inverseModulus = DoubleVector.broadcast(species, 1.0 / (modulus + 0.5));   // Round down
+        this.modulus = DoubleVector.broadcast(DoubleVector.SPECIES_PREFERRED, modulus);
+        this.inverseModulus = DoubleVector.broadcast(DoubleVector.SPECIES_PREFERRED, 1.0 / (modulus + 0.5));   // Round down
     }
 
     private DoubleVector modulus;
