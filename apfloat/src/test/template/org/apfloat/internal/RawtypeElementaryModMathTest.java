@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import java.math.BigInteger;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -105,23 +105,30 @@ public class RawtypeElementaryModMathTest
     {
         RawtypeElementaryModMath math = new RawtypeElementaryModMath();
 
-        math.setModulus(MODULUS[0]);
+        for (int modulus = 0; modulus < 3; modulus++)
+        {
+            math.setModulus(MODULUS[modulus]);
 
-        assertEquals("no overflow", (long) MODULUS[0] - 5, (long) math.modAdd(MODULUS[0] - (rawtype) 8, (rawtype) 3));
-        assertEquals("just no overflow", (long) MODULUS[0] - 1, (long) math.modAdd(MODULUS[0] - (rawtype) 4, (rawtype) 3));
-        assertEquals("just overflow", 0, (long) math.modAdd(MODULUS[0] - (rawtype) 3, (rawtype) 3));
-        assertEquals("overflow", 5, (long) math.modAdd(MODULUS[0] - (rawtype) 3, (rawtype) 8));
+            assertEquals("no overflow", (long) MODULUS[modulus] - 5, (long) math.modAdd(MODULUS[modulus] - (rawtype) 8, (rawtype) 3));
+            assertEquals("just no overflow", (long) MODULUS[modulus] - 1, (long) math.modAdd(MODULUS[modulus] - (rawtype) 4, (rawtype) 3));
+            assertEquals("just overflow", 0, (long) math.modAdd(MODULUS[modulus] - (rawtype) 3, (rawtype) 3));
+            assertEquals("overflow", 5, (long) math.modAdd(MODULUS[modulus] - (rawtype) 3, (rawtype) 8));
+            assertEquals("max", (long) MODULUS[modulus] - 2, (long) math.modAdd(MODULUS[modulus] - (rawtype) 1, MODULUS[modulus] - (rawtype) 1));
+        }
     }
 
     public static void testSubtract()
     {
         RawtypeElementaryModMath math = new RawtypeElementaryModMath();
 
-        math.setModulus(MODULUS[0]);
+        for (int modulus = 0; modulus < 3; modulus++)
+        {
+            math.setModulus(MODULUS[modulus]);
 
-        assertEquals("no overflow", 5, (long) math.modSubtract((rawtype) 8, (rawtype) 3));
-        assertEquals("just no overflow", 0, (long) math.modSubtract((rawtype) 3, (rawtype) 3));
-        assertEquals("just overflow", (long) MODULUS[0] - 1, (long) math.modSubtract((rawtype) 3, (rawtype) 4));
-        assertEquals("overflow", (long) MODULUS[0] - 5, (long) math.modSubtract((rawtype) 3, (rawtype) 8));
+            assertEquals("no overflow", 5, (long) math.modSubtract((rawtype) 8, (rawtype) 3));
+            assertEquals("just no overflow", 0, (long) math.modSubtract((rawtype) 3, (rawtype) 3));
+            assertEquals("just overflow", (long) MODULUS[modulus] - 1, (long) math.modSubtract((rawtype) 3, (rawtype) 4));
+            assertEquals("overflow", (long) MODULUS[modulus] - 5, (long) math.modSubtract((rawtype) 3, (rawtype) 8));
+        }
     }
 }

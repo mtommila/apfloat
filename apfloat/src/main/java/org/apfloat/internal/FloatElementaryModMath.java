@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -66,7 +66,7 @@ package org.apfloat.internal;
  * have a near-integer result that would be rounded incorrectly, e.g. as in
  * <code>0.333... * 3 = 0.999...</code>.
  *
- * @version 1.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -107,9 +107,9 @@ public class FloatElementaryModMath
 
     public final float modAdd(float a, float b)
     {
-        double r = (double) a + (double) b;
+        float r = a - this.modulus + b;
 
-        return (float) (r >= (double) this.modulus ? r - (double) this.modulus : r);
+        return (r < 0.0f ? a + b : r);
     }
 
     /**
