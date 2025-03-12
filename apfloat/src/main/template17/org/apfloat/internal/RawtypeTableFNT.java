@@ -74,7 +74,9 @@ public class RawtypeTableFNT
 
         VectorSpecies<RawType> s = RawtypeVector.SPECIES_PREFERRED;
         int length = s.length();
-        int[] indexes = IntStream.range(0, length).toArray();
+        int[] wIndex = new int[length];
+        int[] iIndex = new int[length];
+        int[] jIndex = new int[length];
 
         assert (nn == (nn & -nn));
 
@@ -91,42 +93,26 @@ public class RawtypeTableFNT
             int mmaxmask = mmax - 1;
             int istepbits = mmaxbits + 1;
 
-            if (mmax < length)
+            for (int k = 0; k < nn / 2;)
             {
-                for (int k = 0; k < nn / 2; k++)
-                {
+                for (int v = 0; v < length; v++, k++) {
                     int m = k & mmaxmask;
                     int t = m * r;
                     int i = offset + m + ((k >> mmaxbits) << istepbits);
                     int j = i + mmax;
-                    rawtype a = data[i];
-                    rawtype b = data[j];
-                    data[i] = modAdd(a, b);
-                    data[j] = modMultiply(wTable[t], modSubtract(a, b));
+                    iIndex[v] = i;
+                    jIndex[v] = j;
+                    wIndex[v] = t;
                 }
-            }
-            else
-            {
-                for (int k = 0; k < nn / 2; k += length)
-                {
-                    int m = k & mmaxmask;
-                    int t = m * r;
-                    int i = offset + m + ((k >> mmaxbits) << istepbits);
-                    int j = i + mmax;
-                    RawtypeVector a = RawtypeVector.fromArray(s, data, i);
-                    RawtypeVector b = RawtypeVector.fromArray(s, data, j);
-                    RawtypeVector w = RawtypeVector.fromArray(s, wTable, t, indexes, 0);
-                    modAdd(a, b).intoArray(data, i);
-                    modMultiply(w, modSubtract(a, b)).intoArray(data, j);
-                }
+                RawtypeVector a = RawtypeVector.fromArray(s, data, 0, iIndex, 0);
+                RawtypeVector b = RawtypeVector.fromArray(s, data, 0, jIndex, 0);
+                RawtypeVector w = RawtypeVector.fromArray(s, wTable, 0, wIndex, 0);
+                modAdd(a, b).intoArray(data, 0, iIndex, 0);
+                modMultiply(w, modSubtract(a, b)).intoArray(data, 0, jIndex, 0);
             }
             r <<= 1;
             mmax >>= 1;
             mmaxbits--;
-            for (int i = 0; i < indexes.length; i++)
-            {
-                indexes[i] <<= 1;
-            }
         }
 
         if (permutationTable != null)
@@ -156,7 +142,9 @@ public class RawtypeTableFNT
 
         VectorSpecies<RawType> s = RawtypeVector.SPECIES_PREFERRED;
         int length = s.length();
-        int[] indexes = IntStream.range(0, length).map(i -> nn * i).toArray();
+        int[] wIndex = new int[length];
+        int[] iIndex = new int[length];
+        int[] jIndex = new int[length];
 
         assert (nn == (nn & -nn));
 
@@ -178,37 +166,22 @@ public class RawtypeTableFNT
             r >>= 1;
             int mmaxmask = mmax - 1;
             int istepbits = mmaxbits + 1;
-            for (int i = 0; i < indexes.length; i++)
-            {
-                indexes[i] >>= 1;
-            }
 
-            if (mmax < length)
+            for (int k = 0; k < nn / 2;)
             {
-                for (int k = 0; k < nn / 2; k++)
-                {
+                for (int v = 0; v < length; v++, k++) {
                     int m = k & mmaxmask;
                     int t = m * r;
                     int i = offset + m + ((k >> mmaxbits) << istepbits);
                     int j = i + mmax;
-                    rawtype wTemp = modMultiply(wTable[t], data[j]);
-                    data[j] = modSubtract(data[i], wTemp);
-                    data[i] = modAdd(data[i], wTemp);
+                    iIndex[v] = i;
+                    jIndex[v] = j;
+                    wIndex[v] = t;
                 }
-            }
-            else
-            {
-                for (int k = 0; k < nn / 2; k += length)
-                {
-                    int m = k & mmaxmask;
-                    int t = m * r;
-                    int i = offset + m + ((k >> mmaxbits) << istepbits);
-                    int j = i + mmax;
-                    RawtypeVector wTemp = modMultiply(RawtypeVector.fromArray(s, wTable, t, indexes, 0), RawtypeVector.fromArray(s, data, j));
-                    RawtypeVector temp = RawtypeVector.fromArray(s, data, i);
-                    modSubtract(temp, wTemp).intoArray(data, j);
-                    modAdd(temp, wTemp).intoArray(data, i);
-                }
+                RawtypeVector wTemp = modMultiply(RawtypeVector.fromArray(s, wTable, 0, wIndex, 0), RawtypeVector.fromArray(s, data, 0, jIndex, 0));
+                RawtypeVector temp = RawtypeVector.fromArray(s, data, 0, iIndex, 0);
+                modSubtract(temp, wTemp).intoArray(data, 0, jIndex, 0);
+                modAdd(temp, wTemp).intoArray(data, 0, iIndex, 0);
             }
             mmax <<= 1;
             mmaxbits++;
