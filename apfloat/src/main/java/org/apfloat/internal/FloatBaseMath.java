@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import static org.apfloat.internal.FloatRadixConstants.*;
  * Mathematical operations on numbers in a base.
  * Implementation for the <code>float</code> type.
  *
- * @version 1.8.2
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -78,13 +78,12 @@ public class FloatBaseMath
 
         for (long i = 0; i < size; i++)
         {
-            double result = (double) (src1 == null ? 0 : src1.getFloat()) + (double) carry +
-                            (double) (src2 == null ? 0 : src2.getFloat());
+            float result = (src1 == null ? 0 : src1.getFloat()) - base + carry + (src2 == null ? 0 : src2.getFloat());
 
-            carry = (result >= base ? 1 : 0);
-            result -= (result >= base ? base : 0);
+            carry = (result >= 0 ? 1 : 0);
+            result += (result >= 0 ? 0 : base);
 
-            dst.setFloat((float) result);
+            dst.setFloat(result);
 
             if (src1 != null) src1.next();
             if (src2 != null) src2.next();
