@@ -9,7 +9,7 @@
 
   <name>apfloat-parent</name>
   <description>Administrative parent pom for apfloat</description>
-  <url>http://www.apfloat.org</url>
+  <url>https://www.apfloat.org</url>
 
   <licenses>
     <license>
@@ -317,7 +317,7 @@
                     <copy file="${filename}" tofile="${project.build.directory}/site/docs/${tofilename}">
                       <filterchain>
                         <tokenfilter>
-                          <replacestring from="&lt;/head&gt;" to="&lt;link rel=&quot;canonical&quot; href=&quot;http://www.apfloat.org/apfloat_java/docs/${canonical}&quot;&gt;${line.separator}&lt;/head&gt;" />
+                          <replacestring from="&lt;/head&gt;" to="&lt;link rel=&quot;canonical&quot; href=&quot;https://www.apfloat.org/apfloat_java/docs/${canonical}&quot;&gt;${line.separator}&lt;/head&gt;" />
                         </tokenfilter>
                       </filterchain>
                     </copy>

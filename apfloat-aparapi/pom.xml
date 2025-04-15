@@ -12,7 +12,7 @@
 
   <name>apfloat-aparapi</name>
   <description>Fast number theoretic transform implementation using Aparapi</description>
-  <url>http://www.apfloat.org</url>
+  <url>https://www.apfloat.org</url>
 
   <properties>
   </properties>

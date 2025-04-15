@@ -30,4 +30,4 @@ To run the pi calculator, run:
 
 ## Apfloat website
 
-Go to the [apfloat for Java website](http://www.apfloat.org/apfloat_java/).
+Go to the [apfloat for Java website](https://www.apfloat.org/apfloat_java/).

@@ -12,7 +12,7 @@
 
   <name>apfloat</name>
   <description>High performance arbitrary precision arithmetic library</description>
-  <url>http://www.apfloat.org</url>
+  <url>https://www.apfloat.org</url>
 
   <properties>
     <java9.build.sourceDirectory>${project.build.sourceDirectory}9</java9.build.sourceDirectory>
