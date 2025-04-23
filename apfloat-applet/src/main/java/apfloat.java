@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import org.apfloat.spi.Util;
  * These settings are intended for applets that are not allowed to create
  * disk files.
  *
- * @version 1.9.1
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -60,7 +60,7 @@ public class apfloat
             MemoryUsage memoryUsage = memoryBean.getHeapMemoryUsage();
             totalMemory = Math.max(memoryUsage.getCommitted(), memoryUsage.getMax());
         }
-        catch (NoClassDefFoundError | NullPointerException e)
+        catch (NoClassDefFoundError | RuntimeException e)
         {
             // The ManagementFactory class might be unavailable
             totalMemory = Runtime.getRuntime().maxMemory();
