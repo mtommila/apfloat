@@ -1391,20 +1391,25 @@ public class ApfloatContext
 
     static
     {
+        Properties globalProperties = loadSystemOverrides(loadProperties());
+
         ApfloatContext.defaultProperties = new Properties();
 
         // Try to use up to 80% of total memory and all processors
-        long totalMemory;
-        try
+        long totalMemory = Runtime.getRuntime().maxMemory();
+        boolean disableJmx = Boolean.parseBoolean(globalProperties.getProperty("disableJmx", System.getProperty("apfloat.disableJmx")));
+        if (!disableJmx)
         {
-            MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
-            MemoryUsage memoryUsage = memoryBean.getHeapMemoryUsage();
-            totalMemory = Math.max(memoryUsage.getCommitted(), memoryUsage.getMax());
-        }
-        catch (NoClassDefFoundError | ServiceConfigurationError | RuntimeException e)
-        {
-            // The ManagementFactory class might be unavailable
-            totalMemory = Runtime.getRuntime().maxMemory();
+            try
+            {
+                MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
+                MemoryUsage memoryUsage = memoryBean.getHeapMemoryUsage();
+                totalMemory = Math.max(memoryUsage.getCommitted(), memoryUsage.getMax());
+            }
+            catch (NoClassDefFoundError | ServiceConfigurationError | RuntimeException e)
+            {
+                // The ManagementFactory class might be unavailable
+            }
         }
 
         long maxMemoryBlockSize = Util.round23down(totalMemory / 5 * 4);
@@ -1429,7 +1434,7 @@ public class ApfloatContext
         loadSystemOverrides(ApfloatContext.defaultProperties);
 
         // Set combination of default properties and properties specified in the resource bundle, with system property overrides
-        ApfloatContext.globalContext = new ApfloatContext(loadSystemOverrides(loadProperties()));
+        ApfloatContext.globalContext = new ApfloatContext(globalProperties);
 
         // ExecutorService depends on the properties so set it last
         ApfloatContext.defaultExecutorService = getDefaultExecutorService();

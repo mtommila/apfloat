@@ -51,17 +51,20 @@ public class apfloat
     static
     {
         // Try to use up to 80% of total memory and all processors
-        long totalMemory;
-        try
+        long totalMemory = Runtime.getRuntime().maxMemory();
+        boolean disableJmx = Boolean.getBoolean("apfloat.disableJmx");
+        if (!disableJmx)
         {
-            MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
-            MemoryUsage memoryUsage = memoryBean.getHeapMemoryUsage();
-            totalMemory = Math.max(memoryUsage.getCommitted(), memoryUsage.getMax());
-        }
-        catch (NoClassDefFoundError | ServiceConfigurationError | RuntimeException e)
-        {
-            // The ManagementFactory class might be unavailable
-            totalMemory = Runtime.getRuntime().maxMemory();
+            try
+            {
+                MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
+                MemoryUsage memoryUsage = memoryBean.getHeapMemoryUsage();
+                totalMemory = Math.max(memoryUsage.getCommitted(), memoryUsage.getMax());
+            }
+            catch (NoClassDefFoundError | ServiceConfigurationError | RuntimeException e)
+            {
+                // The ManagementFactory class might be unavailable
+            }
         }
 
         long maxMemoryBlockSize = Util.round23down(totalMemory / 5 * 4);

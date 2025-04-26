@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,13 @@
  */
 package org.apfloat;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import java.util.Enumeration;
 import java.util.concurrent.Executors;
@@ -36,7 +43,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -65,6 +72,8 @@ public class ApfloatContextTest
         suite.addTest(new ApfloatContextTest("testException"));
         suite.addTest(new ApfloatContextTest("testThreadContexts"));
         suite.addTest(new ApfloatContextTest("testSystemOverride"));
+        suite.addTest(new ApfloatContextTest("testDisableJmxSystem"));
+        suite.addTest(new ApfloatContextTest("testDisableJmxProperty"));
         suite.addTest(new ApfloatContextTest("testCheckInterrupted"));
 
         return suite;
@@ -277,6 +286,116 @@ public class ApfloatContextTest
 
         System.clearProperty("apfloat.cacheBurst");
         System.clearProperty("apfloat.cleanupAtExit");
+    }
+
+    public void testDisableJmxSystem()
+        throws Exception
+    {
+        System.setProperty("apfloat.disableJmx", "true");
+        System.setProperty("apfloat.cleanupAtExit", "false");   // To avoid access error at test exit
+
+        Java9ClassLoader classLoader = new Java9ClassLoader(getClass().getClassLoader())
+        {
+            @Override
+            protected Class<?> loadClass(String name, boolean resolve)
+                throws ClassNotFoundException
+            {
+                if (name.startsWith("java.lang.management."))
+                {
+                    throw new Error(name);
+                }
+                return super.loadClass(name, resolve);
+            }
+        };
+        classLoader.loadJava8Class(ConcurrentWeakHashMap.class.getName());  // Depending on this package-private class
+        classLoader.loadJava8Class(ApfloatContext.class.getName() + "$CleanupThread");  // Depending on this private class
+        Class<?> apfloatContextClass = classLoader.loadJava8Class(ApfloatContext.class.getName());
+        Object apfloatContext = apfloatContextClass.getMethod("getContext").invoke(null);
+        Object disableJmx = apfloatContextClass.getMethod("getProperty", String.class).invoke(apfloatContext, "disableJmx");
+
+        assertNull("Global context disableJmx", disableJmx);
+
+        System.clearProperty("apfloat.disableJmx");
+        System.clearProperty("apfloat.cleanupAtExit");
+    }
+
+    public void testDisableJmxProperty()
+        throws Exception
+    {
+        System.setProperty("apfloat.cleanupAtExit", "false");   // To avoid access error at test exit
+
+        Java9ClassLoader classLoader = new Java9ClassLoader(getClass().getClassLoader())
+        {
+            @Override
+            protected Class<?> loadClass(String name, boolean resolve)
+                throws ClassNotFoundException
+            {
+                if (name.equals("apfloat"))
+                {
+                    throw new ClassNotFoundException(name);
+                }
+                if (name.startsWith("java.lang.management."))
+                {
+                    throw new Error(name);
+                }
+                return super.loadClass(name, resolve);
+            }
+
+            @Override
+            public URL getResource(String name)
+            {
+                if (name.equals("apfloat.properties"))
+                {
+                    try
+                    {
+                        return new URL("custom", "", -1, "/", new ByteArrayURLStreamHandler("disableJmx=true".getBytes(StandardCharsets.US_ASCII)));
+                    }
+                    catch (MalformedURLException mue)
+                    {
+                        throw new RuntimeException(mue);
+                    }
+                }
+                return super.getResource(name);
+            }
+        };
+        classLoader.loadJava8Class(ConcurrentWeakHashMap.class.getName());  // Depending on this package-private class
+        classLoader.loadJava8Class(ApfloatContext.class.getName() + "$CleanupThread");  // Depending on this private class
+        Class<?> apfloatContextClass = classLoader.loadJava8Class(ApfloatContext.class.getName());
+        Object apfloatContext = apfloatContextClass.getMethod("getContext").invoke(null);
+        Object disableJmx = apfloatContextClass.getMethod("getProperty", String.class).invoke(apfloatContext, "disableJmx");
+
+        assertEquals("Global context disableJmx", "true", disableJmx);
+
+        System.clearProperty("apfloat.cleanupAtExit");
+    }
+
+    private static class ByteArrayURLStreamHandler
+        extends URLStreamHandler
+    {
+        private byte[] data;
+
+        public ByteArrayURLStreamHandler(byte[] data)
+        {
+            this.data = data;
+        }
+
+        @Override
+        protected URLConnection openConnection(URL url)
+        {
+            return new URLConnection(url)
+            {
+                @Override
+                public void connect()
+                {
+                }
+
+                @Override
+                public InputStream getInputStream()
+                {
+                    return new ByteArrayInputStream(data);
+                }
+            };
+        }
     }
 
     public static void testCheckInterrupted()
