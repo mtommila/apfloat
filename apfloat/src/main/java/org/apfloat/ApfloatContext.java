@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
+import java.util.ServiceConfigurationError;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
@@ -1400,7 +1401,7 @@ public class ApfloatContext
             MemoryUsage memoryUsage = memoryBean.getHeapMemoryUsage();
             totalMemory = Math.max(memoryUsage.getCommitted(), memoryUsage.getMax());
         }
-        catch (NoClassDefFoundError | RuntimeException e)
+        catch (NoClassDefFoundError | ServiceConfigurationError | RuntimeException e)
         {
             // The ManagementFactory class might be unavailable
             totalMemory = Runtime.getRuntime().maxMemory();

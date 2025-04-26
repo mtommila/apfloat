@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import java.util.ListResourceBundle;
-
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.util.ListResourceBundle;
+import java.util.ServiceConfigurationError;
 
 import org.apfloat.ApfloatContext;
 import org.apfloat.spi.Util;
@@ -60,7 +60,7 @@ public class apfloat
             MemoryUsage memoryUsage = memoryBean.getHeapMemoryUsage();
             totalMemory = Math.max(memoryUsage.getCommitted(), memoryUsage.getMax());
         }
-        catch (NoClassDefFoundError | RuntimeException e)
+        catch (NoClassDefFoundError | ServiceConfigurationError | RuntimeException e)
         {
             // The ManagementFactory class might be unavailable
             totalMemory = Runtime.getRuntime().maxMemory();
