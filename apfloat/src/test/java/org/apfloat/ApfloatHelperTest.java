@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.13.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -204,9 +204,18 @@ public class ApfloatHelperTest
         Apfloat x = ApfloatHelper.reducePrecision(new Apfloat("1.23").precision(3 + Apfloat.EXTRA_PRECISION));
         assertEquals("1.23 value", new Apfloat("1.23"), x);
         assertEquals("1.23 precision", 3, x.precision());
+        x = ApfloatHelper.reducePrecision(new Apfloat("2.34"), 2);
+        assertEquals("2.34 value", new Apfloat("2"), x);
+        assertEquals("2.34 precision", 1, x.precision());
         Apcomplex z = ApfloatHelper.reducePrecision(new Apcomplex("(1.23,4.56)").precision(3 + Apcomplex.EXTRA_PRECISION));
         assertEquals("(1.23, 4.56) value", new Apcomplex("(1.23,4.56)"), z);
         assertEquals("(1.23, 4.56) precision", 3, z.precision());
+        z = ApfloatHelper.reducePrecision(new Apcomplex("(1.23,0.56)"), 2);
+        assertEquals("(1.23, 0.56) value", new Apcomplex("(1,0)"), z);
+        assertEquals("(1.23, 0.56) precision", 1, z.precision());
+        z = ApfloatHelper.reducePrecision(new Apcomplex("(0.23,4.56)"), 2);
+        assertEquals("(0.23, 4.56) value", new Apcomplex("(0,4)"), z);
+        assertEquals("(0.23, 4.56) precision", 1, z.precision());
 
         try
         {

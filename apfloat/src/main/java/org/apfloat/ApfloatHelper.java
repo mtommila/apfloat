@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -648,16 +648,31 @@ class ApfloatHelper
     public static Apcomplex reducePrecision(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        return new Apcomplex(reducePrecision(z.real()),
-                             reducePrecision(z.imag()));
+        return reducePrecision(z, Apfloat.EXTRA_PRECISION);
     }
 
     // Returns z with precision reduced by specified amount
     public static Apcomplex reducePrecision(Apcomplex z, long extraPrecision)
         throws ApfloatRuntimeException
     {
-        return new Apcomplex(reducePrecision(z.real(), extraPrecision),
-                             reducePrecision(z.imag(), extraPrecision));
+        long scale = z.scale();
+        return new Apcomplex(z.real().scale() < scale ? reducePrecisionOrZero(z.real(), extraPrecision) : reducePrecision(z.real(), extraPrecision),
+                             z.imag().scale() < scale ? reducePrecisionOrZero(z.imag(), extraPrecision) : reducePrecision(z.imag(), extraPrecision));
+    }
+
+    private static Apfloat reducePrecisionOrZero(Apfloat x, long extraPrecision)
+    {
+        long precision = x.precision();
+        if (precision == Apfloat.INFINITE)
+        {
+            return x;
+        }
+        precision = precision - extraPrecision;
+        if (precision <= 0)
+        {
+            return Apfloat.ZEROS[x.radix()];
+        }
+        return x.precision(precision);
     }
 
     // Returns z so that gamma(z) should have the given precision 
