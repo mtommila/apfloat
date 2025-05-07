@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -282,6 +282,11 @@ class IncompleteGammaHelper
         if (useAsymptoticLarge(z, a))
         {
             return asymptoticLargeZ(a, z);
+        }
+        if (a.isZero() && z.scale() <= 0)
+        {
+            // This comes up in e.g. logIntegral calculation and is faster than the hypergeometric U star algorithm
+            return new GammaValue(a, upperGamma(0, z), false);
         }
         GammaValue result = attemptUStar(a, z);
         if (result != null)

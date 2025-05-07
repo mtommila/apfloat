@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -4314,6 +4314,10 @@ public class ApfloatMathTest
         a = ApfloatMath.logIntegral(new Apfloat("0.0500000"));
         assertEquals("0.05 precision", 6, a.precision());
         assertEquals("0.05 value", new Apfloat("-0.0131194"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.logIntegral(new Apfloat("1.1", 17));
+        assertEquals("1.1 precision", 16, a.precision());
+        assertEquals("1.1 value", new Apfloat("-1.675772830319200"), a, new Apfloat("5e-15"));
 
         a = ApfloatMath.logIntegral(new Apfloat("0"));
         assertEquals("0 precision", Apfloat.INFINITE, a.precision());

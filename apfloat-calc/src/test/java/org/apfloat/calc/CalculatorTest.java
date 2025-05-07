@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -307,7 +307,7 @@ public class CalculatorTest
         assertCalculation("1.07204", "legendreQ(1.70000,-0.900000)");
         assertCalculation("4.1358", "legendreQ(1.20000,1.70000,0.900000)");
         assertCalculation("-4.371-3.651i", "logGamma(-1.234+2.345i)");
-        assertCalculation("1.04516", "logIntegral(2.000000)");
+        assertCalculation("1.04516", "logIntegral(2.0000)");
         assertCalculation("8.80797e-1", "logisticSigmoid(2.00000)");
         assertCalculation("1.23", "n(1.23456, 3)");
         assertCalculation("1.04748", "pochhammer(1.20000,0.700000)");
