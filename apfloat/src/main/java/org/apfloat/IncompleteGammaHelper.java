@@ -781,8 +781,6 @@ class IncompleteGammaHelper
     // Exponential integral for upperGamma(0, z)
     private static Apcomplex e1(Apcomplex z)
     {
-        assert (isCloseToNegativeRealAxis(z));
-
         int radix = z.radix();
         long targetPrecision = z.precision();
         Apcomplex mz = ApfloatHelper.extendPrecision(z).negate();

@@ -4319,6 +4319,10 @@ public class ApfloatMathTest
         assertEquals("1.1 precision", 16, a.precision());
         assertEquals("1.1 value", new Apfloat("-1.675772830319200"), a, new Apfloat("5e-15"));
 
+        a = ApfloatMath.logIntegral(new Apfloat("0.5", 50));
+        assertEquals("0.5 precision", 50, a.precision());
+        assertEquals("0.5 value", new Apfloat("-0.37867104306108797672720718463656098055123404097821"), a, new Apfloat("5e-50"));
+
         a = ApfloatMath.logIntegral(new Apfloat("0"));
         assertEquals("0 precision", Apfloat.INFINITE, a.precision());
         assertEquals("0 value", new Apfloat("0"), a, new Apfloat("5e-7"));
