@@ -3732,6 +3732,10 @@ public class ApfloatMathTest
         assertEquals("-3, -4 precision", 5, a.precision());
         assertEquals("-3, -4 value", new Apfloat("4.49807"), a, new Apfloat("5e-4"));
 
+        a = ApfloatMath.hypergeometric0F1Regularized(new Apfloat(0), new Apfloat("-1009.00000"));
+        assertEquals("0, -1009 precision", 6, a.precision());
+        assertEquals("0, -1009 value", new Apfloat("0.259919"), a, new Apfloat("5e-6"));
+
         a = ApfloatMath.hypergeometric0F1Regularized(new Apfloat(-3, 60, 2), new Apfloat(4, 60, 2));
         assertEquals("-3, 4 radix 2 precision", 59, a.precision());
         assertEquals("-3, 4 radix 2 radix", 2, a.radix());

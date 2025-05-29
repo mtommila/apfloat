@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1751,6 +1751,13 @@ public class FixedPrecisionApfloatHelperTest
         Apfloat result = helper.besselJ(ν, x);
         assertEquals("value", new Apfloat("-0.140294"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
+
+        helper = new FixedPrecisionApfloatHelper(17);
+        ν = new Apfloat("-1.0");
+        x = new Apfloat("-1009.0");
+        result = helper.besselJ(ν, x);
+        assertEquals("-1 value", new Apfloat("0.0058796558493124600"), result, new Apfloat("5e-19"));
+        assertEquals("-1 precision", 17, result.precision());
     }
 
     public static void testBesselI()

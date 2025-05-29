@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -517,13 +517,12 @@ class HypergeometricHelper
         else
         {
             // At least one of the b is a nonpositive integer, regularization needs to be done by omitting the terms where the divisor is infinite
-            int radix = z.radix();
-            Apfloat n1 = n.add(Apint.ONES[radix]);
+            Apfloat n1 = n.add(one);
             Apcomplex[] pochhammer = Arrays.stream(a).map(ai -> ApcomplexMath.pochhammer(ai, n1)).toArray(Apcomplex[]::new);
             result = ApcomplexMath.product(pochhammer);
             if (!result.isZero())
             {
-                Apfloat n2 = n.add(new Apint(2, radix));
+                Apfloat n2 = ApfloatHelper.limitPrecision(n.add(new Apint(2, radix)), workingPrecision);
                 Apcomplex[] gamma = Arrays.stream(b).map(n1::add).map(this::ensureGammaPrecision).map(ApcomplexMath::gamma).toArray(Apcomplex[]::new);
                 result = result.multiply(ApcomplexMath.pow(z, n1)).divide(ApcomplexMath.gamma(n2).multiply(ApcomplexMath.product(gamma)));
                 a = Arrays.stream(a).map(n1::add).toArray(Apcomplex[]::new);
