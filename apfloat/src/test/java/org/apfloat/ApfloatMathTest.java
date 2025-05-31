@@ -5170,7 +5170,7 @@ public class ApfloatMathTest
         assertEquals("2.3, -1 precision", 6, a.precision());
         assertEquals("2.3, -1 value", new Apfloat("0.587785"), a, new Apfloat("5e-6"));
 
-        a = ApfloatMath.chebyshevT(new Apfloat("2.000000"), new Apfloat("-1.100000"));
+        a = ApfloatMath.chebyshevT(new Apfloat("2.00000"), new Apfloat("-1.10000"));
         assertEquals("2, -1.1 precision", 6, a.precision());
         assertEquals("2, -1.1 value", new Apfloat("1.42000"), a, new Apfloat("5e-5"));
 
@@ -5264,7 +5264,7 @@ public class ApfloatMathTest
         assertEquals("2.1, -1 precision", 6, a.precision());
         assertEquals("2.1, -1 value", new Apfloat("0.905768"), a, new Apfloat("5e-6"));
 
-        a = ApfloatMath.gegenbauerC(new Apfloat("-2.000000"), new Apfloat("-1.100000"));
+        a = ApfloatMath.gegenbauerC(new Apfloat("-2.00000"), new Apfloat("-1.10000"));
         assertEquals("-2, -1.1 precision", 6, a.precision());
         assertEquals("-2, -1.1 value", new Apfloat("-1.42000"), a, new Apfloat("5e-5"));
 

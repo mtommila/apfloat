@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1242,19 +1242,24 @@ public class ApcomplexMath
         }
 
         Apcomplex i = new Apcomplex(Apfloat.ZERO, one),
-                  w = i.multiply(log(z.add(sqrt(z.multiply(z).subtract(one)))));
+                  w;
 
-        if (z.real().signum() < 0 && z.imag().signum() == 0)
+        if (z.real().signum() > 0 || z.real().signum() == 0 && z.imag().signum() > 0)
         {
-            return new Apcomplex(w.real().negate(), w.imag());
-        }
-        else if (z.real().signum() * z.imag().signum() > 0 || z.real().signum() == 0)
-        {
-            return w.negate();
+            w = i.multiply(log(z.add(sqrt(z.multiply(z).subtract(one)))));
         }
         else
         {
+            w = i.multiply(log(z.subtract(sqrt(z.multiply(z).subtract(one)))));
+        }
+
+        if (z.imag().signum() < 0 || z.imag().signum() == 0 && z.real().signum() > 0)
+        {
             return w;
+        }
+        else
+        {
+            return w.negate();
         }
     }
 
