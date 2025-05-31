@@ -1326,7 +1326,7 @@ public class ApcomplexMath
 
         Apcomplex i = new Apcomplex(Apfloat.ZERO, one);
 
-        if (z.imag().signum() >= 0)
+        if (z.imag().signum() > 0 || z.imag().signum() == 0 && z.real().signum() < 0)
         {
             return i.multiply(log(sqrt(one.subtract(z.multiply(z))).subtract(i.multiply(z))));
         }
@@ -1349,7 +1349,7 @@ public class ApcomplexMath
     {
         Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix());
 
-        if (z.real().signum() >= 0)
+        if (z.real().signum() > 0 || z.real().signum() == 0 && z.imag().signum() > 0)
         {
             return log(sqrt(z.multiply(z).add(one)).add(z));
         }

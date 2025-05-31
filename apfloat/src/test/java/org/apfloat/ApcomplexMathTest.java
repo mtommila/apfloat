@@ -1242,6 +1242,22 @@ public class ApcomplexMathTest
         assertEquals("(0,-2), 10 precision", 10, a.precision(), 1);
         assertEquals("(0,-2), 10 value", new Apcomplex("(1.443635475,-1.570796327)"), a, new Apfloat("5e-9"));
 
+        a = ApcomplexMath.acosh(new Apfloat("8e17", 30));
+        assertEquals("(8e17,0), 30 precision", 32, a.precision());
+        assertEquals("(8e17,0), 30 value", new Apcomplex("41.916535303138557865974783215467"), a, new Apfloat("5e-30"));
+
+        a = ApcomplexMath.acosh(new Apfloat("-8e17", 30));
+        assertEquals("(-8e17,0), 30 precision", 32, a.precision());
+        assertEquals("(-8e17,0), 30 value", new Apcomplex("(41.916535303138557865974783215467,3.141592653589793238462643383280)"), a, new Apfloat("5e-30"));
+
+        a = ApcomplexMath.acosh(new Apcomplex(new Apfloat(0), new Apfloat("8e17", 30)));
+        assertEquals("(0,8e17), 30 precision", 32, a.precision());
+        assertEquals("(0,8e17), 30 value", new Apcomplex("(41.916535303138557865974783215467,1.570796326794896619231321691640)"), a, new Apfloat("5e-30"));
+
+        a = ApcomplexMath.acosh(new Apcomplex(new Apfloat(0), new Apfloat("-8e17", 30)));
+        assertEquals("(0,-8e17), 30 precision", 32, a.precision());
+        assertEquals("(0,-8e17), 30 value", new Apcomplex("(41.916535303138557865974783215467,-1.570796326794896619231321691640)"), a, new Apfloat("5e-30"));
+
         a = ApcomplexMath.acosh(new Apcomplex(new Apfloat(1, 100)));
         assertEquals("1, 100 value", new Apfloat(0), a);
 
@@ -1290,6 +1306,22 @@ public class ApcomplexMathTest
         a = ApcomplexMath.asinh(new Apcomplex(Apfloat.ZERO, new Apfloat(-2, 10)));
         assertEquals("(0,-2), 10 precision", 10, a.precision(), 1);
         assertEquals("(0,-2), 10 value", new Apcomplex("(-1.316957897,-1.570796327)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.asinh(new Apfloat("8e17", 30));
+        assertEquals("(8e17,0), 30 precision", 32, a.precision());
+        assertEquals("(8e17,0), 30 value", new Apcomplex("41.916535303138557865974783215467"), a, new Apfloat("5e-30"));
+
+        a = ApcomplexMath.asinh(new Apfloat("-8e17", 30));
+        assertEquals("(-8e17,0), 30 precision", 32, a.precision());
+        assertEquals("(-8e17,0), 30 value", new Apcomplex("-41.916535303138557865974783215467"), a, new Apfloat("5e-30"));
+
+        a = ApcomplexMath.asinh(new Apcomplex(new Apfloat(0), new Apfloat("8e17", 30)));
+        assertEquals("(0,8e17), 30 precision", 32, a.precision());
+        assertEquals("(0,8e17), 30 value", new Apcomplex("(41.916535303138557865974783215467,1.570796326794896619231321691640)"), a, new Apfloat("5e-30"));
+
+        a = ApcomplexMath.asinh(new Apcomplex(new Apfloat(0), new Apfloat("-8e17", 30)));
+        assertEquals("(0,-8e17), 30 precision", 32, a.precision());
+        assertEquals("(0,-8e17), 30 value", new Apcomplex("(-41.916535303138557865974783215467,-1.570796326794896619231321691640)"), a, new Apfloat("5e-30"));
 
         a = ApcomplexMath.asinh(new Apcomplex("0"));
         assertEquals("0, 100 value", new Apfloat(0), a);
@@ -1597,6 +1629,22 @@ public class ApcomplexMathTest
         a = ApcomplexMath.asin(new Apcomplex(Apfloat.ZERO, new Apfloat(-2, 10)));
         assertEquals("(0,-2), 10 precision", 10, a.precision(), 1);
         assertEquals("(0,-2), 10 value", new Apcomplex("(0,-1.443635475)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.asin(new Apfloat("8e17", 30));
+        assertEquals("(8e17,0), 30 precision", 32, a.precision());
+        assertEquals("(8e17,0), 30 value", new Apcomplex("(1.570796326794896619231321691640,-41.916535303138557865974783215467)"), a, new Apfloat("5e-30"));
+
+        a = ApcomplexMath.asin(new Apfloat("-8e17", 30));
+        assertEquals("(-8e17,0), 30 precision", 32, a.precision());
+        assertEquals("(-8e17,0), 30 value", new Apcomplex("(-1.570796326794896619231321691640,41.916535303138557865974783215467)"), a, new Apfloat("5e-30"));
+
+        a = ApcomplexMath.asin(new Apcomplex(new Apfloat(0), new Apfloat("8e17", 30)));
+        assertEquals("(0,8e17), 30 precision", 32, a.precision());
+        assertEquals("(0,8e17), 30 value", new Apcomplex("(0,41.916535303138557865974783215467)"), a, new Apfloat("5e-30"));
+
+        a = ApcomplexMath.asin(new Apcomplex(new Apfloat(0), new Apfloat("-8e17", 30)));
+        assertEquals("(0,-8e17), 30 precision", 32, a.precision());
+        assertEquals("(0,-8e17), 30 value", new Apcomplex("(0,-41.916535303138557865974783215467)"), a, new Apfloat("5e-30"));
 
         a = ApcomplexMath.asin(new Apcomplex("0"));
         assertEquals("0, 100 value", new Apfloat(0), a);
