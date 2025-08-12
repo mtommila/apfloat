@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -274,7 +274,7 @@ public class Apcomplex
 
     public int radix()
     {
-        return (real().signum() == 0 ? (imag().signum() == 0 ? real().radix() : imag().radix()) : real().radix());
+        return (real().signum() == 0 && imag().signum() != 0 ? imag().radix() : real().radix());
     }
 
     /**
