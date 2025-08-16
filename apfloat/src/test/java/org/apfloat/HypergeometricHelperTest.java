@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -74,6 +74,28 @@ public class HypergeometricHelperTest
         a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("1.00000"), new Apcomplex("42.0000"), new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("5.00000"));
         assertEquals("1, 42, 2.2; 3.3, 42; 5 precision", 5, a.precision());
         assertEquals("1, 42, 2.2; 3.3, 42; 5 value", new Apcomplex("(-0.527130,-0.228019)"), a, new Apfloat("5e-6"));
+
+        // Start term cases
+        a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("500000"));
+        assertEquals("2.2; 3.3, 42; 500000 precision", 5, a.precision());
+        assertEquals("2.2; 3.3, 42; 500000 value", new Apcomplex("8.18811e541"), a, new Apfloat("5e536"));
+
+        a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("500000000000"));
+        assertEquals("2.2; 3.3, 42; 500000000000 precision", 6, a.precision());
+        assertEquals("2.2; 3.3, 42; 500000000000 value", new Apcomplex("2.08678e613985"), a, new Apfloat("5e613982"));
+
+        // Not quite start term cases
+        a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("0.900000"));
+        assertEquals("2.2; 3.3, 42; 0.9 precision", 6, a.precision());
+        assertEquals("2.2; 3.3, 42; 0.9 value", new Apcomplex("1.014397"), a, new Apfloat("5e-5"));
+
+        a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("500.000"));
+        assertEquals("2.2; 3.3, 42; 500 precision", 6, a.precision());
+        assertEquals("2.2; 3.3, 42; 500 value", new Apcomplex("7302.68"), a, new Apfloat("5e-2"));
+
+        a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("800.000"));
+        assertEquals("2.2; 3.3, 42; 800 precision", 6, a.precision());
+        assertEquals("2.2; 3.3, 42; 800 value", new Apcomplex("1319226"), a, new Apfloat("5e0"));
 
         // Non converging cases
         try

@@ -37,6 +37,8 @@ import static org.apfloat.ApcomplexMath.abs;
 import static org.apfloat.ApcomplexMath.exp;
 import static org.apfloat.ApcomplexMath.gamma;
 import static org.apfloat.ApcomplexMath.isNonPositiveInteger;
+import static org.apfloat.ApcomplexMath.norm;
+import static org.apfloat.ApcomplexMath.pochhammer;
 import static org.apfloat.ApcomplexMath.pow;
 import static org.apfloat.ApcomplexMath.sin;
 import static org.apfloat.ApcomplexMath.sqrt;
@@ -518,8 +520,7 @@ class HypergeometricHelper
         {
             // At least one of the b is a nonpositive integer, regularization needs to be done by omitting the terms where the divisor is infinite
             Apfloat n1 = n.add(one);
-            Apcomplex[] pochhammer = Arrays.stream(a).map(ai -> ApcomplexMath.pochhammer(ai, n1)).toArray(Apcomplex[]::new);
-            result = ApcomplexMath.product(pochhammer);
+            result = pochhammerProduct(a, n1);
             if (!result.isZero())
             {
                 Apfloat n2 = ApfloatHelper.limitPrecision(n.add(new Apint(2, radix)), workingPrecision);
@@ -532,6 +533,12 @@ class HypergeometricHelper
             }
         }
         return result;
+    }
+
+    private static Apcomplex pochhammerProduct(Apcomplex[] a, Apfloat n)
+    {
+        Apcomplex[] pochhammer = Arrays.stream(a).map(e -> pochhammer(e, n)).toArray(Apcomplex[]::new);
+        return ApcomplexMath.product(pochhammer);
     }
 
     /**
@@ -908,6 +915,7 @@ class HypergeometricHelper
 
         do
         {
+            Apint[] startTerm = startTerm(a, b, z, minN, extendedPrecision);
             long maxSScale = 1; // Scale of 1, the initial s
             Apint i = zero;
             Apcomplex numerator = one,
@@ -921,28 +929,54 @@ class HypergeometricHelper
 
             do
             {
-                minIterations = i.compareTo(minN) <= 0;
+                int iCompareMinN = i.compareTo(minN);
+                minIterations = iCompareMinN <= 0;
                 if (divergentSeries && !minIterations)
                 {
                     checkDivergence(o, t);
                 }
-                i = i.add(one);
-                for (int j = 0; j < a.length; j++)
+                if (iCompareMinN == 0 && startTerm != null)
                 {
-                    numerator = numerator.multiply(a[j]);
-                    a[j] = a[j].add(one);
+                    i = startTerm[0];
+                    // Restore a and b as they have been increased and are not at original values
+                    ensurePrecision(aOrig, a, extendedPrecision);
+                    ensurePrecision(bOrig, b, extendedPrecision);
+                    // Calculate numerator and denominator at position i
+                    numerator = pochhammerProduct(a, i).multiply(pow(z, i));
+                    denominator = pochhammerProduct(b, i).multiply(factorial(i));
+                    // Set a and b as if they had been iterated up to i
+                    for (int j = 0; j < a.length; j++)
+                    {
+                        a[j] = a[j].add(i);
+                    }
+                    for (int j = 0; j < b.length; j++)
+                    {
+                        b[j] = b[j].add(i);
+                    }
+                    minN = startTerm[1];    // Need to ensure iteration doesn't stop if term is just too small for comparison to sum
+                    startTerm = null;       // The skip is done only once
+                    t = null;               // No divergence check for this iteration
                 }
-                if (numerator.isZero())
+                else
                 {
-                    return s;   // It was a polynomial
+                    i = i.add(one);
+                    for (int j = 0; j < a.length; j++)
+                    {
+                        numerator = numerator.multiply(a[j]);
+                        a[j] = a[j].add(one);
+                    }
+                    if (numerator.isZero())
+                    {
+                        return s;   // It was a polynomial
+                    }
+                    numerator = numerator.multiply(z);
+                    for (int j = 0; j < b.length; j++)
+                    {
+                        denominator = denominator.multiply(b[j]);
+                        b[j] = b[j].add(one);
+                    }
+                    denominator = denominator.multiply(i);
                 }
-                numerator = numerator.multiply(z);
-                for (int j = 0; j < b.length; j++)
-                {
-                    denominator = denominator.multiply(b[j]);
-                    b[j] = b[j].add(one);
-                }
-                denominator = denominator.multiply(i);
                 o = t;
                 t = numerator.divide(denominator);
                 s = s.add(t);
@@ -968,10 +1002,148 @@ class HypergeometricHelper
     private void checkDivergence(Apcomplex old, Apcomplex term)
     {
         // Check if the divergent series reached the smallest term already, even though the required precision was not reached
-        if (old != null && abs(old).compareTo(abs(term)) < 0)
+        if (old != null && norm(old).compareTo(norm(term)) < 0)
         {
             throw new NotConvergingException();
         }
+    }
+
+    // If q >= p the series always converges, however if |z| is extremely large, this could require a very large number of terms to be computed.
+    // It's not efficient to sum all terms, instead we could find the largest term (with binary search) and then find (again with binary search)
+    // how many terms before the largest term we need to include (so that all terms before that are insignificantly small).
+    // The exception is if any of b have a negative real part, then we might want to sum all the first terms until the real part of every b is positive.
+    // Especially if any of b is a non-positive near-integer, one term in the beginning might be large(where the divisor in the term is very small).
+    // Returns the index of the start term and the largest term
+    private Apint[] startTerm(Apcomplex[] a, Apcomplex[] b, Apcomplex z, Apint minN, long precision)
+    {
+        // Crude check if it's worth it
+        if (a.length > b.length || z.scale() <= 0) {
+            return null;
+        }
+
+        // All needs to be done only with small precision
+        a = doublePrecision(a);
+        b = doublePrecision(b);
+        z = doublePrecision(z);
+
+        // Binary search for largest term
+        long base = minN.longValueExact(),
+             low,
+             high = 1;
+        boolean increasing;
+
+        // Initial search to find another point on the other side of the highest term (where terms are getting smaller, not bigger)
+        // Double the current point as long as the terms increase
+        do
+        {
+            // The n:th term can be calculated from the (n - 1):th term by multiplying by each (a + n), multiplying by z, dividing by each (b + n) and dividing by n
+            low = high;
+            high = Util.multiplyExact(high, 2);
+            Apint n = new Apint(base + high, radix);
+            Apfloat numerator = norm(addProduct(a, n).multiply(z));
+            Apfloat denominator = norm(addProduct(b, n).multiply(n));
+            increasing = numerator.compareTo(denominator) > 0;
+        } while (increasing);
+
+        // Now that we have a range [low, high] find the point where the term is largest (increase changes to decrease i.e. analogous to "zero of the derivative")
+        while (high - low > 1)
+        {
+            // Test mid point of range
+            long mid = high + low >>> 1;
+            Apint n = new Apint(base + mid, radix);
+            Apfloat numerator = norm(addProduct(a, n).multiply(z));
+            Apfloat denominator = norm(addProduct(b, n).multiply(n));
+            increasing = numerator.compareTo(denominator) > 0;
+            if (increasing)
+            {
+                low = mid;
+            }
+            else
+            {
+                high = mid;
+            }
+        }
+
+        // Again estimate if it's worth it
+        if (low < precision) {
+            return null;
+        }
+
+        // low is the last term that is increasing (high is the first decreasing term)
+        long largest = base + low,
+             maxScale = termScale(a, b, z, largest),
+             scaleDiff;
+        high = 1;
+
+        // Then find the term somewhere before it, which the first one that is small enough that it's not significant
+        // Halve the current point as long as the terms are significant in magnitude
+        do
+        {
+            low = high;
+            high = Util.multiplyExact(high, 2);
+            long n = largest - high;
+            if (n < base)
+            {
+                // Terms don't grow quickly enough to have (nearly) any insignificant terms
+                return null;
+            }
+            long termScale = termScale(a, b, z, n);
+            scaleDiff = maxScale - termScale;
+        } while (scaleDiff < precision);
+
+        // Again we have a range [low, high], find the point where the term is just small enough to be insignificant
+        while (high - low > 1)
+        {
+            // Test mid point of range
+            long mid = high + low >>> 1,
+                 n = largest - mid,
+                 termScale = termScale(a, b, z, n);
+            scaleDiff = maxScale - termScale;
+            if (scaleDiff < precision)
+            {
+                low = mid;
+            }
+            else
+            {
+                high = mid;
+            }
+        }
+
+        // Once more estimate if it's worth it
+        if (largest - base - high < precision) {
+            return null;
+        }
+
+        // high is the last term that is insignificant (low is the first significant term)
+        Apint[] values = { new Apint(largest - high, radix), new Apint(largest, radix) };
+        return values;
+    }
+
+    private Apcomplex[] doublePrecision(Apcomplex[] a)
+    {
+        return Arrays.stream(a).map(this::doublePrecision).toArray(Apcomplex[]::new);
+    }
+
+    private Apcomplex doublePrecision(Apcomplex a)
+    {
+        return ApfloatHelper.limitPrecision(a, ApfloatHelper.getDoublePrecision(a.radix()));
+    }
+
+    private Apcomplex addProduct(Apcomplex[] a, Apint n)
+    {
+        return Arrays.stream(a).map(n::add).reduce(Apcomplex::multiply).orElse(one);
+    }
+
+    private long termScale(Apcomplex[] a, Apcomplex[] b, Apcomplex z, long n)
+    {
+        Apfloat nn = new Apfloat(n, z.precision(), z.radix());
+        Apcomplex term = pow(z, nn).multiply(pochhammerProduct(a, nn)).divide(pochhammerProduct(b, nn).multiply(factorial(nn)));
+        return term.scale();
+    }
+
+    private Apfloat factorial(Apfloat n)
+    {
+        return ApfloatMath.gamma(n.add(one));
     }
 
     // See: https://def.fe.up.pt/pipermail/maxima-discuss/2006.txt "Methods for numerically difficult cases of 2F1(a,b;c|z)", alternative algorithm by Bill Gosper
