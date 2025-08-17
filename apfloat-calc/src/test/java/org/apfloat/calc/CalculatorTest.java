@@ -218,6 +218,7 @@ public class CalculatorTest
         assertCalculation("-2.52405e-1", "airyAiPrime(0.200000)");
         assertCalculation("7.05464e-1", "airyBi(0.200000)");
         assertCalculation("4.61789e-1", "airyBiPrime(0.200000)");
+        assertCalculation("9.5235e-1", "angerJ(0.200000,0.700000)");
         assertCalculation("7/6", "bernoulli(14)");
         assertCalculation("3.3124e4", "bernoulliB(4,14.0000)");
         assertCalculation("1.72763", "besselI(0.700000,1.90000)");
@@ -361,10 +362,13 @@ public class CalculatorTest
         assertCalculation("2/3", "sqrt(4/9)");
         assertCalculation("7.07+7.07i", "sqrt(100.i)");
         assertCalculation("1.4142", "sqrt(2.0000)");
+        assertCalculation("1.45336", "struveH(1.80000,4.70000)");
+        assertCalculation("1.40023", "struveL(1.80000,2.70000)");
         assertCalculation("2", "truncate(2.5)");
         assertCalculation("2", "truncate(5/2)");
         assertCalculation("1.79e2", "toDegrees(3.14)");
         assertCalculation("1.57", "toRadians(90.0)");
+        assertCalculation("2.16872e-1", "weberE(1.700000,0.7000000)");
         assertCalculation("1.644", "zeta(2.000)");
         assertCalculation("1.181e-1", "zeta(3.000,-1.500)");
         assertCalculation("3.14", "acos(-1.00)");
@@ -430,6 +434,9 @@ public class CalculatorTest
         assertCalculationFailure("airyBi(0,0)");
         assertCalculationFailure("airyBiPrime()");
         assertCalculationFailure("airyBiPrime(0,0)");
+        assertCalculationFailure("angerJ()");
+        assertCalculationFailure("angerJ(1.0)");
+        assertCalculationFailure("angerJ(1.0,1.0,1.0)");
         assertCalculationFailure("bernoulli(-1)");
         assertCalculationFailure("bernoulli(i)");
         assertCalculationFailure("bernoulli()");
@@ -665,6 +672,14 @@ public class CalculatorTest
         assertCalculationFailure("sqrt(2)");
         assertCalculationFailure("sqrt()");
         assertCalculationFailure("sqrt(4, 2)");
+        assertCalculationFailure("struveH()");
+        assertCalculationFailure("struveH(1.0)");
+        assertCalculationFailure("struveH(-1.0,0)");
+        assertCalculationFailure("struveH(1.0,1.0,1.0)");
+        assertCalculationFailure("struveL()");
+        assertCalculationFailure("struveL(1.0)");
+        assertCalculationFailure("struveL(-1.0,0)");
+        assertCalculationFailure("struveL(1.0,1.0,1.0)");
         assertCalculationFailure("truncate(i)");
         assertCalculationFailure("truncate()");
         assertCalculationFailure("truncate(2, 2)");
@@ -676,6 +691,9 @@ public class CalculatorTest
         assertCalculationFailure("toRadians(i)");
         assertCalculationFailure("toRadians()");
         assertCalculationFailure("toRadians(2, 2)");
+        assertCalculationFailure("weberE()");
+        assertCalculationFailure("weberE(1.0)");
+        assertCalculationFailure("weberE(1.0,1.0,1.0)");
         assertCalculationFailure("zeta(1)");
         assertCalculationFailure("zeta(2,0)");
         assertCalculationFailure("zeta(2,-1)");

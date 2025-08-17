@@ -3655,6 +3655,147 @@ public class ApcomplexMath
     }
 
     /**
+     * Struve function 𝐇.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>𝐇<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is zero and real part of <code>ν</code> is <= -1.
+     *
+     * @since 1.15.0
+     */
+
+    public static Apcomplex struveH(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return struve(ν, z, true);
+    }
+
+    /**
+     * Modified Struve function 𝐋.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>𝐋<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is zero and real part of <code>ν</code> is <= -1.
+     *
+     * @since 1.15.0
+     */
+
+    public static Apcomplex struveL(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return struve(ν, z, false);
+    }
+
+    private static Apcomplex struve(Apcomplex ν, Apcomplex z, boolean negate)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apfloat one = Apint.ONES[radix].precision(precision),
+                two = new Apfloat(2, precision, radix),
+                three = new Apfloat(3, precision, radix),
+                oneAndHalf = three.divide(two);
+        Apcomplex[] a = { one },
+                    b = { oneAndHalf, ν.add(oneAndHalf) };
+        Apcomplex z2 = z.divide(two),
+                  z24 = pow(z2, 2);
+        if (negate)
+        {
+            z24 = z24.negate();
+        }
+        return pow(z2, ν.add(one)).multiply(HypergeometricHelper.hypergeometricPFQRegularized(a, b, z24));
+    }
+
+    /**
+     * Anger function 𝐉.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>𝐉<sub>ν</sub>(z)</i>
+     *
+     * @since 1.15.0
+     */
+
+    public static Apcomplex angerJ(Apcomplex ν, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return angerWeber(ν, z, false);
+    }
+
+    /**
+     * Weber function 𝐄.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>𝐄<sub>ν</sub>(z)</i>
+     *
+     * @since 1.15.0
+     */
+
+    public static Apcomplex weberE(Apcomplex ν, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return angerWeber(ν, z, true);
+    }
+
+    private static Apcomplex angerWeber(Apcomplex ν, Apcomplex z, boolean weber)
+        throws ApfloatRuntimeException
+    {
+        int radix = z.radix();
+        long precision = z.precision();
+        Apfloat one = Apint.ONES[radix].precision(precision),
+                two = new Apfloat(2, precision, radix),
+                three = new Apfloat(3, precision, radix),
+                oneAndHalf = three.divide(two);
+        Apcomplex ν2 = ν.divide(two),
+                  πν2 = ApfloatMath.pi(precision, radix).multiply(ν2),
+                  z2 = z.divide(two),
+                  z24 = pow(z2, 2).negate(),
+                  f1 = (weber ? one : z2),
+                  f2 = (weber ? z2 : one);
+        Apcomplex[] a = { one },
+                    b1 = { oneAndHalf.subtract(ν2), oneAndHalf.add(ν2) },
+                    b2 = { one.subtract(ν2), one.add(ν2) };
+        if (weber)
+        {
+            Apcomplex[] tmp = b1;
+            b1 = b2;
+            b2 = tmp;
+        }
+        Apcomplex t1 = f1.multiply(sin(πν2)).multiply(HypergeometricHelper.hypergeometricPFQRegularized(a, b1, z24));
+        Apcomplex t2 = f2.multiply(cos(πν2)).multiply(HypergeometricHelper.hypergeometricPFQRegularized(a, b2, z24));
+        return (weber ? t1.subtract(t2) : t1.add(t2));
+    }
+
+    /**
      * Complete elliptic integral of the first kind.<p>
      * 
      * Note that this function uses the definition:

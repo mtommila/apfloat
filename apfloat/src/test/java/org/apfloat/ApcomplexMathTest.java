@@ -118,6 +118,10 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testBesselI"));
         suite.addTest(new ApcomplexMathTest("testBesselY"));
         suite.addTest(new ApcomplexMathTest("testBesselK"));
+        suite.addTest(new ApcomplexMathTest("testStruveH"));
+        suite.addTest(new ApcomplexMathTest("testStruveL"));
+        suite.addTest(new ApcomplexMathTest("testAngerJ"));
+        suite.addTest(new ApcomplexMathTest("testWeberE"));
         suite.addTest(new ApcomplexMathTest("testEllipticK"));
         suite.addTest(new ApcomplexMathTest("testEllipticE"));
         suite.addTest(new ApcomplexMathTest("testHermiteH"));
@@ -5473,6 +5477,138 @@ public class ApcomplexMathTest
         {
             // OK
             assertEquals("Localization key", "inverseRoot.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testStruveH()
+    {
+        Apcomplex a = ApcomplexMath.struveH(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("3 + 4i, 5 + 6i precision", 5, a.precision());
+        assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(0.190863,1.11273)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.struveH(new Apcomplex(new Apfloat(3, 10, 9), new Apfloat(4, 10, 9)), new Apcomplex(new Apfloat(5, 10, 9), new Apfloat(6, 10, 9)));
+        assertEquals("3 + 4i, 5 + 6i radix 9 precision", 9, a.precision());
+        assertEquals("3 + 4i, 5 + 6i radix 9 value", new Apcomplex(new Apfloat("0.16412260", 9, 9), new Apfloat("1.10115405", 9 ,9)), a, new Apfloat("5e-8", 1, 9));
+
+        try
+        {
+            ApcomplexMath.struveH(new Apcomplex("(-1.00000,4.00000)"), new Apcomplex(new Apfloat(0)));
+            fail("Division by zero");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "pow.zeroToNonpositiveReal", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.struveH(new Apcomplex(new Apfloat("-1.00000")), new Apcomplex(new Apfloat(0)));
+            fail("Zero to power by zero");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.struveH(new Apcomplex(new Apfloat(3), new Apfloat(4)), new Apcomplex(new Apfloat(5), new Apfloat(6)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testStruveL()
+    {
+        Apcomplex a = ApcomplexMath.struveL(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("3 + 4i, 5 + 6i precision", 6, a.precision());
+        assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(-3.26244538,-7.920592)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.struveL(new Apcomplex(new Apfloat(3, 10, 9), new Apfloat(4, 10, 9)), new Apcomplex(new Apfloat(5, 10, 9), new Apfloat(6, 10, 9)));
+        assertEquals("3 + 4i, 5 + 6i radix 9 precision", 10, a.precision());
+        assertEquals("3 + 4i, 5 + 6i radix 9 value", new Apcomplex(new Apfloat("-3.232281208", 10, 9), new Apfloat("-7.825100357", 10 ,9)), a, new Apfloat("5e-9", 1, 9));
+
+        try
+        {
+            ApcomplexMath.struveL(new Apcomplex("(-1.00000,4.00000)"), new Apcomplex(new Apfloat(0)));
+            fail("Division by zero");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "pow.zeroToNonpositiveReal", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.struveL(new Apcomplex(new Apfloat("-1.00000")), new Apcomplex(new Apfloat(0)));
+            fail("Zero to power by zero");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.struveL(new Apcomplex(new Apfloat(3), new Apfloat(4)), new Apcomplex(new Apfloat(5), new Apfloat(6)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testAngerJ()
+    {
+        Apcomplex a = ApcomplexMath.angerJ(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("3 + 4i, 5 + 6i precision", 5, a.precision());
+        assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(-2776.4313,-2238.5131)"), a, new Apfloat("5e-2"));
+
+        a = ApcomplexMath.angerJ(new Apcomplex(new Apfloat(3, 10, 9), new Apfloat(4, 10, 9)), new Apcomplex(new Apfloat(5, 10, 9), new Apfloat(6, 10, 9)));
+        assertEquals("3 + 4i, 5 + 6i radix 9 precision", 9, a.precision());
+        assertEquals("3 + 4i, 5 + 6i radix 9 value", new Apcomplex(new Apfloat("-3724.37838", 10, 9), new Apfloat("-3056.45502", 10 ,9)), a, new Apfloat("5e-5", 1, 9));
+
+        try
+        {
+            ApcomplexMath.angerJ(new Apcomplex(new Apfloat(3), new Apfloat(4)), new Apcomplex(new Apfloat(5), new Apfloat(6)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testWeberE()
+    {
+        Apcomplex a = ApcomplexMath.weberE(new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
+        assertEquals("3 + 4i, 5 + 6i precision", 5, a.precision());
+        assertEquals("3 + 4i, 5 + 6i value", new Apcomplex("(2237.7155,-2777.0644)"), a, new Apfloat("5e-2"));
+
+        a = ApcomplexMath.weberE(new Apcomplex(new Apfloat(3, 10, 9), new Apfloat(4, 10, 9)), new Apcomplex(new Apfloat(5, 10, 9), new Apfloat(6, 10, 9)));
+        assertEquals("3 + 4i, 5 + 6i radix 9 precision", 9, a.precision());
+        assertEquals("3 + 4i, 5 + 6i radix 9 value", new Apcomplex(new Apfloat("3055.63853", 10, 9), new Apfloat("-3725.05185", 10 ,9)), a, new Apfloat("5e-5", 1, 9));
+
+        try
+        {
+            ApcomplexMath.weberE(new Apcomplex(new Apfloat(3), new Apfloat(4)), new Apcomplex(new Apfloat(5), new Apfloat(6)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 

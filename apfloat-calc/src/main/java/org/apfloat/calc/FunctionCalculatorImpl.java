@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import java.util.Map;
  * Calculator implementation with function support.
  * Provides a mapping mechanism for functions.
  *
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -154,6 +154,7 @@ public abstract class FunctionCalculatorImpl
         public Number airyAiPrime(Number x);
         public Number airyBi(Number x);
         public Number airyBiPrime(Number x);
+        public Number angerJ(Number x, Number y);
         public Number asin(Number x);
         public Number asinh(Number x);
         public Number atan(Number x);
@@ -251,12 +252,15 @@ public abstract class FunctionCalculatorImpl
         public Number sinhIntegral(Number x);
         public Number sphericalHarmonicY(Number x, Number y, Number z, Number w);
         public Number sqrt(Number x);
+        public Number struveH(Number x, Number y);
+        public Number struveL(Number x, Number y);
         public Number tan(Number x);
         public Number tanh(Number x);
         public Number truncate(Number x);
         public Number toDegrees(Number x);
         public Number toRadians(Number x);
         public Number ulp(Number x);
+        public Number weberE(Number x, Number y);
         public Number zeta(Number x);
         public Number zeta(Number x, Number y);
 
@@ -300,6 +304,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("airyAiPrime", fixedFunction("airyAiPrime", 1, (functions, arguments) -> functions.airyAiPrime(arguments.get(0))));
         setFunction("airyBi", fixedFunction("airyBi", 1, (functions, arguments) -> functions.airyBi(arguments.get(0))));
         setFunction("airyBiPrime", fixedFunction("airyBiPrime", 1, (functions, arguments) -> functions.airyBiPrime(arguments.get(0))));
+        setFunction("angerJ", fixedFunction("angerJ", 2, (functions, arguments) -> functions.angerJ(arguments.get(0), arguments.get(1))));
         setFunction("asin", fixedFunction("asin", 1, (functions, arguments) -> functions.asin(arguments.get(0))));
         setFunction("asinh", fixedFunction("asinh", 1, (functions, arguments) -> functions.asinh(arguments.get(0))));
         setFunction("atan", fixedFunction("atan", 1, (functions, arguments) -> functions.atan(arguments.get(0))));
@@ -386,12 +391,15 @@ public abstract class FunctionCalculatorImpl
         setFunction("sinhIntegral", fixedFunction("sinhIntegral", 1, (functions, arguments) -> functions.sinhIntegral(arguments.get(0))));
         setFunction("sphericalHarmonicY", fixedFunction("sphericalHarmonicY", 4, (functions, arguments) -> functions.sphericalHarmonicY(arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3))));
         setFunction("sqrt", fixedFunction("sqrt", 1, (functions, arguments) -> functions.sqrt(arguments.get(0))));
+        setFunction("struveH", fixedFunction("struveH", 2, (functions, arguments) -> functions.struveH(arguments.get(0), arguments.get(1))));
+        setFunction("struveL", fixedFunction("struveL", 2, (functions, arguments) -> functions.struveL(arguments.get(0), arguments.get(1))));
         setFunction("tan", fixedFunction("tan", 1, (functions, arguments) -> functions.tan(arguments.get(0))));
         setFunction("tanh", fixedFunction("tanh", 1, (functions, arguments) -> functions.tanh(arguments.get(0))));
         setFunction("truncate", fixedFunction("truncate", 1, (functions, arguments) -> functions.truncate(arguments.get(0))));
         setFunction("toDegrees", fixedFunction("toDegrees", 1, (functions, arguments) -> functions.toDegrees(arguments.get(0))));
         setFunction("toRadians", fixedFunction("toRadians", 1, (functions, arguments) -> functions.toRadians(arguments.get(0))));
         setFunction("ulp", fixedFunction("ulp", 1, (functions, arguments) -> functions.ulp(arguments.get(0))));
+        setFunction("weberE", fixedFunction("weberE", 2, (functions, arguments) -> functions.weberE(arguments.get(0), arguments.get(1))));
         setFunction("zeta", fixedFunction("zeta", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.zeta(arguments.get(0)) : functions.zeta(arguments.get(0), arguments.get(1)))));
 
         setFunction("arg", fixedFunction("arg", 1, (functions, arguments) -> functions.arg(arguments.get(0))));

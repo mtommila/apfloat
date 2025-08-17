@@ -153,6 +153,10 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBesselI"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBesselY"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBesselK"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testStruveH"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testStruveL"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testAngerJ"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testWeberE"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testEllipticK"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testEllipticE"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testHermiteH"));
@@ -1787,6 +1791,46 @@ public class FixedPrecisionApfloatHelperTest
                 x = new Apfloat("2.5");
         Apfloat result = helper.besselK(ν, x);
         assertEquals("value", new Apfloat("0.0910923"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testStruveH()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.struveH(ν, x);
+        assertEquals("value", new Apfloat("-0.525080"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testStruveL()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.struveL(ν, x);
+        assertEquals("value", new Apfloat("1.87328"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testAngerJ()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.angerJ(ν, x);
+        assertEquals("value", new Apfloat("0.0698371"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testWeberE()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat ν = new Apfloat("-1.5"),
+                x = new Apfloat("2.5");
+        Apfloat result = helper.weberE(ν, x);
+        assertEquals("value", new Apfloat("0.447994"), result, new Apfloat("5e-6"));
         assertEquals("precision", 6, result.precision());
     }
 

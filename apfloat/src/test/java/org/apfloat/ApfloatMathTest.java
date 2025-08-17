@@ -145,6 +145,10 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testBesselI"));
         suite.addTest(new ApfloatMathTest("testBesselY"));
         suite.addTest(new ApfloatMathTest("testBesselK"));
+        suite.addTest(new ApfloatMathTest("testStruveH"));
+        suite.addTest(new ApfloatMathTest("testStruveL"));
+        suite.addTest(new ApfloatMathTest("testAngerJ"));
+        suite.addTest(new ApfloatMathTest("testWeberE"));
         suite.addTest(new ApfloatMathTest("testEllipticK"));
         suite.addTest(new ApfloatMathTest("testEllipticE"));
         suite.addTest(new ApfloatMathTest("testHermiteH"));
@@ -4711,6 +4715,152 @@ public class ApfloatMathTest
         {
             // OK
             assertEquals("Localization key", "gamma.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testStruveH()
+    {
+        Apfloat a = ApfloatMath.struveH(new Apfloat("3.00000"), new Apfloat("5.00000"));
+        assertEquals("3, 5 precision", 6, a.precision());
+        assertEquals("3, 5 value", new Apfloat("1.5087206466"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.struveH(new Apfloat("1.0000000000"), new Apfloat("-0.10000000000"));
+        assertEquals("1, -0.1 precision", 11, a.precision());
+        assertEquals("1, -0.1 value", new Apfloat("0.0021206516014"), a, new Apfloat("5e-13"));
+
+        a = ApfloatMath.struveH(new Apfloat(3, 10, 9), new Apfloat(5, 10, 9));
+        assertEquals("3, 5 radix 9 precision", 10, a.precision());
+        assertEquals("3, 5 radix 9 value", new Apfloat("1.4517640066", 9, 9), a, new Apfloat("5e-9", 1, 9));
+
+        try
+        {
+            ApfloatMath.struveH(new Apfloat("-1.00000"), new Apfloat(0));
+            fail("Zero to power by zero");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
+        }
+        try
+        {
+            ApfloatMath.struveH(new Apfloat("1.1"), new Apfloat("-0.1"));
+            fail("1.1, -0.1 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.struveH(new Apfloat(3), new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testStruveL()
+    {
+        Apfloat a = ApfloatMath.struveL(new Apfloat("3.00000"), new Apfloat("5.00000"));
+        assertEquals("3, 5 precision", 6, a.precision());
+        assertEquals("3, 5 value", new Apfloat("9.424304538"), a, new Apfloat("5e-5"));
+
+        a = ApfloatMath.struveL(new Apfloat("1.0000000000"), new Apfloat("-0.10000000000"));
+        assertEquals("1, -0.1 precision", 11, a.precision());
+        assertEquals("1, -0.1 value", new Apfloat("0.0021234810228"), a, new Apfloat("5e-13"));
+
+        a = ApfloatMath.struveL(new Apfloat(3, 10, 9), new Apfloat(5, 10, 9));
+        assertEquals("3, 5 radix 9 precision", 10, a.precision());
+        assertEquals("3, 5 radix 9 value", new Apfloat("10.3732767406", 9, 9), a, new Apfloat("5e-8", 1, 9));
+
+        try
+        {
+            ApfloatMath.struveL(new Apfloat("-1.00000"), new Apfloat(0));
+            fail("Zero to power by zero");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "pow.zeroToZero", aae.getLocalizationKey());
+        }
+        try
+        {
+            ApfloatMath.struveL(new Apfloat("1.1"), new Apfloat("-0.1"));
+            fail("1.1, -0.1 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result would be complex
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApfloatMath.struveL(new Apfloat(3), new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pow.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testAngerJ()
+    {
+        Apfloat a = ApfloatMath.angerJ(new Apfloat("3.00000"), new Apfloat("5.00000"));
+        assertEquals("3, 5 precision", 6, a.precision());
+        assertEquals("3, 5 value", new Apfloat("0.3648312306"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.angerJ(new Apfloat("-2.10000"), new Apfloat("-2.30000"));
+        assertEquals("-2.1, -2.3 precision", 4, a.precision());
+        assertEquals("-2.1, -2.3 value", new Apfloat("0.410304"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.angerJ(new Apfloat(3, 10, 9), new Apfloat(5, 10, 9));
+        assertEquals("3, 5 radix 9 precision", 10, a.precision());
+        assertEquals("3, 5 radix 9 value", new Apfloat("0.32485824168", 9, 9), a, new Apfloat("5e-10", 1, 9));
+
+        try
+        {
+            ApfloatMath.angerJ(new Apfloat(3), new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testWeberE()
+    {
+        Apfloat a = ApfloatMath.weberE(new Apfloat("3.00000"), new Apfloat("5.00000"));
+        assertEquals("3, 5 precision", 5, a.precision());
+        assertEquals("3, 5 value", new Apfloat("-0.2354811018"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.weberE(new Apfloat("-2.10000"), new Apfloat("-2.30000"));
+        assertEquals("-2.1, -2.3 precision", 5, a.precision());
+        assertEquals("-2.1, -2.3 value", new Apfloat("-0.112557"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.weberE(new Apfloat(3, 10, 9), new Apfloat(5, 10, 9));
+        assertEquals("3, 5 radix 9 precision", 9, a.precision());
+        assertEquals("3, 5 radix 9 value", new Apfloat("-0.2105882726", 9, 9), a, new Apfloat("5e-10", 1, 9));
+
+        try
+        {
+            ApfloatMath.weberE(new Apfloat(3), new Apfloat(5));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 

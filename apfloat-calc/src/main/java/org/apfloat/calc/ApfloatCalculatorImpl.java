@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import org.apfloat.spi.Util;
 /**
  * Arbitrary precision calculator implementation.
  *
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -174,6 +174,12 @@ public class ApfloatCalculatorImpl
         public Number airyBiPrime(Number x)
         {
             return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::airyBiPrime, ApcomplexMath::airyBiPrime, x);
+        }
+
+        @Override
+        public Number angerJ(Number x, Number y)
+        {
+            return ApcomplexMath.angerJ((Apcomplex) x, (Apcomplex) y);
         }
 
         @Override
@@ -823,6 +829,18 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number struveH(Number x, Number y)
+        {
+            return ApcomplexMath.struveH((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number struveL(Number x, Number y)
+        {
+            return ApcomplexMath.struveL((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
         public Number tan(Number x)
         {
             return ApcomplexMath.tan((Apcomplex) x);
@@ -856,6 +874,12 @@ public class ApfloatCalculatorImpl
         public Number ulp(Number x)
         {
             return ApcomplexMath.ulp((Apcomplex) x);
+        }
+
+        @Override
+        public Number weberE(Number x, Number y)
+        {
+            return ApcomplexMath.weberE((Apcomplex) x, (Apcomplex) y);
         }
 
         @Override

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -127,6 +127,10 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testBesselI"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testBesselY"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testBesselK"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testStruveH"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testStruveL"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testAngerJ"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testWeberE"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testEllipticK"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testEllipticE"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testHermiteH"));
@@ -1330,6 +1334,46 @@ public class FixedPrecisionApcomplexHelperTest
                   z = new Apcomplex("(5.6,7.8)");
         Apcomplex result = helper.besselK(ν, z);
         assertEquals("value", new Apcomplex("(0.000359807,-0.00146406)"), result, new Apfloat("5e-8"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testStruveH()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.struveH(ν, z);
+        assertEquals("value", new Apcomplex("(-1.42249,-2.92784)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testStruveL()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.struveL(ν, z);
+        assertEquals("value", new Apcomplex("(31.1937,11.0854)"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testAngerJ()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.angerJ(ν, z);
+        assertEquals("value", new Apcomplex("(-531.370,42.5825)"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testWeberE()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex ν = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.weberE(ν, z);
+        assertEquals("value", new Apcomplex("(-41.0167,-525.327)"), result, new Apfloat("5e-4"));
         assertEquals("precision", 6, result.precision());
     }
 

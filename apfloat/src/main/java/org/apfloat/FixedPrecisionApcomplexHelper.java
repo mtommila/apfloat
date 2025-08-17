@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import org.apfloat.spi.Util;
  * <code>ApcomplexMath.acos(Apcomplex.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -1703,6 +1703,78 @@ public class FixedPrecisionApcomplexHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApcomplexMath.besselK(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Struve function 𝐇.<p>
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>𝐇<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is zero and real part of <code>ν</code> is <= -1.
+     *
+     * @since 1.15.0
+     */
+
+    public Apcomplex struveH(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.struveH(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Modified Struve function 𝐋.<p>
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>𝐋<sub>ν</sub>(z)</i>
+     *
+     * @throws ArithmeticException If <code>z</code> is zero and real part of <code>ν</code> is <= -1.
+     *
+     * @since 1.15.0
+     */
+
+    public Apcomplex struveL(Apcomplex ν, Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.struveL(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Anger function 𝐉.<p>
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>𝐉<sub>ν</sub>(z)</i>
+     *
+     * @since 1.15.0
+     */
+
+    public Apcomplex angerJ(Apcomplex ν, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.angerJ(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Weber function 𝐄.<p>
+     *
+     * @param ν The order.
+     * @param z The argument.
+     *
+     * @return <i>𝐄<sub>ν</sub>(z)</i>
+     *
+     * @since 1.15.0
+     */
+
+    public Apcomplex weberE(Apcomplex ν, Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.weberE(setPrecision(ν), setPrecision(z)));
     }
 
     /**

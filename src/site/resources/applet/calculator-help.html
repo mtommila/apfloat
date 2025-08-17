@@ -186,6 +186,7 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>airyAiPrime(x)</code></td><td>Derivative of the Airy function Ai, i.e. <code>Ai&prime;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>airyBi(x)</code></td><td>Airy function <code>Bi(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>airyBiPrime(x)</code></td><td>Derivative of the Airy function Bi, i.e. <code>Bi&prime;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>angerJ(&nu;, x)</code></td><td>Anger function <code>&#x1D409;<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>bernoulli(x)</code></td><td>Bernoulli number B<sub><i>x</i></sub>.</td></tr>
 <tr><td><code>bernoulliB(n, x)</code></td><td>Bernoulli polynomial <code>B<sub>n</sub>(x)</code>. Parameter <code>n</code> must be a nonnegative integer. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>besselI(&nu;, x)</code></td><td>Bessel function <code>I<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
@@ -254,8 +255,11 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>sinIntegral(x)</code></td><td>Sine integral i.e. <code>Si(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>sinhIntegral(x)</code></td><td>Hyperbolic sine integral i.e. <code>Shi(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>sphericalHarmonicY(&nu;, &mu;, &thetav;, &phiv;)</code></td><td>Spherical harmonic function <code>Y<sub>&lambda;</sub><sup style='position: relative; left: -0.3em;'>&mu;</sup>(&thetav;, &phiv;)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>struveH(&nu;, x)</code></td><td>Struve function <code>&#x1D407;<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>struveL(&nu;, x)</code></td><td>Struve function <code>&#x1D40B;<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>w(x)</code></td><td>Lambert W function, i.e. solution to the equation <code>W e<sup>W</sup> = x</code>.</td></tr>
 <tr><td><code>w(x, k)</code></td><td>Lambert W function, branch <code>k</code>. Parameter <code>k</code> must be an integer.</td></tr>
+<tr><td><code>weberE(&nu;, x)</code></td><td>Weber function <code>&#x1D404;<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>zeta(x)</code></td><td>Riemann zeta function, i.e. <code>&zeta;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>zeta(x, y)</code></td><td>Hurwitz zeta function, i.e. <code>&zeta;(x, y)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 </table>
@@ -392,7 +396,7 @@ then <code>pi()</code> would just return &pi; to the specified input precision.
 
 <p>Bug reports, questions and comments should be sent to <a href="mailto:Mikko.Tommila@apfloat.org">the author</a>.</p>
 
-<p>Last updated: May 24th, 2025</p>
+<p>Last updated: August 17th, 2025</p>
 
 </div>
 

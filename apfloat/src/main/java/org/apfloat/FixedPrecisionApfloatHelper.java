@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import org.apfloat.spi.Util;
  * <code>ApfloatMath.acos(Apfloat.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -1791,6 +1791,78 @@ public class FixedPrecisionApfloatHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApfloatMath.besselK(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Struve function 𝐇.<p>
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>𝐇<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is zero and <code>ν</code> is <= -1.
+     *
+     * @since 1.15.0
+     */
+
+    public Apfloat struveH(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.struveH(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Modified Struve function 𝐋.<p>
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>𝐋<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is zero and <code>ν</code> is <= -1.
+     *
+     * @since 1.15.0
+     */
+
+    public Apfloat struveL(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.struveL(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Anger function 𝐉.<p>
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>𝐉<sub>ν</sub>(x)</i>
+     *
+     * @since 1.15.0
+     */
+
+    public Apfloat angerJ(Apfloat ν, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.angerJ(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Weber function 𝐄.<p>
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>𝐄<sub>ν</sub>(x)</i>
+     *
+     * @since 1.15.0
+     */
+
+    public Apfloat weberE(Apfloat ν, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.weberE(setPrecision(ν), setPrecision(x)));
     }
 
     /**

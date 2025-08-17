@@ -3776,6 +3776,106 @@ public class ApfloatMath
     }
 
     /**
+     * Struve function 𝐇.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>𝐇<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is zero and <code>ν</code> is <= -1.
+     *
+     * @since 1.15.0
+     */
+
+    public static Apfloat struveH(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() < 0 && !ν.isInteger())
+        {
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
+        }
+        return ApcomplexMath.struveH(ν, x).real();
+    }
+
+    /**
+     * Modified Struve function 𝐋.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>𝐋<sub>ν</sub>(x)</i>
+     *
+     * @throws ArithmeticException If <code>x</code> is zero and <code>ν</code> is <= -1.
+     *
+     * @since 1.15.0
+     */
+
+    public static Apfloat struveL(Apfloat ν, Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() < 0 && !ν.isInteger())
+        {
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
+        }
+        return ApcomplexMath.struveL(ν, x).real();
+    }
+
+    /**
+     * Anger function 𝐉.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>𝐉<sub>ν</sub>(x)</i>
+     *
+     * @since 1.15.0
+     */
+
+    public static Apfloat angerJ(Apfloat ν, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.angerJ(ν, x).real();
+    }
+
+    /**
+     * Weber function 𝐄.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param ν The order.
+     * @param x The argument.
+     *
+     * @return <i>𝐄<sub>ν</sub>(x)</i>
+     *
+     * @since 1.15.0
+     */
+
+    public static Apfloat weberE(Apfloat ν, Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.weberE(ν, x).real();
+    }
+
+    /**
      * Complete elliptic integral of the first kind.<p>
      * 
      * Note that this function uses the definition:
