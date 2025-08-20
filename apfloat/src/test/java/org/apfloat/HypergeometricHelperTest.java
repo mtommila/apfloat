@@ -77,12 +77,12 @@ public class HypergeometricHelperTest
 
         // Start term cases
         a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("500000"));
-        assertEquals("2.2; 3.3, 42; 500000 precision", 5, a.precision());
-        assertEquals("2.2; 3.3, 42; 500000 value", new Apcomplex("8.18811e541"), a, new Apfloat("5e536"));
+        assertEquals("2.2; 3.3, 42; 500000 precision", 2, a.precision());
+        assertEquals("2.2; 3.3, 42; 500000 value", new Apcomplex("8.18811e541"), a, new Apfloat("5e539"));
 
-        a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("500000000000"));
-        assertEquals("2.2; 3.3, 42; 500000000000 precision", 6, a.precision());
-        assertEquals("2.2; 3.3, 42; 500000000000 value", new Apcomplex("2.08678e613985"), a, new Apfloat("5e613982"));
+        a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("5000000"));
+        assertEquals("2.2; 3.3, 42; 500000000000 precision", 1, a.precision());
+        assertEquals("2.2; 3.3, 42; 500000000000 value", new Apcomplex("6.6e1848"), a, new Apfloat("5e1846"));
 
         // Not quite start term cases
         a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("0.900000"));
@@ -90,11 +90,11 @@ public class HypergeometricHelperTest
         assertEquals("2.2; 3.3, 42; 0.9 value", new Apcomplex("1.014397"), a, new Apfloat("5e-5"));
 
         a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("500.000"));
-        assertEquals("2.2; 3.3, 42; 500 precision", 6, a.precision());
+        assertEquals("2.2; 3.3, 42; 500 precision", 5, a.precision());
         assertEquals("2.2; 3.3, 42; 500 value", new Apcomplex("7302.68"), a, new Apfloat("5e-2"));
 
         a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("800.000"));
-        assertEquals("2.2; 3.3, 42; 800 precision", 6, a.precision());
+        assertEquals("2.2; 3.3, 42; 800 precision", 5, a.precision());
         assertEquals("2.2; 3.3, 42; 800 value", new Apcomplex("1319226"), a, new Apfloat("5e0"));
 
         // Non converging cases
@@ -107,6 +107,16 @@ public class HypergeometricHelperTest
         {
             // OK, result is infinite
             assertEquals("Localization key", "hypergeometric.nonconvergence", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("500000000000"));
+        }
+        catch (LossOfPrecisionException lope)
+        {
+            // OK
+            assertEquals("Localization key", "lossOfPrecision", lope.getLocalizationKey());
         }
     }
 

@@ -94,12 +94,12 @@ public class BesselHelperTest
         assertEquals("-1.9999999999998, 3 value", new Apcomplex("0.48609126058580704"), a, new Apfloat("5e-17"));
 
         a = BesselHelper.besselJ(new Apcomplex("-10.5").precision(81), new Apcomplex("(55,66)").precision(81));
-        assertEquals("-10.5, 55 + 66i precision", 80, a.precision());
-        assertEquals("-10.5, 55 + 66i value", new Apcomplex("(-9.2819931358505770728585891284128300552494996683401153463605047231153352993126805e26,-7.7833255801252032004669340241374829748024004126014611117564912890382501825748791e26)"), a, new Apfloat("5e-53"));
+        assertEquals("-10.5, 55 + 66i precision", 79, a.precision());
+        assertEquals("-10.5, 55 + 66i value", new Apcomplex("(-9.2819931358505770728585891284128300552494996683401153463605047231153352993126805e26,-7.7833255801252032004669340241374829748024004126014611117564912890382501825748791e26)"), a, new Apfloat("5e-52"));
 
         a = BesselHelper.besselJ(new Apcomplex("10.5").precision(81), new Apcomplex("(55,66)").precision(81));
-        assertEquals("10.5, 55 + 66i precision", 80, a.precision());
-        assertEquals("10.5, 55 + 66i value", new Apcomplex("(7.7833255801252032004669340241374829748024004126014611117870331911370690985938420e26,-9.2819931358505770728585891284128300552494996683401153463608216053422431060089578e26)"), a, new Apfloat("5e-53"));
+        assertEquals("10.5, 55 + 66i precision", 79, a.precision());
+        assertEquals("10.5, 55 + 66i value", new Apcomplex("(7.7833255801252032004669340241374829748024004126014611117870331911370690985938420e26,-9.2819931358505770728585891284128300552494996683401153463608216053422431060089578e26)"), a, new Apfloat("5e-52"));
 
         a = BesselHelper.besselJ(new Apcomplex("-10.5000000001"), new Apcomplex("(55,66)").precision(12));
         assertEquals("-10.50000001, 55 + 66i precision", 10, a.precision());
@@ -198,12 +198,12 @@ public class BesselHelperTest
         assertEquals("-0.999999, 5 + 6i value", new Apcomplex("(15.9742,-12.9498)"), a, new Apfloat("5e-4"));
 
         a = BesselHelper.besselI(new Apcomplex("-10.5").precision(81), new Apcomplex("(55,66)").precision(81));
-        assertEquals("-10.5, 55 + 66i precision", 80, a.precision());
-        assertEquals("-10.5, 55 + 66i value", new Apcomplex("(-2.1906070413418972181765049892474193969670206647027033324967515598596162984040629e22,-1.836307061247292980771203766871941919928103611186566955292861739783828791122258e21)"), a, new Apfloat("5e-57"));
+        assertEquals("-10.5, 55 + 66i precision", 79, a.precision());
+        assertEquals("-10.5, 55 + 66i value", new Apcomplex("(-2.1906070413418972181765049892474193969670206647027033324967515598596162984040629e22,-1.836307061247292980771203766871941919928103611186566955292861739783828791122258e21)"), a, new Apfloat("5e-56"));
 
         a = BesselHelper.besselI(new Apcomplex("10.5").precision(81), new Apcomplex("(55,66)").precision(81));
-        assertEquals("10.5, 55 + 66i precision", 80, a.precision());
-        assertEquals("10.5, 55 + 66i value", new Apcomplex("(-2.1906070413418972181765049892474193969670206646929190184727112005044694629164806e22,-1.836307061247292980771203766871941919928103611324068214270934127704834691844765e21)"), a, new Apfloat("5e-57"));
+        assertEquals("10.5, 55 + 66i precision", 79, a.precision());
+        assertEquals("10.5, 55 + 66i value", new Apcomplex("(-2.1906070413418972181765049892474193969670206646929190184727112005044694629164806e22,-1.836307061247292980771203766871941919928103611324068214270934127704834691844765e21)"), a, new Apfloat("5e-56"));
 
         a = BesselHelper.besselI(new Apcomplex("-10.5000000001"), new Apcomplex("(55,66)").precision(12));
         assertEquals("-10.50000001, 55 + 66i precision", 10, a.precision());

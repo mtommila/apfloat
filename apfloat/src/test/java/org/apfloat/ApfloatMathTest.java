@@ -2723,8 +2723,8 @@ public class ApfloatMathTest
         assertEquals("100,1 precision", 10, a.precision());
         assertEquals("100,1 value", new Apfloat("9.332621544e155"), a, new Apfloat("5e-146"));
         a = ApfloatMath.gamma(new Apfloat("-100.5", 12), new Apfloat(1, 12));
-        assertEquals("-100.5,1 precision", 12, a.precision());
-        assertEquals("-100.5,1 value", new Apfloat("0.00362407278773"), a, new Apfloat("5e-14"));
+        assertEquals("-100.5,1 precision", 11, a.precision());
+        assertEquals("-100.5,1 value", new Apfloat("0.00362407278773"), a, new Apfloat("5e-13"));
 
         a = ApfloatMath.gamma(new Apfloat(-1, 10), new Apfloat(1, 10));
         assertEquals("-1,1 precision", 10, a.precision());
@@ -3628,9 +3628,9 @@ public class ApfloatMathTest
         assertEquals("2, 3, 4 value", new Apfloat("20.5993"), a, new Apfloat("5e-4"));
 
         a = ApfloatMath.hypergeometric1F1(new Apfloat(2, 60, 2), new Apfloat(3, 60, 2), new Apfloat(4, 60, 2));
-        assertEquals("2, 3, 4 radix 2 precision", 60, a.precision());
+        assertEquals("2, 3, 4 radix 2 precision", 59, a.precision());
         assertEquals("2, 3, 4 radix 2 radix", 2, a.radix());
-        assertEquals("2, 3, 4 radix 2 value", new Apfloat("10100.1001100101101100001000101001110101101011110000100100110", 60, 2), a, new Apfloat("1e-55", 1, 2));
+        assertEquals("2, 3, 4 radix 2 value", new Apfloat("10100.1001100101101100001000101001110101101011110000100100110", 60, 2), a, new Apfloat("1e-54", 1, 2));
 
         try
         {

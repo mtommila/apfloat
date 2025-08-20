@@ -432,6 +432,7 @@ class HypergeometricHelper
         this.extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix);
         this.targetPrecision = ApfloatHelper.extendPrecision(precision(a, b, z), extraPrecision);
         this.workingPrecision = targetPrecision;
+        this.reducePrecision = reducePrecision(z, a);
         this.a = Arrays.stream(a).map(c -> ApfloatHelper.extendPrecision(c, extraPrecision)).toArray(Apcomplex[]::new);
         this.b = Arrays.stream(b).map(c -> ApfloatHelper.extendPrecision(c, extraPrecision)).toArray(Apcomplex[]::new);
         this.z = ensurePrecision(z);
@@ -610,7 +611,7 @@ class HypergeometricHelper
         assert (b.length > 0);
 
         result = evaluate(a, b, z);
-        return ApfloatHelper.limitPrecision(result, targetPrecision);
+        return result;
     }
 
     private Apcomplex hypergeometric0F1(Apcomplex b, Apcomplex z)
@@ -651,11 +652,11 @@ class HypergeometricHelper
                           sqrtZ = sqrt(z.negate());
                 result = exp(two.negate().multiply(i).multiply(sqrtZ)).multiply(hypergeometric1F1(b12, b21, four.multiply(i).multiply(sqrtZ)));
             }
-            return ApfloatHelper.limitPrecision(result, targetPrecision);
+            return result;
         }
 
         Apcomplex result = evaluate(new Apcomplex[0], new Apcomplex[] { b }, z);
-        return ApfloatHelper.limitPrecision(result, targetPrecision);
+        return result;
     }
 
     private Apcomplex hypergeometric1F1(Apcomplex a, Apcomplex b, Apcomplex z)
@@ -674,7 +675,7 @@ class HypergeometricHelper
                     result = pow(z.negate(), a.negate()).divide(gamma(ensureGammaPrecision(ba))).multiply(hypergeometricUStar(a, b, z));
                 }
                 result = result.add(pow(z, ba.negate()).multiply(exp(z)).divide(gamma(ensureGammaPrecision(a))).multiply(hypergeometricUStar(ba, b, z.negate()))).multiply(gamma(ensureGammaPrecision(b)));
-                return ApfloatHelper.limitPrecision(result, targetPrecision);
+                return result;
             } catch (NotConvergingException nce)
             {
                 // Ignore and retry with the (possibly very slow) direct evaluation of the series
@@ -682,7 +683,7 @@ class HypergeometricHelper
         }
 
         Apcomplex result = hypergeometric1F1series(a, b, z);
-        return ApfloatHelper.limitPrecision(result, targetPrecision);
+        return result;
     }
 
     private Apcomplex hypergeometric1F1series(Apcomplex a, Apcomplex b, Apcomplex z)
@@ -721,7 +722,7 @@ class HypergeometricHelper
             {
                 // Evaluate with U*
                 Apcomplex result = pow(z, a[0].negate()).multiply(hypergeometricUStar(a[0], b[0], z));
-                return ApfloatHelper.limitPrecision(result, targetPrecision);
+                return result;
             }
             catch (NotConvergingException nce)
             {
@@ -733,7 +734,7 @@ class HypergeometricHelper
                 }
             }
         }
-        if (fastOnly && (Stream.concat(Arrays.stream(a), Arrays.stream(b)).map(Apcomplex::real).reduce(ApfloatMath::min).get().doubleValue() < -100.0 * targetPrecision ||  // Check minimum number of evaluation terms
+        if (fastOnly && (stream(a, b).map(Apcomplex::real).reduce(ApfloatMath::min).get().doubleValue() < -100.0 * targetPrecision ||  // Check minimum number of evaluation terms
                          z.scale() > 5.0 / Math.log(radix)))    // Check convergence speed
         {
             // Too slow, try another algorithm
@@ -794,7 +795,7 @@ class HypergeometricHelper
             precisionLoss = (result.isZero() ? workingPrecision : targetPrecision - result.precision());
             workingPrecision = Util.ifFinite(workingPrecision, workingPrecision + precisionLoss);
         } while (precisionLoss > 0);
-        return ApfloatHelper.limitPrecision(result, targetPrecision);
+        return result;
     }
 
     private Apcomplex hypergeometric2F1(Apcomplex a, Apcomplex b, Apcomplex c, Apcomplex z)
@@ -852,12 +853,22 @@ class HypergeometricHelper
                 result = transformation.value(new Hypergeometric2F1Helper(false));  // Retry once if there is unexpected precision loss
             }
         }
-        return ApfloatHelper.limitPrecision(result, targetPrecision);
+        return result;
     }
 
-    private static long precision(Apcomplex[] z0, Apcomplex[] z1, Apcomplex z2)
+    private static Stream<Apcomplex> stream(Apcomplex[] z0, Apcomplex... z1)
     {
-        Apcomplex[] z = Stream.concat(Stream.concat(Arrays.stream(z0), Arrays.stream(z1)), Stream.of(z2)).toArray(Apcomplex[]::new);
+        return Stream.concat(Arrays.stream(z0), Arrays.stream(z1));
+    }
+
+    private static Stream<Apcomplex> stream(Apcomplex[] z0, Apcomplex[] z1, Apcomplex... z2)
+    {
+        return Stream.concat(stream(z0, z1), Arrays.stream(z2));
+    }
+
+    private static long precision(Apcomplex[] z0, Apcomplex[] z1, Apcomplex... z2)
+    {
+        Apcomplex[] z = stream(z0, z1, z2).toArray(Apcomplex[]::new);
         return precision(z);
     }
 
@@ -886,7 +897,7 @@ class HypergeometricHelper
         {
             // Result is a polynomial, we should evaluate here as e.g. a transformation of 2F1 won't work if c is a non-positive integer
             Apcomplex result = evaluate(a, b, z);
-            return ApfloatHelper.limitPrecision(result, targetPrecision);
+            return result;
         }
         return null;
     }
@@ -903,7 +914,7 @@ class HypergeometricHelper
         Apcomplex[] aOrig = a.clone(),
                     bOrig = b.clone();
         Apcomplex s;
-        Apint minN = ApintMath.max(one, Stream.concat(Arrays.stream(a), Arrays.stream(b)).map(Apcomplex::real).reduce(ApfloatMath::min).get().truncate().negate()).add(one);
+        Apint minN = ApintMath.max(one, stream(a, b).map(Apcomplex::real).reduce(ApfloatMath::min).get().truncate().negate()).add(one);
         long precisionLoss = 0,
              extraPrecision,
              extendedPrecision = ApfloatHelper.extendPrecision(workingPrecision, minN.scale()); // Estimate for accumulated round-off error precision due to repeated multiplication only (not scale based digit loss, see below)
@@ -1228,14 +1239,32 @@ class HypergeometricHelper
         return ApfloatHelper.ensureGammaPrecision(z, workingPrecision);
     }
 
+    private static long reducePrecision(Apcomplex z0, Apcomplex... z1)
+    {
+        return Math.max(2, stream(z1, z0).mapToLong(Apcomplex::scale).max().getAsLong()) - 2;
+    }
+
+    // Returns precision so that hypergeometric functions should return the given precision 
+    public static long ensureHypergeometricPrecision(Apcomplex z, long precision)
+    {
+        return ApfloatHelper.extendPrecision(precision, reducePrecision(z));
+    }
+
     private Apcomplex result(Apcomplex z)
     {
-        return (z == null ? z : ApfloatHelper.reducePrecision(z, extraPrecision));
+        if (z == null)
+        {
+            return z;
+        }
+        long precision = ApfloatHelper.reducePrecision(targetPrecision, reducePrecision);
+        z = ApfloatHelper.limitPrecision(z, precision);
+        return ApfloatHelper.reducePrecision(z, extraPrecision);
     }
 
     private long targetPrecision,
                  extraPrecision,
-                 workingPrecision;
+                 workingPrecision,
+                 reducePrecision;
     private int radix;
     private Apcomplex[] a,
                         b;

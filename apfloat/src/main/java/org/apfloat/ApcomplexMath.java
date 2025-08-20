@@ -2917,8 +2917,9 @@ public class ApcomplexMath
             return z;
         }
         int radix = z.radix();
-        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
-             precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
+        long targetPrecision = z.precision(),
+             extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(HypergeometricHelper.ensureHypergeometricPrecision(z.multiply(z), targetPrecision), extraPrecision);
         z = ApfloatHelper.ensurePrecision(z, precision);
         Apint one = Apint.ONES[radix],
               two = new Apint(2, radix),
@@ -2927,7 +2928,7 @@ public class ApcomplexMath
                 half = new Aprational(one, two).precision(precision),
                 threeHalfs = new Aprational(three, two).precision(precision);
         Apcomplex result = two.multiply(z).divide(sqrtPi).multiply(hypergeometric1F1(half, threeHalfs, z.multiply(z).negate()));
-        return ApfloatHelper.reducePrecision(result, extraPrecision);
+        return ApfloatHelper.limitPrecision(result, targetPrecision);
     }
 
     /**
