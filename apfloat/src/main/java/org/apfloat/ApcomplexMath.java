@@ -3707,7 +3707,10 @@ public class ApcomplexMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         int radix = z.radix();
-        long precision = z.precision();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Math.min(ν.precision(), z.precision()), extraPrecision);
+        ν = ApfloatHelper.ensurePrecision(ν, precision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apfloat one = Apint.ONES[radix].precision(precision),
                 two = new Apfloat(2, precision, radix),
                 three = new Apfloat(3, precision, radix),
@@ -3720,7 +3723,8 @@ public class ApcomplexMath
         {
             z24 = z24.negate();
         }
-        return pow(z2, ν.add(one)).multiply(HypergeometricHelper.hypergeometricPFQRegularized(a, b, z24));
+        Apcomplex result = pow(z2, ν.add(one)).multiply(HypergeometricHelper.hypergeometricPFQRegularized(a, b, z24));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
@@ -3771,7 +3775,10 @@ public class ApcomplexMath
         throws ApfloatRuntimeException
     {
         int radix = z.radix();
-        long precision = z.precision();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(Math.min(ν.precision(), z.precision()), extraPrecision);
+        ν = ApfloatHelper.ensurePrecision(ν, precision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
         Apfloat one = Apint.ONES[radix].precision(precision),
                 two = new Apfloat(2, precision, radix),
                 three = new Apfloat(3, precision, radix),
@@ -3793,7 +3800,8 @@ public class ApcomplexMath
         }
         Apcomplex t1 = f1.multiply(sin(πν2)).multiply(HypergeometricHelper.hypergeometricPFQRegularized(a, b1, z24));
         Apcomplex t2 = f2.multiply(cos(πν2)).multiply(HypergeometricHelper.hypergeometricPFQRegularized(a, b2, z24));
-        return (weber ? t1.subtract(t2) : t1.add(t2));
+        Apcomplex result = (weber ? t1.subtract(t2) : t1.add(t2));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**
