@@ -585,6 +585,7 @@ public class Apcomplex
     /**
      * Returns the value of the this number as a <code>double</code>.
      * Only takes the real part of this number.
+     * The result should be correct only within ± one ulp.
      *
      * @see Apfloat#doubleValue()
      *
@@ -600,6 +601,7 @@ public class Apcomplex
     /**
      * Returns the value of the this number as a <code>float</code>.
      * Only takes the real part of this number.
+     * The result should be correct only within ± one ulp.
      *
      * @see Apfloat#floatValue()
      *

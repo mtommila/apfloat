@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -2289,7 +2289,7 @@ public class RawtypeApfloatImplTest
             assertEquals("radix " + radix + " -max", -Double.MAX_VALUE, impl.doubleValue(), 2e293);
 
             impl = new RawtypeApfloatImpl(Double.MIN_VALUE, Apfloat.INFINITE, radix);
-            assertEquals("radix " + radix + " min", Double.MIN_VALUE, impl.doubleValue(), Double.MIN_VALUE);
+            assertEquals("radix " + radix + " min", Double.MIN_VALUE, impl.doubleValue());
 
             impl = new RawtypeApfloatImpl("1.1", Apfloat.INFINITE, radix, false);
             assertEquals("radix " + radix + " 1.1", 1.0 + 1.0 / radix, impl.doubleValue(), 2e-15);

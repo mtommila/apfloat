@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1656,28 +1656,29 @@ public class RawtypeApfloatImpl
         }
 
         double value = 0.0,
+               factor = 1.0,
                doubleBase = (double) BASE[this.radix];
 
         int size = (int) Math.min(MAX_DOUBLE_SIZE, getSize());
 
-        DataStorage.Iterator iterator = this.dataStorage.iterator(DataStorage.READ, size, 0);
+        DataStorage.Iterator iterator = this.dataStorage.iterator(DataStorage.READ, 0, size);
 
         while (iterator.hasNext())
         {
-            value += (double) iterator.getRawtype();
-            value /= doubleBase;
+            value += (double) iterator.getRawtype() * factor;
+            factor /= doubleBase;
             iterator.next();
         }
 
-        // If the end result fits in a double, any intermediate calculation must not overflow
-        // Note that 1/BASE <= value < 1
+        // If the end result fits in a double, any intermediate calculation must not overflow or underflow
+        // Note that 1 <= value < BASE
         if (this.exponent > 0)
         {
-            return this.sign * value * Math.pow((double) BASE[this.radix], (double) (this.exponent - 1)) * BASE[this.radix];
+            return this.sign * value * Math.pow((double) BASE[this.radix], (double) (this.exponent - 1));
         }
         else
         {
-            return this.sign * value * Math.pow((double) BASE[this.radix], (double) this.exponent);
+            return this.sign * value * Math.pow((double) BASE[this.radix], (double) this.exponent) / BASE[this.radix];
         }
     }
 
