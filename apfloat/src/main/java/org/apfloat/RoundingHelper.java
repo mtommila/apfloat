@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -247,7 +247,7 @@ class RoundingHelper
         else
         {
             // In an odd radix, half has an infinite digit expansion
-            Apint one = new Apint(1, x.radix());
+            Apint one = Apint.ONES[x.radix()];
             Apint two = new Apint(2, x.radix());
             comparison = x.precision(Apfloat.INFINITE).multiply(two).compareTo(one);
         }
@@ -256,7 +256,7 @@ class RoundingHelper
 
     public static int compareToHalf(Aprational x)
     {
-        Aprational half = new Aprational(new Apint(1, x.radix()), new Apint(2, x.radix()));
+        Aprational half = new Aprational(Apint.ONES[x.radix()], new Apint(2, x.radix()));
         int comparison = x.compareTo(half);
         return comparison;
     }

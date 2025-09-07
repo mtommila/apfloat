@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -2340,7 +2340,7 @@ public class ApfloatMath
                 v = b,
                 ou,
                 ov;
-        Apint one = new Apint(1, radix),
+        Apint one = Apint.ONES[radix],
               k = one,
               n2 = ApintMath.pow(new Apint(n, radix), 2);
         do
@@ -4652,7 +4652,7 @@ public class ApfloatMath
             }
             else
             {
-                Apint one = new Apint(1, radix),
+                Apint one = Apint.ONES[radix],
                       two = new Apint(2, radix);
                 Apfloat v1, v2, s;
                 do

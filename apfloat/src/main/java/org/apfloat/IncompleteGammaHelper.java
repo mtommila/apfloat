@@ -414,7 +414,7 @@ class IncompleteGammaHelper
     private static Sequence upperGammaSequence(Apcomplex a, Apcomplex z)
     {
         int radix = z.radix();
-        Apfloat one = new Apint(1, radix);
+        Apfloat one = Apint.ONES[radix];
         Apcomplex za = z.subtract(a);
         Sequence s = new Sequence(n ->
         {
@@ -435,7 +435,7 @@ class IncompleteGammaHelper
     private static Sequence lowerGammaSequence(Apcomplex a, Apcomplex z)
     {
         int radix = z.radix();
-        Apfloat one = new Apint(1, radix);
+        Apfloat one = Apint.ONES[radix];
         Sequence s = new Sequence(n ->
         {
             if (n == 1)
@@ -458,7 +458,7 @@ class IncompleteGammaHelper
     private static Sequence upperGammaSequenceAlternative(Apcomplex a, Apcomplex z)
     {
         int radix = z.radix();
-        Apfloat one = new Apint(1, radix);
+        Apfloat one = Apint.ONES[radix];
         Sequence s = new Sequence(n ->
         {
             if (n == 1)
@@ -481,7 +481,7 @@ class IncompleteGammaHelper
     private static Sequence lowerGammaSequenceAlternative(Apcomplex a, Apcomplex z)
     {
         int radix = z.radix();
-        Apfloat one = new Apint(1, radix);
+        Apfloat one = Apint.ONES[radix];
         Apcomplex az = a.add(z);
         Sequence s = new Sequence(n ->
         {
@@ -542,7 +542,7 @@ class IncompleteGammaHelper
                 else if (resultIterations == fastestIterations)
                 {
                     // If neither continued fraction reached the precision goal within the max iterations, see which one got better precision
-                    Apint one = new Apint(1, radix);
+                    Apint one = Apint.ONES[radix];
                     long resultPrecision = result.getDelta().equalDigits(one);
                     long fastestPrecision = fastestResult.getDelta().equalDigits(one);
                     if (resultPrecision > fastestPrecision)
@@ -597,7 +597,7 @@ class IncompleteGammaHelper
     // Modified Lentz's method
     private static ContinuedFractionResult continuedFraction(Sequence s, int radix, long workingPrecision, long minIterations, long maxIterations)
     {
-        Apint one = new Apint(1, radix);
+        Apint one = Apint.ONES[radix];
         long n = 0;
         Apcomplex an;
         Apcomplex bn;

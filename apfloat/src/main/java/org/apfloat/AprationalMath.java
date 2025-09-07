@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -67,7 +67,7 @@ public class AprationalMath
                 throw new ApfloatArithmeticException("Zero to power zero", "pow.zeroToZero");
             }
 
-            return new Apint(1, x.radix());
+            return Apint.ONES[x.radix()];
         }
         else if (n < 0)
         {
@@ -500,7 +500,7 @@ public class AprationalMath
         {
             return Apint.ZEROS[radix];
         }
-        Apint one = new Apint(1, radix),
+        Apint one = Apint.ONES[radix],
               f = ApintMath.factorial(ApfloatHelper.longValueExact(k.truncate()), radix);
         return pochhammer(n.subtract(k).add(one), k.numerator()).divide(f);
     }
@@ -606,7 +606,7 @@ public class AprationalMath
         Aprational sum = Aprational.ZERO;
         for (long k = 1; k <= n; k++)
         {
-            Apint binomial = new Apint(1, radix);
+            Apint binomial = Apint.ONES[radix];
             Apint part = Apint.ZERO;
             for (long v = 1; v <= k; v++)
             {
@@ -690,7 +690,7 @@ public class AprationalMath
                     Apint binomial = null;
                     for (long k = 0; iterator.hasNext(); k++)
                     {
-                        binomial = (k == 0 ? new Apint(1, radix) : binomial.multiply(new Apint(n + 1 - k, radix)).divide(new Apint(k, radix)));
+                        binomial = (k == 0 ? Apint.ONES[radix] : binomial.multiply(new Apint(n + 1 - k, radix)).divide(new Apint(k, radix)));
                         b = b.subtract(binomial.multiply(iterator.next()).divide(new Apint(n - k + 1, radix)));
                     }
                 }

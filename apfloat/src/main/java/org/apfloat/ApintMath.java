@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,7 @@ public class ApintMath
                 throw new ApfloatArithmeticException("Zero to power zero", "pow.zeroToZero");
             }
 
-            return new Apint(1, x.radix());
+            return Apint.ONES[x.radix()];
         }
         else if (n < 0)
         {
@@ -151,7 +151,7 @@ public class ApintMath
                 throw new ApfloatArithmeticException("Zeroth root of zero", "root.zerothOfZero");
             }
 
-            Apint one = new Apint(1, x.radix());
+            Apint one = Apint.ONES[x.radix()];
             return new Apint[] { one, x.subtract(one) };
         }
         else if (x.signum() == 0)
@@ -208,7 +208,7 @@ public class ApintMath
     private static Apint powXMinus1(Apint pow, Apint x, long n)
         throws ApfloatRuntimeException
     {
-        Apint one = new Apint(1, x.radix());
+        Apint one = Apint.ONES[x.radix()];
 
         if (n == 2)
         {
@@ -231,7 +231,7 @@ public class ApintMath
     private static Apint powXPlus1(Apint pow, Apint x, long n)
         throws ApfloatRuntimeException
     {
-        Apint one = new Apint(1, x.radix());
+        Apint one = Apint.ONES[x.radix()];
 
         if (n == 2)
         {
@@ -520,7 +520,7 @@ public class ApintMath
                 throw new ApfloatArithmeticException("Zero to power zero", "pow.zeroToZero");
             }
 
-            return new Apint(1, a.radix());
+            return Apint.ONES[a.radix()];
         }
         else if (m.signum() == 0)
         {
@@ -568,7 +568,7 @@ public class ApintMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         // Extended Euclidean algorithm
-        Apint one = new Apint(1, m.radix()),
+        Apint one = Apint.ONES[m.radix()],
               x = Apint.ZERO,
               y = one,
               oldX = one,

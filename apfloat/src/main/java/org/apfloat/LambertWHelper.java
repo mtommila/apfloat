@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -67,7 +67,7 @@ class LambertWHelper {
         }
         this.k = k;
         this.minusOne = new Apint(-1, this.radix);
-        this.one = new Apint(1, this.radix);
+        this.one = Apint.ONES[this.radix];
         this.two = new Apint(2, this.radix);
         this.three = new Apint(3, this.radix);
         this.minusOnePerE = new Apfloat(BRANCH_POINT_BEYOND, Apfloat.DEFAULT, this.radix);  // Slightly beyond the limit to cater for round-off errors

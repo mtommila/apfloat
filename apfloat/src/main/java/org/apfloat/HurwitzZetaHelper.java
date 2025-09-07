@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ class HurwitzZetaHelper
     public static Apcomplex zeta(Apcomplex s, Apcomplex a)
     {
         int radix = a.radix();
-        Apint one = new Apint(1, radix);
+        Apint one = Apint.ONES[radix];
         if (s.equals(one))
         {
             throw new ApfloatArithmeticException("Zeta of first argument one", "zeta.ofFirstOne");

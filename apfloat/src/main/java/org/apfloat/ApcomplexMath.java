@@ -1800,7 +1800,7 @@ public class ApcomplexMath
         }
         long precision = z.precision();
         int radix = z.radix();
-        Apint one = new Apint(1, radix);
+        Apint one = Apint.ONES[radix];
         if (z.scale() < -precision)
         {
             return one.divide(z);

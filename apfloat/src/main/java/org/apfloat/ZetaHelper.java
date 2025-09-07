@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -108,7 +108,7 @@ class ZetaHelper
     private static Apcomplex chi(Apcomplex s)
     {
         int radix = s.radix();
-        Apint one = new Apint(1, radix),
+        Apint one = Apint.ONES[radix],
               two = new Apint(2, radix);
         Apfloat pi = ApfloatMath.pi(s.precision(), radix);
         Apcomplex s1 = s.subtract(one);
@@ -121,7 +121,7 @@ class ZetaHelper
         int radix = s.radix();
         long doublePrecision = ApfloatHelper.getDoublePrecision(radix),
              workingPrecision = s.precision();
-        Apint one = new Apint(1, radix),
+        Apint one = Apint.ONES[radix],
               two = new Apint(2, radix),
               four = new Apint(4, radix);
         double t = Math.abs(s.imag().doubleValue()),
@@ -155,7 +155,7 @@ class ZetaHelper
         double N = 1.11 * Math.sqrt(1 + (0.5 + t) / v);
         this.NN = new Apfloat(N, workingPrecision, radix);
         long M = (long) Math.ceil(N);
-        this.one = new Apint(1, radix);
+        this.one = Apint.ONES[radix];
         this.two = new Apint(2, radix);
         this.pi = ApfloatMath.pi(workingPrecision, radix);
         this.i = new Apcomplex(Apcomplex.ZERO, one);
