@@ -652,15 +652,16 @@ public class AprationalMath
 
     static Iterator<Aprational> bernoullis(long n, int radix)
     {
-        return (n <= 2000 ? bernoullisSmall(radix) : bernoullisBig(n, radix));
+        return (n <= 200000 ? bernoullisSmall(radix) : bernoullisBig(n, radix));
     }
 
     // Returns the even bernoulli numbers B_2n, n > 0
     static Iterator<Aprational> bernoullis2(long n, int radix)
     {
-        return (n < 1000 ? bernoullis2Small(radix) : bernoullis2Big(n, radix));
+        return (n < 100000 ? bernoullis2Small(radix) : bernoullis2Big(n, radix));
     }
 
+    // Uses the Akiyama–Tanigawa algorithm
     static Iterator<Aprational> bernoullisSmall(int radix)
     {
         return new Iterator<Aprational>()
@@ -674,34 +675,30 @@ public class AprationalMath
             @Override
             public Aprational next()
             {
-                Aprational b;
-                if (this.n == 0)
+                Apint n1 = new Apint(this.n + 1, radix);
+                for (int i = 0; i < this.n; i++)
                 {
-                    b = Aprational.ONES[radix];
+                    this.all.set(i, this.all.get(i).multiply(n1));
                 }
-                else if (this.n > 1 && (this.n & 1) == 1)
+                this.all.add(this.denominator);
+                this.denominator = this.denominator.multiply(n1);
+                for (int i = this.n; i > 0; i--)
                 {
-                    b = Aprational.ZEROS[radix];
+                    this.all.set(i - 1, this.all.get(i - 1).subtract(this.all.get(i)).multiply(new Apint(i, radix)));
                 }
-                else
+                Apint numerator = this.all.get(0);
+                if (this.n == 1)
                 {
-                    b = Aprational.ZEROS[radix];
-                    Iterator<Aprational> iterator = this.all.iterator();
-                    Apint binomial = null;
-                    for (long k = 0; iterator.hasNext(); k++)
-                    {
-                        binomial = (k == 0 ? Apint.ONES[radix] : binomial.multiply(new Apint(n + 1 - k, radix)).divide(new Apint(k, radix)));
-                        b = b.subtract(binomial.multiply(iterator.next()).divide(new Apint(n - k + 1, radix)));
-                    }
+                    numerator = numerator.negate();
                 }
-                this.all.add(b);
                 this.n++;
 
-                return b;
+                return new Aprational(numerator, this.denominator);
             }
 
-            private long n;
-            private List<Aprational> all = new ArrayList<>();
+            private int n;
+            private List<Apint> all = new ArrayList<>();
+            private Apint denominator = Apint.ONES[radix];
         };
     }
 

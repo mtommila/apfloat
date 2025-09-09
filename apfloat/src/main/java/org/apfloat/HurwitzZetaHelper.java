@@ -240,6 +240,7 @@ class HurwitzZetaHelper
 
     private static Apcomplex T(Apcomplex s, Apcomplex a, Apint N, long M)
     {
+        long precision = Math.min(s.precision(),  a.precision());
         int radix = a.radix();
         Apint one = Apint.ONES[radix];
         Apcomplex sum = new Aprational(one, new Apint(2, radix)),
@@ -247,7 +248,7 @@ class HurwitzZetaHelper
                   aN2 = ApcomplexMath.pow(aN, -2),
                   pochhammer = s,
                   factor = pochhammer.divide(aN);
-        Iterator<Aprational> bernoullis = AprationalMath.bernoullis2(M, radix);
+        Iterator<Apfloat> bernoullis = ApfloatMath.bernoullis2(precision, radix);
         for (long k = 1; k <= M; k++)
         {
             factor = factor.divide(new Apint(2 * k - 1, radix).multiply(new Apint(2 * k, radix)));

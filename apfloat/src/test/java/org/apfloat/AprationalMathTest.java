@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -731,7 +731,7 @@ public class AprationalMathTest
         assertEquals("6 value", new Aprational("1/60", 7), a);
 
         // This is *extremely* time-consuming
-        //assertEquals("Big equals small", AprationalMath.bernoulliSmall(2001, 10), AprationalMath.bernoulli(2001));
+        //assertEquals("Big equals small", AprationalMath.bernoulliSmall(200001, 10), AprationalMath.bernoulli(200001));
 
         Iterator<Aprational> iterator = AprationalMath.bernoullis(4, 10);
         assertEquals("iterator hasNext", true, iterator.hasNext());

@@ -2077,11 +2077,11 @@ public class ApcomplexMath
         s = s.add(z.subtract(new Aprational(one, two)).multiply(log(z))).subtract(z).add(log(two.multiply(pi)).divide(two));
         Apcomplex z2 = z.multiply(z),
                   zp = z;
-        Iterator<Aprational> bernoulli2 = AprationalMath.bernoullis2(n, radix);
+        Iterator<Apfloat> bernoulli2 = ApfloatMath.bernoullis2(workingPrecision, radix);
         for (long k = 1; k <= n; k++)
         {
             long k2 = Util.multiplyExact(k,  2);
-            Apcomplex term = bernoulli2.next().precision(workingPrecision).divide(new Apint(k2, radix).multiply(new Apint(k2 - 1, radix)).multiply(zp));
+            Apcomplex term = bernoulli2.next().divide(new Apint(k2, radix).multiply(new Apint(k2 - 1, radix)).multiply(zp));
             if (k < n)
             {
                 zp = zp.multiply(z2);
@@ -2319,12 +2319,12 @@ public class ApcomplexMath
         s = s.add(log(z)).subtract(one.divide(two.multiply(z)));
         Apcomplex z2 = z.multiply(z),
                   zp = one;
-        Iterator<Aprational> bernoulli2 = AprationalMath.bernoullis2(n, radix);
+        Iterator<Apfloat> bernoulli2 = ApfloatMath.bernoullis2(precision, radix);
         for (long k = 1; k <= n; k++)
         {
             long k2 = Util.multiplyExact(k,  2);
             zp = zp.multiply(z2);
-            Apcomplex term = bernoulli2.next().precision(precision).divide(new Apint(k2, radix).multiply(zp));
+            Apcomplex term = bernoulli2.next().divide(new Apint(k2, radix).multiply(zp));
 
             long[] matchingPrecisionsReal = ApfloatHelper.getMatchingPrecisions(s.real(), term.real());
             long[] matchingPrecisionsImag = ApfloatHelper.getMatchingPrecisions(s.imag(), term.imag());
