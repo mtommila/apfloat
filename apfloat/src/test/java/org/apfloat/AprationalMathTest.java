@@ -25,8 +25,6 @@ package org.apfloat;
 
 import java.math.RoundingMode;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import junit.framework.TestSuite;
 
@@ -729,116 +727,6 @@ public class AprationalMathTest
 
         a = AprationalMath.bernoulli(6, 7);
         assertEquals("6 value", new Aprational("1/60", 7), a);
-
-        // This is *extremely* time-consuming
-        //assertEquals("Big equals small", AprationalMath.bernoulliSmall(200001, 10), AprationalMath.bernoulli(200001));
-
-        Iterator<Aprational> iterator = AprationalMath.bernoullis(4, 10);
-        assertEquals("iterator hasNext", true, iterator.hasNext());
-        assertEquals("iterator next 1", new Aprational("1"), iterator.next());
-        assertEquals("iterator next 2", new Aprational("-1/2"), iterator.next());
-        assertEquals("iterator next 3", new Aprational("1/6"), iterator.next());
-        assertEquals("iterator next 4", new Aprational("0"), iterator.next());
-        assertEquals("iterator next 5", new Aprational("-1/30"), iterator.next());
-
-        iterator = AprationalMath.bernoullisSmall(10);
-        assertEquals("iteratorSmall hasNext", true, iterator.hasNext());
-        assertEquals("iteratorSmall next 1", new Aprational("1"), iterator.next());
-        assertEquals("iteratorSmall next 2", new Aprational("-1/2"), iterator.next());
-        assertEquals("iteratorSmall next 3", new Aprational("1/6"), iterator.next());
-        assertEquals("iteratorSmall next 4", new Aprational("0"), iterator.next());
-        assertEquals("iteratorSmall next 5", new Aprational("-1/30"), iterator.next());
-        assertEquals("iteratorSmall hasNext 2", true, iterator.hasNext());
-
-        iterator = AprationalMath.bernoullisBig(4, 10);
-        assertEquals("iteratorBig hasNext", true, iterator.hasNext());
-        assertEquals("iteratorBig next 1", new Aprational("1"), iterator.next());
-        assertEquals("iteratorBig next 2", new Aprational("-1/2"), iterator.next());
-        assertEquals("iteratorBig next 3", new Aprational("1/6"), iterator.next());
-        assertEquals("iteratorBig next 4", new Aprational("0"), iterator.next());
-        assertEquals("iteratorBig next 5", new Aprational("-1/30"), iterator.next());
-        assertEquals("iteratorBig hasNext 2", false, iterator.hasNext());
-
-        try
-        {
-            iterator.next();
-            fail("iteratorBig allowed next");
-        }
-        catch (NoSuchElementException nsee)
-        {
-            // OK
-        }
-
-        iterator = AprationalMath.bernoullisSmall(2);
-        Iterator<Aprational> iterator2 = AprationalMath.bernoullisBig(100, 2);
-        for (int i = 0; i <= 100; i++)
-        {
-            a = (i > 0 ? AprationalMath.bernoulliSmall(i, 2) : AprationalMath.bernoulli(i, 2));
-            assertEquals("directSmall vs iteratorSmall " + i, a, iterator.next());
-            assertEquals("directSmall vs iteratorBig " + i, a, iterator2.next());
-            if (i % 2 == 0 && i > 0)
-            {
-                assertEquals("directSmall vs directBig " + i, a, AprationalMath.bernoulliBig(i, 2));
-            }
-        }
-
-        iterator = AprationalMath.bernoullis(4, 15);
-        assertEquals("iterator radix 15 next 1", new Aprational("1", 15), iterator.next());
-        assertEquals("iterator radix 15 next 2", new Aprational("-1/2", 15), iterator.next());
-        assertEquals("iterator radix 15 next 3", new Aprational("1/6", 15), iterator.next());
-        assertEquals("iterator radix 15 next 4", new Aprational("0", 15), iterator.next());
-        assertEquals("iterator radix 15 next 5", new Aprational("-1/20", 15), iterator.next());
-
-        iterator = AprationalMath.bernoullisSmall(15);
-        assertEquals("iteratorSmall radix 15 next 1", new Aprational("1", 15), iterator.next());
-        assertEquals("iteratorSmall radix 15 next 2", new Aprational("-1/2", 15), iterator.next());
-        assertEquals("iteratorSmall radix 15 next 3", new Aprational("1/6", 15), iterator.next());
-        assertEquals("iteratorSmall radix 15 next 4", new Aprational("0", 15), iterator.next());
-        assertEquals("iteratorSmall radix 15 next 5", new Aprational("-1/20", 15), iterator.next());
-
-        iterator = AprationalMath.bernoullisBig(4, 15);
-        assertEquals("iteratorBig radix 15 next 1", new Aprational("1", 15), iterator.next());
-        assertEquals("iteratorBig radix 15 next 2", new Aprational("-1/2", 15), iterator.next());
-        assertEquals("iteratorBig radix 15 next 3", new Aprational("1/6", 15), iterator.next());
-        assertEquals("iteratorBig radix 15 next 4", new Aprational("0", 15), iterator.next());
-        assertEquals("iteratorBig radix 15 next 5", new Aprational("-1/20", 15), iterator.next());
-
-        iterator = AprationalMath.bernoullis2(2, 10);
-        assertEquals("iterator2 hasNext", true, iterator.hasNext());
-        assertEquals("iterator2 next 1", new Aprational("1/6"), iterator.next());
-        assertEquals("iterator2 next 2", new Aprational("-1/30"), iterator.next());
-
-        iterator = AprationalMath.bernoullis2Small(10);
-        assertEquals("iterator2Small hasNext", true, iterator.hasNext());
-        assertEquals("iterator2Small next 1", new Aprational("1/6"), iterator.next());
-        assertEquals("iterator2Small next 2", new Aprational("-1/30"), iterator.next());
-        assertEquals("iterator2Small hasNext 2", true, iterator.hasNext());
-
-        iterator = AprationalMath.bernoullis2Big(2, 10);
-        assertEquals("iterator2Big hasNext", true, iterator.hasNext());
-        assertEquals("iterator2Big next 1", new Aprational("1/6"), iterator.next());
-        assertEquals("iterator2Big next 2", new Aprational("-1/30"), iterator.next());
-        assertEquals("iterator2Big hasNext 2", false, iterator.hasNext());
-
-        try
-        {
-            iterator.next();
-            fail("iterator2Big allowed next");
-        }
-        catch (NoSuchElementException nsee)
-        {
-            // OK
-        }
-
-        for (int radix = 2; radix <= 36; radix++)
-        {
-            iterator = AprationalMath.bernoullisSmall(radix);
-            iterator2 = AprationalMath.bernoullisBig(50, radix);
-            for (int i = 0; i <= 50; i++)
-            {
-                assertEquals("iteratorSmall vs iteratorBig " + i + " radix " + radix, iterator.next(), iterator2.next());
-            }
-        }
 
         try
         {

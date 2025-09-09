@@ -2565,7 +2565,7 @@ public class ApfloatMath
         Apfloat twopi2 = pow(pi(workingPrecision, radix).multiply(two), 2),
                 f = new Aprational(one, two),
                 s = Apfloat.ZERO;
-        Iterator<Apfloat> bernoullis2 = bernoullis2(workingPrecision, radix);
+        Iterator<Apfloat> bernoullis2 = BernoulliHelper.bernoullis2Small(workingPrecision, radix);
         for (long n = 1; ; n++)
         {
             f = f.multiply(twopi2).divide(new Apint(Util.multiplyExact(2, n) - 1, radix).multiply(new Apint(2 * n, radix)));
@@ -4955,73 +4955,6 @@ public class ApfloatMath
         }
         long n2 = n >>> 1;
         return pow(new Apfloat(2, precision, radix), n2).multiply(factorial(n2, precision, radix));
-    }
-
-    // Uses the Akiyama–Tanigawa algorithm
-    static Iterator<Apfloat> bernoullis(long precision, int radix)
-    {
-        return new Iterator<Apfloat>()
-        {
-            @Override
-            public boolean hasNext()
-            {
-                return true;
-            }
-
-            @Override
-            public Apfloat next()
-            {
-                Apint n1 = new Apint(this.n + 1, radix);
-                for (int i = 0; i < this.n; i++)
-                {
-                    this.all.set(i, this.all.get(i).multiply(n1));
-                }
-                this.all.add(this.denominator);
-                this.denominator = this.denominator.multiply(n1);
-                for (int i = this.n; i > 0; i--)
-                {
-                    this.all.set(i - 1, this.all.get(i - 1).subtract(this.all.get(i)).multiply(new Apint(i, radix)));
-                }
-                Apint numerator = this.all.get(0);
-                if (this.n == 1)
-                {
-                    numerator = numerator.negate();
-                }
-                this.n++;
-
-                return numerator.precision(precision).divide(this.denominator);
-            }
-
-            private int n;
-            private List<Apint> all = new ArrayList<>();
-            private Apint denominator = Apint.ONES[radix];
-        };
-    }
-
-    // Returns the even bernoulli numbers B_2n, n > 0
-    static Iterator<Apfloat> bernoullis2(long precision, int radix)
-    {
-        return new Iterator<Apfloat>()
-        {
-            @Override
-            public boolean hasNext()
-            {
-                return true;
-            }
-
-            @Override
-            public Apfloat next()
-            {
-                this.i.next();
-                return this.i.next();
-            }
-
-            private Iterator<Apfloat> i = bernoullis(precision, radix);
-
-            {
-                this.i.next();
-            }
-        };
     }
 
     // Clean up static maps at shutdown, to allow garbage collecting temporary files

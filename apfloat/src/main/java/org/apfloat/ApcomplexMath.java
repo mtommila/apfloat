@@ -2077,7 +2077,7 @@ public class ApcomplexMath
         s = s.add(z.subtract(new Aprational(one, two)).multiply(log(z))).subtract(z).add(log(two.multiply(pi)).divide(two));
         Apcomplex z2 = z.multiply(z),
                   zp = z;
-        Iterator<Apfloat> bernoulli2 = ApfloatMath.bernoullis2(workingPrecision, radix);
+        Iterator<Apfloat> bernoulli2 = BernoulliHelper.bernoullis2(n, workingPrecision, radix);
         for (long k = 1; k <= n; k++)
         {
             long k2 = Util.multiplyExact(k,  2);
@@ -2319,7 +2319,7 @@ public class ApcomplexMath
         s = s.add(log(z)).subtract(one.divide(two.multiply(z)));
         Apcomplex z2 = z.multiply(z),
                   zp = one;
-        Iterator<Apfloat> bernoulli2 = ApfloatMath.bernoullis2(precision, radix);
+        Iterator<Apfloat> bernoulli2 = BernoulliHelper.bernoullis2(n, precision, radix);
         for (long k = 1; k <= n; k++)
         {
             long k2 = Util.multiplyExact(k,  2);
