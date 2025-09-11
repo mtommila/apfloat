@@ -2990,6 +2990,18 @@ public class ApcomplexMathTest
         assertEquals("2, -5003.5 precision", 5, a.precision());
         assertEquals("2, -5003.5 value", new Apcomplex("-3.99361e-8"), a, new Apfloat("5e-12"));
 
+        a = ApcomplexMath.polygamma(3, new Apcomplex("-5003.5"));
+        assertEquals("3, -5003.5 precision", 5, a.precision());
+        assertEquals("3, -5003.5 value", new Apcomplex("194.818"), a, new Apfloat("5e-2"));
+
+        a = ApcomplexMath.polygamma(4, new Apcomplex("-5003.5000000000000000"));
+        assertEquals("4, -5003.5 precision", 20, a.precision());
+        assertEquals("4, -5003.5 value", new Apcomplex("-9.5693410233651735889e-15"), a, new Apfloat("5e-34"));
+
+        a = ApcomplexMath.polygamma(5, new Apcomplex("-5003.5"));
+        assertEquals("5, -5003.5 precision", 5, a.precision());
+        assertEquals("5, -5003.5 value", new Apcomplex("15382"), a, new Apfloat("5e0"));
+
         try
         {
             ApcomplexMath.polygamma(-1, new Apcomplex("(3.00000,4.00000)"));

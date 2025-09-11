@@ -3075,6 +3075,10 @@ public class ApfloatMathTest
         assertEquals("1, -5003.5 precision", 5, a.precision());
         assertEquals("1, -5003.5 value", new Apfloat("9.de91", 5, 16), a, new Apfloat("0.0008", 1, 16));
 
+        a = ApfloatMath.polygamma(7, new Apfloat("-138b.8", 6, 16));
+        assertEquals("7, -5003.5 precision", 6, a.precision());
+        assertEquals("7, -5003.5 value", new Apfloat("276190", 6, 16), a, new Apfloat("8", 1, 16));
+
         try
         {
             ApfloatMath.polygamma(3, new Apfloat(3));

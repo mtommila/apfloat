@@ -2415,7 +2415,8 @@ public class ApcomplexMath
     {
         int n = Util.toIntExact(nn),
             radix = u.radix();
-        Apint one = Apint.ONES[radix];
+        Apint one = Apint.ONES[radix],
+              two = new Apint(2, radix);
         Apcomplex[] d = new Apcomplex[n + 1];
         assert (n > 0);
         d[0] = u;
@@ -2423,9 +2424,16 @@ public class ApcomplexMath
         for (int i = 1; i < n; i++)
         {
             d[i + 1] = Apfloat.ZEROS[radix];
-            for (int j = 0; j <= i; j++)
+            Apint binomial = one;
+            int j;
+            for (j = 0; j <= (i - 1) / 2; j++)
             {
-                d[i + 1] = d[i + 1].add(ApintMath.binomial(i, j).multiply(d[j]).multiply(d[i - j]));
+                d[i + 1] = d[i + 1].add(binomial.multiply(d[j]).multiply(d[i - j]).multiply(two));
+                binomial = binomial.multiply(new Apint(i - j, radix)).divide(new Apint(j + 1, radix));
+            }
+            for (; j <= i / 2; j++)
+            {
+                d[i + 1] = d[i + 1].add(binomial.multiply(pow(d[j], 2)));
             }
         }
         Apcomplex result = d[n];
