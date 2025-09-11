@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -576,6 +576,31 @@ public class Util
         try
         {
             return Math.subtractExact(x, y);
+        }
+        catch (ArithmeticException ae)
+        {
+            throw new OverflowException("Overflow", ae, "overflow");
+        }
+    }
+
+    /**
+     * Returns the argument converted to int, throwing an exception if the result overflows.
+     *
+     * @param x The operand.
+     *
+     * @return The result.
+     *
+     * @throws OverflowException If the result overflows an int
+     *
+     * @since 1.15.0
+     */
+
+    public static int toIntExact(long x)
+        throws OverflowException
+    {
+        try
+        {
+            return Math.toIntExact(x);
         }
         catch (ArithmeticException ae)
         {

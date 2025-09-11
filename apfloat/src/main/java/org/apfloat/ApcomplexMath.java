@@ -1599,6 +1599,11 @@ public class ApcomplexMath
     static Apcomplex cot(Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        if (z.imag().isZero())
+        {
+            return ApfloatMath.cot(z.real());
+        }
+
         boolean negate = z.imag().signum() < 0;
         z = (negate ? z.negate() : z);
 
@@ -2380,9 +2385,51 @@ public class ApcomplexMath
              precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
         z = ApfloatHelper.ensurePrecision(z, precision);
         Apint one = Apint.ONES[radix];
+
+        // Rough effort estimate that is it worthwhile to use the reflection formula
+        if (z.real().signum() < 0 && -n > z.real().longValue())
+        {
+            // polygamma(n, 1 - z) == (-1)^n polygamma(n, z) + (-1)^n pi D(cot(pi z), {z, n})
+            // Calculate n:th derivative of cot(pi z) using algorithm from
+            // Michael E. Hoffman, Derivative polynomials for tangent and secant, The American Mathematical Monthly, Vol. 102, No. 1 (Jan., 1995), pp. 23-30
+            // https://www.jstor.org/stable/2974853
+            // Note that here we have cot(pi z) not just cot(z) so n:th derivative gets an extra pi^n factor (from inner function derivative)
+
+            // polygamma(n, z) == (-1)^n polygamma(n, 1 - z) - pi D(cot(pi z), {z, n})
+            long n1 = Util.addExact(n, 1);
+            Apfloat pi = ApfloatMath.pi(precision, radix);
+            Apcomplex g = polygamma(n, one.subtract(z)),
+                      u = ApcomplexMath.cot(pi.multiply(z)),
+                      d = cotPrime(u, n);
+            Apcomplex result = ((n & 1) == 0 ? g : g.negate()).subtract(ApfloatMath.pow(pi, n1).multiply(d));
+            return ApfloatHelper.reducePrecision(result, extraPrecision);
+        }
+
         Apfloat n1 = new Apfloat(n, precision, radix).add(one);
         Apcomplex result = ApfloatMath.gamma(n1).multiply(zeta(n1, z));
         return ApfloatHelper.reducePrecision((n & 1) == 1 ? result : result.negate(), extraPrecision);
+    }
+
+    // n:th derivative of cot(z) where u = cot(z)
+    private static Apcomplex cotPrime(Apcomplex u, long nn)
+    {
+        int n = Util.toIntExact(nn),
+            radix = u.radix();
+        Apint one = Apint.ONES[radix];
+        Apcomplex[] d = new Apcomplex[n + 1];
+        assert (n > 0);
+        d[0] = u;
+        d[1] = u.multiply(u).add(one);
+        for (int i = 1; i < n; i++)
+        {
+            d[i + 1] = Apfloat.ZEROS[radix];
+            for (int j = 0; j <= i; j++)
+            {
+                d[i + 1] = d[i + 1].add(ApintMath.binomial(i, j).multiply(d[j]).multiply(d[i - j]));
+            }
+        }
+        Apcomplex result = d[n];
+        return ((n & 1) == 0 ? result : result.negate());
     }
 
     /**

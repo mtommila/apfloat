@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import org.apfloat.Apfloat;
 import org.apfloat.OverflowException;
 
 /**
- * @version 1.14.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -71,6 +71,7 @@ public class UtilTest
         suite.addTest(new UtilTest("testMultiplyExact"));
         suite.addTest(new UtilTest("testAddExact"));
         suite.addTest(new UtilTest("testSubtractExact"));
+        suite.addTest(new UtilTest("testToIntExact"));
         suite.addTest(new UtilTest("testStream"));
 
         return suite;
@@ -351,6 +352,33 @@ public class UtilTest
         try
         {
             Util.subtractExact(-2, Long.MAX_VALUE);
+            fail("Overflow allowed");
+        }
+        catch (OverflowException oe)
+        {
+            // OK: overflow
+        }
+    }
+
+    public static void testToIntExact()
+    {
+        assertEquals("Valid", 3, Util.toIntExact(3));
+        assertEquals("max", Integer.MAX_VALUE, Util.toIntExact(Integer.MAX_VALUE));
+        assertEquals("min", Integer.MIN_VALUE, Util.toIntExact(Integer.MIN_VALUE));
+
+        try
+        {
+            Util.toIntExact(Integer.MAX_VALUE + 1L);
+            fail("Overflow allowed");
+        }
+        catch (OverflowException oe)
+        {
+            // OK: overflow
+        }
+
+        try
+        {
+            Util.toIntExact(Integer.MIN_VALUE - 1L);
             fail("Overflow allowed");
         }
         catch (OverflowException oe)

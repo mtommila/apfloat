@@ -1931,6 +1931,14 @@ public class ApfloatMath
         return w.imag().divide(w.real());
     }
 
+    static Apfloat cot(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        Apcomplex w = ApcomplexMath.exp(new Apcomplex(Apfloat.ZERO, x));
+
+        return w.real().divide(w.imag());
+    }
+
     /**
      * Sinc.
      *
