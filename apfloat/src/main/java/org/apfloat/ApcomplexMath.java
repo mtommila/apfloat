@@ -1601,7 +1601,9 @@ public class ApcomplexMath
     {
         if (z.imag().isZero())
         {
-            return ApfloatMath.cot(z.real());
+            Apcomplex w = exp(new Apcomplex(Apfloat.ZERO, z.real()));
+
+            return w.real().divide(w.imag());
         }
 
         boolean negate = z.imag().signum() < 0;
@@ -2387,7 +2389,7 @@ public class ApcomplexMath
         Apint one = Apint.ONES[radix];
 
         // Rough effort estimate that is it worthwhile to use the reflection formula
-        if (z.real().signum() < 0 && -n > z.real().longValue())
+        if (z.real().signum() < 0 && -n / 10 > z.real().longValue())
         {
             // polygamma(n, 1 - z) == (-1)^n polygamma(n, z) + (-1)^n pi D(cot(pi z), {z, n})
             // Calculate n:th derivative of cot(pi z) using algorithm from
@@ -2396,11 +2398,26 @@ public class ApcomplexMath
             // Note that here we have cot(pi z) not just cot(z) so n:th derivative gets an extra pi^n factor (from inner function derivative)
 
             // polygamma(n, z) == (-1)^n polygamma(n, 1 - z) - pi D(cot(pi z), {z, n})
-            long n1 = Util.addExact(n, 1);
-            Apfloat pi = ApfloatMath.pi(precision, radix);
+            long n1 = Util.addExact(n, 1),
+                 cotPrecision = ApfloatHelper.extendPrecision(precision, (long) (Math.log(n) / Math.log(radix) + z.scale()));
+            Apfloat pi = ApfloatMath.pi(cotPrecision, radix);
             Apcomplex g = polygamma(n, one.subtract(z)),
-                      u = ApcomplexMath.cot(pi.multiply(z)),
-                      d = cotPrime(u, n);
+                      u;
+            // The cot() derivative is numerically quite unstable. If z is a half-integer then cot(pi z) is zero, or more likely off by one ulp of z.
+            // Then the pi^(n + 1) * D can be quite large, even though it's all just round-off error (and thus completely random).
+            // Make sure that if z is a half-integer then cot(pi z) is always exactly zero.
+            // On the other hand, if z is a near-half-integer, then cot(pi z) might still be zero, which can also mess up the calculation as the derivative might be huge but huge * 0 = 0 whereas huge * small = something meaningful
+            if (!z.isInteger() && z.multiply(new Apint(2, radix)).isInteger())
+            {
+                u = Apcomplex.ZEROS[radix];
+            }
+            else
+            {
+                z = ApfloatHelper.ensurePrecision(z, cotPrecision);
+                u = cot(pi.multiply(z));
+            }
+            Apcomplex d = cotPrime(u, n);
+            d = ApfloatHelper.limitPrecision(d, precision);
             Apcomplex result = ((n & 1) == 0 ? g : g.negate()).subtract(ApfloatMath.pow(pi, n1).multiply(d));
             return ApfloatHelper.reducePrecision(result, extraPrecision);
         }
