@@ -2400,16 +2400,25 @@ public class ApcomplexMath
             // polygamma(n, z) == (-1)^n polygamma(n, 1 - z) - pi D(cot(pi z), {z, n})
             long n1 = Util.addExact(n, 1),
                  cotPrecision = ApfloatHelper.extendPrecision(precision, (long) (Math.log(n) / Math.log(radix) + z.scale()));
+            Apint two = new Apint(2, radix);
             Apfloat pi = ApfloatMath.pi(cotPrecision, radix);
             Apcomplex g = polygamma(n, one.subtract(z)),
+                      z2 = z.multiply(two),
+                      dz2 = z2.subtract(RoundingHelper.roundToInteger(z2.real(), RoundingMode.HALF_EVEN)),
                       u;
             // The cot() derivative is numerically quite unstable. If z is a half-integer then cot(pi z) is zero, or more likely off by one ulp of z.
             // Then the pi^(n + 1) * D can be quite large, even though it's all just round-off error (and thus completely random).
             // Make sure that if z is a half-integer then cot(pi z) is always exactly zero.
             // On the other hand, if z is a near-half-integer, then cot(pi z) might still be zero, which can also mess up the calculation as the derivative might be huge but huge * 0 = 0 whereas huge * small = something meaningful
-            if (!z.isInteger() && z.multiply(new Apint(2, radix)).isInteger())
+            if (!z.isInteger() && z2.isInteger())
             {
                 u = Apcomplex.ZEROS[radix];
+            }
+            else if (-dz2.scale() > cotPrecision / 2)
+            {
+                // For near-half-integers use the series expansion
+                dz2 = ApfloatHelper.ensurePrecision(dz2, cotPrecision);
+                u = pi.multiply(dz2.divide(two)).negate();
             }
             else
             {

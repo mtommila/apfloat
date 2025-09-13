@@ -122,7 +122,7 @@ class HypergeometricHelper
             }
             else
             {
-                Apint abRounded = RoundingHelper.roundToInteger(ab.real(), RoundingMode.HALF_EVEN).truncate();
+                Apint abRounded = RoundingHelper.roundToInteger(ab.real(), RoundingMode.HALF_EVEN);
                 digitLoss = Math.min(workingPrecision, -ab.subtract(abRounded).scale());
                 if (digitLoss > 0)
                 {
@@ -175,7 +175,7 @@ class HypergeometricHelper
             }
             else
             {
-                Apint cabRounded = RoundingHelper.roundToInteger(cab.real(), RoundingMode.HALF_EVEN).truncate();
+                Apint cabRounded = RoundingHelper.roundToInteger(cab.real(), RoundingMode.HALF_EVEN);
                 digitLoss = Math.min(workingPrecision, -cab.subtract(cabRounded).scale());
                 if (digitLoss > 0)
                 {
@@ -765,7 +765,7 @@ class HypergeometricHelper
             }
             else
             {
-                Apint bRounded = RoundingHelper.roundToInteger(b.real(), RoundingMode.HALF_EVEN).truncate();
+                Apint bRounded = RoundingHelper.roundToInteger(b.real(), RoundingMode.HALF_EVEN);
                 long digitLoss = Math.min(workingPrecision, -b.subtract(bRounded).scale());
                 if (digitLoss > 0)
                 {
@@ -1162,7 +1162,7 @@ class HypergeometricHelper
     {
         if (c.real().signum() <= 0)
         {
-            Apint cRounded = RoundingHelper.roundToInteger(c.real(), RoundingMode.HALF_EVEN).truncate();
+            Apint cRounded = RoundingHelper.roundToInteger(c.real(), RoundingMode.HALF_EVEN);
             long digitLoss = -c.subtract(cRounded).scale();
             if (digitLoss > 0)
             {

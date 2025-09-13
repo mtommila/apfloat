@@ -3034,6 +3034,22 @@ public class ApcomplexMathTest
         assertEquals("600, 50.4 precision", 3, a.precision());
         assertEquals("600, 50.4 value", new Apcomplex("-8.74e384"), a, new Apfloat("5e382"));
 
+        a = ApcomplexMath.polygamma(4, new Apcomplex("(-1.5000,0.000010000)"));
+        assertEquals("4, -1.5000+0.000010000i precision", 2, a.precision());
+        assertEquals("4, -1.5000+0.000010000i value", new Apcomplex("(-0.313756,0.153816)"), a, new Apfloat("5e-2"));
+
+        a = ApcomplexMath.polygamma(4, new Apcomplex("(-1.5000,-0.000010000)"));
+        assertEquals("4, -1.5000-0.000010000i precision", 2, a.precision());
+        assertEquals("4, -1.5000-0.000010000i value", new Apcomplex("(-0.313756,-0.153816)"), a, new Apfloat("5e-2"));
+
+        a = ApcomplexMath.polygamma(4, new Apcomplex("(-1.5000,0.0000010000)"));
+        assertEquals("4, -1.5000+0.0000010000i precision",5, a.precision());
+        assertEquals("4, -1.5000+0.0000010000i value", new Apcomplex("(-0.313756,0.0153816)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.polygamma(4, new Apcomplex("(-1.5000,-0.0000010000)"));
+        assertEquals("4, -1.5000-0.0000010000i precision",5, a.precision());
+        assertEquals("4, -1.5000-0.0000010000i value", new Apcomplex("(-0.313756,-0.0153816)"), a, new Apfloat("5e-5"));
+
         try
         {
             ApcomplexMath.polygamma(-1, new Apcomplex("(3.00000,4.00000)"));
