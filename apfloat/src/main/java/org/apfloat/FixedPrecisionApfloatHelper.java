@@ -1801,7 +1801,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <i>𝐇<sub>ν</sub>(x)</i>
      *
-     * @throws ArithmeticException If <code>x</code> is zero and <code>ν</code> is <= -1.
+     * @throws ArithmeticException If <code>x</code> is zero and <code>ν</code> is &le; -1.
      *
      * @since 1.15.0
      */
@@ -1820,7 +1820,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <i>𝐋<sub>ν</sub>(x)</i>
      *
-     * @throws ArithmeticException If <code>x</code> is zero and <code>ν</code> is <= -1.
+     * @throws ArithmeticException If <code>x</code> is zero and <code>ν</code> is &le; -1.
      *
      * @since 1.15.0
      */

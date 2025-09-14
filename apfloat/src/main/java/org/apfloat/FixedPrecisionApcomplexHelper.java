@@ -1713,7 +1713,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return <i>𝐇<sub>ν</sub>(z)</i>
      *
-     * @throws ArithmeticException If <code>z</code> is zero and real part of <code>ν</code> is <= -1.
+     * @throws ArithmeticException If <code>z</code> is zero and real part of <code>ν</code> is &le; -1.
      *
      * @since 1.15.0
      */
@@ -1732,7 +1732,7 @@ public class FixedPrecisionApcomplexHelper
      *
      * @return <i>𝐋<sub>ν</sub>(z)</i>
      *
-     * @throws ArithmeticException If <code>z</code> is zero and real part of <code>ν</code> is <= -1.
+     * @throws ArithmeticException If <code>z</code> is zero and real part of <code>ν</code> is &le; -1.
      *
      * @since 1.15.0
      */
