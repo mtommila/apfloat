@@ -733,10 +733,11 @@ public class ApfloatMath
         {
             return Apfloat.ZEROS[x.radix()];    // Degenerate case; not enough precision to make any sense
         }
-        else
+        if (y.isShort())
         {
-            precision = ApfloatHelper.extendPrecision(scaleDiff);               // Some extra precision to avoid round-off errors
+            return x.modShort(y);
         }
+        precision = ApfloatHelper.extendPrecision(scaleDiff);                   // Some extra precision to avoid round-off errors
 
         tx = x.precision(precision);
         ty = y.precision(precision);

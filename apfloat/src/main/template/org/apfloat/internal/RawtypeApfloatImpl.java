@@ -1282,6 +1282,7 @@ public class RawtypeApfloatImpl
 
         assert (this.sign != 0);
         assert (that.sign != 0);
+        assert (that.getSize() == 1);
 
         int sign = this.sign * that.sign;
 
@@ -1299,7 +1300,7 @@ public class RawtypeApfloatImpl
 
         long precision = Math.min(this.precision, that.precision),
              basePrecision = getBasePrecision(),
-             thisDataSize = Math.min(getSize(), basePrecision);
+             thisDataSize = getSize();
 
         DataStorage dataStorage;
 
@@ -1354,16 +1355,10 @@ public class RawtypeApfloatImpl
             {
                 // Divisor contains only factors of the base; calculate maximum sequence length
                 carry = (rawtype) 1;
-                DataStorage.Iterator dummy = new DataStorage.Iterator()
-                {
-                    @Override public void setRawtype(rawtype value) {}
-                    @Override public void next() {}
-                    private static final long serialVersionUID = 1L;
-                };
                 long sequenceSize;
                 for (sequenceSize = 0; carry != 0; sequenceSize++)
                 {
-                    carry = additionStrategy.divide(null, divisor, carry, dummy, 1);
+                    carry = additionStrategy.divide(null, divisor, carry, null, 1);
                 }
 
                 size = Math.min(basePrecision, thisDataSize + sequenceSize);
@@ -1402,6 +1397,151 @@ public class RawtypeApfloatImpl
         }
 
         return new RawtypeApfloatImpl(sign, precision, exponent, dataStorage, this.radix);
+    }
+
+    @Override
+    public ApfloatImpl modShort(ApfloatImpl x)
+        throws ApfloatRuntimeException
+    {
+        if (!(x instanceof RawtypeApfloatImpl))
+        {
+            throw new ImplementationMismatchException("Wrong operand type: " + x.getClass().getName(), "type.mismatch", x.getClass().getName());
+        }
+
+        RawtypeApfloatImpl that = (RawtypeApfloatImpl) x;
+
+        if (this.radix != that.radix)
+        {
+            throw new RadixMismatchException("Cannot use numbers with different radixes: " + this.radix + " and " + that.radix, "radix.mismatch", this.radix, that.radix);
+        }
+
+        assert (this.sign != 0);
+        assert (that.sign != 0);
+        assert (this.exponent >= that.exponent);
+        assert (that.getSize() == 1);
+
+        rawtype modulus = getMostSignificantWord(that.dataStorage);
+
+        ApfloatContext ctx = ApfloatContext.getContext();
+        AdditionBuilder<RawType> additionBuilder = ctx.getBuilderFactory().getAdditionBuilder(RawType.TYPE);
+        AdditionStrategy<RawType> additionStrategy = additionBuilder.createAddition(this.radix);
+
+        // Check if we need to go through all the digits or just some of the last ones
+        rawtype dividend = modulus;
+
+        // Check that the factorization of the modulus consists entirely of factors of the base
+        // E.g. if base is 10=2*5 then the modulus should be 2^n*5^m
+        for (int i = 0; i < RADIX_FACTORS[this.radix].length; i++)
+        {
+            rawtype factor = RADIX_FACTORS[this.radix][i],
+                    quotient;
+
+            // Keep dividing by factor as long as dividend % factor == 0
+            // that is remove factors of the base from the modulus
+            while ((dividend - factor * (quotient = (rawtype) (long) (dividend / factor))) == 0)
+            {
+                dividend = quotient;
+            }
+        }
+
+        // Check if the modulus was factored all the way to one by just dividing by factors of the base
+
+        long exponentDifference = this.exponent - that.exponent,
+             sequenceSize;
+        if (dividend != (rawtype) 1)
+        {
+            // Modulus does not contain only factors of the base; need to the division to full length
+            sequenceSize = exponentDifference + 1;
+        }
+        else
+        {
+            // Modulus contains only factors of the base; calculate maximum sequence length
+            rawtype carry = (rawtype) 1;
+            for (sequenceSize = 0; carry != 0; sequenceSize++)
+            {
+                carry = additionStrategy.divide(null, modulus, carry, null, 1);
+            }
+        }
+
+        // Possible cases
+
+        // Legend:
+        // Significant digit:     X
+        // Irrelevant digit:      -
+        // Empty (implicit zero):  
+
+        // this:       XXXXXXXX
+        // that:                 X
+
+        // this:       XXXXXXXXXXXXXX
+        // that:                 X
+
+        // this:       -----XXX
+        // that:                 X
+
+        // this:       -----XXXXXXXXX
+        // that:                 X
+
+        // this:       -----
+        // that:                 X
+
+        long thisDataSize = getSize();
+
+        if (thisDataSize <= exponentDifference - sequenceSize)
+        {
+            // this:       -----
+            // that:                 X
+            return zero();
+        }
+
+        long size = Math.max(thisDataSize - exponentDifference, 1),
+             start = Math.max(exponentDifference - sequenceSize + 1, 0),
+             end = Math.min(thisDataSize, exponentDifference + 1);
+
+        DataStorage dataStorage = createDataStorage(size);
+        dataStorage.setSize(size);
+
+        DataStorage.Iterator src = this.dataStorage.iterator(DataStorage.READ, start, thisDataSize);
+
+        // Perform actual division
+        rawtype carry = additionStrategy.divide(src, modulus, (rawtype) 0, null, end - start);
+
+        // Continue division until the remainder is smaller than the modulus
+        carry = additionStrategy.divide(null, modulus, carry, null, exponentDifference - end + 1);
+
+        try (DataStorage.Iterator dst = dataStorage.iterator(DataStorage.WRITE, 0, size))
+        {
+            // Set the carry (most significant word of remainder)
+            dst.setRawtype(carry);
+            dst.next();
+
+            // Copy remaining digits, if any, from this to that
+            additionStrategy.add(src, null, (rawtype) 0, dst, size - 1);
+        }
+
+        long exponent = that.exponent;
+
+        dataStorage.setReadOnly();
+
+        long leadingZeros = getLeadingZeros(dataStorage, 0);
+        if (leadingZeros == size)
+        {
+            // Remainder is zero
+            return zero();
+        }
+        dataStorage = dataStorage.subsequence(leadingZeros, size - leadingZeros);
+        exponent -= leadingZeros;
+
+        if (exponent < -MAX_EXPONENT[this.radix])
+        {
+            // Underflow
+            return zero();
+        }
+
+        long scale = (exponent - 1) * BASE_DIGITS[this.radix] + getInitialDigits(dataStorage),
+             precision = Math.min(Util.ifFinite(precision(), precision() - scale() + scale), Util.ifFinite(that.precision(), that.precision() - that.scale() + scale));
+
+        return new RawtypeApfloatImpl(this.sign, precision, exponent, dataStorage, this.radix);
     }
 
     @Override

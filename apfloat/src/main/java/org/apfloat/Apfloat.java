@@ -886,6 +886,18 @@ public class Apfloat
         return ApfloatMath.fmod(this, x);
     }
 
+    Apfloat modShort(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        assert (x.isShort());
+
+        ApfloatImpl thisImpl = getImpl(),
+                    xImpl = x.getImpl(),
+                    impl = thisImpl.modShort(xImpl);
+
+        return new Apfloat(impl);
+    }
+
     /**
      * Floor function. Returns the largest (closest to positive infinity) value
      * that is not greater than this apfloat and is equal to a mathematical integer.

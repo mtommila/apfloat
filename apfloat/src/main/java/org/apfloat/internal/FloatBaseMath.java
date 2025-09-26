@@ -197,7 +197,7 @@ public class FloatBaseMath
      * @param src1 First source data sequence. Can be <code>null</code>, in which case the input values are assumed to be zero.
      * @param src2 Divisor. All elements of <code>src1</code> are divided by this value.
      * @param carry Input carry word. Used as the upper word for the division of the first input element. This should be the remainder word returned from the previous block processed.
-     * @param dst Destination data sequence.
+     * @param dst Destination data sequence. Can be <code>null</code>, in which case only the remainder is computed.
      * @param size Number of elements to process.
      *
      * @return Remainder word of the propagated division of the last (rightmost) word in the accessed sequence.
@@ -206,7 +206,7 @@ public class FloatBaseMath
     public float baseDivide(DataStorage.Iterator src1, float src2, float carry, DataStorage.Iterator dst, long size)
         throws ApfloatRuntimeException
     {
-        assert (src1 != dst);
+        assert (src1 != dst || dst == null);
 
         double base = BASE[this.radix],
                divisor = src2;
@@ -219,10 +219,10 @@ public class FloatBaseMath
 
             carry = (float) (tmp - (double) result * divisor);          // = tmp % src2
 
-            dst.setFloat(result);
+            if (dst != null) dst.setFloat(result);
 
             if (src1 != null) src1.next();
-            dst.next();
+            if (dst != null) dst.next();
         }
 
         return carry;

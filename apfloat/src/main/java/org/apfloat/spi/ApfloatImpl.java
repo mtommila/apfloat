@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import org.apfloat.ApfloatRuntimeException;
  * A class implementing <code>ApfloatImpl</code> is not required to accept any other <code>ApfloatImpl</code>
  * class as the argument than the same implementing class.
  *
- * @version 1.7.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -90,6 +90,19 @@ public interface ApfloatImpl
      */
 
     public ApfloatImpl divideShort(ApfloatImpl x)
+        throws ApfloatRuntimeException;
+
+    /**
+     * Return the remainder when this <code>ApfloatImpl</code> is divided by an <code>ApfloatImpl</code> that is "short".
+     *
+     * @param x The modulus.
+     *
+     * @return <code>this % x</code>.
+     *
+     * @since 1.15.0
+     */
+
+    public ApfloatImpl modShort(ApfloatImpl x)
         throws ApfloatRuntimeException;
 
     /**

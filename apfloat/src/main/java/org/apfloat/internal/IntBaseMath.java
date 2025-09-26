@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import static org.apfloat.internal.IntRadixConstants.*;
  * Mathematical operations on numbers in a base.
  * Implementation for the <code>int</code> type.
  *
- * @version 1.8.2
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
@@ -198,7 +198,7 @@ public class IntBaseMath
      * @param src1 First source data sequence. Can be <code>null</code>, in which case the input values are assumed to be zero.
      * @param src2 Divisor. All elements of <code>src1</code> are divided by this value.
      * @param carry Input carry word. Used as the upper word for the division of the first input element. This should be the remainder word returned from the previous block processed.
-     * @param dst Destination data sequence.
+     * @param dst Destination data sequence. Can be <code>null</code>, in which case only the remainder is computed.
      * @param size Number of elements to process.
      *
      * @return Remainder word of the propagated division of the last (rightmost) word in the accessed sequence.
@@ -207,7 +207,7 @@ public class IntBaseMath
     public int baseDivide(DataStorage.Iterator src1, int src2, int carry, DataStorage.Iterator dst, long size)
         throws ApfloatRuntimeException
     {
-        assert (src1 != dst);
+        assert (src1 != dst || dst == null);
 
         int base = BASE[this.radix];
 
@@ -219,10 +219,10 @@ public class IntBaseMath
 
             carry = (int) tmp - result * src2;      // = tmp % src2
 
-            dst.setInt(result);
+            if (dst != null) dst.setInt(result);
 
             if (src1 != null) src1.next();
-            dst.next();
+            if (dst != null) dst.next();
         }
 
         return carry;

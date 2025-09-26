@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -769,6 +769,22 @@ public class ApfloatTest
         Apfloat a = new Apfloat(4),
                 b = new Apfloat(3);
         assertEquals("4 % 3", new Apfloat(1), a.mod(b));
+        assertEquals("4 % 3 precision", Apfloat.INFINITE, a.mod(b).precision());
+
+        a = new Apfloat(8, 100);
+        b = new Apfloat(3, 50);
+        assertEquals("8 % 3", new Apfloat(2), a.mod(b));
+        assertEquals("8 % 3 precision", 50, a.mod(b).precision());
+
+        a = new Apfloat(19, 50);
+        b = new Apfloat(4, 100);
+        assertEquals("19 % 4", new Apfloat(3), a.mod(b));
+        assertEquals("19 % 4 precision", 49, a.mod(b).precision());
+
+        a = new Apfloat("541097841659786140697814560195780612409786159701625097812456097126590782577", 100);
+        b = new Apfloat("7947823406983254963403456", 150);
+        assertEquals("541097841659786140697814560195780612409786159701625097812456097126590782577 % 7947823406983254963403456", new Apfloat("2718085049131026388528241", Apfloat.INFINITE), a.mod(b));
+        assertEquals("541097841659786140697814560195780612409786159701625097812456097126590782577 % 7947823406983254963403456 precision", 50, a.mod(b).precision());
     }
 
     public static void testFloor()

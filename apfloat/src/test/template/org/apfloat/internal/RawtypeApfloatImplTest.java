@@ -70,6 +70,7 @@ public class RawtypeApfloatImplTest
         suite.addTest(new RawtypeApfloatImplTest("testMultiply"));
         suite.addTest(new RawtypeApfloatImplTest("testIsShort"));
         suite.addTest(new RawtypeApfloatImplTest("testDivideShort"));
+        suite.addTest(new RawtypeApfloatImplTest("testModShort"));
         suite.addTest(new RawtypeApfloatImplTest("testAbsFloor"));
         suite.addTest(new RawtypeApfloatImplTest("testAbsCeil"));
         suite.addTest(new RawtypeApfloatImplTest("testFrac"));
@@ -2009,6 +2010,261 @@ public class RawtypeApfloatImplTest
         try
         {
             a.divideShort(b);
+            fail("No implementation mismatch");
+        }
+        catch (ImplementationMismatchException ime)
+        {
+            // OK: wrong implementation class
+            assertEquals("Localization key", "type.mismatch", ime.getLocalizationKey());
+        }
+    }
+
+    public static void testModShort()
+    {
+        ApfloatImpl a, b;
+
+        for (int radix = Character.MIN_RADIX; radix <= Character.MAX_RADIX; radix++)
+        {
+            a = new RawtypeApfloatImpl(1, Apfloat.INFINITE, radix);
+            b = new RawtypeApfloatImpl(1, Apfloat.INFINITE, radix);
+            assertEquals("radix " + radix + " 1 % 1", "0", a.modShort(b).toString(true));
+
+            a = new RawtypeApfloatImpl(1, Apfloat.INFINITE, radix);
+            b = new RawtypeApfloatImpl(-1, Apfloat.INFINITE, radix);
+            assertEquals("radix " + radix + " 1 % -1", "0", a.modShort(b).toString(true));
+
+            a = new RawtypeApfloatImpl("11", 2, radix, true);
+            b = new RawtypeApfloatImpl("11", 2, radix, true);
+            assertEquals("radix " + radix + " 11 % 11", "0", a.modShort(b).toString(true));
+
+            a = new RawtypeApfloatImpl(67, 1, radix);
+            b = new RawtypeApfloatImpl(33, 1, radix);
+            assertEquals("radix " + radix + " 67 % 33", "1", a.modShort(b).toString(true));
+
+            if (radix < 15)
+            {
+                a = new RawtypeApfloatImpl("1e" + (Long.MAX_VALUE - 400), Apfloat.INFINITE, radix, false);
+                b = new RawtypeApfloatImpl("1e" + (Long.MIN_VALUE + 400), Apfloat.INFINITE, radix, false);
+                assertEquals("radix " + radix + " max % min", "0", a.modShort(b).toString(true));
+
+                a = new RawtypeApfloatImpl("1e" + (Long.MAX_VALUE / 2), Apfloat.INFINITE, radix, false);
+                b = new RawtypeApfloatImpl("1e" + (Long.MIN_VALUE / 2), Apfloat.INFINITE, radix, false);
+                assertEquals("radix " + radix + " max % min just", "0", a.modShort(b).toString(false));
+            }
+
+            char nine = Character.forDigit(radix - 1, radix);
+
+            for (int i = 10000; i <= 10005; i++)
+            {
+                a = new RawtypeApfloatImpl(getString(nine, i), i, radix, false);
+                b = new RawtypeApfloatImpl(getString(nine, 1), i, radix, false);
+                assertEquals("radix " + radix + " 9(" + i + ") % 9, prec", "0", a.modShort(b).toString(true));
+
+                a = new RawtypeApfloatImpl('1' + getString('0', i - 1), i, radix, false);
+                b = new RawtypeApfloatImpl(getString(nine, 1), i, radix, false);
+                assertEquals("radix " + radix + " 10(" + i + ") % 9, prec", radix == 2 ? "0" : "1", a.modShort(b).toString(true));
+
+                a = new RawtypeApfloatImpl('1' + getString('0', i - 2) + '1', i, radix, false);
+                b = new RawtypeApfloatImpl(getString(nine, 1), i, radix, false);
+                assertEquals("radix " + radix + " 10(" + i + ")1 % 9, prec", radix == 2 || radix == 3 ? "0" : "2", a.modShort(b).toString(true));
+            }
+
+            a = new RawtypeApfloatImpl(getString(nine, 10) + '.' + nine, Apfloat.INFINITE, radix, false);
+            b = new RawtypeApfloatImpl(1, 11, radix);
+            assertEquals("radix " + radix + " 9999999999.9 % 1", "0." + nine, a.modShort(b).toString(true));
+            assertEquals("radix " + radix + " 9999999999.9 % 1 precision", 10, a.modShort(b).precision());
+        }
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("1", 16, 10, false);
+        assertEquals("1.234567890123456 % 1", "0.234567890123456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.1", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.1", "0.034567890123456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.01", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.01", "0.004567890123456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.001", "0.000567890123456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.0001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.0001", "0.000067890123456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.00001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.00001", "0.000007890123456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.000001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.000001", "0.000000890123456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.0000001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.0000001", "0.000000090123456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.00000001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.00000001", "0.000000000123456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.000000001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.000000001", "0.000000000123456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.0000000001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.0000000001", "0.000000000023456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.00000000001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.00000000001", "0.000000000003456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.000000000001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.000000000001", "0.000000000000456", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.0000000000001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.0000000000001", "0.000000000000056", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.00000000000001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.00000000000001", "0.000000000000006", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1.234567890123456", 16, 10, false);
+        b = new RawtypeApfloatImpl("0.000000000000001", 16, 10, false);
+        assertEquals("1.234567890123456 % 0.000000000000001", "0", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl(100000000000007L, 50, 10);
+        b = new RawtypeApfloatImpl(2, 50, 10);
+        assertEquals("100000000000007 % 2", "1", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl(100000000000007L, 50, 10);
+        b = new RawtypeApfloatImpl(5, 50, 10);
+        assertEquals("100000000000007 % 5", "2", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl(1000000000000000007L, 50, 10);
+        b = new RawtypeApfloatImpl(2, 50, 10);
+        assertEquals("1000000000000000007 % 2", "1", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl(1000000000000000007L, 50, 10);
+        b = new RawtypeApfloatImpl(5, 50, 10);
+        assertEquals("1000000000000000007 % 5", "2", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl(1000000000000000007L, 50, 10);
+        b = new RawtypeApfloatImpl(4, 50, 10);
+        assertEquals("1000000000000000007 % 4", "3", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl(1000000000000000007L, 50, 10);
+        b = new RawtypeApfloatImpl(1048576, 50, 10);
+        assertEquals("1000000000000000007 % 1048576", "262151", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl(1000000000000000007L, 50, 10);
+        b = new RawtypeApfloatImpl(390625, 50, 10);
+        assertEquals("1000000000000000007 % 390625", "7", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("10000000000000000000000000007", 50, 10, false);
+        b = new RawtypeApfloatImpl(1048576, 50, 10);
+        assertEquals("10000000000000000000000000007 % 1048576", "7", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("10000000000000000000000000007", 50, 10, false);
+        b = new RawtypeApfloatImpl(390625, 50, 10);
+        assertEquals("10000000000000000000000000007 % 390625", "7", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("98324579823470982347698345782390982374598234752310000000000000000000000000007", 100, 10, false);
+        b = new RawtypeApfloatImpl(1048576, 100, 10);
+        assertEquals("98324579823470982347698345782390982374598234752310000000000000000000000000007 % 1048576", "7", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("98324579823470982347698345782390982374598234752310000000000000000000000000007", 100, 10, false);
+        b = new RawtypeApfloatImpl(390625, 100, 10);
+        assertEquals("98324579823470982347698345782390982374598234752310000000000000000000000000007 % 390625", "7", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("98324579823470982347698345782390982374598234752310000000000000000000000000007.1", 100, 10, false);
+        b = new RawtypeApfloatImpl(1048576, 100, 10);
+        assertEquals("98324579823470982347698345782390982374598234752310000000000000000000000000007.1 % 1048576", "7.1", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("98324579823470982347698345782390982374598234752310000000000000000000000000007.1234567890123456789", 100, 10, false);
+        b = new RawtypeApfloatImpl(390625, 100, 10);
+        assertEquals("98324579823470982347698345782390982374598234752310000000000000000000000000007.1234567890123456789 % 390625", "7.1234567890123456789", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("365615844006297600000000000000000000", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl(63, Apfloat.INFINITE, 10);
+        assertEquals("365615844006297600000000000000000000 % 63", "9", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl(6, 50, 20);
+        b = new RawtypeApfloatImpl(3, 50, 20);
+        assertEquals("6 % 3 radix 20", "0", a.modShort(b).toString(true));
+        assertEquals("6 % 3 radix 20 radix", 20, a.modShort(b).radix());
+
+        a = new RawtypeApfloatImpl(6, 50, 7);
+        b = new RawtypeApfloatImpl(3, 50, 7);
+        assertEquals("6 % 3 radix 7", "0", a.modShort(b).toString(true));
+        assertEquals("6 % 3 radix 7 radix", 7, a.modShort(b).radix());
+
+        a = new RawtypeApfloatImpl(9223372036854775807L, 50, 34);
+        b = new RawtypeApfloatImpl(8388608, 50, 34);
+        if (b.isShort())
+        {
+            assertEquals("9223372036854775807 % 8388608 radix 34", "69ejp", a.modShort(b).toString(true));
+        }
+
+        a = new RawtypeApfloatImpl(5, Apfloat.INFINITE, 10);
+        b = new RawtypeApfloatImpl(2, Apfloat.INFINITE, 10);
+        assertEquals("5 % 2", "1", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1e1000000000000000", Apfloat.INFINITE, 10, false);
+        b = new RawtypeApfloatImpl(8388608, Apfloat.INFINITE, 10);
+        assertEquals("1e1000000000000000 % 8388608", "0", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1e1000000000000000", Apfloat.INFINITE, 10, false);
+        b = new RawtypeApfloatImpl(9765625, Apfloat.INFINITE, 10);
+        assertEquals("1e1000000000000000 % 9765625", "0", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("100000000000000000000", Apfloat.INFINITE, 10, false);
+        b = new RawtypeApfloatImpl(8388608, Apfloat.INFINITE, 10);
+        assertEquals("100000000000000000000 % 8388608", "1048576", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1000000000", Apfloat.INFINITE, 10, false);
+        b = new RawtypeApfloatImpl(9765625, Apfloat.INFINITE, 10);
+        assertEquals("1000000000 % 9765625", "3906250", a.modShort(b).toString(true));
+        assertEquals("1000000000 % 9765625 precision", Apfloat.INFINITE, a.modShort(b).precision());
+
+        a = new RawtypeApfloatImpl("123.456", 6, 10, false);
+        b = new RawtypeApfloatImpl("0.1", 10, 10, false);
+        assertEquals("123.456 % 0.1", "0.056", a.modShort(b).toString(true));
+        assertEquals("123.456 % 0.1 precision", 2, a.modShort(b).precision());
+
+        a = new RawtypeApfloatImpl("123.456", 10, 10, false);
+        b = new RawtypeApfloatImpl("0.2", 3, 10, false);
+        assertEquals("123.456 % 0.2", "0.056", a.modShort(b).toString(true));
+        assertEquals("123.456 % 0.2 precision", 2, a.modShort(b).precision());
+
+        // Underflow
+        a = new RawtypeApfloatImpl("1." + getString('0', 1000) +  "1e" + (Long.MIN_VALUE + 400), Apfloat.INFINITE, 10, false);
+        b = new RawtypeApfloatImpl("1e" + (Long.MIN_VALUE + 400), Apfloat.INFINITE, 10, false);
+        assertEquals("1.000...0001eMIN % 1eMIN", "0", a.modShort(b).toString(true));
+
+        a = new RawtypeApfloatImpl("1e5", Apfloat.INFINITE, 2, false);
+        b = new RawtypeApfloatImpl("1e5", Apfloat.INFINITE, 3, false);
+        try
+        {
+            a.modShort(b);
+            fail("No radix mismatch");
+        }
+        catch (RadixMismatchException rme)
+        {
+            // OK: radix mismatch
+            assertEquals("Localization key", "radix.mismatch", rme.getLocalizationKey());
+        }
+
+        b = (RawType.TYPE.equals(Integer.TYPE) ? new LongApfloatImpl(0, Apfloat.INFINITE, 10) : new IntApfloatImpl(0, Apfloat.INFINITE, 10));
+        try
+        {
+            a.modShort(b);
             fail("No implementation mismatch");
         }
         catch (ImplementationMismatchException ime)
