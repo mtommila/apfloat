@@ -502,7 +502,7 @@ public class ApintMathTest
     {
         assertEquals("0!!", new Apint(1), ApintMath.doubleFactorial(0));
         assertEquals("1!!", new Apint(1), ApintMath.doubleFactorial(1));
-        assertEquals("2!!", new Apint(2), ApintMath.factorial(2));
+        assertEquals("2!!", new Apint(2), ApintMath.doubleFactorial(2));
         assertEquals("3!!", new Apint(3), ApintMath.doubleFactorial(3));
         assertEquals("7!!", new Apint(105), ApintMath.doubleFactorial(7));
         assertEquals("7!! radix", 10, ApintMath.doubleFactorial(7).radix());
@@ -515,6 +515,17 @@ public class ApintMathTest
         {
             ApintMath.doubleFactorial(-1);
             fail("Double factorial of negative number allowed");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK: double factorial of negative number
+            assertEquals("Localization key", "doubleFactorial.ofNegative", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApintMath.doubleFactorial(-2);
+            fail("Double factorial of negative even number allowed");
         }
         catch (ApfloatArithmeticException aae)
         {

@@ -587,6 +587,14 @@ public class FixedPrecisionApfloatHelperTest
         assertEquals("value 16", new Apfloat(0xF00, Apfloat.DEFAULT, 16), result);
         assertEquals("precision 16", 10, result.precision());
 
+        result = helper.doubleFactorial(-5);
+        assertEquals("value -5", new Apfloat("0.3333333333"), result, new Apfloat("1e-10"));
+        assertEquals("precision -5", 10, result.precision());
+
+        result = helper.doubleFactorial(-7, 16);
+        assertEquals("value -7", new Apfloat(-1.0 / 15.0, Apfloat.DEFAULT, 16), result, new Apfloat("0.0000000001", 1, 16));
+        assertEquals("precision -7", 10, result.precision());
+
         try
         {
             helper.doubleFactorial(7, 1);
@@ -595,6 +603,17 @@ public class FixedPrecisionApfloatHelperTest
         catch (NumberFormatException nfe)
         {
             // OK; invalid radix
+        }
+
+        try
+        {
+            helper.doubleFactorial(-2, 16);
+            fail("-2 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "doubleFactorial.ofNegativeEven", aae.getLocalizationKey());
         }
     }
 

@@ -4948,7 +4948,11 @@ public class ApfloatMath
     {
         if (n < 0)
         {
-            throw new ApfloatArithmeticException("Double factorial of negative number", "doubleFactorial.ofNegative");
+            if ((n & 1) == 0)
+            {
+                throw new ApfloatArithmeticException("Double factorial of negative even number", "doubleFactorial.ofNegativeEven");
+            }
+            return new Apint((n & 2) == 0 ? n : -n, radix).divide(doubleFactorial(-n, precision, radix));   // Note that Long.MIN_VALUE is even so is caught by previous check
         }
         if ((n & 1) == 1)
         {

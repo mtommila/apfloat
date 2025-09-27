@@ -452,6 +452,56 @@ public class AprationalMath
     }
 
     /**
+     * Double factorial function. Uses the default radix.
+     *
+     * @param n The number whose double factorial is to be calculated. Negative values should be odd.
+     *
+     * @return <code>n!!</code>
+     *
+     * @exception ArithmeticException If <code>n</code> is negative and even.
+     * @exception NumberFormatException If the default radix is not valid.
+     *
+     * @since 1.15.0
+     */
+
+    public static Aprational doubleFactorial(long n)
+        throws ArithmeticException, NumberFormatException, ApfloatRuntimeException
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return doubleFactorial(n, radix);
+    }
+
+    /**
+     * Double factorial function. Returns a number in the specified radix.
+     *
+     * @param n The number whose double factorial is to be calculated. Negative values should be odd.
+     * @param radix The radix to use.
+     *
+     * @return <code>n!!</code>
+     *
+     * @exception ArithmeticException If <code>n</code> is negative and even.
+     * @exception NumberFormatException If the radix is not valid.
+     *
+     * @since 1.15.0
+     */
+
+    public static Aprational doubleFactorial(long n, int radix)
+        throws ArithmeticException, NumberFormatException, ApfloatRuntimeException
+    {
+        if (n < 0)
+        {
+            if ((n & 1) == 0)
+            {
+                throw new ApfloatArithmeticException("Double factorial of negative even number", "doubleFactorial.ofNegativeEven");
+            }
+            return new Aprational(new Apint((n & 2) == 0 ? n : -n, radix), ApintMath.doubleFactorial(-n, radix));   // Note that Long.MIN_VALUE is even so is caught by previous check
+        }
+        return ApintMath.doubleFactorial(n, radix);
+    }
+
+    /**
      * Binomial coefficient.
      *
      * @param n The first argument.

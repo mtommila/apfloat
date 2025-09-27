@@ -897,6 +897,8 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <code>n!!</code>.
      *
+     * @exception ArithmeticException If <code>n</code> is negative and even.
+     *
      * @since 1.14.0
      */
 
@@ -913,6 +915,8 @@ public class FixedPrecisionApfloatHelper
      * @param radix The radix of the result.
      *
      * @return <code>n!!</code>.
+     *
+     * @exception ArithmeticException If <code>n</code> is negative and even.
      *
      * @since 1.14.0
      */

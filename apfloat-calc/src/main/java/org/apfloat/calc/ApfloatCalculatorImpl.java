@@ -349,7 +349,7 @@ public class ApfloatCalculatorImpl
                 throw new IllegalArgumentException("Double factorial can only be used with a valid integer argument");
             }
             long n = x.longValue();
-            return ApintMath.doubleFactorial(n);
+            return AprationalMath.doubleFactorial(n);
         }
 
         @Override

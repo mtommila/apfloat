@@ -509,6 +509,50 @@ public class AprationalMathTest
         assertEquals("min of 2/3 and 1/2", new Aprational("1/2"), AprationalMath.min(new Aprational("2/3"), new Aprational("1/2")));
     }
 
+    public static void testDoubleFactorial()
+    {
+        assertEquals("0!!", new Apint(1), AprationalMath.doubleFactorial(0));
+        assertEquals("1!!", new Apint(1), AprationalMath.doubleFactorial(1));
+        assertEquals("2!!", new Apint(2), AprationalMath.doubleFactorial(2));
+        assertEquals("3!!", new Apint(3), AprationalMath.doubleFactorial(3));
+        assertEquals("7!!", new Apint(105), AprationalMath.doubleFactorial(7));
+        assertEquals("7!! radix", 10, AprationalMath.doubleFactorial(7).radix());
+        assertEquals("7!! radix 7", new Apint(105, 7), AprationalMath.doubleFactorial(7, 7));
+        assertEquals("7!! radix 7 radix", 7, AprationalMath.doubleFactorial(7, 7).radix());
+        assertEquals("20!!", new Apint("3715891200"), AprationalMath.doubleFactorial(20));
+        assertEquals("29!!", new Apint("6190283353629375"), AprationalMath.doubleFactorial(29));
+
+        assertEquals("-1!!", new Aprational("1"), AprationalMath.doubleFactorial(-1));
+        assertEquals("-3!!", new Aprational("-1"), AprationalMath.doubleFactorial(-3));
+        assertEquals("-7!!", new Aprational("-1/15"), AprationalMath.doubleFactorial(-7));
+        assertEquals("-7!! radix", 10, AprationalMath.doubleFactorial(-7).radix());
+        assertEquals("-7!! radix 7", new Aprational(new Apint(-1, 7), new Apint(15, 7)), AprationalMath.doubleFactorial(-7, 7));
+        assertEquals("-7!! radix 7 radix", 7, AprationalMath.doubleFactorial(-7, 7).radix());
+        assertEquals("-29!!", new Aprational("1/213458046676875"), AprationalMath.doubleFactorial(-29));
+
+        try
+        {
+            AprationalMath.doubleFactorial(-2);
+            fail("Double factorial of even negative number allowed");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK: double factorial of even negative number
+            assertEquals("Localization key", "doubleFactorial.ofNegativeEven", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            AprationalMath.doubleFactorial(Long.MIN_VALUE);
+            fail("Double factorial of long min value");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK: double factorial of even negative number
+            assertEquals("Localization key", "doubleFactorial.ofNegativeEven", aae.getLocalizationKey());
+        }
+    }
+
     public static void testBinomial()
     {
         Aprational a = AprationalMath.binomial(new Aprational("0"), new Aprational("0"));

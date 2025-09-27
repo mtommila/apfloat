@@ -255,6 +255,9 @@ public class CalculatorTest
         assertCalculation("-1.02221", "coshIntegral(0.200000)");
         assertCalculation("1.7061", "digamma(6.0000)");
         assertCalculation("34459425", "doubleFactorial(17)");
+        assertCalculation("1", "doubleFactorial(-1)");
+        assertCalculation("-1", "doubleFactorial(-3)");
+        assertCalculation("1/3", "doubleFactorial(-5)");
         assertCalculation("1.48904", "ellipticE(0.200000)");
         assertCalculation("1.65962", "ellipticK(0.200000)");
         assertCalculation("2.22703e-1", "erf(0.200000)");
@@ -491,6 +494,7 @@ public class CalculatorTest
         assertCalculationFailure("digamma()");
         assertCalculationFailure("digamma(2,2)");
         assertCalculationFailure("doubleFactorial(0.5)");
+        assertCalculationFailure("doubleFactorial(-2)");
         assertCalculationFailure("doubleFactorial(2i)");
         assertCalculationFailure("doubleFactorial(2/3)");
         assertCalculationFailure("doubleFactorial()");

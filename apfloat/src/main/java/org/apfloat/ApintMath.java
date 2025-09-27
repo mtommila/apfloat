@@ -663,7 +663,10 @@ public class ApintMath
     public static Apint doubleFactorial(long n)
         throws ArithmeticException, NumberFormatException, ApfloatRuntimeException
     {
-        return new Apint(ApfloatMath.doubleFactorial(n, Apfloat.INFINITE));
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return doubleFactorial(n, radix);
     }
 
     /**
@@ -683,6 +686,10 @@ public class ApintMath
     public static Apint doubleFactorial(long n, int radix)
         throws ArithmeticException, NumberFormatException, ApfloatRuntimeException
     {
+        if (n < 0)
+        {
+            throw new ApfloatArithmeticException("Double factorial of negative number", "doubleFactorial.ofNegative");
+        }
         return new Apint(ApfloatMath.doubleFactorial(n, Apfloat.INFINITE, radix));
     }
 
