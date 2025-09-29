@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -83,6 +83,26 @@ public class AprationalFieldTest
         assertTrue("isLargerThan", b.isLargerThan(a));
         assertEquals("compareTo", -1, a.compareTo(b));
         HashSet<AprationalField> set = new HashSet<>();
+        set.add(b);
+        set.add(c);
+        assertEquals("hashCode", 1, set.size());
+
+        a = valueOf("2/7");
+        b = valueOf("1/6");
+        c = valueOf("1/6");
+        assertEquals("2/7 + 1/6", valueOf("19/42"), a.plus(b));
+        assertEquals("-2/7", valueOf("-2/7"), a.opposite());
+        assertEquals("2/7 - 1/6", valueOf("5/42"), a.minus(b));
+        assertEquals("2/7 * 1/6", valueOf("1/21"), a.times(b));
+        assertEquals("1 / 2/7", valueOf("7/2"), a.inverse());
+        assertEquals("copy", a, a.copy());
+        assertEquals("doubleValue", 0.28571428571428571, a.doubleValue(), 0.0000000000000005);
+        assertEquals("longValue", 0L, a.longValue());
+        assertEquals("String", "2/7", a.toString());
+        assertEquals("Text", new Text("2/7"), a.toText());
+        assertTrue("isLargerThan", a.isLargerThan(b));
+        assertEquals("compareTo", 1, a.compareTo(b));
+        set = new HashSet<>();
         set.add(b);
         set.add(c);
         assertEquals("hashCode", 1, set.size());

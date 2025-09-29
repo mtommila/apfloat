@@ -83,5 +83,11 @@ public class AprationalField
         return new AprationalField(value());
     }
 
+    @Override
+    public boolean isLargerThan(AprationalField that)
+    {
+        return value().multiply(value()).compareTo(that.value().multiply(that.value())) > 0;
+    }
+
     private static final long serialVersionUID = -4642791345140583865L;
 }
