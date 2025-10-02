@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 package org.apfloat.jscience;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashSet;
 
 import org.apfloat.*;
@@ -31,6 +33,8 @@ import org.jscience.mathematics.function.*;
 import org.jscience.mathematics.vector.*;
 
 import javolution.text.*;
+import javolution.xml.*;
+import javolution.xml.stream.*;
 
 import junit.framework.TestSuite;
 
@@ -58,6 +62,7 @@ public class ApcomplexFieldTest
         TestSuite suite = new TestSuite();
 
         suite.addTest(new ApcomplexFieldTest("testBasic"));
+        suite.addTest(new ApcomplexFieldTest("testXmlSerialization"));
         suite.addTest(new ApcomplexFieldTest("testMatrixInverse"));
         suite.addTest(new ApcomplexFieldTest("testRationalFunction"));
 
@@ -106,6 +111,27 @@ public class ApcomplexFieldTest
         {
             // OK, illegal
         }
+    }
+
+    public static void testXmlSerialization()
+        throws XMLStreamException
+    {
+        ApcomplexField field = new ApcomplexField(new Apcomplex("(1.23,-45.6789)"));
+        StringWriter out = new StringWriter();
+
+        XMLObjectWriter xmlWriter = XMLObjectWriter.newInstance(out);
+        xmlWriter.write(field);
+        xmlWriter.close();
+
+        String xml = out.toString();
+        assertEquals("XML", "<?xml version=\"1.0\" ?><org.apfloat.jscience.ApcomplexField real-mantissa=\"123\" real-exponent=\"-2\" real-precision=\"3\" real-radix=\"10\" imag-mantissa=\"-456789\" imag-exponent=\"-4\" imag-precision=\"6\" imag-radix=\"10\"/>", xml);
+
+        StringReader in = new StringReader(xml);
+        XMLObjectReader xmlReader = XMLObjectReader.newInstance(in);
+        field = xmlReader.read();
+        assertEquals("Value", new Apcomplex("(1.23,-45.6789)"), field.value());
+        assertEquals("Real precision", 3, field.value().real().precision());
+        assertEquals("Imag precision", 6, field.value().imag().precision());
     }
 
     public static void testMatrixInverse()

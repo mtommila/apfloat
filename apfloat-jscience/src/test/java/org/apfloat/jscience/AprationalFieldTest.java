@@ -23,6 +23,8 @@
  */
 package org.apfloat.jscience;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashSet;
 
 import org.apfloat.*;
@@ -31,7 +33,8 @@ import org.jscience.mathematics.function.*;
 import org.jscience.mathematics.vector.*;
 
 import javolution.text.*;
-
+import javolution.xml.*;
+import javolution.xml.stream.*;
 import junit.framework.TestSuite;
 
 /**
@@ -57,9 +60,10 @@ public class AprationalFieldTest
     {
         TestSuite suite = new TestSuite();
 
+        suite.addTest(new AprationalFieldTest("testBasic"));
+        suite.addTest(new AprationalFieldTest("testXmlSerialization"));
         suite.addTest(new AprationalFieldTest("testMatrixInverse"));
         suite.addTest(new AprationalFieldTest("testRationalFunction"));
-        suite.addTest(new AprationalFieldTest("testBasic"));
 
         return suite;
     }
@@ -126,6 +130,26 @@ public class AprationalFieldTest
         {
             // OK, illegal
         }
+    }
+
+    public static void testXmlSerialization()
+        throws XMLStreamException
+    {
+        AprationalField field = new AprationalField(new Aprational("2/10", 13));
+        StringWriter out = new StringWriter();
+
+        XMLObjectWriter xmlWriter = XMLObjectWriter.newInstance(out);
+        xmlWriter.write(field);
+        xmlWriter.close();
+
+        String xml = out.toString();
+        assertEquals("XML", "<?xml version=\"1.0\" ?><org.apfloat.jscience.AprationalField numerator-mantissa=\"2\" numerator-exponent=\"0\" numerator-radix=\"13\" denominator-mantissa=\"1\" denominator-exponent=\"1\" denominator-radix=\"13\"/>", xml);
+
+        StringReader in = new StringReader(xml);
+        XMLObjectReader xmlReader = XMLObjectReader.newInstance(in);
+        field = xmlReader.read();
+        assertEquals("Value", new Aprational("2/10", 13), field.value());
+        assertEquals("Radix", 13, field.value().radix());
     }
 
     public static void testMatrixInverse()

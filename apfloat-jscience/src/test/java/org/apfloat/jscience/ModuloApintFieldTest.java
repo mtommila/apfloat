@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 package org.apfloat.jscience;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashSet;
 
 import org.apfloat.*;
@@ -31,7 +33,8 @@ import org.jscience.mathematics.function.*;
 import org.jscience.mathematics.vector.*;
 
 import javolution.text.*;
-
+import javolution.xml.*;
+import javolution.xml.stream.*;
 import junit.framework.TestSuite;
 
 /**
@@ -59,6 +62,7 @@ public class ModuloApintFieldTest
 
         suite.addTest(new ModuloApintFieldTest("testBasic"));
         suite.addTest(new ModuloApintFieldTest("testNoModulus"));
+        suite.addTest(new ModuloApintFieldTest("testXmlSerialization"));
         suite.addTest(new ModuloApintFieldTest("testMatrixInverse"));
         suite.addTest(new ModuloApintFieldTest("testRationalFunction"));
 
@@ -130,6 +134,42 @@ public class ModuloApintFieldTest
         {
             // OK, modulus is not set
         }
+    }
+
+    public static void testXmlSerialization()
+        throws XMLStreamException
+    {
+        ModuloApintField field = new ModuloApintField(new Apint("12ez0", 36));
+        StringWriter out = new StringWriter();
+
+        XMLObjectWriter xmlWriter = XMLObjectWriter.newInstance(out);
+        xmlWriter.write(field);
+        xmlWriter.close();
+
+        String xml = out.toString();
+        assertEquals("XML", "<?xml version=\"1.0\" ?><org.apfloat.jscience.ModuloApintField mantissa=\"12ez\" exponent=\"1\" radix=\"36\"/>", xml);
+
+        StringReader in = new StringReader(xml);
+        XMLObjectReader xmlReader = XMLObjectReader.newInstance(in);
+        field = xmlReader.read();
+        assertEquals("Value", new Apint("12ez0", 36), field.value());
+        assertEquals("Radix", 36, field.value().radix());
+
+        field = new ModuloApintField(new Apint("0", 2));
+        out = new StringWriter();
+
+        xmlWriter = XMLObjectWriter.newInstance(out);
+        xmlWriter.write(field);
+        xmlWriter.close();
+
+        xml = out.toString();
+        assertEquals("XML 0", "<?xml version=\"1.0\" ?><org.apfloat.jscience.ModuloApintField mantissa=\"0\" exponent=\"0\" radix=\"2\"/>", xml);
+
+        in = new StringReader(xml);
+        xmlReader = XMLObjectReader.newInstance(in);
+        field = xmlReader.read();
+        assertEquals("Value", new Apint("0", 2), field.value());
+        assertEquals("Radix", 2, field.value().radix());
     }
 
     public static void testMatrixInverse()

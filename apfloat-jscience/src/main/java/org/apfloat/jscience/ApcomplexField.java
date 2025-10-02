@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,9 @@
  */
 package org.apfloat.jscience;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 import org.apfloat.Apcomplex;
 import org.apfloat.ApcomplexMath;
 
@@ -36,13 +39,41 @@ import org.apfloat.ApcomplexMath;
  * instead.
  *
  * @since 1.8.0
- * @version 1.8.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
 public class ApcomplexField
     extends AbstractField<ApcomplexField, Apcomplex>
 {
+    /**
+     * Holds the default XML representation for arbitrary precision complex fields.
+     */
+
+    static final XMLFormat<ApcomplexField> XML = new XMLFormat<ApcomplexField>(ApcomplexField.class)
+    {
+        @Override
+        public ApcomplexField newInstance(Class<ApcomplexField> cls, InputElement xml)
+            throws XMLStreamException
+        {
+            return new ApcomplexField(new Apcomplex(parse("real-", xml), parse("imag-", xml)));
+        }
+
+        @Override
+        public void write(ApcomplexField field, OutputElement xml)
+            throws XMLStreamException
+        {
+            format(field.value().real(), "real-", xml);
+            format(field.value().imag(), "imag-", xml);
+        }
+
+        @Override
+        public void read(InputElement xml, ApcomplexField complex)
+        {
+            // Immutable, deserialization occurs at creation, see newInstance() 
+        }
+    };
+
     /**
      * Constructs a new complex field object with the specified value.
      *

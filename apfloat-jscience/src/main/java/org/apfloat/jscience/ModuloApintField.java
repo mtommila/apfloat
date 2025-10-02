@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,8 @@
 package org.apfloat.jscience;
 
 import javolution.context.LocalContext;
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
 
 import org.apfloat.Apint;
 import org.apfloat.ApintMath;
@@ -42,6 +44,33 @@ import org.apfloat.ApfloatArithmeticException;
 public class ModuloApintField
     extends AbstractField<ModuloApintField, Apint>
 {
+    /**
+     * Holds the default XML representation for arbitrary precision modulo integer fields.
+     */
+
+    static final XMLFormat<ModuloApintField> XML = new XMLFormat<ModuloApintField>(ModuloApintField.class)
+    {
+        @Override
+        public ModuloApintField newInstance(Class<ModuloApintField> cls, InputElement xml)
+            throws XMLStreamException
+        {
+            return new ModuloApintField(parse("", xml).truncate());
+        }
+
+        @Override
+        public void write(ModuloApintField field, OutputElement xml)
+            throws XMLStreamException
+        {
+            format(field.value(), "", xml, null);
+        }
+
+        @Override
+        public void read(InputElement xml, ModuloApintField field)
+            throws XMLStreamException
+        {
+            // Immutable, deserialization occurs at creation, see newInstance() 
+        }
+    };
     /**
      * Constructs a new integer field object with the specified value.
      *

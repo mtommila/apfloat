@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 package org.apfloat.jscience;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashSet;
 
 import org.apfloat.*;
@@ -31,7 +33,8 @@ import org.jscience.mathematics.function.*;
 import org.jscience.mathematics.vector.*;
 
 import javolution.text.*;
-
+import javolution.xml.*;
+import javolution.xml.stream.*;
 import junit.framework.TestSuite;
 
 /**
@@ -57,9 +60,10 @@ public class ApfloatFieldTest
     {
         TestSuite suite = new TestSuite();
 
+        suite.addTest(new ApfloatFieldTest("testBasic"));
+        suite.addTest(new ApfloatFieldTest("testXmlSerialization"));
         suite.addTest(new ApfloatFieldTest("testMatrixInverse"));
         suite.addTest(new ApfloatFieldTest("testRationalFunction"));
-        suite.addTest(new ApfloatFieldTest("testBasic"));
 
         return suite;
     }
@@ -106,6 +110,27 @@ public class ApfloatFieldTest
         {
             // OK, illegal
         }
+    }
+
+    public static void testXmlSerialization()
+        throws XMLStreamException
+    {
+        ApfloatField field = new ApfloatField(new Apfloat("1.234", 5, 11));
+        StringWriter out = new StringWriter();
+
+        XMLObjectWriter xmlWriter = XMLObjectWriter.newInstance(out);
+        xmlWriter.write(field);
+        xmlWriter.close();
+
+        String xml = out.toString();
+        assertEquals("XML", "<?xml version=\"1.0\" ?><org.apfloat.jscience.ApfloatField mantissa=\"1234\" exponent=\"-3\" precision=\"5\" radix=\"11\"/>", xml);
+
+        StringReader in = new StringReader(xml);
+        XMLObjectReader xmlReader = XMLObjectReader.newInstance(in);
+        field = xmlReader.read();
+        assertEquals("Value", new Apfloat("1.234", 5, 11), field.value());
+        assertEquals("Precision", 5, field.value().precision());
+        assertEquals("Radix", 11, field.value().radix());
     }
 
     public static void testMatrixInverse()

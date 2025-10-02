@@ -24,9 +24,16 @@
 package org.apfloat.jscience;
 
 import javolution.text.Text;
+import javolution.xml.XMLFormat.InputElement;
+import javolution.xml.XMLFormat.OutputElement;
+import javolution.xml.stream.XMLStreamException;
 
 import org.apfloat.Apcomplex;
 import org.apfloat.ApcomplexMath;
+import org.apfloat.Apfloat;
+import org.apfloat.ApfloatContext;
+import org.apfloat.ApfloatMath;
+import org.apfloat.Apint;
 import org.jscience.mathematics.number.Number;
 import org.jscience.mathematics.structure.Field;
 
@@ -221,6 +228,36 @@ public abstract class AbstractField<T extends AbstractField<T, V>, V extends Apc
             return value().equals(that.value());
         }
         return false;
+    }
+
+    static Apfloat parse(String prefix, InputElement xml)
+        throws XMLStreamException
+    {
+        String mantissa = xml.getAttribute(prefix + "mantissa", "0");
+        long exponent = Long.parseLong(xml.getAttribute(prefix + "exponent", "0")),
+             precision = Long.parseLong(xml.getAttribute(prefix + "precision", String.valueOf(mantissa.length())));
+        int radix = Integer.parseInt(xml.getAttribute(prefix + "radix", String.valueOf(ApfloatContext.getContext().getDefaultRadix())));
+        return ApfloatMath.scale(new Apint(mantissa, radix).precision(precision), exponent);
+    }
+
+    static void format(Apfloat value, String prefix, OutputElement xml)
+        throws XMLStreamException
+    {
+        format(value, prefix, xml, value.precision());
+    }
+
+    static void format(Apfloat value, String prefix, OutputElement xml, Long precision)
+        throws XMLStreamException
+    {
+        Apint mantissa = ApfloatMath.scale(value, Math.subtractExact(value.size(), value.scale())).truncate();
+        long exponent = (value.signum() == 0 ? 0 : Math.subtractExact(value.scale(), value.size()));
+        xml.setAttribute(prefix + "mantissa", mantissa.toString());
+        xml.setAttribute(prefix + "exponent", exponent);
+        if (precision != null)
+        {
+            xml.setAttribute(prefix + "precision", precision.longValue());
+        }
+        xml.setAttribute(prefix + "radix", value.radix());
     }
 
     private static final long serialVersionUID = -7725271295007354895L;

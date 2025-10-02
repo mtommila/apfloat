@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,9 @@
  */
 package org.apfloat.jscience;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 import org.apfloat.Apfloat;
 import org.apfloat.FixedPrecisionApfloatHelper;
 
@@ -33,13 +36,39 @@ import org.apfloat.FixedPrecisionApfloatHelper;
  * in complicated computations such as matrix inversion.
  *
  * @since 1.8.0
- * @version 1.8.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
 public class FixedPrecisionApfloatField
     extends AbstractField<FixedPrecisionApfloatField, Apfloat>
 {
+    /**
+     * Holds the default XML representation for fixed-precision floating-point fields.
+     */
+
+    static final XMLFormat<FixedPrecisionApfloatField> XML = new XMLFormat<FixedPrecisionApfloatField>(FixedPrecisionApfloatField.class)
+    {
+        @Override
+        public FixedPrecisionApfloatField newInstance(Class<FixedPrecisionApfloatField> cls, InputElement xml)
+            throws XMLStreamException
+        {
+            return new FixedPrecisionApfloatField(parse("", xml), new FixedPrecisionApfloatHelper(xml.getAttribute("precision", 0L)));
+        }
+
+        @Override
+        public void write(FixedPrecisionApfloatField field, OutputElement xml)
+            throws XMLStreamException
+        {
+            format(field.value(), "", xml,field.helper().precision());
+        }
+
+        @Override
+        public void read(InputElement xml, FixedPrecisionApfloatField complex)
+        {
+            // Immutable, deserialization occurs at creation, see newInstance() 
+        }
+    };
     /**
      * Constructs a new floating-point field object with the specified value.
      *

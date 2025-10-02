@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,9 @@
  */
 package org.apfloat.jscience;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 import org.apfloat.Aprational;
 import org.apfloat.ApfloatArithmeticException;
 
@@ -37,6 +40,35 @@ import org.apfloat.ApfloatArithmeticException;
 public class AprationalField
     extends AbstractField<AprationalField, Aprational>
 {
+    /**
+     * Holds the default XML representation for arbitrary precision rational fields.
+     */
+
+    static final XMLFormat<AprationalField> XML = new XMLFormat<AprationalField>(AprationalField.class)
+    {
+        @Override
+        public AprationalField newInstance(Class<AprationalField> cls, InputElement xml)
+            throws XMLStreamException
+        {
+            return new AprationalField(new Aprational(parse("numerator-", xml).truncate(), parse("denominator-", xml).truncate()));
+        }
+
+        @Override
+        public void write(AprationalField field, OutputElement xml)
+            throws XMLStreamException
+        {
+            format(field.value().numerator(), "numerator-", xml, null);
+            format(field.value().denominator(), "denominator-", xml, null);
+        }
+
+        @Override
+        public void read(InputElement xml, AprationalField field)
+            throws XMLStreamException
+        {
+            // Immutable, deserialization occurs at creation, see newInstance() 
+        }
+    };
+
     /**
      * Constructs a new rational field object with the specified value.
      *

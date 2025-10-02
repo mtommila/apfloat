@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 package org.apfloat.jscience;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashSet;
 
 import org.apfloat.*;
@@ -31,7 +33,8 @@ import org.jscience.mathematics.function.*;
 import org.jscience.mathematics.vector.*;
 
 import javolution.text.*;
-
+import javolution.xml.*;
+import javolution.xml.stream.*;
 import junit.framework.TestSuite;
 
 /**
@@ -58,6 +61,7 @@ public class FixedPrecisionApfloatFieldTest
         TestSuite suite = new TestSuite();
 
         suite.addTest(new FixedPrecisionApfloatFieldTest("testBasic"));
+        suite.addTest(new FixedPrecisionApfloatFieldTest("testXmlSerialization"));
         suite.addTest(new FixedPrecisionApfloatFieldTest("testMatrixInverse"));
         suite.addTest(new FixedPrecisionApfloatFieldTest("testRationalFunction"));
 
@@ -116,6 +120,44 @@ public class FixedPrecisionApfloatFieldTest
         {
             // OK, illegal
         }
+    }
+
+    public static void testXmlSerialization()
+        throws XMLStreamException
+    {
+        FixedPrecisionApfloatField field = new FixedPrecisionApfloatField(new Apfloat("1.234", 5, 11), new FixedPrecisionApfloatHelper(17));
+        StringWriter out = new StringWriter();
+
+        XMLObjectWriter xmlWriter = XMLObjectWriter.newInstance(out);
+        xmlWriter.write(field);
+        xmlWriter.close();
+
+        String xml = out.toString();
+        assertEquals("XML", "<?xml version=\"1.0\" ?><org.apfloat.jscience.FixedPrecisionApfloatField mantissa=\"1234\" exponent=\"-3\" precision=\"17\" radix=\"11\"/>", xml);
+
+        StringReader in = new StringReader(xml);
+        XMLObjectReader xmlReader = XMLObjectReader.newInstance(in);
+        field = xmlReader.read();
+        assertEquals("Value", new Apfloat("1.234", 5, 11), field.value());
+        assertEquals("Precision", Apfloat.INFINITE, field.value().imag().precision());
+        assertEquals("Helper precision", 17, field.helper().precision());
+
+        field = new FixedPrecisionApfloatField(new Apfloat("0", Apfloat.INFINITE, 11), new FixedPrecisionApfloatHelper(17));
+        out = new StringWriter();
+
+        xmlWriter = XMLObjectWriter.newInstance(out);
+        xmlWriter.write(field);
+        xmlWriter.close();
+
+        xml = out.toString();
+        assertEquals("XML 0", "<?xml version=\"1.0\" ?><org.apfloat.jscience.FixedPrecisionApfloatField mantissa=\"0\" exponent=\"0\" precision=\"17\" radix=\"11\"/>", xml);
+
+        in = new StringReader(xml);
+        xmlReader = XMLObjectReader.newInstance(in);
+        field = xmlReader.read();
+        assertEquals("Value", new Apfloat("0", Apfloat.INFINITE, 11), field.value());
+        assertEquals("Precision", Apfloat.INFINITE, field.value().imag().precision());
+        assertEquals("Helper precision", 17, field.helper().precision());
     }
 
     public static void testMatrixInverse()

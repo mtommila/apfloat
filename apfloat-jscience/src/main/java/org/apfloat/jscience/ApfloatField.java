@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,9 @@
  */
 package org.apfloat.jscience;
 
+import javolution.xml.XMLFormat;
+import javolution.xml.stream.XMLStreamException;
+
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatMath;
 
@@ -36,13 +39,41 @@ import org.apfloat.ApfloatMath;
  * instead.
  *
  * @since 1.8.0
- * @version 1.8.0
+ * @version 1.15.0
  * @author Mikko Tommila
  */
 
 public class ApfloatField
     extends AbstractField<ApfloatField, Apfloat>
 {
+    /**
+     * Holds the default XML representation for arbitrary precision floating-point fields.
+     */
+
+    static final XMLFormat<ApfloatField> XML = new XMLFormat<ApfloatField>(ApfloatField.class)
+    {
+        @Override
+        public ApfloatField newInstance(Class<ApfloatField> cls, InputElement xml)
+            throws XMLStreamException
+        {
+            return new ApfloatField(parse("", xml));
+        }
+
+        @Override
+        public void write(ApfloatField field, OutputElement xml)
+            throws XMLStreamException
+        {
+            format(field.value(), "", xml);
+        }
+
+        @Override
+        public void read(InputElement xml, ApfloatField field)
+            throws XMLStreamException
+        {
+            // Immutable, deserialization occurs at creation, see newInstance() 
+        }
+    };
+
     /**
      * Constructs a new floating-point field object with the specified value.
      *
