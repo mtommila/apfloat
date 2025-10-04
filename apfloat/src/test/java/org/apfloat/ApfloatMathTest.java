@@ -3459,6 +3459,10 @@ public class ApfloatMathTest
         assertEquals("-5 precision", 6, a.precision());
         assertEquals("-5 value", new Apfloat("-0.00396825"), a, new Apfloat("5e-8"));
 
+        a = ApfloatMath.zeta(new Apfloat("0.500000"));
+        assertEquals("0.5 precision", 6, a.precision());
+        assertEquals("0.5 value", new Apfloat("-1.46035"), a, new Apfloat("5e-5"));
+
         a = ApfloatMath.zeta(new Apfloat("0"));
         assertEquals("0 precision", Apfloat.INFINITE, a.precision());
         assertEquals("0 value", new Apfloat("-0.5"), a);
@@ -3466,6 +3470,31 @@ public class ApfloatMathTest
         a = ApfloatMath.zeta(new Apint(0, 11));
         assertEquals("0 precision", Apfloat.INFINITE, a.precision());
         assertEquals("0 value", new Aprational(new Apint(-1, 11), new Apint(2, 11)), a);
+
+        a = ApfloatMath.zeta(new Apfloat(1000, 80));
+        assertEquals("1000 precision 80", 80, a.precision());
+        assertEquals("1000 value 80", new Apfloat(1), a, new Apfloat("5e-79"));
+        assertTrue("1000 result 80 >= 1", a.compareTo(new Apfloat(1)) >= 0);
+
+        a = ApfloatMath.zeta(new Apfloat(1000, 85));
+        assertEquals("1000 precision 85", 85, a.precision());
+        assertEquals("1000 value 85", new Apfloat(1), a, new Apfloat("5e-84"));
+        assertTrue("1000 result 85 >= 1", a.compareTo(new Apfloat(1)) >= 0);
+
+        a = ApfloatMath.zeta(new Apfloat(1000, 90));
+        assertEquals("1000 precision 90", 90, a.precision());
+        assertEquals("1000 value 90", new Apfloat(1), a, new Apfloat("5e-89"));
+        assertTrue("1000 result 90 >= 1", a.compareTo(new Apfloat(1)) >= 0);
+
+        a = ApfloatMath.zeta(new Apfloat(1000, 95));
+        assertEquals("1000 precision 95", 95, a.precision());
+        assertEquals("1000 value 95", new Apfloat(1), a, new Apfloat("5e-94"));
+        assertTrue("1000 result 95 >= 1", a.compareTo(new Apfloat(1)) >= 0);
+
+        a = ApfloatMath.zeta(new Apfloat(1000, 100));
+        assertEquals("1000 precision 100", 100, a.precision());
+        assertEquals("1000 value 100", new Apfloat(1), a, new Apfloat("5e-99"));
+        assertTrue("1000 result 100 >= 1", a.compareTo(new Apfloat(1)) >= 0);
 
         try
         {

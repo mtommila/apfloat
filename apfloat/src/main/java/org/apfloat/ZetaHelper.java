@@ -120,7 +120,9 @@ class ZetaHelper
     {
         int radix = s.radix();
         long doublePrecision = ApfloatHelper.getDoublePrecision(radix),
-             workingPrecision = s.precision();
+             extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             workingPrecision = ApfloatHelper.extendPrecision(s.precision(), extraPrecision);
+        s = ApfloatHelper.extendPrecision(s, extraPrecision);
         Apint one = Apint.ONES[radix],
               two = new Apint(2, radix),
               four = new Apint(4, radix);
@@ -142,7 +144,12 @@ class ZetaHelper
         }
         d = d.add(numerator.divide(denominator));
         Apcomplex result = one.divide(d.multiply(one.subtract(ApcomplexMath.pow(two, one.subtract(s))))).multiply(sum);
-        return result;
+        // When s is real and large positive, round-off errors may make the result just below 1, correct this impossibility
+        if (s.imag().signum() == 0 && s.real().compareTo(one) > 0 && result.real().compareTo(one) < 0)
+        {
+            result = one.precision(workingPrecision);
+        }
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     public Apcomplex zetafast(Apcomplex s)

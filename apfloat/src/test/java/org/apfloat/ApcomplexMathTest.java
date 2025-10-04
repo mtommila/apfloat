@@ -3462,7 +3462,7 @@ public class ApcomplexMathTest
         assertEquals("0.5+1000i value", new Apcomplex("(0.356334,0.931998)"), a, new Apfloat("5e-6"));
 
         a = ApcomplexMath.zeta(new Apcomplex("(1.00000,0.00100000)"));
-        assertEquals("1+0.001i precision", 5, a.precision());
+        assertEquals("1+0.001i precision", 6, a.precision());
         assertEquals("1+0.001i value", new Apcomplex("(0.577216,-1000.00)"), a, new Apfloat("5e-2"));
 
         a = ApcomplexMath.zeta(new Apcomplex("(2,3)").precision(100));

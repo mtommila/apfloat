@@ -282,7 +282,7 @@ public class CalculatorTest
         assertCalculation("-2.60129", "gegenbauerC(-1.10000,-1.30000,2.50000)");
         assertCalculation("1.282427", "glaisher(7)");
         assertCalculation("1.12151", "harmonicNumber(1.20000)");
-        assertCalculation("1.104112", "harmonicNumber(1.200000,1.300000)");
+        assertCalculation("1.104113", "harmonicNumber(1.200000,1.300000)");
         assertCalculation("42142223/12252240", "harmonicNumber(17)");
         assertCalculation("6301272372663207205033976933/6076911214672415134617600000", "harmonicNumber(13,5)");
         assertCalculation("3.04424", "hermiteH(1.20000,1.30000)");
@@ -372,7 +372,7 @@ public class CalculatorTest
         assertCalculation("1.79e2", "toDegrees(3.14)");
         assertCalculation("1.57", "toRadians(90.0)");
         assertCalculation("2.16872e-1", "weberE(1.700000,0.7000000)");
-        assertCalculation("1.644", "zeta(2.000)");
+        assertCalculation("1.645", "zeta(2.000)");
         assertCalculation("1.181e-1", "zeta(3.000,-1.500)");
         assertCalculation("3.14", "acos(-1.00)");
         assertCalculation("1.01", "acosh(1.55)");
