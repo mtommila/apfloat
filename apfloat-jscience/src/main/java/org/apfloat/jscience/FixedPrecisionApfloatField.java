@@ -69,6 +69,7 @@ public class FixedPrecisionApfloatField
             // Immutable, deserialization occurs at creation, see newInstance() 
         }
     };
+
     /**
      * Constructs a new floating-point field object with the specified value.
      *

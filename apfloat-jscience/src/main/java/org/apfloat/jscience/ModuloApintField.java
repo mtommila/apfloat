@@ -71,6 +71,7 @@ public class ModuloApintField
             // Immutable, deserialization occurs at creation, see newInstance() 
         }
     };
+
     /**
      * Constructs a new integer field object with the specified value.
      *
