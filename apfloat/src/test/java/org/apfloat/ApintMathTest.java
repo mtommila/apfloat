@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -290,6 +290,11 @@ public class ApintMathTest
         r = ApintMath.div(new Apint(0), new Apint(3));
         assertEquals("0 / 3", new Apint(0), r[0]);
         assertEquals("0 % 3", new Apint(0), r[1]);
+
+        r = ApintMath.div(new Apint("101010101010101010101010101010101010101010101010101010101010101010101010101010100"),
+                          new Apint("101010101010101010101010101010101010101010101010101010101010101010101010101010101"));
+        assertEquals("101...100 / 101...101", new Apint(0), r[0]);
+        assertEquals("101...100 % 101...101", new Apint("101010101010101010101010101010101010101010101010101010101010101010101010101010100"), r[1]);
 
         r = ApintMath.div(new Apint("101010101010101010101010101010101010101010101010101010101010101010101010101010101"),
                           new Apint("101010101010101010101010101010101010101010101010101010101010101010101010101010101"));

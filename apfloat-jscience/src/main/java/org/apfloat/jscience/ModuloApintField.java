@@ -177,5 +177,5 @@ public class ModuloApintField
 
     private static final long serialVersionUID = 5308452222350777004L;
 
-    private static final LocalContext.Reference<Apint> MODULUS = new LocalContext.Reference<Apint>();
+    private static final LocalContext.Reference<Apint> MODULUS = new LocalContext.Reference<>();
 }

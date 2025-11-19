@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -319,6 +319,18 @@ public class ApintTest
             // OK: division by zero
             assertEquals("Localization key", "divide.byZero", aae.getLocalizationKey());
         }
+        try
+        {
+            new Apint(0).divide(new Apint(0));
+            fail("Zero division by zero allowed");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK: division by zero
+            assertEquals("Localization key", "divide.zeroByZero", aae.getLocalizationKey());
+        }
+
+        assertEquals("long - 1 / long", new Apint(0), new Apint("101010101010101010101010101010101010100").divide(new Apint("101010101010101010101010101010101010101")));
 
         assertEquals("long / long", new Apint(1), new Apint("101010101010101010101010101010101010101").divide(new Apint("101010101010101010101010101010101010101")));
         assertEquals("long / -long", new Apint(-1), new Apint("101010101010101010101010101010101010101").divide(new Apint("-101010101010101010101010101010101010101")));

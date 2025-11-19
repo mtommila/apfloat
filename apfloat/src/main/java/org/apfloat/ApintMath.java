@@ -361,6 +361,10 @@ public class ApintMath
             // x / 1 = x
             return new Apint[] { x, Apint.ZEROS[x.radix()] };
         }
+        else if (y.isShort())
+        {
+            return new Apint[] { x.divide(y), x.mod(y) };
+        }
 
         long precision;
         Apfloat tx, ty;
