@@ -42,7 +42,9 @@ import static org.apfloat.jscience.AbstractField.parse;
 
 /**
  * This class represents a point on an elliptic curve defined over the integers modulo a modulus.
- * All arithmetic is done in Weierstrass form.
+ * All arithmetic is done in Weierstrass form.<p>
+ *
+ * This class sets the modulus using {@link ModuloApintField#setModulus(Apint)}.
  *
  * @since 1.15.0
  * @version 1.15.0
@@ -84,6 +86,7 @@ public class EllipticCurveGroup
     /**
      * The "point at infinity".
      */
+
     public static final EllipticCurveGroup O = new EllipticCurveGroup((ModuloApintField) null, (ModuloApintField) null);
 
     /**
@@ -192,7 +195,7 @@ public class EllipticCurveGroup
      *
      * @return The curve parameter <i>a</i>.
      *
-     * @see #setWeierstrassParameters
+     * @see #setWeierstrassParameters(Apint, Apint, Apint)
      */
 
     public static Apint getA()
@@ -205,7 +208,7 @@ public class EllipticCurveGroup
      *
      * @return The curve parameter <i>b</i>.
      *
-     * @see #setWeierstrassParameters
+     * @see #setWeierstrassParameters(Apint, Apint, Apint)
      */
 
     public static Apint getB()
