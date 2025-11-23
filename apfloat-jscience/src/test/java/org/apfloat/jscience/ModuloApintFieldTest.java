@@ -25,7 +25,9 @@ package org.apfloat.jscience;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.math.BigInteger;
 import java.util.HashSet;
+import java.util.Random;
 
 import org.apfloat.*;
 
@@ -65,6 +67,7 @@ public class ModuloApintFieldTest
         suite.addTest(new ModuloApintFieldTest("testXmlSerialization"));
         suite.addTest(new ModuloApintFieldTest("testMatrixInverse"));
         suite.addTest(new ModuloApintFieldTest("testRationalFunction"));
+        suite.addTest(new ModuloApintFieldTest("testAliceBob"));
 
         return suite;
     }
@@ -81,6 +84,7 @@ public class ModuloApintFieldTest
         assertEquals("100 - 200", valueOf(65537 - 100), a.minus(b));
         assertEquals("100 * 200", valueOf(20000), a.times(b));
         assertEquals("1 / 100", valueOf(17695), a.inverse());
+        assertEquals("100 ^2", valueOf(10000), a.pow(new Apint(2)));
         assertEquals("copy", a, a.copy());
         assertEquals("doubleValue", 100.0, a.doubleValue(), 0.00000000000005);
         assertEquals("longValue", 100L, a.longValue());
@@ -195,6 +199,23 @@ public class ModuloApintFieldTest
         RationalFunction<ModuloApintField> function = RationalFunction.valueOf(dividend, divisor);
         assertEquals("Function value", new Apint(2), function.evaluate(valueOf(2)).value());
         assertEquals("Function plus inverse, value", new Apint(24), function.plus(function.inverse()).evaluate(valueOf(2)).value());
+    }
+
+    public static void testAliceBob()
+    {
+        // Modulus and g are public
+        ModuloApintField.setModulus(new Apint(BigInteger.probablePrime(4096, new Random()), 2));
+        ModuloApintField g = new ModuloApintField(ApintMath.random(4096, 2));
+        // Private keys, generated as random
+        Apint alicePrivateKey = ApintMath.random(4096, 2);
+        Apint bobPrivateKey = ApintMath.random(4096, 2);
+        // Key exchange
+        ModuloApintField alicePublicKey = g.pow(alicePrivateKey);
+        ModuloApintField bobPublicKey = g.pow(bobPrivateKey);
+        // Shared secret
+        ModuloApintField aliceSharedSecret = bobPublicKey.pow(alicePrivateKey);
+        ModuloApintField bobSharedSecret = alicePublicKey.pow(bobPrivateKey);
+        assertEquals("Alice shared secret == Bob shared secret", aliceSharedSecret, bobSharedSecret);
     }
 
     private static ModuloApintField valueOf(int value)

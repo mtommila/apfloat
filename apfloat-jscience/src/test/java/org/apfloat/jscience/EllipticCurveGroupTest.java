@@ -61,9 +61,15 @@ public class EllipticCurveGroupTest
         suite.addTest(new EllipticCurveGroupTest("testOpposite"));
         suite.addTest(new EllipticCurveGroupTest("testPlus"));
         suite.addTest(new EllipticCurveGroupTest("testTimes"));
-        suite.addTest(new EllipticCurveGroupTest("testWeierstrass"));
-        suite.addTest(new EllipticCurveGroupTest("testMontgomery"));
-        suite.addTest(new EllipticCurveGroupTest("testEdwards"));
+        suite.addTest(new EllipticCurveGroupTest("testFromMontgomeryPoint"));
+        suite.addTest(new EllipticCurveGroupTest("testFromEdwardsPoint"));
+        suite.addTest(new EllipticCurveGroupTest("testSetWeierstrassParameters"));
+        suite.addTest(new EllipticCurveGroupTest("testSetMontgomeryParameters"));
+        suite.addTest(new EllipticCurveGroupTest("testSetEdwardsParameters"));
+        suite.addTest(new EllipticCurveGroupTest("testJInvariant"));
+        suite.addTest(new EllipticCurveGroupTest("testWeierstrassAliceBob"));
+        suite.addTest(new EllipticCurveGroupTest("testMontgomeryAliceBob"));
+        suite.addTest(new EllipticCurveGroupTest("testEdwardsAliceBob"));
         suite.addTest(new EllipticCurveGroupTest("testXmlSerialization"));
 
         return suite;
@@ -144,7 +150,45 @@ public class EllipticCurveGroupTest
         assertEquals("(5, 12) * 5 radix 2", new EllipticCurveGroup(new Apint(0, 3), new Apint(2, 3)), new EllipticCurveGroup(new Apint(5, 3), new Apint(12, 3)).times(new Apint(5, 3)));
     }
 
-    public static void testWeierstrass()
+    public static void testFromMontgomeryPoint()
+    {
+        EllipticCurveGroup.setMontgomeryParameters(new Apint(4, 5), new Apint(3, 5), new Apint(19, 5));
+        EllipticCurveGroup e = EllipticCurveGroup.fromMontgomeryPoint(new Apint(3, 5), new Apint(5, 5));
+        assertEquals("x radix 5", new Apint(1, 5), e.getX());
+        assertEquals("y radix 5", new Apint(6, 5), e.getY());
+
+        try
+        {
+            EllipticCurveGroup.setWeierstrassParameters(new Apint(3), new Apint(4), new Apint(19));
+            EllipticCurveGroup.fromMontgomeryPoint(new Apint(3), new Apint(5));
+            fail("Unset parameters accepted");
+        }
+        catch (IllegalStateException ise)
+        {
+            // OK, invalid
+        }
+    }
+
+    public static void testFromEdwardsPoint()
+    {
+        EllipticCurveGroup.setEdwardsParameters(new Apint(3, 5), new Apint(4, 5), new Apint(19, 5));
+        EllipticCurveGroup e = EllipticCurveGroup.fromEdwardsPoint(new Apint(1, 5), new Apint(8, 5));
+        assertEquals("x radix 5", new Apint(18, 5), e.getX());
+        assertEquals("y radix 5", new Apint(1, 5), e.getY());
+
+        try
+        {
+            EllipticCurveGroup.setWeierstrassParameters(new Apint(3), new Apint(4), new Apint(19));
+            EllipticCurveGroup.fromEdwardsPoint(Apint.ONE, new Apint(8));
+            fail("Unset parameters accepted");
+        }
+        catch (IllegalStateException ise)
+        {
+            // OK, invalid
+        }
+    }
+
+    public static void testSetWeierstrassParameters()
     {
         EllipticCurveGroup.setWeierstrassParameters(new Apint(486662), new Apint(1), ApintMath.pow(new Apint(2), 255).subtract(new Apint(19)));
         assertEquals("a", new Apint("486662"), EllipticCurveGroup.getA());
@@ -161,26 +205,91 @@ public class EllipticCurveGroupTest
         }
     }
 
-    public static void testMontgomery()
+    public static void testSetMontgomeryParameters()
     {
-        EllipticCurveGroup.setMontgomeryParameters(new Apint(1), new Apint(486662), ApintMath.pow(new Apint(2), 255).subtract(new Apint(19)));
-        assertEquals("a", new Apint("19298681539552699237261830834781317975544997444273427339909597334573241639236"), EllipticCurveGroup.getA());
-        assertEquals("b", new Apint("55751746669818908907645289078257140818241103727901012315294400837956729358436"), EllipticCurveGroup.getB());
-
         EllipticCurveGroup.setMontgomeryParameters(new Apint(4, 5), new Apint(3, 5), new Apint(19, 5));
         assertEquals("a radix 5", new Apint(7, 5), EllipticCurveGroup.getA());
         assertEquals("b radix 5", new Apint(11, 5), EllipticCurveGroup.getB());
     }
 
-    public static void testEdwards()
+    public static void testSetEdwardsParameters()
     {
-        EllipticCurveGroup.setEdwardsParameters(new Apint(1), new Apint(-39081), ApintMath.pow(new Apint(2), 448).subtract(ApintMath.pow(new Apint(2), 224).subtract(new Apint(1))));
-        assertEquals("a", new Apint("60569893691300574212443650657333711196136780057276505023457516598384360680560897723866365308223045494174073705153636446754458136389257"), EllipticCurveGroup.getA());
-        assertEquals("b", new Apint("619158913288850314171646206719411270004953751696604273573121280783484575845733621177300623150724465051557197874903839233490085973713604"), EllipticCurveGroup.getB());
-
         EllipticCurveGroup.setEdwardsParameters(new Apint(3, 5), new Apint(4, 5), new Apint(19, 5));
         assertEquals("a radix 5", new Apint(13, 5), EllipticCurveGroup.getA());
         assertEquals("b radix 5", new Apint(15, 5), EllipticCurveGroup.getB());
+    }
+
+    public static void testJInvariant()
+    {
+        Apint q = ApintMath.pow(new Apint(2), 255).subtract(new Apint(19));
+        EllipticCurveGroup.setMontgomeryParameters(new Apint(1), new Apint(486662), q);
+        Apint curve22519J = EllipticCurveGroup.getJInvariant();
+        EllipticCurveGroup.setEdwardsParameters(new Apint(-1), new ModuloApintField(new Apint(-121665)).times(new ModuloApintField(new Apint(121666)).inverse()).value(), q);
+        Apint ed22519J = EllipticCurveGroup.getJInvariant();
+        assertEquals("Curve22519 == Ed25519 j-invariant", curve22519J, ed22519J);
+    }
+
+    public static void testWeierstrassAliceBob()
+    {
+        // P-521
+        // Curve parameters and g are public
+        EllipticCurveGroup.setWeierstrassParameters(new Apint("1fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc", 16),
+                                                    new Apint("51953eb9618e1c9a1f929a21a0b68540eea2da725b99b315f3b8b489918ef109e156193951ec7e937b1652c0bd3bb1bf073573df883d2c34f1ef451fd46b503f00", 16),
+                                                    new Apint("1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", 16));
+        EllipticCurveGroup g = new EllipticCurveGroup(new Apint("c6858e06b70404e9cd9e3ecb662395b4429c648139053fb521f828af606b4d3dbaa14b5e77efe75928fe1dc127a2ffa8de3348b3c1856a429bf97e7e31c2e5bd66", 16),
+                                                      new Apint("11839296a789a3bc0045c8a5fb42c7d1bd998f54449579b446817afbd17273e662c97ee72995ef42640c550b9013fad0761353c7086a272c24088be94769fd16650", 16));
+        // Private keys, generated as random
+        Apint alicePrivateKey = ApintMath.random(130, 16);
+        Apint bobPrivateKey = ApintMath.random(130, 16);
+        // Key exchange
+        EllipticCurveGroup alicePublicKey = g.times(alicePrivateKey);
+        EllipticCurveGroup bobPublicKey = g.times(bobPrivateKey);
+        // Shared secret
+        EllipticCurveGroup aliceSharedSecret = bobPublicKey.times(alicePrivateKey);
+        EllipticCurveGroup bobSharedSecret = alicePublicKey.times(bobPrivateKey);
+        assertEquals("Alice shared secret == Bob shared secret", aliceSharedSecret, bobSharedSecret);
+    }
+
+    public static void testMontgomeryAliceBob()
+    {
+        // Curve25519
+        // Curve parameters and g are public
+        EllipticCurveGroup.setMontgomeryParameters(new Apint("1", 16),
+                                                    new Apint("76d06", 16),
+                                                    new Apint("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffed", 16));
+        EllipticCurveGroup g = EllipticCurveGroup.fromMontgomeryPoint(new Apint("9", 16),
+                                                                      new Apint("20ae19a1b8a086b4e01edd2c7748d14c923d4d7e6d7c61b229e9c5a27eced3d9", 16));
+        // Private keys, generated as random
+        Apint alicePrivateKey = ApintMath.random(63, 16);
+        Apint bobPrivateKey = ApintMath.random(63, 16);
+        // Key exchange
+        EllipticCurveGroup alicePublicKey = g.times(alicePrivateKey);
+        EllipticCurveGroup bobPublicKey = g.times(bobPrivateKey);
+        // Shared secret
+        EllipticCurveGroup aliceSharedSecret = bobPublicKey.times(alicePrivateKey);
+        EllipticCurveGroup bobSharedSecret = alicePublicKey.times(bobPrivateKey);
+        assertEquals("Alice shared secret == Bob shared secret", aliceSharedSecret, bobSharedSecret);
+    }
+
+    public static void testEdwardsAliceBob()
+    {
+        // Ed448
+        // Curve parameters and g are public
+        EllipticCurveGroup.setEdwardsParameters(new Apint("1", 16),
+                                                new Apint("d78b4bdc7f0daf19f24f38c29373a2ccad46157242a50f37809b1da3412a12e79ccc9c81264cfe9ad080997058fb61c4243cc32dbaa156b9", 16),
+                                                new Apint("fffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffff", 16));
+        EllipticCurveGroup g = EllipticCurveGroup.fromEdwardsPoint(new Apint("79a70b2b70400553ae7c9df416c792c61128751ac92969240c25a07d728bdc93e21f7787ed6972249de732f38496cd11698713093e9c04fc", 16),
+                                                                   new Apint("7fffffffffffffffffffffffffffffffffffffffffffffffffffffff80000000000000000000000000000000000000000000000000000001", 16));
+        // Private keys, generated as random
+        Apint alicePrivateKey = ApintMath.random(111, 16);
+        Apint bobPrivateKey = ApintMath.random(111, 16);
+        // Key exchange
+        EllipticCurveGroup alicePublicKey = g.times(alicePrivateKey);
+        EllipticCurveGroup bobPublicKey = g.times(bobPrivateKey);
+        // Shared secret
+        EllipticCurveGroup aliceSharedSecret = bobPublicKey.times(alicePrivateKey);
+        EllipticCurveGroup bobSharedSecret = alicePublicKey.times(bobPrivateKey);
+        assertEquals("Alice shared secret == Bob shared secret", aliceSharedSecret, bobSharedSecret);
     }
 
     public static void testXmlSerialization()

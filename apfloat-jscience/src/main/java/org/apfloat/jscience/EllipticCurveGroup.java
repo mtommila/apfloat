@@ -90,7 +90,7 @@ public class EllipticCurveGroup
     public static final EllipticCurveGroup O = new EllipticCurveGroup((ModuloApintField) null, (ModuloApintField) null);
 
     /**
-     * Constructs a new point on the elliptic curve.
+     * Constructs a new point on the elliptic curve. Uses Weierstrass coordinates.
      *
      * @param x The x-coordinate.
      * @param y The y-coordinate.
@@ -105,6 +105,58 @@ public class EllipticCurveGroup
     {
         this.x = x;
         this.y = y;
+    }
+
+    /**
+     * Construct a point from Montgomery curve coordinates.
+     * The Montgomery curve parameters must be first set with {@link #setMontgomeryParameters(Apint, Apint, Apint)}.
+     *
+     * @param x The Montgomery curve x-coordinate.
+     * @param y The Montgomery curve y-coordinate.
+     *
+     * @return The point in Weierstrass coordinates.
+     */
+
+    public static EllipticCurveGroup fromMontgomeryPoint(Apint x, Apint y)
+    {
+        return fromMontgomeryPoint(new ModuloApintField(x), new ModuloApintField(y));
+    }
+
+    private static EllipticCurveGroup fromMontgomeryPoint(ModuloApintField x, ModuloApintField y)
+    {
+        ModuloApintField A = montgomeryA.get(),
+                         B = montgomeryB.get();
+        if (A == null || B == null)
+        {
+            throw new IllegalStateException("Curve parameters have not been set");
+        }
+        int radix = x.value().radix();
+        ModuloApintField inverseB = B.inverse(),
+                         inverseThree = new ModuloApintField(new Apint(3, radix)).inverse();
+        return new EllipticCurveGroup(x.times(inverseB).plus(A.times(inverseB).times(inverseThree)), y.times(inverseB));
+    }
+
+    /**
+     * Construct a point from twisted Edwards curve coordinates.
+     * The Edwards curve parameters must be first set with {@link #setEdwardsParameters(Apint, Apint, Apint)}.
+     *
+     * @param x The Edwards curve x-coordinate.
+     * @param y The Edwards curve y-coordinate.
+     *
+     * @return The point in Weierstrass coordinates.
+     */
+
+    public static EllipticCurveGroup fromEdwardsPoint(Apint x, Apint y)
+    {
+        return fromEdwardsPoint(new ModuloApintField(x), new ModuloApintField(y));
+    }
+
+    private static EllipticCurveGroup fromEdwardsPoint(ModuloApintField x, ModuloApintField y)
+    {
+        int radix = x.value().radix();
+        ModuloApintField one = new ModuloApintField(new Apint(1, radix)),
+                         y1 = one.plus(y).times(one.minus(y).inverse());
+        return fromMontgomeryPoint(y1, y1.times(x.inverse()));
     }
 
     /**
@@ -132,8 +184,10 @@ public class EllipticCurveGroup
         {
             throw new IllegalArgumentException("Curve is not valid");
         }
-        A.set(α);
-        B.set(β);
+        weierstrassA.set(α);
+        weierstrassB.set(β);
+        montgomeryA.set(null);
+        montgomeryB.set(null);
     }
 
     /**
@@ -162,6 +216,8 @@ public class EllipticCurveGroup
         setWeierstrassParameters(three.minus(A.times(A)).times(three.times(B).times(B).inverse()).value(),
                                  two.times(A).times(A).minus(nine).times(A).times(twentyseven.times(B).times(B).times(B).inverse()).value(),
                                  p);
+        montgomeryA.set(A);
+        montgomeryB.set(B);
     }
 
     /**
@@ -200,7 +256,7 @@ public class EllipticCurveGroup
 
     public static Apint getA()
     {
-        return A.get().value();
+        return weierstrassA.get().value();
     }
 
     /**
@@ -213,7 +269,25 @@ public class EllipticCurveGroup
 
     public static Apint getB()
     {
-        return B.get().value();
+        return weierstrassB.get().value();
+    }
+
+    /**
+     * Returns the j-invariant of the curve.
+     *
+     * @return The j-invariant of the curve.
+     */
+
+    public static Apint getJInvariant()
+    {
+        ModuloApintField a = weierstrassA.get(),
+                         b = weierstrassB.get();
+        int radix = a.value().radix();
+        ModuloApintField foura3 = new ModuloApintField(new Apint(4, radix)).times(a).times(a).times(a),
+                         twentyseven = new ModuloApintField(new Apint(27, radix)),
+                         twelve3 = new ModuloApintField(new Apint(1728, radix));
+
+        return twelve3.times(foura3).times(foura3.plus(twentyseven.times(b).times(b)).inverse()).value();
     }
 
     /**
@@ -250,10 +324,14 @@ public class EllipticCurveGroup
             return this;
         }
 
-        ModuloApintField a = A.get(),
-                         b = B.get(),
+        ModuloApintField a = weierstrassA.get(),
+                         b = weierstrassB.get(),
                          x,
                          y;
+        if (a == null || b == null)
+        {
+            throw new IllegalStateException("Curve parameters have not been set");
+        }
         if (!this.x.equals(that.x))
         {
             // P != Q
@@ -376,6 +454,8 @@ public class EllipticCurveGroup
     private final ModuloApintField x,
                                    y;
 
-    private static final LocalContext.Reference<ModuloApintField> A = new LocalContext.Reference<>();
-    private static final LocalContext.Reference<ModuloApintField> B = new LocalContext.Reference<>();
+    private static final LocalContext.Reference<ModuloApintField> weierstrassA = new LocalContext.Reference<>(),
+                                                                  weierstrassB = new LocalContext.Reference<>(),
+                                                                  montgomeryA = new LocalContext.Reference<>(),
+                                                                  montgomeryB = new LocalContext.Reference<>();
 }

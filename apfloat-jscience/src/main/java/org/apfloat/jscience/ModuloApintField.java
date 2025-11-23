@@ -169,6 +169,26 @@ public class ModuloApintField
         return new ModuloApintField(ApintMath.modPow(value(), new Apint(-1), modulus));
     }
 
+    /**
+     * Modular power.
+     *
+     * @param exp The exponent
+     *
+     * @return <code>this<sup>exp</sup></code>
+     *
+     * @since 1.15.0
+     */
+
+    public ModuloApintField pow(Apint exp)
+    {
+        Apint modulus = MODULUS.get();
+        if (modulus == null)
+        {
+            throw new ApfloatArithmeticException("Modulus is not set");
+        }
+        return new ModuloApintField(ApintMath.modPow(value(), exp, modulus));
+    }
+
     @Override
     public ModuloApintField copy()
     {
