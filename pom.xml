@@ -338,7 +338,7 @@
               <target>
                 <ac:for xmlns:ac="antlib:net.sf.antcontrib" param="filename">
                   <path>
-                    <fileset dir="${project.build.directory}/site/apidocs" includes="*.html" />
+                    <fileset dir="${project.build.directory}/reports/apidocs" includes="*.html" />
                   </path>
                   <sequential>
                     <local name="filename" />
@@ -347,7 +347,7 @@
                     <property name="filename" value="@{filename}" />
                     <pathconvert property="tofilename" targetos="unix">
                       <path path="${filename}" />
-                      <map from="${project.build.directory}${file.separator}site${file.separator}apidocs${file.separator}" to="" />
+                      <map from="${project.build.directory}${file.separator}reports${file.separator}apidocs${file.separator}" to="" />
                     </pathconvert>
                     <ac:propertyregex property="canonical" input="${tofilename}" regexp="^index.html$|(.*)" replace="\1" />
                     <copy file="${filename}" tofile="${project.build.directory}/site/docs/${tofilename}">
@@ -360,7 +360,7 @@
                   </sequential>
                 </ac:for>
                 <copy todir="${project.build.directory}/site/docs">
-                  <fileset dir="${project.build.directory}/site/apidocs" excludes="*.html" />
+                  <fileset dir="${project.build.directory}/reports/apidocs" excludes="*.html" />
                 </copy>
                 <zip destfile="${project.build.directory}/apfloat-${project.version}.zip">
                   <fileset dir="." includes="readme.html,LICENSE.txt" />
