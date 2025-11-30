@@ -574,27 +574,22 @@ public class ApintMath
         // Extended Euclidean algorithm
         Apint one = Apint.ONES[m.radix()],
               x = Apint.ZERO,
-              y = one,
               oldX = one,
-              oldY = Apint.ZERO,
               oldA = a,
               b = m;
 
+        // In the algorithm, y is ignored as it's not needed
         while (b.signum() != 0)
         {
-            Apint q = a.divide(b);
+            Apint[] qr = div(a, b);
 
-            Apint tmp = b;
-            b = a.mod(b);
-            a = tmp;
+            Apint q = qr[0];
+            a = b;
+            b = qr[1];
 
-            tmp = x;
+            Apint tmp = x;
             x = oldX.subtract(q.multiply(x));
             oldX = tmp;
-
-            tmp = y;
-            y = oldY.subtract(q.multiply(y));
-            oldY = tmp;
         }
 
         if (!abs(a).equals(one))

@@ -30,11 +30,16 @@ import javolution.xml.stream.XMLStreamException;
 import org.apfloat.Apint;
 import org.apfloat.ApintMath;
 import org.apfloat.ApfloatArithmeticException;
+import org.jscience.mathematics.structure.Ring;
 
 /**
  * This class represents an arbitrary precision modulo integer.
  * The modulus must be set with {@link #setModulus(Apint)}; otherwise
- * the modulo reduction is not done.
+ * the modulo reduction is not done.<p>
+ *
+ * For the modulo integers to actually for a field, the modulus must
+ * be prime. Otherwise it's just a {@link Ring} and the {@link #inverse()}
+ * method may fail.
  *
  * @since 1.8.0
  * @version 1.15.0
