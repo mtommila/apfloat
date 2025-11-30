@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.apfloat</groupId>
     <artifactId>apfloat-parent</artifactId>
-    <version>1.15.0-SNAPSHOT</version>
+    <version>1.15.0</version>
   </parent>
 
   <artifactId>apfloat</artifactId>
@@ -65,7 +65,7 @@
                 </macrodef>
                 <macrodef name="copy-templates">
                   <attribute name="fromdir" />
-                  <attribute name="todir"/>
+                  <attribute name="todir" />
                   <sequential>
                     <copy-template fromdir="@{fromdir}" todir="@{todir}" primitivetype="int" shortobjecttype="Int" longobjecttype="Integer" />
                     <copy-template fromdir="@{fromdir}" todir="@{todir}" primitivetype="long" shortobjecttype="Long" longobjecttype="Long" />
