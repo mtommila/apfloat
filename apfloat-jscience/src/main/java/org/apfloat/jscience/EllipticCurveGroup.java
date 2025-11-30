@@ -47,7 +47,7 @@ import static org.apfloat.jscience.AbstractField.parse;
  * This class sets the modulus using {@link ModuloApintField#setModulus(Apint)}.
  *
  * @since 1.15.0
- * @version 1.15.0
+ * @version 1.15.1
  * @author Mikko Tommila
  */
 
@@ -193,7 +193,7 @@ public class EllipticCurveGroup
     /**
      * Set the curve parameters in Montgomery form.
      * The elliptic curve specified in the Montgomery form is<br/>
-     * <i>B y<sup>2</sup> = x<sup>3</sup> + A x<sup>2</sup> + x</i>
+     * <i>B y<sup>2</sup> = x<sup>3</sup> + A x<sup>2</sup> + x</i><p>
      *
      * For example, Curve25519 can be set with<p>
      * <code>setMontgomeryParameters(new Apint(1), new Apint(486662), ApintMath.pow(new Apint(2), 255).subtract(new Apint(19)))</code>
@@ -223,7 +223,7 @@ public class EllipticCurveGroup
     /**
      * Set the curve parameters in twisted Edwards form.
      * The elliptic curve specified in the twisted Edwards form is<br/>
-     * <i>a x<sup>2</sup> + y<sup>2</sup> = 1 + d x<sup>2</sup> y<sup>2</sup></i>
+     * <i>a x<sup>2</sup> + y<sup>2</sup> = 1 + d x<sup>2</sup> y<sup>2</sup></i><p>
      *
      * For example, Curve448 can be set with<p>
      * <code>setEdwardsParameters(new Apint(1), new Apint(-39081), ApintMath.pow(new Apint(2), 448).subtract(ApintMath.pow(new Apint(2), 224).subtract(new Apint(1))))</code>
