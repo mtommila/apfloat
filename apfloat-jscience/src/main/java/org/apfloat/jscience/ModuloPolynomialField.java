@@ -53,57 +53,57 @@ import javolution.text.Text;
  * over the coefficient field. Otherwise it's just a {@link Ring} and the
  * multiplicative {@link #inverse()} method may fail.
  *
- * @param <R> The type of the polynomial coefficients.
+ * @param <F> The type of the polynomial coefficients.
  *
  * @since 1.15.0
- * @version 1.15.0
+ * @version 1.15.1
  * @author Mikko Tommila
  */
-public class ModuloPolynomialField<R extends Field<R>>
-    implements Field<ModuloPolynomialField<R>>, Serializable, Realtime
+public class ModuloPolynomialField<F extends Field<F>>
+    implements Field<ModuloPolynomialField<F>>, Serializable, Realtime
 {
-    private static class FiniteFieldPolynomial<R extends Field<R>>
+    private static class FiniteFieldPolynomial<F extends Field<F>>
     {
-        public FiniteFieldPolynomial(Polynomial<R> polynomial)
+        public FiniteFieldPolynomial(Polynomial<F> polynomial)
         {
             this.polynomial = normalize(polynomial);
         }
 
-        public FiniteFieldPolynomial<R> plus(FiniteFieldPolynomial<R> that)
+        public FiniteFieldPolynomial<F> plus(FiniteFieldPolynomial<F> that)
         {
             return new FiniteFieldPolynomial<>(this.polynomial.plus(that.polynomial));
         }
 
-        public FiniteFieldPolynomial<R> minus(FiniteFieldPolynomial<R> that)
+        public FiniteFieldPolynomial<F> minus(FiniteFieldPolynomial<F> that)
         {
             return new FiniteFieldPolynomial<>(this.polynomial.minus(that.polynomial));
         }
 
-        public FiniteFieldPolynomial<R> opposite()
+        public FiniteFieldPolynomial<F> opposite()
         {
             return new FiniteFieldPolynomial<>(this.polynomial.opposite());
         }
 
-        public FiniteFieldPolynomial<R> times(R that)
+        public FiniteFieldPolynomial<F> times(F that)
         {
             return new FiniteFieldPolynomial<>(this.polynomial.times(that));
         }
 
-        public FiniteFieldPolynomial<R> times(FiniteFieldPolynomial<R> that)
+        public FiniteFieldPolynomial<F> times(FiniteFieldPolynomial<F> that)
         {
             // JScience does not handle correctly polynomial multiplication when the coefficients are defined over a finite field
-            Map<Term, R> resultTermMap = new HashMap<>();
-            R zero = null;
+            Map<Term, F> resultTermMap = new HashMap<>();
+            F zero = null;
             for (Term t1 : this.polynomial.getTerms())
             {
-                R c1 = this.polynomial.getCoefficient(t1);
+                F c1 = this.polynomial.getCoefficient(t1);
                 for (Term t2 : that.polynomial.getTerms())
                 {
-                    R c2 = that.polynomial.getCoefficient(t2);
+                    F c2 = that.polynomial.getCoefficient(t2);
                     Term t = t1.times(t2);
-                    R c = c1.times(c2);
-                    R prev = resultTermMap.get(t);
-                    R coef = (prev != null) ? prev.plus(c) : c;
+                    F c = c1.times(c2);
+                    F prev = resultTermMap.get(t);
+                    F coef = (prev != null) ? prev.plus(c) : c;
                     if (isZero(coef))
                     {
                         zero = coef;
@@ -115,7 +115,7 @@ public class ModuloPolynomialField<R extends Field<R>>
                     }
                 }
             }
-            Polynomial<R> result = resultTermMap.entrySet().stream().map(e -> Polynomial.valueOf(e.getValue(), e.getKey())).reduce(Polynomial::plus).orElse(Constant.valueOf(zero));
+            Polynomial<F> result = resultTermMap.entrySet().stream().map(e -> Polynomial.valueOf(e.getValue(), e.getKey())).reduce(Polynomial::plus).orElse(Constant.valueOf(zero));
             return new FiniteFieldPolynomial<>(result);
         }
 
@@ -124,12 +124,12 @@ public class ModuloPolynomialField<R extends Field<R>>
             return this.polynomial.getTerms();
         }
 
-        public R getCoefficient(Term term)
+        public F getCoefficient(Term term)
         {
             return this.polynomial.getCoefficient(term);
         }
 
-        public Polynomial<R> value()
+        public Polynomial<F> value()
         {
             return this.polynomial;
         }
@@ -151,12 +151,12 @@ public class ModuloPolynomialField<R extends Field<R>>
             return this.polynomial.hashCode() * 3;
         }
 
-        private static <R extends Field<R>> Polynomial<R> normalize(Polynomial<R> polynomial)
+        private static <F extends Field<F>> Polynomial<F> normalize(Polynomial<F> polynomial)
         {
             // This is necessary only because JScience has some bugs with a nonzero polynomial containing a zero constant term
             for (Term term : polynomial.getTerms())
             {
-                R coefficient = polynomial.getCoefficient(term);
+                F coefficient = polynomial.getCoefficient(term);
                 if (term.size() == 0 && isZero(coefficient))
                 {
                     return polynomial.plus(coefficient);
@@ -165,7 +165,7 @@ public class ModuloPolynomialField<R extends Field<R>>
             return polynomial;
         }
 
-        private Polynomial<R> polynomial;
+        private Polynomial<F> polynomial;
     }
 
     /**
@@ -174,12 +174,12 @@ public class ModuloPolynomialField<R extends Field<R>>
      * @param polynomial The polynomial. Will be reduced by the modulus, if any.
      */
 
-    public ModuloPolynomialField(Polynomial<R> polynomial)
+    public ModuloPolynomialField(Polynomial<F> polynomial)
     {
         this(new FiniteFieldPolynomial<>(polynomial));
     }
 
-    private ModuloPolynomialField(FiniteFieldPolynomial<R> polynomial)
+    private ModuloPolynomialField(FiniteFieldPolynomial<F> polynomial)
     {
         this.polynomial = reduce(polynomial);
     }
@@ -189,23 +189,23 @@ public class ModuloPolynomialField<R extends Field<R>>
      * The modulus can be set in a thread-specific way using
      * {@link javolution.context.LocalContext}.
      *
-     * @param <R> The type of the polynomial coefficients.
+     * @param <F> The type of the polynomial coefficients.
      *
      * @return The local modulus or <code>null</code> if modulo reduction is not done.
      *
      * @see #setModulus
      */
-    public static <R extends Field<R>> Polynomial<R> getModulus()
+    public static <F extends Field<F>> Polynomial<F> getModulus()
     {
         @SuppressWarnings("unchecked")
-        FiniteFieldPolynomial<R> modulus = (FiniteFieldPolynomial<R>) getModulusInternal();
+        FiniteFieldPolynomial<F> modulus = (FiniteFieldPolynomial<F>) getModulusInternal();
         return modulus == null ? null : modulus.value();
     }
 
-    private static <R extends Field<R>> FiniteFieldPolynomial<R> getModulusInternal()
+    private static <F extends Field<F>> FiniteFieldPolynomial<F> getModulusInternal()
     {
         @SuppressWarnings("unchecked")
-        FiniteFieldPolynomial<R> modulus = (FiniteFieldPolynomial<R>) MODULUS.get();
+        FiniteFieldPolynomial<F> modulus = (FiniteFieldPolynomial<F>) MODULUS.get();
         return modulus;
     }
 
@@ -214,15 +214,15 @@ public class ModuloPolynomialField<R extends Field<R>>
      * The modulus can be set in a thread-specific way using
      * {@link javolution.context.LocalContext}.
      *
-     * @param <R> The type of the polynomial coefficients.
+     * @param <F> The type of the polynomial coefficients.
      * @param modulus The modulus or <code>null</code> if modulo reduction is not done.
      */
-    public static <R extends Field<R>> void setModulus(Polynomial<R> modulus)
+    public static <F extends Field<F>> void setModulus(Polynomial<F> modulus)
     {
         setModulus(modulus == null ? null : new FiniteFieldPolynomial<>(modulus));
     }
 
-    private static <R extends Field<R>> void setModulus(FiniteFieldPolynomial<R> modulus)
+    private static <F extends Field<F>> void setModulus(FiniteFieldPolynomial<F> modulus)
     {
         if (modulus != null)
         {
@@ -233,7 +233,7 @@ public class ModuloPolynomialField<R extends Field<R>>
             }
             terms.sort(null);
             Term leadingTerm = terms.get(0);
-            R leadingCoefficient = modulus.getCoefficient(leadingTerm);
+            F leadingCoefficient = modulus.getCoefficient(leadingTerm);
             if (terms.size() == 1)
             {
                 if (isZero(leadingCoefficient))
@@ -242,8 +242,8 @@ public class ModuloPolynomialField<R extends Field<R>>
                 }
             }
             // Scale leading term of modulus to 1
-            R inverseLeadingCoefficient = leadingCoefficient.inverse();
-            FiniteFieldPolynomial<R> scaledModulus = modulus.times(inverseLeadingCoefficient);
+            F inverseLeadingCoefficient = leadingCoefficient.inverse();
+            FiniteFieldPolynomial<F> scaledModulus = modulus.times(inverseLeadingCoefficient);
             SCALED_MODULUS.set(scaledModulus);
             ZERO.set(new FiniteFieldPolynomial<>(Constant.valueOf(leadingCoefficient.plus(leadingCoefficient.opposite()))));
             ONE.set(new FiniteFieldPolynomial<>(Constant.valueOf(leadingCoefficient.times(inverseLeadingCoefficient))));
@@ -254,20 +254,20 @@ public class ModuloPolynomialField<R extends Field<R>>
     /**
      * Reduce the polynomial with the current modulus.
      *
-     * @param <R> The type of the polynomial coefficients.
+     * @param <F> The type of the polynomial coefficients.
      * @param polynomial The polynomial.
      *
      * @return The polynomial mod the current modulus.
      */
 
-    public static <R extends Field<R>> Polynomial<R> reduce(Polynomial<R> polynomial)
+    public static <F extends Field<F>> Polynomial<F> reduce(Polynomial<F> polynomial)
     {
         return reduce(new FiniteFieldPolynomial<>(polynomial)).value();
     }
 
-    private static <R extends Field<R>> FiniteFieldPolynomial<R> reduce(FiniteFieldPolynomial<R> polynomial)
+    private static <F extends Field<F>> FiniteFieldPolynomial<F> reduce(FiniteFieldPolynomial<F> polynomial)
     {
-        FiniteFieldPolynomial<R> modulus = getModulusInternal();
+        FiniteFieldPolynomial<F> modulus = getModulusInternal();
         if (modulus != null)
         {
             polynomial = div(polynomial, modulus)[1];
@@ -275,16 +275,16 @@ public class ModuloPolynomialField<R extends Field<R>>
         return polynomial;
     }
 
-    private static <R extends Field<R>> FiniteFieldPolynomial<R>[] div(FiniteFieldPolynomial<R> dividend, FiniteFieldPolynomial<R> divisor)
+    private static <F extends Field<F>> FiniteFieldPolynomial<F>[] div(FiniteFieldPolynomial<F> dividend, FiniteFieldPolynomial<F> divisor)
     {
-        FiniteFieldPolynomial<R> quotient = zero(),
+        FiniteFieldPolynomial<F> quotient = zero(),
                                  remainder = dividend;
         List<Term> divisorTerms = new ArrayList<>(divisor.getTerms());
         int divisorOrder = getDegree(divisorTerms),
             dividendOrder;
         divisorTerms.sort(null);
         Term divisorLeadingTerm = divisorTerms.get(0);
-        R divisorLeadingCoefficientInverse = divisor.getCoefficient(divisorLeadingTerm).inverse();
+        F divisorLeadingCoefficientInverse = divisor.getCoefficient(divisorLeadingTerm).inverse();
 
         do
         {
@@ -295,8 +295,8 @@ public class ModuloPolynomialField<R extends Field<R>>
                 terms.sort(null);
                 Term leadingTerm = terms.get(0);
                 Variable<?> variable = (leadingTerm.size() == 0 ? null : leadingTerm.getVariable(0));
-                R coefficient = remainder.getCoefficient(leadingTerm).times(divisorLeadingCoefficientInverse);
-                FiniteFieldPolynomial<R> quotientTerm = new FiniteFieldPolynomial<>(variable == null ? Constant.valueOf(coefficient) : Polynomial.valueOf(coefficient, Term.valueOf(variable, dividendOrder - divisorOrder)));
+                F coefficient = remainder.getCoefficient(leadingTerm).times(divisorLeadingCoefficientInverse);
+                FiniteFieldPolynomial<F> quotientTerm = new FiniteFieldPolynomial<>(variable == null ? Constant.valueOf(coefficient) : Polynomial.valueOf(coefficient, Term.valueOf(variable, dividendOrder - divisorOrder)));
                 quotient = quotient.plus(quotientTerm);
                 remainder = remainder.minus(divisor.times(quotientTerm));
             }
@@ -305,7 +305,7 @@ public class ModuloPolynomialField<R extends Field<R>>
         assert divisor.times(quotient).plus(remainder).equals(dividend) : divisor + " * " + quotient + " + " + remainder + " != " + dividend;
 
         @SuppressWarnings("unchecked")
-        FiniteFieldPolynomial<R>[] qr = (FiniteFieldPolynomial<R>[]) new FiniteFieldPolynomial<?>[] { quotient, remainder };
+        FiniteFieldPolynomial<F>[] qr = (FiniteFieldPolynomial<F>[]) new FiniteFieldPolynomial<?>[] { quotient, remainder };
         return qr;
     }
 
@@ -321,7 +321,7 @@ public class ModuloPolynomialField<R extends Field<R>>
     }
 
     @Override
-    public ModuloPolynomialField<R> plus(ModuloPolynomialField<R> that)
+    public ModuloPolynomialField<F> plus(ModuloPolynomialField<F> that)
     {
         return new ModuloPolynomialField<>(this.polynomial.plus(that.polynomial));
     }
@@ -334,28 +334,28 @@ public class ModuloPolynomialField<R extends Field<R>>
      * @return <code>this - that</code>
      */
 
-    public ModuloPolynomialField<R> minus(ModuloPolynomialField<R> that)
+    public ModuloPolynomialField<F> minus(ModuloPolynomialField<F> that)
     {
         return new ModuloPolynomialField<>(this.polynomial.minus(that.polynomial));
     }
 
     @Override
-    public ModuloPolynomialField<R> opposite()
+    public ModuloPolynomialField<F> opposite()
     {
         return new ModuloPolynomialField<>(this.polynomial.opposite());
     }
 
     @Override
-    public ModuloPolynomialField<R> times(ModuloPolynomialField<R> that)
+    public ModuloPolynomialField<F> times(ModuloPolynomialField<F> that)
     {
         return new ModuloPolynomialField<>(this.polynomial.times(that.polynomial));
     }
 
     @Override
-    public ModuloPolynomialField<R> inverse()
+    public ModuloPolynomialField<F> inverse()
     {
         // Extended Euclidean algorithm
-        FiniteFieldPolynomial<R> a = this.polynomial,
+        FiniteFieldPolynomial<F> a = this.polynomial,
                                  zero = zero(),
                                  one = one(),
                                  x = zero,
@@ -369,13 +369,13 @@ public class ModuloPolynomialField<R extends Field<R>>
 
         while (!b.equals(zero))
         {
-            FiniteFieldPolynomial<R>[] qr = div(a, b);
+            FiniteFieldPolynomial<F>[] qr = div(a, b);
 
-            FiniteFieldPolynomial<R> q = qr[0];
+            FiniteFieldPolynomial<F> q = qr[0];
             a = b;
             b = qr[1];
 
-            FiniteFieldPolynomial<R> tmp = x;
+            FiniteFieldPolynomial<F> tmp = x;
             x = oldX.minus(q.times(x));
             oldX = tmp;
         }
@@ -399,7 +399,7 @@ public class ModuloPolynomialField<R extends Field<R>>
      * @return The polynomial.
      */
 
-    public Polynomial<R> value()
+    public Polynomial<F> value()
     {
         return this.polynomial.value();
     }
@@ -438,22 +438,22 @@ public class ModuloPolynomialField<R extends Field<R>>
         return false;
     }
 
-    private static <R extends Field<R>> boolean isZero(R coefficient)
+    private static <F extends Field<F>> boolean isZero(F coefficient)
     {
         return coefficient.equals(coefficient.opposite());
     }
 
-    private static <R extends Field<R>> FiniteFieldPolynomial<R> zero()
+    private static <F extends Field<F>> FiniteFieldPolynomial<F> zero()
     {
         @SuppressWarnings("unchecked")
-        FiniteFieldPolynomial<R> zero = (FiniteFieldPolynomial<R>) ZERO.get();
+        FiniteFieldPolynomial<F> zero = (FiniteFieldPolynomial<F>) ZERO.get();
         return zero;
     }
 
-    private static <R extends Field<R>> FiniteFieldPolynomial<R> one()
+    private static <F extends Field<F>> FiniteFieldPolynomial<F> one()
     {
         @SuppressWarnings("unchecked")
-        FiniteFieldPolynomial<R> one = (FiniteFieldPolynomial<R>) ONE.get();
+        FiniteFieldPolynomial<F> one = (FiniteFieldPolynomial<F>) ONE.get();
         return one;
     }
 
@@ -464,5 +464,5 @@ public class ModuloPolynomialField<R extends Field<R>>
                                                                                            ZERO = new LocalContext.Reference<>(),
                                                                                            ONE = new LocalContext.Reference<>();
 
-    private FiniteFieldPolynomial<R> polynomial;
+    private FiniteFieldPolynomial<F> polynomial;
 }
