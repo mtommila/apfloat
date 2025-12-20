@@ -39,7 +39,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApfloatMath
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -2464,6 +2464,50 @@ public class ApcomplexMath
         }
         Apcomplex result = d[n];
         return ((n & 1) == 0 ? result : result.negate());
+    }
+
+    /**
+     * Barnes G-function.
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return G(z)
+     *
+     * @since 1.16.0
+     */
+
+    public static Apcomplex barnesG(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return BarnesGHelper.barnesG(z);
+    }
+
+    /**
+     * Logarithm of the Barnes G-function.
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return logG(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apcomplex logBarnesG(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return BarnesGHelper.logBarnesG(z);
     }
 
     /**
@@ -5017,6 +5061,176 @@ public class ApcomplexMath
                   result = pow(two.multiply(pi), ν1).multiply(i).multiply(gamma(ApfloatHelper.ensureGammaPrecision(ν1.negate(), precision))).multiply(zeta(ν1.negate(), logznpi2i).divide(epiνi2).subtract(epiνi2.multiply(zeta(ν1.negate(), oneMinusLogznpi2i))));
         targetPrecision = ApfloatHelper.reducePrecision(targetPrecision, Math.max(0, (long) Math.log(result.scale() * 0.3)));
         return ApfloatHelper.limitPrecision(result, targetPrecision);
+    }
+
+    /**
+     * Clausen function Cl.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param n The order.
+     * @param θ The argument.
+     *
+     * @return Cl<sub>n</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>n</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apcomplex clausenCl(long n, Apcomplex θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return clausenCl(n, θ, θ.precision());
+    }
+
+    static Apcomplex clausenCl(long n, Apcomplex θ, long precision)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (θ.isZero())
+        {
+            if (n <= 1)
+            {
+                throw new ApfloatArithmeticException("Clausen function order <= 1 of zero", "cl.ofZero");
+            }
+            if ((n & 1) == 0)
+            {
+                return θ;
+            }
+        }
+        Apfloat s = new Apfloat(n, precision, θ.radix());
+        return clausenCl(s, θ, (n & 1) == 0);
+    }
+
+    /**
+     * Clausen function Sl.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param n The order.
+     * @param θ The argument.
+     *
+     * @return Sl<sub>n</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>n</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apcomplex clausenSl(long n, Apcomplex θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return clausenSl(n, θ, θ.precision());
+    }
+
+    static Apcomplex clausenSl(long n, Apcomplex θ, long precision)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (θ.isZero())
+        {
+            if (n <= 1)
+            {
+                throw new ApfloatArithmeticException("Clausen function order <= 1 of zero", "cl.ofZero");
+            }
+            if ((n & 1) != 0)
+            {
+                return θ;
+            }
+        }
+        Apfloat s = new Apfloat(n, precision, θ.radix());
+        return clausenCl(s, θ, (n & 1) != 0);
+    }
+
+    /**
+     * Clausen function S.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param s The order.
+     * @param θ The argument.
+     *
+     * @return S<sub>s</sub>(θ)
+     *
+     * @throws ArithmeticException If the real part of <code>s</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apcomplex clausenS(Apcomplex s, Apcomplex θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (θ.isZero())
+        {
+            Apfloat one = Apfloat.ONES[s.radix()];
+            if (s.real().compareTo(one) <= 0)
+            {
+                throw new ApfloatArithmeticException("Clausen function order real part <= 1 of zero", "cl.ofZero");
+            }
+            return θ;
+        }
+        return clausenCl(s, θ, true);
+    }
+
+    /**
+     * Clausen function C.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param s The order.
+     * @param θ The argument.
+     *
+     * @return C<sub>s</sub>(θ)
+     *
+     * @throws ArithmeticException If the real part of <code>s</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apcomplex clausenC(Apcomplex s, Apcomplex θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (θ.isZero())
+        {
+            Apfloat one = Apfloat.ONES[s.radix()];
+            if (s.real().compareTo(one) <= 0)
+            {
+                throw new ApfloatArithmeticException("Clausen function order real part <= 1 of zero", "cl.ofZero");
+            }
+        }
+        return clausenCl(s, θ, false);
+    }
+
+    private static Apcomplex clausenCl(Apcomplex s, Apcomplex θ, boolean isEven)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        int radix = s.radix();
+        long targetPrecision = Math.min(s.precision(), θ.precision()),
+             extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(targetPrecision, extraPrecision);
+        Apint zero = Apint.ZEROS[radix],
+              one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        s = ApfloatHelper.ensurePrecision(s, precision);
+        θ = ApfloatHelper.ensurePrecision(θ, precision);
+        Apcomplex i = new Apcomplex(zero, one),
+                  expiθ = ApfloatHelper.limitPrecision(exp(i.multiply(θ)), precision),  // Limit precision in case θ is zero
+                  expMinusiθ = one.divide(expiθ),
+                  result = (isEven ? polylog(s, expMinusiθ).subtract(polylog(s, expiθ)).multiply(i)
+                                   : polylog(s, expMinusiθ).add(polylog(s, expiθ))
+                                   ).divide(two);
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
     }
 
     /**

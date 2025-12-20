@@ -33,7 +33,7 @@ import static org.apfloat.ApcomplexMath.isNonPositiveInteger;
  * Helper class for the Hurwitz zeta function.
  *
  * @since 1.11.0
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -141,7 +141,7 @@ class HurwitzZetaHelper
         int radix = a.radix();
         Apint one = Apint.ONES[radix],
               two = new Apint(2, radix),
-              min = ApintMath.max(two.subtract(a.real().truncate()), one.subtract(s.real()).divide(two).truncate().add(one)),
+              min = ApintMath.max(two.subtract(a.real().truncate()), one.subtract(s.real()).divide(two.precision(precision)).truncate().add(one)),
               N = ApintMath.max(new Apint(precision, radix), min);
         long M = ApfloatHelper.longValueExact(N),
              low = M,

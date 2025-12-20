@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -219,6 +219,7 @@ public class CalculatorTest
         assertCalculation("7.05464e-1", "airyBi(0.200000)");
         assertCalculation("4.61789e-1", "airyBiPrime(0.200000)");
         assertCalculation("9.5235e-1", "angerJ(0.200000,0.700000)");
+        assertCalculation("127313963299399416749559771247411200000000000", "barnesG(14)");
         assertCalculation("7/6", "bernoulli(14)");
         assertCalculation("3.3124e4", "bernoulliB(4,14.0000)");
         assertCalculation("1.72763", "besselI(0.700000,1.90000)");
@@ -250,6 +251,10 @@ public class CalculatorTest
         assertCalculation("2", "ceil(3/2)");
         assertCalculation("1.41288", "chebyshevT(0.70000,1.9000)");
         assertCalculation("2.58673", "chebyshevU(0.700000,1.90000)");
+        assertCalculation("-7.13696e-1", "clausenC(1.2000, 3.4000)");
+        assertCalculation("-6.84777e-1", "clausenCl(1, 3.4000)");
+        assertCalculation("-1.4042e-1", "clausenS(1.2000, 3.4000)");
+        assertCalculation("-1.292e-1", "clausenSl(1, 3.4000)");
         assertCalculation("-2", "copySign(2, -3)");
         assertCalculation("-1.04221", "cosIntegral(0.200000)");
         assertCalculation("-1.02221", "coshIntegral(0.200000)");
@@ -310,6 +315,7 @@ public class CalculatorTest
         assertCalculation("-3.36749", "legendreP(1.20000,1.70000,0.900000)");
         assertCalculation("1.07204", "legendreQ(1.70000,-0.900000)");
         assertCalculation("4.1358", "legendreQ(1.20000,1.70000,0.900000)");
+        assertCalculation("1.08052e5", "logBarnesG(234.567)");
         assertCalculation("-4.371-3.651i", "logGamma(-1.234+2.345i)");
         assertCalculation("1.04516", "logIntegral(2.0000)");
         assertCalculation("8.80797e-1", "logisticSigmoid(2.00000)");
@@ -440,6 +446,8 @@ public class CalculatorTest
         assertCalculationFailure("angerJ()");
         assertCalculationFailure("angerJ(1.0)");
         assertCalculationFailure("angerJ(1.0,1.0,1.0)");
+        assertCalculationFailure("barnesG()");
+        assertCalculationFailure("barnesG(1, 1)");
         assertCalculationFailure("bernoulli(-1)");
         assertCalculationFailure("bernoulli(i)");
         assertCalculationFailure("bernoulli()");
@@ -483,6 +491,23 @@ public class CalculatorTest
         assertCalculationFailure("chebyshevT(1.0,1.0,1.0)");
         assertCalculationFailure("chebyshevU(1.0)");
         assertCalculationFailure("chebyshevU(1.0,1.0,1.0)");
+        assertCalculationFailure("clausenC()");
+        assertCalculationFailure("clausenC(1)");
+        assertCalculationFailure("clausenC(1,1,1)");
+        assertCalculationFailure("clausenCl()");
+        assertCalculationFailure("clausenCl(1)");
+        assertCalculationFailure("clausenCl(i,1)");
+        assertCalculationFailure("clausenCl(1.1,1)");
+        assertCalculationFailure("clausenCl(1,1,1)");
+        assertCalculationFailure("clausenS()");
+        assertCalculationFailure("clausenS(1)");
+        assertCalculationFailure("clausenS(1,1,1)");
+        assertCalculationFailure("clausenSl()");
+        assertCalculationFailure("clausenSl(1)");
+        assertCalculationFailure("clausenSL(2,0)");
+        assertCalculationFailure("clausenSl(i,1)");
+        assertCalculationFailure("clausenSl(1.1,1)");
+        assertCalculationFailure("clausenSL(1,1,1)");
         assertCalculationFailure("copySign(2i, -3)");
         assertCalculationFailure("copySign(2)");
         assertCalculationFailure("copySign(2, 2, 2)");
@@ -609,6 +634,10 @@ public class CalculatorTest
         assertCalculationFailure("legendreP(1.0,1.0,1.0,1.0)");
         assertCalculationFailure("legendreQ(1.0)");
         assertCalculationFailure("legendreQ(1.0,1.0,1.0,1.0)");
+        assertCalculationFailure("logBarnesG(0)");
+        assertCalculationFailure("logBarnesG(-1)");
+        assertCalculationFailure("logBarnesG()");
+        assertCalculationFailure("logBarnesG(1,1)");
         assertCalculationFailure("logGamma(0)");
         assertCalculationFailure("logGamma(-1)");
         assertCalculationFailure("logGamma()");
@@ -838,6 +867,8 @@ public class CalculatorTest
         assertCalculation("0.614927", "airyBi(0)", "-p", "-i", "6");
         assertCalculation("0.448288", "airyBiPrime(0)", "-p", "-i", "6");
         assertCalculation("-7.09216", "bernoulliB(16, 0)", "-i", "6");
+        assertCalculation("1.64493", "clausenSl(2, 0)", "-i", "6");
+        assertCalculation("1.20206", "clausenC(3, 0)", "-i", "6");
         assertCalculation("1.5708", "ellipticE(0)", "-p", "-i", "6");
         assertCalculation("1.5708", "ellipticK(0)", "-p", "-i", "6");
         assertCalculation("58098.1", "eulerE(15, 0)", "-p", "-i", "6");

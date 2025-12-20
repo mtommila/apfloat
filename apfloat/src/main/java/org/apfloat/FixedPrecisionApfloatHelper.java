@@ -38,7 +38,7 @@ import org.apfloat.spi.Util;
  * <code>ApfloatMath.acos(Apfloat.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -1148,6 +1148,40 @@ public class FixedPrecisionApfloatHelper
     }
 
     /**
+     * Barnes G-function.
+     *
+     * @param x The argument.
+     *
+     * @return G(x)
+     *
+     * @since 1.16.0
+     */
+
+    public Apfloat barnesG(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.barnesG(setPrecision(x)));
+    }
+
+    /**
+     * Logarithm of the Barnes G-function.
+     *
+     * @param x The argument.
+     *
+     * @return logG(x)
+     *
+     * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.16.0
+     */
+
+    public Apfloat logBarnesG(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.logBarnesG(setPrecision(x)));
+    }
+
+    /**
      * Beta function.
      *
      * @param a The first argument.
@@ -2242,6 +2276,82 @@ public class FixedPrecisionApfloatHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApfloatMath.polylog(setPrecision(ν), setPrecision(x)));
+    }
+
+    /**
+     * Clausen function Cl.<p>
+     *
+     * @param n The order.
+     * @param θ The argument.
+     *
+     * @return Cl<sub>n</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>n</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public Apfloat clausenCl(long n, Apfloat θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.clausenCl(n, setPrecision(θ), precision()));
+    }
+
+    /**
+     * Clausen function Sl.<p>
+     *
+     * @param n The order.
+     * @param θ The argument.
+     *
+     * @return Sl<sub>n</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>n</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public Apfloat clausenSl(long n, Apfloat θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.clausenSl(n, setPrecision(θ), precision()));
+    }
+
+    /**
+     * Clausen function S.<p>
+     *
+     * @param s The order.
+     * @param θ The argument.
+     *
+     * @return S<sub>s</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>s</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public Apfloat clausenS(Apfloat s, Apfloat θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.clausenS(setPrecision(s), setPrecision(θ)));
+    }
+
+    /**
+     * Clausen function C.<p>
+     *
+     * @param s The order.
+     * @param θ The argument.
+     *
+     * @return C<sub>s</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>s</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public Apfloat clausenC(Apfloat s, Apfloat θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.clausenC(setPrecision(s), setPrecision(θ)));
     }
 
     /**

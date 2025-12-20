@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -93,6 +93,8 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testLogGamma"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testDigamma"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testPolygamma"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testBarnesG"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testLogBarnesG"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testBeta"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testBetaIncomplete"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testBetaIncompleteGeneralized"));
@@ -152,6 +154,10 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testHarmonicNumber"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testHarmonicNumberGeneralized"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testPolylog"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testClausenC"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testClausenCl"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testClausenS"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testClausenSl"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testLogisticSigmoid"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testUlp"));
 
@@ -806,6 +812,24 @@ public class FixedPrecisionApcomplexHelperTest
             // OK
             assertEquals("Localization key", "polygamma.ofNegativeOrder", aae.getLocalizationKey());
         }
+    }
+
+    public static void testBarnesG()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex z = new Apcomplex("(3.5,2.6)");
+        Apcomplex result = helper.barnesG(z);
+        assertEquals("value", new Apcomplex("(0.0325456,0.0277363)"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLogBarnesG()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex z = new Apcomplex("(3.5,2.6)");
+        Apcomplex result = helper.logBarnesG(z);
+        assertEquals("value", new Apcomplex("(-3.15212,0.705785)"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
     }
 
     public static void testBeta()
@@ -1602,6 +1626,42 @@ public class FixedPrecisionApcomplexHelperTest
                   z = new Apcomplex("(5.6,7.8)");
         Apcomplex result = helper.polylog(ν, z);
         assertEquals("value", new Apcomplex("(-64.9686,18.3633)"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testClausenC()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex s = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.clausenC(s, z);
+        assertEquals("value", new Apcomplex("(103.996,72.016)"), result, new Apfloat("5e-3"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testClausenCl()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex result = helper.clausenCl(3, new Apcomplex("(5.6,7.8)"));
+        assertEquals("value", new Apcomplex("(-34.1756,38.1759)"), result, new Apfloat("5e-4"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testClausenS()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex s = new Apcomplex("(1.2,3.4)"),
+                  z = new Apcomplex("(5.6,7.8)");
+        Apcomplex result = helper.clausenS(s, z);
+        assertEquals("value", new Apcomplex("(-72.0163,103.995)"), result, new Apfloat("5e-3"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testClausenSl()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex result = helper.clausenSl(3, new Apcomplex("(5.6,7.8)"));
+        assertEquals("value", new Apcomplex("(-38.1762,-34.1759 )"), result, new Apfloat("5e-4"));
         assertEquals("precision", 6, result.precision());
     }
 

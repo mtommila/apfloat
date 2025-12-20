@@ -28,7 +28,7 @@ import java.math.RoundingMode;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -116,6 +116,8 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testLogGamma"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testDigamma"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testPolygamma"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testBarnesG"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testLogBarnesG"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBeta"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBetaIncomplete"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testBetaIncompleteGeneralized"));
@@ -177,6 +179,10 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testHarmonicNumber"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testHarmonicNumberGeneralized"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testPolylog"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testClausenC"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testClausenCl"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testClausenS"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testClausenSl"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testLogisticSigmoid"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandom"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testRandomGaussian"));
@@ -1314,6 +1320,24 @@ public class FixedPrecisionApfloatHelperTest
         assertEquals("precision", 6, result.precision());
     }
 
+    public static void testBarnesG()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("2.5");
+        Apfloat result = helper.barnesG(x);
+        assertEquals("value", new Apfloat("0.947574"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testLogBarnesG()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("2.5");
+        Apfloat result = helper.logBarnesG(x);
+        assertEquals("value", new Apfloat("-0.0538503"), result, new Apfloat("5e-7"));
+        assertEquals("precision", 6, result.precision());
+    }
+
     public static void testBeta()
     {
         FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
@@ -2058,6 +2082,57 @@ public class FixedPrecisionApfloatHelperTest
                 x = new Apfloat("0.9");
         Apfloat result = helper.polylog(ν, x);
         assertEquals("value", new Apfloat("368.902"), result, new Apfloat("5e-3"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testClausenC()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat s = new Apfloat("-1.5"),
+                x = new Apfloat("0.9");
+        Apfloat result = helper.clausenC(s, x);
+        assertEquals("value", new Apfloat("-1.25061"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+
+        helper = new FixedPrecisionApfloatHelper(6);
+        result = helper.clausenC(new Apfloat(7), new Apfloat("0"));
+        assertEquals("value", new Apfloat("1.00835"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testClausenCl()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat result = helper.clausenCl(6, new Apfloat("2.5"));
+        assertEquals("value", new Apfloat("0.584647"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+
+        helper = new FixedPrecisionApfloatHelper(6);
+        result = helper.clausenCl(5, new Apfloat("0"));
+        assertEquals("value", new Apfloat("1.03693"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testClausenS()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat s = new Apfloat("-1.5"),
+                x = new Apfloat("0.9");
+        Apfloat result = helper.clausenS(s, x);
+        assertEquals("value", new Apfloat("-1.21519"), result, new Apfloat("5e-5"));
+        assertEquals("precision", 6, result.precision());
+    }
+
+    public static void testClausenSl()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat result = helper.clausenSl(6, new Apfloat("2.5"));
+        assertEquals("value", new Apfloat("-0.796391"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
+
+        helper = new FixedPrecisionApfloatHelper(6);
+        result = helper.clausenSl(6, new Apfloat("0"));
+        assertEquals("value", new Apfloat("1.01734"), result, new Apfloat("5e-5"));
         assertEquals("precision", 6, result.precision());
     }
 

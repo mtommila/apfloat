@@ -40,7 +40,7 @@ import org.apfloat.spi.Util;
 /**
  * Arbitrary precision calculator implementation.
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -207,6 +207,12 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number barnesG(Number x)
+        {
+            return ApcomplexMath.barnesG((Apcomplex) x);
+        }
+
+        @Override
         public Number bernoulli(Number x)
         {
             if (!isLong(x))
@@ -309,6 +315,40 @@ public class ApfloatCalculatorImpl
         public Number chebyshevU(Number x, Number y)
         {
             return ApcomplexMath.chebyshevU((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number clausenC(Number x, Number y)
+        {
+            return ApcomplexMath.clausenC((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number clausenCl(Number x, Number y)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Clausen Cl can only be used with a valid integer first argument");
+            }
+            long n = x.longValue();
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::clausenCl, ApcomplexMath::clausenCl, n, (Apcomplex) y);
+        }
+
+        @Override
+        public Number clausenS(Number x, Number y)
+        {
+            return ApcomplexMath.clausenS((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number clausenSl(Number x, Number y)
+        {
+            if (!isLong(x))
+            {
+                throw new IllegalArgumentException("Clausen Sl can only be used with a valid integer first argument");
+            }
+            long n = x.longValue();
+            return fixedOrArbitraryPrecision(fixedPrecisionApcomplexHelper::clausenSl, ApcomplexMath::clausenSl, n, (Apcomplex) y);
         }
 
         @Override
@@ -650,6 +690,12 @@ public class ApfloatCalculatorImpl
         public Number log(Number x, Number y)
         {
             return ApcomplexMath.log((Apcomplex) x, (Apcomplex) y);
+        }
+
+        @Override
+        public Number logBarnesG(Number x)
+        {
+            return ApcomplexMath.logBarnesG((Apcomplex) x);
         }
 
         @Override

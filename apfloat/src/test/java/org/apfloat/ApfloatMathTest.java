@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
 import static java.math.RoundingMode.*;
 
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -109,6 +109,8 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testLogGamma"));
         suite.addTest(new ApfloatMathTest("testDigamma"));
         suite.addTest(new ApfloatMathTest("testPolygamma"));
+        suite.addTest(new ApfloatMathTest("testBarnesG"));
+        suite.addTest(new ApfloatMathTest("testLogBarnesG"));
         suite.addTest(new ApfloatMathTest("testBeta"));
         suite.addTest(new ApfloatMathTest("testBetaIncomplete"));
         suite.addTest(new ApfloatMathTest("testBetaIncompleteGeneralized"));
@@ -169,6 +171,10 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testHarmonicNumber"));
         suite.addTest(new ApfloatMathTest("testHarmonicNumberGeneralized"));
         suite.addTest(new ApfloatMathTest("testPolylog"));
+        suite.addTest(new ApfloatMathTest("testClausenCl"));
+        suite.addTest(new ApfloatMathTest("testClausenSl"));
+        suite.addTest(new ApfloatMathTest("testClausenS"));
+        suite.addTest(new ApfloatMathTest("testClausenC"));
         suite.addTest(new ApfloatMathTest("testLogisticSigmoid"));
         suite.addTest(new ApfloatMathTest("testRandom"));
         suite.addTest(new ApfloatMathTest("testRandomGaussian"));
@@ -2993,6 +2999,16 @@ public class ApfloatMathTest
             // OK a is zero
             assertEquals("Localization key", "logGamma.ofZero", aae.getLocalizationKey());
         }
+        try
+        {
+            ApfloatMath.logGamma(new Apfloat("-1"));
+            fail("Log gamma of negative integer");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK a is negative
+            assertEquals("Localization key", "logGamma.ofNegativeInteger", aae.getLocalizationKey());
+        }
 
         try
         {
@@ -3088,6 +3104,63 @@ public class ApfloatMathTest
         {
             // OK
             assertEquals("Localization key", "zeta.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testBarnesG()
+    {
+        Apfloat a = ApfloatMath.barnesG(new Apfloat(9, 30));
+        assertEquals("9 precision", 30, a.precision());
+        assertEquals("9 value", new Apfloat("125411328000"), a);
+
+        a = ApfloatMath.barnesG(new Apfloat("9.5", 30));
+        assertEquals("9.5 precision", 29, a.precision());
+        assertEquals("9.5 value", new Apfloat("19269607235982.5876692155647834"), a, new Apfloat("5e-15"));
+
+        a = ApfloatMath.barnesG(new Apfloat("-9.1", 30));
+        assertEquals("-9.1 precision", 28, a.precision());
+        assertEquals("-9.1 value", new Apfloat("-582559810489.90457112077660061"), a, new Apfloat("5e-16"));
+    }
+
+    public static void testLogBarnesG()
+    {
+        Apfloat a = ApfloatMath.logBarnesG(new Apfloat(18, 40));
+        assertEquals("18 precision", 39, a.precision());
+        assertEquals("18 value", new Apfloat("207.86974661921518309851782277903674747"), a, new Apfloat("5e-37"));
+
+        a = ApfloatMath.logBarnesG(new Apfloat("92.7", 40));
+        assertEquals("92.7 precision", 40, a.precision());
+        assertEquals("92.7 value", new Apfloat("12774.93602320205147995190254619656451333"), a, new Apfloat("5e-35"));
+
+        try
+        {
+            ApfloatMath.logBarnesG(new Apfloat("0"));
+            fail("0");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "logG.ofNonpositiveInteger", aae.getLocalizationKey());
+        }
+        try
+        {
+            ApfloatMath.logBarnesG(new Apfloat("-0.1"));
+            fail("-0.1");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+        try
+        {
+            ApfloatMath.logBarnesG(new Apfloat("-1"));
+            fail("-1");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "logG.ofNonpositiveInteger", aae.getLocalizationKey());
         }
     }
 
@@ -5848,6 +5921,98 @@ public class ApfloatMathTest
         {
             // OK
             assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testClausenCl()
+    {
+        Apfloat a = ApfloatMath.clausenCl(2, new Apfloat("-5.6000"));
+        assertEquals("2, -5.6 precision", 6, a.precision());
+        assertEquals("2, -5.6 value", new Apfloat("0.947911"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.clausenCl(3, new Apfloat("2.3000"));
+        assertEquals("3, 2.3 precision", 6, a.precision());
+        assertEquals("3, 2.3 value", new Apfloat("-0.661361"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.clausenCl(1, new Apfloat(0));
+            fail("1, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result would be infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+    }
+
+    public static void testClausenSl()
+    {
+        Apfloat a = ApfloatMath.clausenSl(2, new Apfloat("5.6000"));
+        assertEquals("2, 5.6 precision", 6, a.precision());
+        assertEquals("2, 5.6 value", new Apfloat("0.688475"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.clausenSl(5, new Apfloat("-3.40000"));
+        assertEquals("5, -3.4 precision", 6, a.precision());
+        assertEquals("5, -3.4 value", new Apfloat("0.242360"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.clausenSl(1, new Apfloat(0));
+            fail("1, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result would be infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+    }
+
+    public static void testClausenS()
+    {
+        Apfloat a = ApfloatMath.clausenS(new Apfloat("3.4000"), new Apfloat("5.6000"));
+        assertEquals("3.4, 5.6 precision", 6, a.precision());
+        assertEquals("3.4, 5.6 value", new Apfloat("-0.744352"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.clausenS(new Apfloat("-6.70000"), new Apfloat("-3.40000"));
+        assertEquals("-6.7, -3.4 precision", 6, a.precision());
+        assertEquals("-6.7, -3.4 value", new Apfloat("-0.260177"), a, new Apfloat("5e-6"));
+
+        try
+        {
+            ApfloatMath.clausenS(new Apfloat("1"), new Apfloat(0));
+            fail("1, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result would be infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+    }
+
+    public static void testClausenC()
+    {
+        Apfloat a = ApfloatMath.clausenC(new Apfloat("4.50000"), new Apfloat("7.80000"));
+        assertEquals("4.5, 7.8 precision", 6, a.precision());
+        assertEquals("4.5, 7.8 value", new Apfloat("0.01068628"), a, new Apfloat("5e-7"));
+
+        a = ApfloatMath.clausenC(new Apfloat("7.6000"), new Apfloat("-5.4000"));
+        assertEquals("7.6, -5.4 precision", 6, a.precision());
+        assertEquals("7.6, -5.4 value", new Apfloat("0.633458"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.clausenC(new Apfloat("4.00000"), new Apfloat("0"));
+        assertEquals("4, 0 precision", 6, a.precision());
+        assertEquals("4, 0 value", new Apfloat("1.08232"), a, new Apfloat("5e-5"));
+
+        try
+        {
+            ApfloatMath.clausenC(new Apfloat("1"), new Apfloat(0));
+            fail("1, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result would be infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
         }
     }
 

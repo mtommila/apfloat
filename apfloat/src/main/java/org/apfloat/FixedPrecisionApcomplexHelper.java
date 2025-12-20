@@ -35,7 +35,7 @@ import org.apfloat.spi.Util;
  * <code>ApcomplexMath.acos(Apcomplex.ZERO)</code>.
  *
  * @since 1.5
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -1013,6 +1013,40 @@ public class FixedPrecisionApcomplexHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApcomplexMath.polygamma(n, setPrecision(z)));
+    }
+
+    /**
+     * Barnes G-function.
+     *
+     * @param z The argument.
+     *
+     * @return G(z)
+     *
+     * @since 1.16.0
+     */
+
+    public Apcomplex barnesG(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.barnesG(setPrecision(z)));
+    }
+
+    /**
+     * Logarithm of the Barnes G-function.
+     *
+     * @param z The argument.
+     *
+     * @return logG(z)
+     *
+     * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.16.0
+     */
+
+    public Apcomplex logBarnesG(Apcomplex z)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.logBarnesG(setPrecision(z)));
     }
 
     /**
@@ -2169,6 +2203,82 @@ public class FixedPrecisionApcomplexHelper
         throws ArithmeticException, ApfloatRuntimeException
     {
         return valueOf(ApcomplexMath.polylog(setPrecision(ν), setPrecision(z)));
+    }
+
+    /**
+     * Clausen function Cl.<p>
+     *
+     * @param n The order.
+     * @param θ The argument.
+     *
+     * @return Cl<sub>n</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>n</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public Apcomplex clausenCl(long n, Apcomplex θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.clausenCl(n, setPrecision(θ), precision()));
+    }
+
+    /**
+     * Clausen function Sl.<p>
+     *
+     * @param n The order.
+     * @param θ The argument.
+     *
+     * @return Sl<sub>n</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>n</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public Apcomplex clausenSl(long n, Apcomplex θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.clausenSl(n, setPrecision(θ), precision()));
+    }
+
+    /**
+     * Clausen function S.<p>
+     *
+     * @param s The order.
+     * @param θ The argument.
+     *
+     * @return S<sub>s</sub>(θ)
+     *
+     * @throws ArithmeticException If the real part of <code>s</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public Apcomplex clausenS(Apcomplex s, Apcomplex θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.clausenS(setPrecision(s), setPrecision(θ)));
+    }
+
+    /**
+     * Clausen function C.<p>
+     *
+     * @param s The order.
+     * @param θ The argument.
+     *
+     * @return C<sub>s</sub>(θ)
+     *
+     * @throws ArithmeticException If the real part of <code>s</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public Apcomplex clausenC(Apcomplex s, Apcomplex θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.clausenC(setPrecision(s), setPrecision(θ)));
     }
 
     /**

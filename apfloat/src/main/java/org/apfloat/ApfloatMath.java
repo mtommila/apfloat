@@ -50,7 +50,7 @@ import org.apfloat.spi.Util;
  *
  * @see ApintMath
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -2695,7 +2695,7 @@ public class ApfloatMath
     public static Apfloat logGamma(Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (x.signum() < 0)
+        if (x.signum() < 0 && !x.isInteger())
         {
             throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
@@ -2749,6 +2749,54 @@ public class ApfloatMath
         throws ArithmeticException, ApfloatRuntimeException
     {
         return ApcomplexMath.polygamma(n, x).real();
+    }
+
+    /**
+     * Barnes G-function.
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return G(x)
+     *
+     * @since 1.16.0
+     */
+
+    public static Apfloat barnesG(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.barnesG(x).real();
+    }
+
+    /**
+     * Logarithm of the Barnes G-function.
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return logG(x)
+     *
+     * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apfloat logBarnesG(Apfloat x)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        if (x.signum() < 0 && !x.isInteger())
+        {
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
+        }
+        return ApcomplexMath.logBarnesG(x).real();
     }
 
     /**
@@ -4513,6 +4561,114 @@ public class ApfloatMath
             throw new ApfloatArithmeticException("Result would be complex", "complex");
         }
         return ApcomplexMath.polylog(ν, x).real();
+    }
+
+    /**
+     * Clausen function Cl.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param n The order.
+     * @param θ The argument.
+     *
+     * @return Cl<sub>n</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>n</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apfloat clausenCl(long n, Apfloat θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.clausenCl(n, θ).real();
+    }
+
+    static Apfloat clausenCl(long n, Apfloat θ, long precision)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.clausenCl(n, θ, precision).real();
+    }
+
+    /**
+     * Clausen function Sl.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param n The order.
+     * @param θ The argument.
+     *
+     * @return Sl<sub>n</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>n</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apfloat clausenSl(long n, Apfloat θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.clausenSl(n, θ).real();
+    }
+
+    static Apfloat clausenSl(long n, Apfloat θ, long precision)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.clausenSl(n, θ, precision).real();
+    }
+
+    /**
+     * Clausen function S.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param s The order.
+     * @param θ The argument.
+     *
+     * @return S<sub>s</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>s</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apfloat clausenS(Apfloat s, Apfloat θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.clausenS(s, θ).real();
+    }
+
+    /**
+     * Clausen function C.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param s The order.
+     * @param θ The argument.
+     *
+     * @return C<sub>s</sub>(θ)
+     *
+     * @throws ArithmeticException If <code>s</code> is &le; 1 and <code>θ</code> is 0.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apfloat clausenC(Apfloat s, Apfloat θ)
+        throws ArithmeticException, ApfloatRuntimeException
+    {
+        return ApcomplexMath.clausenC(s, θ).real();
     }
 
     /**

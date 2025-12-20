@@ -187,6 +187,7 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>airyBi(x)</code></td><td>Airy function <code>Bi(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>airyBiPrime(x)</code></td><td>Derivative of the Airy function Bi, i.e. <code>Bi&prime;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>angerJ(&nu;, x)</code></td><td>Anger function <code>&#x1D409;<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>barnesG(x)</code></td><td>Barnes G function, <code>G(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>bernoulli(x)</code></td><td>Bernoulli number B<sub><i>x</i></sub>.</td></tr>
 <tr><td><code>bernoulliB(n, x)</code></td><td>Bernoulli polynomial <code>B<sub>n</sub>(x)</code>. Parameter <code>n</code> must be a nonnegative integer. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>besselI(&nu;, x)</code></td><td>Bessel function <code>I<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
@@ -200,6 +201,10 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>catalan(x)</code></td><td>Catalan's constant <i>G</i> calculated to <code>x</code> digits of precision. Parameter <code>x</code> must be an integer.</td></tr>
 <tr><td><code>chebyshevT(&nu;, x)</code></td><td>Chebyshev polynomial of the first kind <code>T<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>chebyshevU(&nu;, x)</code></td><td>Chebyshev polynomial of the second kind <code>U<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>clausenC(s, x)</code></td><td>Clausen function <code>C<sub>s</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>clausenCl(n, x)</code></td><td>Clausen function <code>Cl<sub>n</sub>(x)</code>. Parameter <code>n</code> must be an integer. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>clausenS(s, x)</code></td><td>Clausen function <code>S<sub>s</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>clausenSl(n, x)</code></td><td>Clausen function <code>Sl<sub>n</sub>(x)</code>. Parameter <code>n</code> must be an integer. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>cosIntegral(x)</code></td><td>Cosine integral i.e. <code>Ci(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>coshIntegral(x)</code></td><td>Hyperbolic cosine integral i.e. <code>Chi(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>digamma(x)</code></td><td>Digamma function, i.e. <code>&psi;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
@@ -244,6 +249,7 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>legendreQ(&nu;, x)</code></td><td>Legendre function of the second kind <code>Q<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>legendreQ(&nu;, &mu;, x)</code></td><td>Associated Legendre function of the second kind <code>Q<sub>&nu;</sub><sup style='position: relative; left: -0.5em;'>&mu;</sup>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>lcm(x, y)</code></td><td>Least common multiple of <code>x</code> and <code>y</code>. Both <code>x</code> and <code>y</code> must be integers.</td></tr>
+<tr><td><code>logBarnesG(x)</code></td><td>Logarithm of the Barnes G function, <code>logG(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>logGamma(x)</code></td><td>Logarithm of the gamma function, <code>log&Gamma;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>logIntegral(x)</code></td><td>Logarithmic integral i.e. <code>li(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>logisticSigmoid(x)</code></td><td>Logistic sigmoid function.</td></tr>
@@ -396,7 +402,7 @@ then <code>pi()</code> would just return &pi; to the specified input precision.
 
 <p>Bug reports, questions and comments should be sent to <a href="mailto:Mikko.Tommila@apfloat.org">the author</a>.</p>
 
-<p>Last updated: August 17th, 2025</p>
+<p>Last updated: December 19th, 2025</p>
 
 </div>
 

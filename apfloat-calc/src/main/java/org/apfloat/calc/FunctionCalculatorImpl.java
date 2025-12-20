@@ -33,7 +33,7 @@ import java.util.Map;
  * Calculator implementation with function support.
  * Provides a mapping mechanism for functions.
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -159,6 +159,7 @@ public abstract class FunctionCalculatorImpl
         public Number asinh(Number x);
         public Number atan(Number x);
         public Number atanh(Number x);
+        public Number barnesG(Number x);
         public Number bernoulli(Number x);
         public Number bernoulliB(Number x, Number y);
         public Number besselI(Number x, Number y);
@@ -174,6 +175,10 @@ public abstract class FunctionCalculatorImpl
         public Number ceil(Number x);
         public Number chebyshevT(Number x, Number y);
         public Number chebyshevU(Number x, Number y);
+        public Number clausenC(Number x, Number y);
+        public Number clausenCl(Number x, Number y);
+        public Number clausenS(Number x, Number y);
+        public Number clausenSl(Number x, Number y);
         public Number cos(Number x);
         public Number cosIntegral(Number x);
         public Number cosh(Number x);
@@ -225,6 +230,7 @@ public abstract class FunctionCalculatorImpl
         public Number legendreQ(Number x, Number y, Number z);
         public Number log(Number x);
         public Number log(Number x, Number y);
+        public Number logBarnesG(Number x);
         public Number logGamma(Number x);
         public Number logIntegral(Number x);
         public Number logisticSigmoid(Number x);
@@ -309,6 +315,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("asinh", fixedFunction("asinh", 1, (functions, arguments) -> functions.asinh(arguments.get(0))));
         setFunction("atan", fixedFunction("atan", 1, (functions, arguments) -> functions.atan(arguments.get(0))));
         setFunction("atanh", fixedFunction("atanh", 1, (functions, arguments) -> functions.atanh(arguments.get(0))));
+        setFunction("barnesG", fixedFunction("barnesG", 1, (functions, arguments) -> functions.barnesG(arguments.get(0))));
         setFunction("bernoulli", fixedFunction("bernoulli", 1, (functions, arguments) -> functions.bernoulli(arguments.get(0))));
         setFunction("bernoulliB", fixedFunction("bernoulliB", 2, (functions, arguments) -> functions.bernoulliB(arguments.get(0), arguments.get(1))));
         setFunction("besselI", fixedFunction("besselI", 2, (functions, arguments) -> functions.besselI(arguments.get(0), arguments.get(1))));
@@ -320,6 +327,10 @@ public abstract class FunctionCalculatorImpl
         setFunction("catalan", fixedFunction("catalan", 0, 1, (functions, arguments) -> functions.catalan(argumentOrInputPrecision(arguments))));
         setFunction("cbrt", fixedFunction("cbrt", 1, (functions, arguments) -> functions.cbrt(arguments.get(0))));
         setFunction("ceil", fixedFunction("ceil", 1, (functions, arguments) -> functions.ceil(arguments.get(0))));
+        setFunction("clausenC", fixedFunction("clausenC", 2, (functions, arguments) -> functions.clausenC(arguments.get(0), arguments.get(1))));
+        setFunction("clausenCl", fixedFunction("clausenCl", 2, (functions, arguments) -> functions.clausenCl(arguments.get(0), arguments.get(1))));
+        setFunction("clausenS", fixedFunction("clausenS", 2, (functions, arguments) -> functions.clausenS(arguments.get(0), arguments.get(1))));
+        setFunction("clausenSl", fixedFunction("clausenSl", 2, (functions, arguments) -> functions.clausenSl(arguments.get(0), arguments.get(1))));
         setFunction("chebyshevT", fixedFunction("chebyshevT", 2, (functions, arguments) -> functions.chebyshevT(arguments.get(0), arguments.get(1))));
         setFunction("chebyshevU", fixedFunction("chebyshevU", 2, (functions, arguments) -> functions.chebyshevU(arguments.get(0), arguments.get(1))));
         setFunction("cos", fixedFunction("cos", 1, (functions, arguments) -> functions.cos(arguments.get(0))));
@@ -365,6 +376,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("legendreP", fixedFunction("legendreP", 2, 3, (functions, arguments) -> (arguments.size() == 2 ? functions.legendreP(arguments.get(0), arguments.get(1)) : functions.legendreP(arguments.get(0), arguments.get(1), arguments.get(2)))));
         setFunction("legendreQ", fixedFunction("legendreQ", 2, 3, (functions, arguments) -> (arguments.size() == 2 ? functions.legendreQ(arguments.get(0), arguments.get(1)) : functions.legendreQ(arguments.get(0), arguments.get(1), arguments.get(2)))));
         setFunction("log", fixedFunction("log", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.log(arguments.get(0)) : functions.log(arguments.get(0), arguments.get(1)))));
+        setFunction("logBarnesG", fixedFunction("logBarnesG", 1, (functions, arguments) -> functions.logBarnesG(arguments.get(0))));
         setFunction("logGamma", fixedFunction("logGamma", 1, (functions, arguments) -> functions.logGamma(arguments.get(0))));
         setFunction("logIntegral", fixedFunction("logIntegral", 1, (functions, arguments) -> functions.logIntegral(arguments.get(0))));
         setFunction("logisticSigmoid", fixedFunction("logisticSigmoid", 1, (functions, arguments) -> functions.logisticSigmoid(arguments.get(0))));

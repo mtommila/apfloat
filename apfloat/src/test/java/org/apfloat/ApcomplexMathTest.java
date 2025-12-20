@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -84,6 +84,8 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testLogGamma"));
         suite.addTest(new ApcomplexMathTest("testDigamma"));
         suite.addTest(new ApcomplexMathTest("testPolygamma"));
+        suite.addTest(new ApcomplexMathTest("testBarnesG"));
+        suite.addTest(new ApcomplexMathTest("testLogBarnesG"));
         suite.addTest(new ApcomplexMathTest("testBeta"));
         suite.addTest(new ApcomplexMathTest("testBetaIncomplete"));
         suite.addTest(new ApcomplexMathTest("testBetaIncompleteGeneralized"));
@@ -143,6 +145,10 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testHarmonicNumber"));
         suite.addTest(new ApcomplexMathTest("testHarmonicNumberGeneralized"));
         suite.addTest(new ApcomplexMathTest("testPolylog"));
+        suite.addTest(new ApcomplexMathTest("testClausenCl"));
+        suite.addTest(new ApcomplexMathTest("testClausenSl"));
+        suite.addTest(new ApcomplexMathTest("testClausenS"));
+        suite.addTest(new ApcomplexMathTest("testClausenC"));
         suite.addTest(new ApcomplexMathTest("testLogisticSigmoid"));
         suite.addTest(new ApcomplexMathTest("testUlp"));
 
@@ -3103,6 +3109,190 @@ public class ApcomplexMathTest
         {
             // OK
             assertEquals("Localization key", "zeta.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testBarnesG()
+    {
+        Apcomplex a = ApcomplexMath.barnesG(new Apcomplex("0.50000000"));
+        assertEquals("0.5 precision", 8, a.precision());
+        assertEquals("0.5 value", new Apfloat("0.60324428"), a, new Apfloat("5e-8"));
+        a = ApcomplexMath.barnesG(new Apcomplex("-0.500000000"));
+        assertEquals("-0.5 precision", 8, a.precision());
+        assertEquals("-0.5 value", new Apfloat("-0.17017207"), a, new Apfloat("5e-8"));
+        a = ApcomplexMath.barnesG(new Apcomplex(new Apfloat(0, 8, 5)));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 radix", 5, a.radix());
+        assertEquals("0 value", new Apfloat(0, 8, 5), a);
+        a = ApcomplexMath.barnesG(new Apcomplex(new Apfloat(-1, 8, 5)));
+        assertEquals("-1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-1 radix", 5, a.radix());
+        assertEquals("-1 value", new Apfloat(0, 8, 5), a);
+        a = ApcomplexMath.barnesG(new Apcomplex(new Apfloat(1, 8, 5)));
+        assertEquals("1 precision", 8, a.precision());
+        assertEquals("1 radix", 5, a.radix());
+        assertEquals("1 value", new Apfloat(1, 8, 5), a, new Apfloat("2e-8", 1, 5));
+        a = ApcomplexMath.barnesG(new Apcomplex(new Apfloat(2, 100, 15)));
+        assertEquals("2 precision", 100, a.precision());
+        assertEquals("2 radix", 15, a.radix());
+        assertEquals("2 value", new Apfloat(1, 100, 15), a,new Apfloat(7, 1, 15).scale(-100));
+        a = ApcomplexMath.barnesG(new Apcomplex("3.00000"));
+        assertEquals("3 precision", 6, a.precision());
+        assertEquals("3 value", new Apfloat(1), a, new Apfloat("5e-5"));
+        a = ApcomplexMath.barnesG(new Apcomplex("10.50000"));
+        assertEquals("10.5 precision", 5, a.precision());
+        assertEquals("10.5 value", new Apfloat("2.2987e18"), a, new Apfloat("5e-14"));
+        a = ApcomplexMath.barnesG(new Apcomplex("(2.300000,5.600000)"));
+        assertEquals("(2.3,5.6) precision", 5, a.precision());
+        assertEquals("(2.3,5.6) value", new Apcomplex("(2.99395e-6,-1.65694e-6)"), a, new Apfloat("5e-10"));
+        a = ApcomplexMath.barnesG(new Apcomplex("(12.300000000000000000,-45.600000000000000000)"));
+        assertEquals("(12.3,-45.6) precision", 17, a.precision());
+        assertEquals("(12.3,-45.6) value", new Apcomplex("(1.6038751856699696e-1289,-1.4566702964503091e-1289)"), a, new Apfloat("5e-1306"));
+        a = ApcomplexMath.barnesG(new Apcomplex("(45.600000000000000000,12.300000000000000000)"));
+        assertEquals("(45.6,12.3) precision", 17, a.precision());
+        assertEquals("(45.6,12.3) value", new Apcomplex("(1.2404253654869028e885,-2.789163740081503e884)"), a, new Apfloat("5e867"));
+        a = ApcomplexMath.barnesG(new Apcomplex("(-45.600000000000000000,12.300000000000000000)"));
+        assertEquals("(-45.6,12.3) precision", 16, a.precision());
+        assertEquals("(-45.6,12.3) value", new Apcomplex("(-5.6302245434406329e1740,-8.4893007300457255e1740)"), a, new Apfloat("5e1724"));
+
+        a = ApcomplexMath.barnesG(new Apint(30));
+        assertEquals("30 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("30 value", new Apint("24378759692569493001843754884245889709720110123963670883808668267742801150073945462248212671568308430773839473807128215512114800359197934772179842358860234182649345336155492659539815888875032454531949849910359883836215115120785688966546366708482811138722465511411531795422982963200000000000000000000000000000000000000000000000000000000000000000000000000"), a);
+        a = ApcomplexMath.barnesG(new Apint(25, 35));
+        assertEquals("25 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("25 radix", 35, a.radix());
+        assertEquals("25 value", new Apint("11kip7fkytm5ja9dv184dog9ugg6bi4ll1fqcw1nu00ow9il1rlalin7tlm3wly1cffmviv9qy0wys28g7fjijjlew973jh0n55jlfdo1luji760p000000000000000000000000000000", 35), a);
+        a = ApcomplexMath.barnesG(new Apint(26, 36));
+        assertEquals("26 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("26 radix", 36, a.radix());
+        assertEquals("26 value", new Apint("1xmbv23atp08znokdlfvlz96tsjwr9rcyldl9lktpt9h04fntr9y79053hmz38gp4js8e2vyfy3rn0rkqitq57wfnx5ppn34jhmo000000000000000000000000000000000000000000000000000000000", 36), a);
+        a = ApcomplexMath.barnesG(new Apfloat(1000000, 100));
+        assertEquals("1000000 precision", 86, a.precision());
+        assertEquals("1000000 value", new Apfloat("1.0145655480290378725684376810089100792606395451712942456285894330569570164811886697439e2674273971959"), a, new Apfloat("5e2674273971873"));
+
+        a = ApcomplexMath.barnesG(new Apcomplex(new Apfloat("1.6", 50, 12)));
+        assertEquals("1.5 precision", 50, a.precision());
+        assertEquals("1.5 radix", 12, a.radix());
+        assertEquals("1.5 value", new Apfloat("1.09b74988172189564a0a65340788a7655960695071856178a", 50, 12), a, new Apfloat("6e-50", 1, 12));
+        a = ApcomplexMath.barnesG(new Apcomplex(new Apfloat("1.6", 50, 12), new Apfloat("1.6", 50, 12)));
+        assertEquals("(1.5,1.5) precision", 48, a.precision());
+        assertEquals("(1.5,1.5) radix", 12, a.radix());
+        assertEquals("(1.5,1.5) value", new Apcomplex(new Apfloat("1.068006449b0b4bb1a2239185b395a74a2a8a209b625195042", 50, 12), new Apfloat("-0.b990847b3ba27a23092a292036713862946120970b22228539", 50, 12)), a, new Apfloat("6e-47", 1, 12));
+        a = ApcomplexMath.barnesG(new Apcomplex(new Apfloat("-1.6", 50, 12), new Apfloat("-1.6", 50, 12)));
+        assertEquals("(-1.5,-1.5) precision", 48, a.precision());
+        assertEquals("(-1.5,-1.5) radix", 12, a.radix());
+        assertEquals("(-1.5,-1.5) value", new Apcomplex(new Apfloat("-59.07844973188b53033b2532752b72283b3b44ba51809025a44", 50, 12), new Apfloat("-3ab.bbb28ba690454a798499a2baa50b3391a684804a16b789798", 50, 12)), a, new Apfloat("6e-47", 1, 12));
+
+        try
+        {
+            ApcomplexMath.barnesG(new Apfloat("1826012432"));
+            fail("Loss of accuracy");
+        }
+        catch (LossOfPrecisionException lope)
+        {
+            // OK
+            assertEquals("Localization key", "lossOfPrecision", lope.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.barnesG(new Apcomplex("1826012431.1"));
+            fail("Loss of accuracy");
+        }
+        catch (LossOfPrecisionException lope)
+        {
+            // OK
+            assertEquals("Localization key", "lossOfPrecision", lope.getLocalizationKey());
+        }
+    }
+
+    public static void testLogBarnesG()
+    {
+        Apcomplex a = ApcomplexMath.logBarnesG(new Apcomplex("0.500000000"));
+        assertEquals("0.5 precision", 8, a.precision());
+        assertEquals("0.5 value", new Apfloat("-0.50543305"), a, new Apfloat("5e-8"));
+        a = ApcomplexMath.logBarnesG(new Apcomplex("-0.500000000"));
+        assertEquals("-0.5 precision", 8, a.precision());
+        assertEquals("-0.5 value", new Apcomplex("(-1.7709452,3.1415927)"), a, new Apfloat("5e-7"));
+        a = ApcomplexMath.logBarnesG(new Apcomplex(new Apfloat(1, 8, 5)));
+        assertEquals("1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("1 radix", 5, a.radix());
+        assertEquals("1 value", new Apfloat(0, 8, 5), a);
+        a = ApcomplexMath.logBarnesG(new Apcomplex(new Apfloat(2, 100, 15)));
+        assertEquals("2 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("2 radix", 15, a.radix());
+        assertEquals("2 value", new Apfloat(0, 100, 15), a);
+        a = ApcomplexMath.logBarnesG(new Apcomplex("3.00000"));
+        assertEquals("3 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("3 value", new Apfloat(0), a);
+        a = ApcomplexMath.logBarnesG(new Apcomplex("4.0000000"));
+        assertEquals("4 precision", 6, a.precision());
+        assertEquals("4 value", new Apfloat("0.693147"), a, new Apfloat("5e-6"));
+        a = ApcomplexMath.logBarnesG(new Apcomplex("9.000"));
+        assertEquals("9 precision", 4, a.precision());
+        assertEquals("9 value", new Apfloat("25.55"), a, new Apfloat("5e-2"));
+        a = ApcomplexMath.logBarnesG(new Apcomplex("(2.3000000000000000000,5.6000000000000000000)"));
+        assertEquals("(2.3,5.6) precision", 19, a.precision());
+        assertEquals("(2.3,5.6) value", new Apcomplex("(-12.58532330466144013,-13.07184159352336118)"), a, new Apfloat("5e-18"));
+        a = ApcomplexMath.logBarnesG(new Apcomplex("(-23.40000000000000000,-56.70000000000000000)"));
+        assertEquals("(-23.4,-56.7) precision", 19, a.precision());
+        assertEquals("(-23.4,-56.7) value", new Apcomplex("(-722.69949187164653999,6166.18602983642295464)"), a, new Apfloat("5e-15"));
+        a = ApcomplexMath.logBarnesG(new Apcomplex("1000000.1"));
+        assertEquals("1000000.1 precision", 8, a.precision());
+        assertEquals("1000000.1 value", new Apcomplex("6.15774466e12"), a, new Apfloat("5e4"));
+        a = ApcomplexMath.logBarnesG(new Apfloat("999999", 70));
+        assertEquals("999999 precision", 69, a.precision());
+        assertEquals("999999 value", new Apcomplex("6.15773056692403075737116248660514402728615003732433828879731998969726e12"), a, new Apfloat("5e-58"));
+
+        a = ApcomplexMath.logBarnesG(new Apcomplex("10.000000000000000000"));
+        assertEquals("10 precision", 20, a.precision());
+        assertEquals("10 value", new Apfloat("36.1594676987387574"), a, new Apfloat("5e-18"));
+        a = ApcomplexMath.logBarnesG(new Apcomplex("1.00000e100"));
+        assertEquals("1e100 precision", 6, a.precision());
+        assertEquals("1e100 value", new Apfloat("1.14379e202"), a, new Apfloat("5e197"));
+        a = ApcomplexMath.logBarnesG(new Apcomplex("1.00000e1000000000000"));
+        assertEquals("1e1000000000000 precision", 6, a.precision());
+        assertEquals("1e1000000000000 value", new Apfloat("1.15129e2000000000012"), a, new Apfloat("5e2000000000007"));
+        a = ApcomplexMath.logBarnesG(new Apcomplex("1.00000e1000000000000000"));
+        assertEquals("1e1000000000000000 precision", 6, a.precision());
+        assertEquals("1e1000000000000000 value", new Apfloat("1.15129e2000000000000015"), a, new Apfloat("5e2000000000000010"));
+        a = ApcomplexMath.logBarnesG(new Apcomplex("(0,1.00000e10000000000)"));
+        assertEquals("1e10000000000i precision", 6, a.precision());
+        assertEquals("1e10000000000i value", new Apcomplex("(-1.15129e20000000010,-7.85398e19999999999)"), a, new Apfloat("5e19999999994"));
+
+        a = ApcomplexMath.logBarnesG(new Apcomplex(new Apfloat("1.6", 50, 12)));
+        assertEquals("1.5 precision", 48, a.precision());
+        assertEquals("1.5 radix", 12, a.radix());
+        assertEquals("1.5 value", new Apfloat("0.0977a966aa51b71362585a1056387a57105613567975b33359473", 50, 12), a, new Apfloat("6e-49", 1, 12));
+        a = ApcomplexMath.logBarnesG(new Apcomplex(new Apfloat("1.6", 50, 12), new Apfloat("1.6", 50, 12)));
+        assertEquals("(1.5,1.5) precision", 47, a.precision());
+        assertEquals("(1.5,1.5) radix", 12, a.radix());
+        assertEquals("(1.5,1.5) value", new Apcomplex(new Apfloat("0.44201652b040a0b55394209240615544762aa60592417152b350", 50, 12), new Apfloat("-0.90862aa7a449152891b69b40102245a27177b82611413748b23a", 50, 12)), a, new Apfloat("6e-47", 1, 12));
+        a = ApcomplexMath.logBarnesG(new Apcomplex(new Apfloat("-1.6", 50, 12), new Apfloat("-1.6", 50, 12)));
+        assertEquals("(-1.5,-1.5) precision", 49, a.precision());
+        assertEquals("(-1.5,-1.5) radix", 12, a.radix());
+        assertEquals("(-1.5,-1.5) value", new Apcomplex(new Apfloat("6.4139b28974baa05683b7785b2aab3a24a72059b2b76112a97449", 50, 12), new Apfloat("-7.b8624a9886b09035067b3a0592671a13876a3652092920603617", 50, 12)), a, new Apfloat("6e-48", 1, 12));
+
+        try
+        {
+            ApcomplexMath.logBarnesG(new Apcomplex("0"));
+            fail("logG of zero");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "logG.ofNonpositiveInteger", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.logBarnesG(new Apcomplex("-1"));
+            fail("logG of -1");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "logG.ofNonpositiveInteger", aae.getLocalizationKey());
         }
     }
 
@@ -6953,6 +7143,336 @@ public class ApcomplexMathTest
         {
             // OK
             assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testClausenCl()
+    {
+        Apcomplex a = ApcomplexMath.clausenCl(2, new Apcomplex(new Apfloat(3, 20), new Apfloat(4, 20)));
+        assertEquals("2, (3,4), precision", 20, a.precision());
+        assertEquals("2, (3,4), value", new Apcomplex("(0.2857468545510169786,-4.7994024776315696895)"), a, new Apfloat("5e-19"));
+
+        a = ApcomplexMath.clausenCl(2, new Apcomplex(new Apfloat(-3, 20), new Apfloat(4, 20)));
+        assertEquals("2, (-3,4), precision", 20, a.precision());
+        assertEquals("2, (-3,4), value", new Apcomplex("(-0.2857468545510169786,-4.7994024776315696895)"), a, new Apfloat("5e-19"));
+
+        a = ApcomplexMath.clausenCl(2, new Apcomplex(new Apfloat(-3, 20), new Apfloat(-4, 20)));
+        assertEquals("2, (-3,-4), precision", 20, a.precision());
+        assertEquals("2, (-3,-4), value", new Apcomplex("(-0.2857468545510169786,4.7994024776315696895)"), a, new Apfloat("5e-19"));
+
+        a = ApcomplexMath.clausenCl(2, new Apcomplex(new Apfloat(3, 20), new Apfloat(-4, 20)));
+        assertEquals("2, (3,-4), precision", 20, a.precision());
+        assertEquals("2, (3,-4), value", new Apcomplex("(0.2857468545510169786,4.7994024776315696895)"), a, new Apfloat("5e-19"));
+
+        a = ApcomplexMath.clausenCl(1, new Apcomplex(new Apfloat(3, 20), new Apfloat(4, 20)));
+        assertEquals("1, (3,4), precision", 20, a.precision());
+        assertEquals("1, (3,4), value", new Apcomplex("(-2.0179731370740158536,-0.0682576612005257708)"), a, new Apfloat("5e-19"));
+
+        a = ApcomplexMath.clausenCl(3, new Apcomplex(new Apfloat(3, 20), new Apfloat(4, 20)));
+        assertEquals("3, (3,4), precision", 20, a.precision());
+        assertEquals("3, (3,4), value", new Apcomplex("(-8.6212452757620584144,-0.6800162650511846837)"), a, new Apfloat("5e-19"));
+
+        a = ApcomplexMath.clausenCl(0, new Apcomplex(new Apfloat(3, 20), new Apfloat(4, 20)));
+        assertEquals("0, (3,4), precision", 20, a.precision());
+        assertEquals("0, (3,4), value", new Apcomplex("(0.00249344272301786922,-0.48218425142146653425)"), a, new Apfloat("5e-19"));
+
+        a = ApcomplexMath.clausenCl(-1, new Apcomplex(new Apfloat(3, 20), new Apfloat(4, 20)));
+        assertEquals("-1, (3,4), precision", 20, a.precision());
+        assertEquals("-1, (3,4), value", new Apcomplex("(-0.017504564937732919309,0.002404597625721348784)"), a, new Apfloat("5e-21"));
+
+        a = ApcomplexMath.clausenCl(-2, new Apcomplex(new Apfloat(3, 20), new Apfloat(4, 20)));
+        assertEquals("-2, (3,4), precision", 20, a.precision());
+        assertEquals("-2, (3,4), value", new Apcomplex("(0.002231624952129400874,0.016892842534821677192)"), a, new Apfloat("5e-21"));
+
+        a = ApcomplexMath.clausenCl(2, Apfloat.ZERO);
+        assertEquals("2, 0, precision", Apfloat.INFINITE, a.precision());
+        assertEquals("2, 0, value", Apfloat.ZERO, a);
+
+        a = ApcomplexMath.clausenCl(2, new Apcomplex(new Apfloat(3, 12, 15), new Apfloat(4, 12, 15)));
+        assertEquals("2, (3,4) radix 15, precision", 12, a.precision());
+        assertEquals("2, (3,4) radix 15, radix", 15, a.radix());
+        assertEquals("2, (3,4) radix 15, value", new Apcomplex(new Apfloat("0.4445e03e9ba97d1a", 12, 15),new Apfloat("-4.beceb3ca7cc867b3", 12, 15)), a, new Apfloat("0.00000000007", 1, 15));
+
+        try
+        {
+            ApcomplexMath.clausenCl(1, Apfloat.ZERO);
+            fail("1, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenCl(0, Apfloat.ZERO);
+            fail("0, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenCl(-1, Apfloat.ZERO);
+            fail("-1, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is undefined
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenCl(1, Apfloat.ONE);
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testClausenSl()
+    {
+        Apcomplex a = ApcomplexMath.clausenSl(2, new Apcomplex(new Apfloat(3, 6), new Apfloat(4, 6)));
+        assertEquals("2, (3,4), precision", 6, a.precision());
+        assertEquals("2, (3,4), value", new Apcomplex("(-4.81745,-0.283185)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.clausenSl(2, new Apcomplex(new Apfloat(-3, 6), new Apfloat(4, 6)));
+        assertEquals("2, (-3,4), precision", 6, a.precision());
+        assertEquals("2, (-3,4), value", new Apcomplex("(-4.81745,0.283185)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.clausenSl(2, new Apcomplex(new Apfloat(-3, 6), new Apfloat(-4, 6)));
+        assertEquals("2, (-3,-4), precision", 6, a.precision());
+        assertEquals("2, (-3,-4), value", new Apcomplex("(-4.81745,-0.283185)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.clausenSl(2, new Apcomplex(new Apfloat(3, 6), new Apfloat(-4, 6)));
+        assertEquals("2, (3,-4), precision", 6, a.precision());
+        assertEquals("2, (3,-4), value", new Apcomplex("(-4.81745,0.283185)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.clausenSl(1, new Apcomplex(new Apfloat(3, 6), new Apfloat(4, 6)));
+        assertEquals("1, (3,4), precision", 6, a.precision());
+        assertEquals("1, (3,4), value", new Apcomplex("(0.0707963,-2.00000)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.clausenSl(3, new Apcomplex(new Apfloat(3, 6), new Apfloat(4, 6)));
+        assertEquals("3, (3,4), precision", 6, a.precision());
+        assertEquals("3, (3,4), value", new Apcomplex("(0.682589,-8.60315)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.clausenSl(0, new Apcomplex(new Apfloat(3, 6), new Apfloat(4, 6)));
+        assertEquals("0, (3,4), precision", 6, a.precision());
+        assertEquals("0, (3,4), value", new Apcomplex("-0.500000"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.clausenSl(-1, new Apcomplex(new Apfloat(3, 6), new Apfloat(4, 6)));
+        assertEquals("-1, (3,4), precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-1, (3,4), value", Apfloat.ZERO, a);
+
+        a = ApcomplexMath.clausenSl(-2, new Apcomplex(new Apfloat(3, 6), new Apfloat(4, 6)));
+        assertEquals("-2, (3,4), precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-2, (3,4), value", Apfloat.ZERO, a);
+
+        a = ApcomplexMath.clausenSl(3, new Apcomplex("0"));
+        assertEquals("3, 0, precision", Apfloat.INFINITE, a.precision());
+        assertEquals("3, 0, value", Apfloat.ZERO, a);
+
+        a = ApcomplexMath.clausenSl(2, new Apcomplex(new Apfloat(3, 12, 15), new Apfloat(4, 12, 15)));
+        assertEquals("2, (3,4) radix 15, precision", 12, a.precision());
+        assertEquals("2, (3,4) radix 15, radix", 15, a.radix());
+        assertEquals("2, (3,4) radix 15, value", new Apcomplex(new Apfloat("-4.c3dd9c593e1e", 12, 15),new Apfloat("-0.43ab3c98d958", 12, 15)), a, new Apfloat("0.00000000007", 1, 15));
+
+        try
+        {
+            ApcomplexMath.clausenSl(1, Apfloat.ZERO);
+            fail("1, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenSl(0, Apfloat.ZERO);
+            fail("0, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenSl(-1, Apfloat.ZERO);
+            fail("-1, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is undefined
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenSl(2, Apfloat.ZERO);
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testClausenS()
+    {
+        Apcomplex a = ApcomplexMath.clausenS(new Apcomplex(new Apfloat(3, 20), new Apfloat(4, 20)), new Apcomplex(new Apfloat(5, 20), new Apfloat(6, 20)));
+        assertEquals("(3,4), (5,6), precision", 19, a.precision());
+        assertEquals("(3,4), (5,6), value", new Apcomplex("(261.50343969729421654,-59.32599314486005142)"), a, new Apfloat("5e-18"));
+
+        a = ApcomplexMath.clausenS(new Apcomplex(new Apfloat(-3, 20), new Apfloat(4, 20)), new Apcomplex(new Apfloat(-5, 20), new Apfloat(6, 20)));
+        assertEquals("(-3,4), (-5,6), precision", 19, a.precision());
+        assertEquals("(-3,4), (-5,6), value", new Apcomplex("(0.4465374037234030926,2.0744134146733077996)"), a, new Apfloat("5e-19"));
+
+        a = ApcomplexMath.clausenS(new Apcomplex(new Apfloat(2, 20), new Apfloat(-3, 20)), new Apcomplex(new Apfloat(4, 20), new Apfloat(-5, 20)));
+        assertEquals("(2,-3), (4,-5), precision", 20, a.precision());
+        assertEquals("(2,-3), (4,-5), value", new Apcomplex("(32.153141736752359548,-4.856584113608561189)"), a, new Apfloat("5e-18"));
+
+        a = ApcomplexMath.clausenS(new Apcomplex(new Apfloat(2, 20), new Apfloat(3, 20)), Apfloat.ZERO);
+        assertEquals("(2,3), 0, precision", Apfloat.INFINITE, a.precision());
+        assertEquals("(2,3), 0, value", Apfloat.ZERO, a);
+
+        a = ApcomplexMath.clausenS(new Apcomplex(new Apfloat(1, 12, 15), new Apfloat(2, 12, 15)), new Apcomplex(new Apfloat(3, 12, 15), new Apfloat(4, 12, 15)));
+        assertEquals("(1,2), (3,4) radix 15, precision", 12, a.precision());
+        assertEquals("(1,2), (3,4) radix 15, radix", 15, a.radix());
+        assertEquals("(1,2), (3,4) radix 15, value", new Apcomplex(new Apfloat("4.171e460846e9091b", 12, 15),new Apfloat("1.3b1433b55e383637", 12, 15)), a, new Apfloat("0.00000000007", 1, 15));
+
+        try
+        {
+            ApcomplexMath.clausenS(new Apcomplex(new Apfloat(1, 20), new Apfloat(2, 20)), Apfloat.ZERO);
+            fail("(1,2), 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenS(Apfloat.ZERO, Apfloat.ZERO);
+            fail("0, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenS(new Apcomplex(new Apfloat(-1, 20), new Apfloat(2, 20)), Apfloat.ZERO);
+            fail("(-1,2), 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is undefined
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenS(new Apcomplex(new Apfloat(1), new Apfloat(2)), Apfloat.ONE);
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testClausenC()
+    {
+        Apcomplex a = ApcomplexMath.clausenC(new Apcomplex(new Apfloat(6, 13), new Apfloat(5, 13)), new Apcomplex(new Apfloat(4, 13), new Apfloat(3, 13)));
+        assertEquals("(6,5), (4,3), precision", 13, a.precision());
+        assertEquals("(6,5), (4,3), value", new Apcomplex("(-8.6785106871463847083,11.1461120920533052678)"), a, new Apfloat("5e-11"));
+
+        a = ApcomplexMath.clausenC(new Apcomplex(new Apfloat(-6, 12), new Apfloat(5, 12)), new Apcomplex(new Apfloat(-4, 12), new Apfloat(3, 12)));
+        assertEquals("(-6,5), (-4,3), precision", 12, a.precision());
+        assertEquals("(-6,5), (-4,3), value", new Apcomplex("(18.609012051106803473,47.330157468783126565)"), a, new Apfloat("5e-10"));
+
+        a = ApcomplexMath.clausenC(new Apcomplex(new Apfloat(5, 11), new Apfloat(-4, 11)), new Apcomplex(new Apfloat(3, 11), new Apfloat(-2, 11)));
+        assertEquals("(5,-4), (3,-2), precision", 11, a.precision());
+        assertEquals("(5,-4), (3,-2), value", new Apcomplex("(-3.9919117682490435618,1.1274795363193261975)"), a, new Apfloat("5e-10"));
+
+        a = ApcomplexMath.clausenC(new Apcomplex(new Apfloat(2, 21), new Apfloat(3, 21)), Apfloat.ZERO);
+        assertEquals("(2,3), 0, precision", 21, a.precision());
+        assertEquals("(2,3), 0, value", new Apcomplex("(0.798021985146275720622,-0.113744308052938500216)"), a, new Apfloat("5e-21"));
+
+        a = ApcomplexMath.clausenC(new Apcomplex(new Apfloat(4, 13, 15), new Apfloat(3, 13, 15)), new Apcomplex(new Apfloat(2, 13, 15), new Apfloat(1, 13, 15)));
+        assertEquals("(4,3), (2,1) radix 15, precision", 13, a.precision());
+        assertEquals("(4,3), (2,1) radix 15, radix", 15, a.radix());
+        assertEquals("(4,3), (2,1) radix 15, value", new Apcomplex(new Apfloat("-0.74d3e937bab047921", 13, 15),new Apfloat("-1.04ebab6bebedd18a4", 13, 15)), a, new Apfloat("0.000000000007", 1, 15));
+
+        try
+        {
+            ApcomplexMath.clausenC(new Apcomplex(new Apfloat(1, 20), new Apfloat(2, 20)), Apfloat.ZERO);
+            fail("(1,2), 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenC(Apfloat.ZERO, Apfloat.ZERO);
+            fail("0, 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is infinite
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenC(new Apcomplex(new Apfloat(-1, 20), new Apfloat(2, 20)), Apfloat.ZERO);
+            fail("(-1,2), 0 accepted");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK, result is undefined
+            assertEquals("Localization key", "cl.ofZero", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.clausenC(new Apfloat(3), Apfloat.ZERO);
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
+        try
+        {
+            ApcomplexMath.clausenC(new Apcomplex(new Apfloat(1), new Apfloat(2)), Apfloat.ONE);
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "exp.infinitePrecision", iee.getLocalizationKey());
         }
     }
 
