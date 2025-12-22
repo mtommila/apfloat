@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2025 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -866,7 +866,7 @@ public class ApcomplexTest
 
         assertEquals("null %s apfloat", "1.23456789e5", String.format(locale, "%s", new Apcomplex("123456.789")));
 
-        locale = new Locale("fi", "FI");
+        locale = new Locale.Builder().setLanguage("fi").setRegion("FI").build();
         assertEquals("fi_FI %s", "(1,23456789e5, 1,23456e2)", String.format(locale, "%s", new Apcomplex("(123456.789,123.456)")));
         assertEquals("fi_FI %s radix 11", "(1,23456e5, 1,23456e5)", String.format(locale, "%s", new Apcomplex(new Apfloat("123456", 6, 11), new Apfloat("123456", 6, 11))));
 

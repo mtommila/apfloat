@@ -40,7 +40,7 @@ import java.util.Locale;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -1216,7 +1216,7 @@ public class ApfloatTest
         assertEquals("null %#20s", "   123456.7890123456", String.format(locale, "%#20s", new Apfloat("123456.7890123456")));
         assertEquals("null %#-20s", "123456.7890123456   ", String.format(locale, "%#-20s", new Apfloat("123456.7890123456")));
 
-        locale = new Locale("fi", "FI");
+        locale = new Locale.Builder().setLanguage("fi").setRegion("FI").build();
         assertEquals("fi_FI %s", "1,234567890123456e5", String.format(locale, "%s", new Apfloat("123456.7890123456")));
         assertEquals("fi_FI %s radix 11", "1,23456e5", String.format(locale, "%s", new Apfloat("123456", 6, 11)));
         assertEquals("fi_FI %S radix 11", "1,23456789AE9", String.format(locale, "%S", new Apfloat("123456789a", 10, 11)));
