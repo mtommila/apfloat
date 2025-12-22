@@ -654,7 +654,6 @@ public class CalculatorTest
         assertCalculationFailure("pochhammer(1.0,1.0,1.0)");
         assertCalculationFailure("pochhammer(1/3,1/4)");
         assertCalculationFailure("polygamma(1)");
-        assertCalculationFailure("polygamma(-1,1.0)");
         assertCalculationFailure("polygamma(1,1.0,1.0)");
         assertCalculationFailure("polylog(0.5)");
         assertCalculationFailure("polylog(0.5,0.5,0.5)");

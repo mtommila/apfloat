@@ -2369,11 +2369,7 @@ public class ApcomplexMath
     public static Apcomplex polygamma(long n, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (n < 0)
-        {
-            throw new ApfloatArithmeticException("Polygamma of negative order", "polygamma.ofNegativeOrder");
-        }
-        if (isNonPositiveInteger(z))
+        if (n >= -1 && isNonPositiveInteger(z))
         {
             throw new ApfloatArithmeticException("Polygamma of nonpositive integer", "polygamma.ofNonpositiveInteger");
         }
@@ -2381,12 +2377,42 @@ public class ApcomplexMath
         {
             return digamma(z);
         }
+        if (n == -1)
+        {
+            return logGamma(z);
+        }
+        if (n <= -2 && z.isZero())
+        {
+            return z;
+        }
 
         int radix = z.radix();
         long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
              precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
         z = ApfloatHelper.ensurePrecision(z, precision);
         Apint one = Apint.ONES[radix];
+
+        if (n < 0)
+        {
+            // See Victor S. Adamchik, PolyGamma Functions of Negative Order, https://viterbi-web.usc.edu/~adamchik/articles/polyg.pdf
+            n = Util.subtractExact(0, n);
+            Apint two = new Apint(2, radix),
+                  nn = new Apint(n, radix);
+            Apfloat pi = ApfloatMath.pi(precision, radix),
+                    n1 = new Apfloat(n - 1, precision, radix);
+            Apcomplex result = nn.multiply(log(two.multiply(pi))).divide(two).multiply(pow(z, n - 1)).subtract(bernoulliB(n, z).multiply(harmonicNumber(n1))).add(nn.multiply(zetaPrime(n1.negate(), z)));
+            for (int i = 1; i < n; i++)
+            {
+                Apfloat ii = new Apfloat(i, precision, radix);
+                result = result.subtract(ApintMath.binomial(n, i, radix).multiply(zetaPrime(ii.negate()).multiply(nn.subtract(ii)).multiply(pow(z, n - i - 1))));
+            }
+            for (int i = 1; i <= n / 2; i++)
+            {
+                result = result.add(ApintMath.binomial(n, 2 * i, radix).multiply(AprationalMath.bernoulli(2 * i, radix)).multiply(harmonicNumber(new Apfloat(2 * i - 1, precision, radix))).multiply(pow(z, n - 2 * i)));
+            }
+            result = result.divide(ApfloatMath.factorial(n, precision, radix));
+            return ApfloatHelper.reducePrecision(result, extraPrecision);
+        }
 
         // Rough effort estimate that is it worthwhile to use the reflection formula
         if (z.real().signum() < 0 && -n / 10 > z.real().longValue())
@@ -2434,6 +2460,17 @@ public class ApcomplexMath
         Apfloat n1 = new Apfloat(n, precision, radix).add(one);
         Apcomplex result = ApfloatMath.gamma(n1).multiply(zeta(n1, z));
         return ApfloatHelper.reducePrecision((n & 1) == 1 ? result : result.negate(), extraPrecision);
+    }
+
+    static Apcomplex zetaPrime(Apcomplex s)
+    {
+        return Derivative.derivative(ApcomplexMath::zeta, s);
+    }
+
+    static Apcomplex zetaPrime(Apcomplex s, Apcomplex a)
+    {
+        // Numerical derivative w.r.t. s
+        return Derivative.partialDerivative(ApcomplexMath::zeta, s, a);
     }
 
     // n:th derivative of cot(z) where u = cot(z)

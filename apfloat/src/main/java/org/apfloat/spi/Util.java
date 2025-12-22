@@ -33,7 +33,7 @@ import org.apfloat.OverflowException;
 /**
  * Miscellaneous utility methods.
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -517,7 +517,7 @@ public class Util
      * @param x The first operand.
      * @param y The second operand.
      *
-     * @return The result.
+     * @return <code>x * y</code>
      *
      * @throws OverflowException If the result overflows a long
      */
@@ -541,7 +541,7 @@ public class Util
      * @param x The first operand.
      * @param y The second operand.
      *
-     * @return The result.
+     * @return <code>x + y</code>
      *
      * @throws OverflowException If the result overflows a long
      */
@@ -565,7 +565,7 @@ public class Util
      * @param x The first operand.
      * @param y The second operand.
      *
-     * @return The result.
+     * @return <code>x - y</code>
      *
      * @throws OverflowException If the result overflows a long
      */
@@ -588,7 +588,7 @@ public class Util
      *
      * @param x The operand.
      *
-     * @return The result.
+     * @return <code>(int) x</code>
      *
      * @throws OverflowException If the result overflows an int
      *

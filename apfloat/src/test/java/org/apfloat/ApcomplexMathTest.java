@@ -3056,16 +3056,49 @@ public class ApcomplexMathTest
         assertEquals("4, -1.5000-0.0000010000i precision",5, a.precision());
         assertEquals("4, -1.5000-0.0000010000i value", new Apcomplex("(-0.313756,-0.0153816)"), a, new Apfloat("5e-5"));
 
-        try
-        {
-            ApcomplexMath.polygamma(-1, new Apcomplex("(3.00000,4.00000)"));
-            fail("Polygamma of negative order");
-        }
-        catch (ApfloatArithmeticException aae)
-        {
-            // OK
-            assertEquals("Localization key", "polygamma.ofNegativeOrder", aae.getLocalizationKey());
-        }
+        a = ApcomplexMath.polygamma(-1, new Apcomplex("(3.00000,4.00000)"));
+        assertEquals("-1, 3+4i precision", 6, a.precision());
+        assertEquals("-1, 3+4i value", new Apcomplex("(-1.75663,4.74266)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.polygamma(-2, new Apcomplex("(3.00000,4.00000)"));
+        assertEquals("-2, 3+4i precision", 6, a.precision());
+        assertEquals("-2, 3+4i value", new Apcomplex("(-7.43047,-0.789122)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.polygamma(-3, new Apcomplex("(3.000000,4.000000)"));
+        assertEquals("-3, 3+4i precision", 6, a.precision());
+        assertEquals("-3, 3+4i value", new Apcomplex("(0.70938,-6.30055)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.polygamma(-4, new Apcomplex("(3.00000,4.00000)"));
+        assertEquals("-4, 3+4i precision", 6, a.precision());
+        assertEquals("-4, 3+4i value", new Apcomplex("(4.89603,5.75728)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.polygamma(-5, new Apcomplex("(3.00000,4.00000)"));
+        assertEquals("-5, 3+4i precision", 6, a.precision());
+        assertEquals("-5, 3+4i value", new Apcomplex("(-11.5776,10.0081)"), a, new Apfloat("5e-4"));
+
+        a = ApcomplexMath.polygamma(-7, new Apcomplex("(-3.20000,-4.70000)"));
+        assertEquals("-7, -3.2-4.7i precision", 6, a.precision());
+        assertEquals("-7, -3.2-4.7i value", new Apcomplex("(69.1597,118.979)"), a, new Apfloat("5e-3"));
+
+        a = ApcomplexMath.polygamma(-2, Apcomplex.ZERO);;
+        assertEquals("-2, 0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-2, 0 value", new Apcomplex("0"), a);
+
+        a = ApcomplexMath.polygamma(-2, new Apcomplex("-1.00000"));
+        assertEquals("-2, -1 precision", 6, a.precision());
+        assertEquals("-2, -1 value", new Apcomplex("(-1.91894,3.14159)"), a, new Apfloat("5e-5"));
+
+        a = ApcomplexMath.polygamma(2, new Apcomplex(new Apfloat(3, 30, 11), new Apfloat(4, 30, 11)));
+        assertEquals("2, 3+4i precision radix 11", 30, a.precision());
+        assertEquals("2, 3+4i value radix 11", new Apcomplex(new Apfloat("0.023866885496877523831350945a02661", 30, 11), new Apfloat("0.04a32896020596a836741478583250141", 30, 11)), a, new Apfloat("5e-31", 1, 11));
+
+        a = ApcomplexMath.polygamma(2, new Apcomplex(new Apfloat(-3, 30, 11), new Apfloat(-4, 30, 11)));
+        assertEquals("2, -3-4i precision radix 11", 30, a.precision());
+        assertEquals("2, -3-4i value radix 11", new Apcomplex(new Apfloat("0.0059379999060207591036403634387439", 30, 11), new Apfloat("0.0428884949a3897211182765818663501", 30, 11)), a, new Apfloat("5e-31", 1, 11));
+
+        a = ApcomplexMath.polygamma(-2, new Apcomplex(new Apfloat(-3, 31, 11), new Apfloat(-4, 31, 11)));
+        assertEquals("-2, -3-4i precision radix 11", 30, a.precision());
+        assertEquals("-2, -3-4i value radix 11", new Apcomplex(new Apfloat("27.180454768698a1264481217a11604", 30, 11), new Apfloat("3.1116947a7840972664272592a0a10", 30, 11)), a, new Apfloat("5e-28", 1, 11));
 
         try
         {
@@ -3082,6 +3115,17 @@ public class ApcomplexMathTest
         {
             ApcomplexMath.polygamma(1, new Apint(-1));
             fail("Polygamma of -1");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "polygamma.ofNonpositiveInteger", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.polygamma(-1, Apcomplex.ZERO);
+            fail("Polygamma -1 of zero");
         }
         catch (ApfloatArithmeticException aae)
         {

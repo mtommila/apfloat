@@ -801,17 +801,6 @@ public class FixedPrecisionApcomplexHelperTest
             // OK
             assertEquals("Localization key", "polygamma.ofNonpositiveInteger", aae.getLocalizationKey());
         }
-
-        try
-        {
-            helper.polygamma(-1, new Apcomplex("1"));
-            fail("polygamma(-1, 1) accepted");
-        }
-        catch (ApfloatArithmeticException aae)
-        {
-            // OK
-            assertEquals("Localization key", "polygamma.ofNegativeOrder", aae.getLocalizationKey());
-        }
     }
 
     public static void testBarnesG()

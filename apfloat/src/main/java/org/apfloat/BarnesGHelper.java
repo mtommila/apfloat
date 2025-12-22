@@ -25,14 +25,12 @@ package org.apfloat;
 
 import java.util.Iterator;
 
-import org.apfloat.spi.Util;
-
 import static org.apfloat.ApcomplexMath.exp;
 import static org.apfloat.ApcomplexMath.log;
 import static org.apfloat.ApcomplexMath.logGamma;
 import static org.apfloat.ApcomplexMath.polylog;
 import static org.apfloat.ApcomplexMath.pow;
-import static org.apfloat.ApcomplexMath.zeta;
+import static org.apfloat.ApcomplexMath.zetaPrime;
 
 /**
  * Helper class for the Barnes G function.
@@ -188,32 +186,6 @@ class BarnesGHelper
                   result = (isLog ? z1.multiply(logGamma(z)).add(oneTwelfth).subtract(log(A)).subtract(zetaPrime(one.negate(), z))
                                   : exp(z1.multiply(logGamma(z)).add(oneTwelfth).subtract(zetaPrime(one.negate(), z))).divide(A));
         return ApfloatHelper.reducePrecision(result, extraPrecision);
-    }
-
-    private static Apcomplex zetaPrime(Apcomplex s, Apcomplex a)
-    {
-        // Numerical derivative w.r.t. s
-        int radix = a.radix();
-        long precision = a.precision(),
-             twicePrecision = Util.ifFinite(precision, precision + precision);
-        Apcomplex result = null;
-        do
-        {
-            try
-            {
-                Apfloat h = new Apfloat("0.1", precision, radix).scale(Util.subtractExact(a.scale(), precision));
-                s = ApfloatHelper.ensurePrecision(s, twicePrecision);
-                a = ApfloatHelper.ensurePrecision(a, twicePrecision);
-                result = zeta(s.add(h), a).subtract(zeta(s.subtract(h), a)).divide(h.add(h));
-            }
-            catch (LossOfPrecisionException lope)
-            {
-                // Can happen for large values of a
-                precision = twicePrecision;
-                twicePrecision = Util.ifFinite(precision, precision + precision);
-            }
-        } while (result == null);
-        return ApfloatHelper.limitPrecision(result, precision);
     }
 
     static Apfloat barnesG(int n, long precision, int radix)

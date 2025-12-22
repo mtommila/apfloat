@@ -2748,6 +2748,10 @@ public class ApfloatMath
     public static Apfloat polygamma(long n, Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
+        if (n < -1 && x.signum() < 0)
+        {
+            throw new ApfloatArithmeticException("Result would be complex", "complex");
+        }
         return ApcomplexMath.polygamma(n, x).real();
     }
 

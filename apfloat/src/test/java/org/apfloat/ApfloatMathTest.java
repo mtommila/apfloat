@@ -3087,6 +3087,10 @@ public class ApfloatMathTest
         assertEquals("3, 6 precision", 30, a.precision(), 1);
         assertEquals("3, 6 value", new Apfloat("0.0118278281927550750219481051729"), a, new Apfloat("5e-31"));
 
+        a = ApfloatMath.polygamma(-8, new Apfloat(6, 30, 10));
+        assertEquals("-8, 6 precision", 30, a.precision(), 1);
+        assertEquals("-8, 6 value", new Apfloat("48.0864862195097345668245"), a, new Apfloat("5e-28"));
+
         a = ApfloatMath.polygamma(1, new Apfloat("-138b.8", 5, 16));
         assertEquals("1, -5003.5 precision", 5, a.precision());
         assertEquals("1, -5003.5 value", new Apfloat("9.de91", 5, 16), a, new Apfloat("0.0008", 1, 16));
@@ -3094,6 +3098,17 @@ public class ApfloatMathTest
         a = ApfloatMath.polygamma(7, new Apfloat("-138b.8", 6, 16));
         assertEquals("7, -5003.5 precision", 6, a.precision());
         assertEquals("7, -5003.5 value", new Apfloat("276190", 6, 16), a, new Apfloat("8", 1, 16));
+
+        try
+        {
+            ApfloatMath.polygamma(-2, new Apfloat("-0.100"));
+            fail("-2, -0.1");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
 
         try
         {
