@@ -2400,16 +2400,40 @@ public class ApcomplexMath
                   nn = new Apint(n, radix);
             Apfloat pi = ApfloatMath.pi(precision, radix),
                     n1 = new Apfloat(n - 1, precision, radix);
-            Apcomplex result = nn.multiply(log(two.multiply(pi))).divide(two).multiply(pow(z, n - 1)).subtract(bernoulliB(n, z).multiply(harmonicNumber(n1))).add(nn.multiply(zetaPrime(n1.negate(), z)));
-            for (int i = 1; i < n; i++)
+            Apcomplex result = nn.multiply(log(two.multiply(pi))).divide(two).multiply(pow(z, n - 1)).add(nn.multiply(zetaPrime(n1.negate(), z))),
+                      zp = one,
+                      z2 = z.multiply(z);
+            Apint binomial = nn;
+            for (long i = n - 1, d = 2; i > 0; i--, d++)
             {
                 Apfloat ii = new Apfloat(i, precision, radix);
-                result = result.subtract(ApintMath.binomial(n, i, radix).multiply(zetaPrime(ii.negate()).multiply(nn.subtract(ii)).multiply(pow(z, n - i - 1))));
+                result = result.subtract(binomial.multiply(zetaPrime(ii.negate()).multiply(nn.subtract(ii)).multiply(zp)));
+                if (i > 1)
+                {
+                    binomial = binomial.multiply(new Apint(i, radix)).divide(new Apint(d, radix));
+                    zp = zp.multiply(z);
+                }
             }
+            binomial = nn.multiply(nn.subtract(one)).divide(two);
+            Iterator<Apfloat> bernoulli = BernoulliHelper.bernoullis2(n / 2, precision, radix);
+            Apfloat harmonicNumber = one;
+            zp = pow(z, n - 2);
+            Apcomplex iz2 = one.divide(z2);
             for (int i = 1; i <= n / 2; i++)
             {
-                result = result.add(ApintMath.binomial(n, 2 * i, radix).multiply(AprationalMath.bernoulli(2 * i, radix)).multiply(harmonicNumber(new Apfloat(2 * i - 1, precision, radix))).multiply(pow(z, n - 2 * i)));
+                result = result.add(binomial.multiply(bernoulli.next()).multiply(harmonicNumber).multiply(zp));
+                if (i < n / 2)
+                {
+                    binomial = binomial.multiply(new Apint(n - 2 * i, radix)).divide(new Apint(2 * i + 1, radix)).multiply(new Apint(n - 2 * i - 1, radix)).divide(new Apint(2 * i + 2, radix));
+                    harmonicNumber = harmonicNumber.add(one.divide(new Apfloat(2 * i, precision, radix))).add(one.divide(new Apfloat(2 * i + 1, precision, radix)));
+                    zp = zp.multiply(iz2);
+                }
             }
+            if ((n & 1) != 0)
+            {
+                harmonicNumber = harmonicNumber.add(one.divide(new Apfloat(n - 1, precision, radix)));
+            }
+            result = result.subtract(bernoulliB(n, z).multiply(harmonicNumber));
             result = result.divide(ApfloatMath.factorial(n, precision, radix));
             return ApfloatHelper.reducePrecision(result, extraPrecision);
         }
