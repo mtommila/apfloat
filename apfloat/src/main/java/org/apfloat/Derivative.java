@@ -36,7 +36,7 @@ import org.apfloat.spi.Util;
  * @author Mikko Tommila
  */
 
-public class Derivative
+class Derivative
 {
     private Derivative()
     {
