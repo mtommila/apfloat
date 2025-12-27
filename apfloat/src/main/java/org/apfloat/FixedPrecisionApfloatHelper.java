@@ -1136,7 +1136,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return <code>&psi;<sup>(n)</sup>(x)</code>
      *
-     * @throws ArithmeticException If <code>n</code> is negative or <code>x</code> is a nonpositive integer.
+     * @throws ArithmeticException If <code>n &ge; -1</code> and <code>x</code> is a nonpositive integer, or <code>n &le; -1 </code> and <code>x</code> is negative.
      *
      * @since 1.13.0
      */

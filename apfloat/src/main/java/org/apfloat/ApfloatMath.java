@@ -2740,7 +2740,7 @@ public class ApfloatMath
      *
      * @return <code>&psi;<sup>(n)</sup>(x)</code>
      *
-     * @throws ArithmeticException If <code>n</code> is negative or <code>x</code> is a nonpositive integer.
+     * @throws ArithmeticException If <code>n &ge; -1</code> and <code>x</code> is a nonpositive integer, or <code>n &le; -1 </code> and <code>x</code> is negative.
      *
      * @since 1.13.0
      */
@@ -2748,7 +2748,7 @@ public class ApfloatMath
     public static Apfloat polygamma(long n, Apfloat x)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (n < -1 && x.signum() < 0)
+        if ((n < -1 || n == -1 && !x.isInteger()) && x.signum() < 0)
         {
             throw new ApfloatArithmeticException("Result would be complex", "complex");
         }

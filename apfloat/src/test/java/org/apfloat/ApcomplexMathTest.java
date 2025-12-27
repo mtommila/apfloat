@@ -3248,6 +3248,17 @@ public class ApcomplexMathTest
             // OK
             assertEquals("Localization key", "lossOfPrecision", lope.getLocalizationKey());
         }
+
+        try
+        {
+            ApcomplexMath.barnesG(new Apcomplex(new Apfloat("4.5", Apfloat.INFINITE)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "glaisher.infinitePrecision", iee.getLocalizationKey());
+        }
     }
 
     public static void testLogBarnesG()
@@ -3337,6 +3348,17 @@ public class ApcomplexMathTest
         {
             // OK
             assertEquals("Localization key", "logG.ofNonpositiveInteger", aae.getLocalizationKey());
+        }
+
+        try
+        {
+            ApcomplexMath.logBarnesG(new Apcomplex(new Apfloat(4)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
         }
     }
 

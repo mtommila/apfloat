@@ -2361,7 +2361,7 @@ public class ApcomplexMath
      *
      * @return <code>&psi;<sup>(n)</sup>(z)</code>
      *
-     * @throws ArithmeticException If <code>n</code> is negative or <code>z</code> is a nonpositive integer.
+     * @throws ArithmeticException If <code>n &ge; -1</code> and <code>z</code> is a nonpositive integer.
      *
      * @since 1.13.0
      */

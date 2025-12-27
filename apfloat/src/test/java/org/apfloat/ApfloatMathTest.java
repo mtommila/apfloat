@@ -3101,8 +3101,38 @@ public class ApfloatMathTest
 
         try
         {
+            ApfloatMath.polygamma(-1, new Apfloat("-0.100"));
+            fail("-1, -0.1");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+        try
+        {
+            ApfloatMath.polygamma(-1, new Apfloat("-1.00"));
+            fail("-1, -1");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "polygamma.ofNonpositiveInteger", aae.getLocalizationKey());
+        }
+        try
+        {
             ApfloatMath.polygamma(-2, new Apfloat("-0.100"));
             fail("-2, -0.1");
+        }
+        catch (ApfloatArithmeticException aae)
+        {
+            // OK
+            assertEquals("Localization key", "complex", aae.getLocalizationKey());
+        }
+        try
+        {
+            ApfloatMath.polygamma(-2, new Apfloat("-1.00"));
+            fail("-2, -1");
         }
         catch (ApfloatArithmeticException aae)
         {
