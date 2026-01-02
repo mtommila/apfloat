@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -576,6 +576,31 @@ public class Util
         try
         {
             return Math.subtractExact(x, y);
+        }
+        catch (ArithmeticException ae)
+        {
+            throw new OverflowException("Overflow", ae, "overflow");
+        }
+    }
+
+    /**
+     * Returns the argument negated, throwing an exception if the result overflows a long.
+     *
+     * @param x The operand.
+     *
+     * @return <code>-x</code>
+     *
+     * @throws OverflowException If the result overflows a long
+     *
+     * @since 1.16.0
+     */
+
+    public static long negateExact(long x)
+        throws OverflowException
+    {
+        try
+        {
+            return Math.negateExact(x);
         }
         catch (ArithmeticException ae)
         {

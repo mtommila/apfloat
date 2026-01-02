@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -3099,6 +3099,10 @@ public class ApcomplexMathTest
         a = ApcomplexMath.polygamma(-2, new Apcomplex(new Apfloat(-3, 31, 11), new Apfloat(-4, 31, 11)));
         assertEquals("-2, -3-4i precision radix 11", 30, a.precision());
         assertEquals("-2, -3-4i value radix 11", new Apcomplex(new Apfloat("27.180454768698a1264481217a11604", 30, 11), new Apfloat("3.1116947a7840972664272592a0a10", 30, 11)), a, new Apfloat("5e-28", 1, 11));
+
+        a = ApcomplexMath.polygamma(-13, new Apcomplex(new Apfloat(-3, 60, 11), new Apfloat(-4, 60, 11)));
+        assertEquals("-13, -3-4i precision radix 11", 60, a.precision());
+        assertEquals("-13, -3-4i value radix 11", new Apcomplex(new Apfloat("1.434a51462476983260500a324710178015973a711771a77403a32a60135036a6", 60, 11), new Apfloat("-0.628379556191234485703854251394634462a7a074a97606358091a63249078a", 60, 11)), a, new Apfloat("5e-59", 1, 11));
 
         try
         {

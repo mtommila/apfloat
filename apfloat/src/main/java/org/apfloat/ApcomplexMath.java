@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -2395,7 +2395,8 @@ public class ApcomplexMath
         if (n < 0)
         {
             // See Victor S. Adamchik, PolyGamma Functions of Negative Order, https://viterbi-web.usc.edu/~adamchik/articles/polyg.pdf
-            n = Util.subtractExact(0, n);
+            // polygamma(-n, z) = (n/2 log(2 pi) z^(n - 1) - bernoulliB(n, z) harmonicNumber(n - 1) + n zeta'(1 - n, z) - sum(binomial(n, i) zeta'(-i) (n - i) z^(n - i - 1), {i, 1, n - 1}) + sum(binomial(n, 2 i) bernoulliB(2 i) harmonicNumber(2 i - 1) z^(n - 2 i), {i, 1, floor(n/2)})) / n!
+            n = Util.negateExact(n);
             Apint two = new Apint(2, radix),
                   nn = new Apint(n, radix);
             Apfloat pi = ApfloatMath.pi(precision, radix),
@@ -2488,6 +2489,23 @@ public class ApcomplexMath
 
     static Apcomplex zetaPrime(Apcomplex s)
     {
+        if (s.isInteger() && s.real().signum() < 0)
+        {
+            long n = s.longValueExact();    // If s doesn't fit in a long, the result would overflow anyways
+            if ((n & 1) == 0)
+            {
+                // See Wikipedia: https://en.wikipedia.org/wiki/Particular_values_of_the_Riemann_zeta_function#Derivatives
+                // zeta'(-2n) = (-1)^n (2n)! / 2 / (2 pi)^2n zeta(2n + 1)
+                long n2 = Util.negateExact(n);
+                int radix = s.radix();
+                long precision = s.precision();
+                Apint two = new Apint(2, radix);
+                Apfloat pi = ApfloatMath.pi(precision, radix),
+                        n21 = new Apfloat(n2 + 1, precision, radix);
+                Apcomplex result = ApfloatMath.factorial(n2, precision, radix).divide(two.multiply(ApfloatMath.pow(two.multiply(pi), n2))).multiply(zeta(n21));
+                return ((n & 2) == 0 ? result : result.negate());
+            }
+        }
         return Derivative.derivative(ApcomplexMath::zeta, s);
     }
 
