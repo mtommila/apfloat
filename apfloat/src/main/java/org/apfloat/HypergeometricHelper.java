@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,11 +27,14 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apfloat.spi.Util;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toSet;
 
 import static org.apfloat.ApcomplexMath.abs;
 import static org.apfloat.ApcomplexMath.exp;
@@ -49,7 +52,7 @@ import static org.apfloat.ApfloatMath.scale;
  * Helper class for hypergeometric functions.
  *
  * @since 1.11.0
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -460,7 +463,7 @@ class HypergeometricHelper
     public static Apcomplex hypergeometricPFQ(Apcomplex[] a, Apcomplex[] b, Apcomplex z)
     {
         HypergeometricHelper helper = new HypergeometricHelper(a, b, z);
-        return helper.result(helper.hypergeometricPFQ());
+        return helper.convergentResult(helper.hypergeometricPFQ());
     }
 
     /**
@@ -485,7 +488,7 @@ class HypergeometricHelper
     public static Apcomplex hypergeometricPFQRegularized(Apcomplex[] a, Apcomplex[] b, Apcomplex z)
     {
         HypergeometricHelper helper = new HypergeometricHelper(a, b, z);
-        return helper.result(helper.hypergeometricPFQRegularized());
+        return helper.convergentResult(helper.hypergeometricPFQRegularized());
     }
 
     private Apcomplex hypergeometricPFQRegularized()
@@ -536,9 +539,10 @@ class HypergeometricHelper
         return result;
     }
 
-    private static Apcomplex pochhammerProduct(Apcomplex[] a, Apfloat n)
+    private static Apcomplex pochhammerProduct(Apcomplex[] a, Apfloat n, int... omitIndexes)
     {
-        Apcomplex[] pochhammer = Arrays.stream(a).map(e -> pochhammer(e, n)).toArray(Apcomplex[]::new);
+        Set<Integer> omitted = Arrays.stream(omitIndexes).boxed().collect(toSet());
+        Apcomplex[] pochhammer = IntStream.range(0, a.length).filter(i -> !omitted.contains(i)).mapToObj(i -> a[i]).map(e -> pochhammer(e, n)).toArray(Apcomplex[]::new);
         return ApcomplexMath.product(pochhammer);
     }
 
@@ -617,7 +621,7 @@ class HypergeometricHelper
     private Apcomplex hypergeometric0F1(Apcomplex b, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (abs(z).doubleValue() > targetPrecision * Math.log(radix))
+        if (abs(doublePrecision(z)).doubleValue() > targetPrecision * Math.log(radix))
         {
             // Evaluate with 1F1
             // https://functions.wolfram.com/HypergeometricFunctions/Hypergeometric0F1/27/01/
@@ -662,7 +666,7 @@ class HypergeometricHelper
     private Apcomplex hypergeometric1F1(Apcomplex a, Apcomplex b, Apcomplex z)
         throws ArithmeticException, ApfloatRuntimeException
     {
-        if (abs(z).doubleValue() > targetPrecision * Math.log(radix))
+        if (abs(doublePrecision(z)).doubleValue() > targetPrecision * Math.log(radix))
         {
             try
             {
@@ -919,6 +923,7 @@ class HypergeometricHelper
              extraPrecision,
              extendedPrecision = ApfloatHelper.extendPrecision(workingPrecision, minN.scale()); // Estimate for accumulated round-off error precision due to repeated multiplication only (not scale based digit loss, see below)
         boolean divergentSeries = a.length - b.length > 1;
+        int a1 = IntStream.range(0, a.length).filter(i -> a[i].equals(one)).findFirst().orElse(-1); // If one of the a's is equal to one then we can exclude that and also the i! factor of the denominator
 
         ensurePrecision(a, a, extendedPrecision);
         ensurePrecision(b, b, extendedPrecision);
@@ -953,8 +958,12 @@ class HypergeometricHelper
                     ensurePrecision(aOrig, a, extendedPrecision);
                     ensurePrecision(bOrig, b, extendedPrecision);
                     // Calculate numerator and denominator at position i
-                    numerator = pochhammerProduct(a, i).multiply(pow(z, i));
-                    denominator = pochhammerProduct(b, i).multiply(factorial(i));
+                    numerator = pochhammerProduct(a, i, a1).multiply(pow(z, i));
+                    denominator = pochhammerProduct(b, i);
+                    if (a1 < 0)
+                    {
+                        denominator = denominator.multiply(factorial(i));
+                    }
                     // Set a and b as if they had been iterated up to i
                     for (int j = 0; j < a.length; j++)
                     {
@@ -973,6 +982,10 @@ class HypergeometricHelper
                     i = i.add(one);
                     for (int j = 0; j < a.length; j++)
                     {
+                        if (j == a1)    // Skip a term that is one
+                        {
+                            continue;
+                        }
                         numerator = numerator.multiply(a[j]);
                         a[j] = a[j].add(one);
                     }
@@ -986,7 +999,10 @@ class HypergeometricHelper
                         denominator = denominator.multiply(b[j]);
                         b[j] = b[j].add(one);
                     }
-                    denominator = denominator.multiply(i);
+                    if (a1 < 0) // If there is a 1 somewhere in the array a, then skip also this
+                    {
+                        denominator = denominator.multiply(i);
+                    }
                 }
                 o = t;
                 t = numerator.divide(denominator);
@@ -1250,6 +1266,11 @@ class HypergeometricHelper
         return ApfloatHelper.extendPrecision(precision, reducePrecision(z));
     }
 
+    private static boolean isReal(Apcomplex... a)
+    {
+        return Arrays.stream(a).allMatch(z -> z.imag().signum() == 0);
+    }
+
     private Apcomplex result(Apcomplex z)
     {
         if (z == null)
@@ -1259,6 +1280,15 @@ class HypergeometricHelper
         long precision = ApfloatHelper.reducePrecision(targetPrecision, reducePrecision);
         z = ApfloatHelper.limitPrecision(z, precision);
         return ApfloatHelper.reducePrecision(z, extraPrecision);
+    }
+
+    private Apcomplex convergentResult(Apcomplex result)
+    {
+        if (b.length >= a.length && isReal(a) && isReal(b) && isReal(z) && !isReal(result))
+        {
+            result = new Apcomplex(result.real(), Apfloat.ZEROS[radix]);  // There may be a round-off error imaginary part, omit it if all arguments are real and the series converges everywhere
+        }
+        return result(result);
     }
 
     private long targetPrecision,

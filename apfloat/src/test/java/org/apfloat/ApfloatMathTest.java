@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -130,6 +130,7 @@ public class ApfloatMathTest
         suite.addTest(new ApfloatMathTest("testErfi"));
         suite.addTest(new ApfloatMathTest("testInverseErf"));
         suite.addTest(new ApfloatMathTest("testInverseErfc"));
+        suite.addTest(new ApfloatMathTest("testDawsonF"));
         suite.addTest(new ApfloatMathTest("testFresnelS"));
         suite.addTest(new ApfloatMathTest("testFresnelC"));
         suite.addTest(new ApfloatMathTest("testExpIntegralE"));
@@ -4340,6 +4341,28 @@ public class ApfloatMathTest
         {
             // OK
             assertEquals("Localization key", "pi.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
+    public static void testDawsonF()
+    {
+        Apfloat a = ApfloatMath.dawsonF(new Apfloat("2.00000"));
+        assertEquals("2 precision", 6, a.precision());
+        assertEquals("2 value", new Apfloat("0.301340"), a, new Apfloat("5e-6"));
+
+        a = ApfloatMath.dawsonF(new Apfloat("200000.00000000000000"));
+        assertEquals("200000 precision", 11, a.precision());
+        assertEquals("200000 value", new Apfloat("2.5000000000e-6"), a, new Apfloat("5e-16"));
+
+        try
+        {
+            ApfloatMath.dawsonF(new Apfloat(3));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "hypergeometric.infinitePrecision", iee.getLocalizationKey());
         }
     }
 

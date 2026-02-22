@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -138,6 +138,7 @@ public class FixedPrecisionApfloatHelperTest
         suite.addTest(new FixedPrecisionApfloatHelperTest("testErfi"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testInverseErf"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testInverseErfc"));
+        suite.addTest(new FixedPrecisionApfloatHelperTest("testDawsonF"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testFresnelS"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testFresnelC"));
         suite.addTest(new FixedPrecisionApfloatHelperTest("testExpIntegralE"));
@@ -1650,6 +1651,15 @@ public class FixedPrecisionApfloatHelperTest
         result = helper.inverseErfc(x);
         assertEquals("1.111111111111111111111111111111111111111 radix 2 value", new Apfloat("-100.1111101111000101001000000001001100101", 40, 2), result, new Apfloat("1e-37", 1, 2));
         assertEquals("1.111111111111111111111111111111111111111 radix 2 precision", 40, result.precision());
+    }
+
+    public static void testDawsonF()
+    {
+        FixedPrecisionApfloatHelper helper = new FixedPrecisionApfloatHelper(6);
+        Apfloat x = new Apfloat("-1.5");
+        Apfloat result = helper.dawsonF(x);
+        assertEquals("value", new Apfloat("-0.428249"), result, new Apfloat("5e-6"));
+        assertEquals("precision", 6, result.precision());
     }
 
     public static void testFresnelS()

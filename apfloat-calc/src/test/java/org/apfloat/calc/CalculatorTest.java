@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -258,6 +258,7 @@ public class CalculatorTest
         assertCalculation("-2", "copySign(2, -3)");
         assertCalculation("-1.04221", "cosIntegral(0.200000)");
         assertCalculation("-1.02221", "coshIntegral(0.200000)");
+        assertCalculation("8.31163e-2", "dawsonF(6.10000)");
         assertCalculation("1.7061", "digamma(6.0000)");
         assertCalculation("34459425", "doubleFactorial(17)");
         assertCalculation("1", "doubleFactorial(-1)");
@@ -515,6 +516,8 @@ public class CalculatorTest
         assertCalculationFailure("cosIntegral(1.0,1.0)");
         assertCalculationFailure("coshIntegral()");
         assertCalculationFailure("coshIntegral(1.0,1.0)");
+        assertCalculationFailure("dawsonF()");
+        assertCalculationFailure("dawsonF(1.1,2.2)");
         assertCalculationFailure("digamma(0)");
         assertCalculationFailure("digamma()");
         assertCalculationFailure("digamma(2,2)");

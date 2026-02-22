@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -373,6 +373,12 @@ public class ApfloatCalculatorImpl
         public Number coshIntegral(Number x)
         {
             return ApcomplexMath.coshIntegral((Apcomplex) x);
+        }
+
+        @Override
+        public Number dawsonF(Number x)
+        {
+            return ApcomplexMath.dawsonF((Apcomplex) x);
         }
 
         @Override

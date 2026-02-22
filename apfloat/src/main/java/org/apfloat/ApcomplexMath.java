@@ -3214,6 +3214,75 @@ public class ApcomplexMath
     }
 
     /**
+     * Dawson's integral F.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param z The argument.
+     *
+     * @return <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *           <mi>F</mi>
+     *           <mo>&ApplyFunction;</mo>
+     *           <mo>(</mo>
+     *           <mi>z</mi>
+     *           <mo>)</mo>
+     *           <mo>=</mo>
+     *           <msup>
+     *             <mi>e</mi>
+     *             <mrow>
+     *               <mo>&minus;</mo>
+     *               <msup>
+     *                 <mi>z</mi>
+     *                 <mn>2</mn>
+     *               </msup>
+     *             </mrow>
+     *           </msup>
+     *           <mo>&InvisibleTimes;</mo>
+     *           <msubsup>
+     *             <mo>&Integral;</mo>
+     *             <mn>0</mn>
+     *             <mi>z</mi>
+     *           </msubsup>
+     *           <msup>
+     *             <mi>e</mi>
+     *             <mrow>
+     *               <msup>
+     *                 <mi>t</mi>
+     *                 <mn>2</mn>
+     *               </msup>
+     *             </mrow>
+     *           </msup>
+     *           <mo>&InvisibleTimes;</mo>
+     *           <mi>d</mi>
+     *           <mi>t</mi>
+     *         </math>
+     *
+     * @since 1.16.0
+     */
+
+    public static Apcomplex dawsonF(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        if (z.isZero())
+        {
+            return z;
+        }
+        int radix = z.radix();
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+             precision = ApfloatHelper.extendPrecision(z.precision(), extraPrecision);
+        z = ApfloatHelper.ensurePrecision(z, precision);
+        Apint one = Apint.ONES[radix],
+              two = new Apint(2, radix),
+              three = new Apint(3, radix);
+        Apfloat threeHalfs = new Aprational(three, two).precision(precision);
+        Apcomplex result = z.multiply(hypergeometric1F1(one, threeHalfs, z.multiply(z).negate()));
+        return ApfloatHelper.reducePrecision(result, extraPrecision);
+    }
+
+    /**
      * Fresnel integral S.<p>
      *
      * @implNote

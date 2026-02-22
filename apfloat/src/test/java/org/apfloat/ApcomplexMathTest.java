@@ -103,6 +103,7 @@ public class ApcomplexMathTest
         suite.addTest(new ApcomplexMathTest("testErf"));
         suite.addTest(new ApcomplexMathTest("testErfc"));
         suite.addTest(new ApcomplexMathTest("testErfi"));
+        suite.addTest(new ApcomplexMathTest("testDawsonF"));
         suite.addTest(new ApcomplexMathTest("testFresnelS"));
         suite.addTest(new ApcomplexMathTest("testFresnelC"));
         suite.addTest(new ApcomplexMathTest("testExpIntegralE"));
@@ -5102,6 +5103,40 @@ public class ApcomplexMathTest
         }
     }
 
+    public static void testDawsonF()
+    {
+        Apcomplex a = ApcomplexMath.dawsonF(new Apcomplex("(3.00000,4.00000)"));
+        assertEquals("3 + 4i precision", 6, a.precision());
+        assertEquals("3 + 4i value", new Apcomplex("(-880.043,412.164)"), a, new Apfloat("5e-3"));
+
+        a = ApcomplexMath.dawsonF(new Apcomplex("(-3.00000,-4.00000)"));
+        assertEquals("-3 - 4i precision", 6, a.precision());
+        assertEquals("-3 - 4i value", new Apcomplex("(880.043,-412.164)"), a, new Apfloat("5e-3"));
+
+        a = ApcomplexMath.dawsonF(new Apcomplex("(1000.000000,-4.000000000)"));
+        assertEquals("1000 - 4i precision", 6, a.precision());
+        assertEquals("1000 - 4i value", new Apcomplex("(0.000499992,1.99997e-6)"), a, new Apfloat("5e-9"));
+
+        a = ApcomplexMath.dawsonF(new Apcomplex("0"));
+        assertEquals("0 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("0 value", new Apfloat(0), a);
+
+        a = ApcomplexMath.dawsonF(new Apcomplex(new Apfloat(1, 21, 2), new Apfloat(2, 21, 2)));
+        assertEquals("1 + 2i radix 2 precision", 20, a.precision());
+        assertEquals("1 + 2i radix 2 value", new Apcomplex(new Apfloat("-1101.0110001110010001", 20, 2), new Apfloat("-1011.1101010000100111", 20, 2)), a, new Apfloat("1e-16", 1, 2));
+
+        try
+        {
+            ApcomplexMath.dawsonF(new Apcomplex(new Apfloat(3), new Apfloat(4)));
+            fail("Infinite expansion");
+        }
+        catch (InfiniteExpansionException iee)
+        {
+            // OK
+            assertEquals("Localization key", "hypergeometric.infinitePrecision", iee.getLocalizationKey());
+        }
+    }
+
     public static void testFresnelS()
     {
         Apcomplex a = ApcomplexMath.fresnelS(new Apcomplex("(3.000000,4.000000)"));
@@ -5133,8 +5168,8 @@ public class ApcomplexMathTest
         assertEquals("0 value", new Apcomplex("0"), a);
 
         a = ApcomplexMath.fresnelS(new Apcomplex(new Apfloat(1, 21, 2), new Apfloat(2, 21, 2)));
-        assertEquals("2 + 1i radix 2 precision", 19, a.precision());
-        assertEquals("2 + 1i radix 2 value", new Apcomplex(new Apfloat("100100.1011100110111", 19, 2), new Apfloat("1111.100101100111011", 19, 2)), a, new Apfloat("1e-15", 1, 2));
+        assertEquals("1 + 2i radix 2 precision", 19, a.precision());
+        assertEquals("1 + 2i radix 2 value", new Apcomplex(new Apfloat("100100.1011100110111", 19, 2), new Apfloat("1111.100101100111011", 19, 2)), a, new Apfloat("1e-15", 1, 2));
 
         a = ApcomplexMath.fresnelS(new Apcomplex(new Apfloat("0.1", 21, 2), new Apfloat("0.11", 21, 2)));
         assertEquals("0.5 + 0.75i radix 2 precision", 21, a.precision());
@@ -5183,8 +5218,8 @@ public class ApcomplexMathTest
         assertEquals("0 value", new Apcomplex("0"), a);
 
         a = ApcomplexMath.fresnelC(new Apcomplex(new Apfloat(1, 23, 2), new Apfloat(2, 23, 2)));
-        assertEquals("2 + 1i radix 2 precision", 20, a.precision());
-        assertEquals("2 + 1i radix 2 value", new Apcomplex(new Apfloat("10000.000101100111111", 20, 2), new Apfloat("-100100.00111001110001", 20, 2)), a, new Apfloat("1e-14", 1, 2));
+        assertEquals("1 + 2i radix 2 precision", 20, a.precision());
+        assertEquals("1 + 2i radix 2 value", new Apcomplex(new Apfloat("10000.000101100111111", 20, 2), new Apfloat("-100100.00111001110001", 20, 2)), a, new Apfloat("1e-14", 1, 2));
 
         a = ApcomplexMath.fresnelC(new Apcomplex(new Apfloat("0.1", 21, 2), new Apfloat("0.11", 21, 2)));
         assertEquals("0.5 + 0.75i radix 2 precision", 21, a.precision());

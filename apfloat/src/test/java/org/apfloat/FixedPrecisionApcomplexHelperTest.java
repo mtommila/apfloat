@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -112,6 +112,7 @@ public class FixedPrecisionApcomplexHelperTest
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testErf"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testErfc"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testErfi"));
+        suite.addTest(new FixedPrecisionApcomplexHelperTest("testDawsonF"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testFresnelS"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testFresnelC"));
         suite.addTest(new FixedPrecisionApcomplexHelperTest("testExpIntegralE"));
@@ -1170,6 +1171,15 @@ public class FixedPrecisionApcomplexHelperTest
         result = helper.erfi(z);
         assertEquals("-0.1-0.2i value", new Apcomplex("(-0.108747,-0.224881)"), result, new Apfloat("5e-6"));
         assertEquals("-0.1-0.2i precision", 6, result.precision());
+    }
+
+    public static void testDawsonF()
+    {
+        FixedPrecisionApcomplexHelper helper = new FixedPrecisionApcomplexHelper(6);
+        Apcomplex z = new Apcomplex("(3.4,5.6)");
+        Apcomplex result = helper.dawsonF(z);
+        assertEquals("value", new Apcomplex("(1.30864e8,3.26799e8)"), result, new Apfloat("5e3"));
+        assertEquals("precision", 6, result.precision());
     }
 
     public static void testFresnelS()

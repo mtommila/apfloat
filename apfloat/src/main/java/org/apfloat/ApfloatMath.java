@@ -3385,6 +3385,62 @@ public class ApfloatMath
     }
 
     /**
+     * Dawson's integral F.<p>
+     *
+     * @implNote
+     * This implementation is <i>slow</i>, meaning that it isn't a <i>fast algorithm</i>.
+     * It is impractically slow beyond a precision of a few thousand digits. At the time of
+     * implementation no generic fast algorithm is known for the function.
+     *
+     * @param x The argument.
+     *
+     * @return <math xmlns="http://www.w3.org/1998/Math/MathML">
+     *           <mi>F</mi>
+     *           <mo>&ApplyFunction;</mo>
+     *           <mo>(</mo>
+     *           <mi>x</mi>
+     *           <mo>)</mo>
+     *           <mo>=</mo>
+     *           <msup>
+     *             <mi>e</mi>
+     *             <mrow>
+     *               <mo>&minus;</mo>
+     *               <msup>
+     *                 <mi>x</mi>
+     *                 <mn>2</mn>
+     *               </msup>
+     *             </mrow>
+     *           </msup>
+     *           <mo>&InvisibleTimes;</mo>
+     *           <msubsup>
+     *             <mo>&Integral;</mo>
+     *             <mn>0</mn>
+     *             <mi>x</mi>
+     *           </msubsup>
+     *           <msup>
+     *             <mi>e</mi>
+     *             <mrow>
+     *               <msup>
+     *                 <mi>t</mi>
+     *                 <mn>2</mn>
+     *               </msup>
+     *             </mrow>
+     *           </msup>
+     *           <mo>&InvisibleTimes;</mo>
+     *           <mi>d</mi>
+     *           <mi>t</mi>
+     *         </math>
+     *
+     * @since 1.16.0
+     */
+
+    public static Apfloat dawsonF(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return ApcomplexMath.dawsonF(x).real();
+    }
+
+    /**
      * Fresnel integral S.<p>
      *
      * @implNote

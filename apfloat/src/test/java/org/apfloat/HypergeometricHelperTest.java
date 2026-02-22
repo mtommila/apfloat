@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ package org.apfloat;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -83,6 +83,10 @@ public class HypergeometricHelperTest
         a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("5000000"));
         assertEquals("2.2; 3.3, 42; 500000000000 precision", 1, a.precision());
         assertEquals("2.2; 3.3, 42; 500000000000 value", new Apcomplex("6.6e1848"), a, new Apfloat("5e1846"));
+
+        a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("1.000000000") }, new Apcomplex[] { new Apcomplex("3.300000000"), new Apcomplex("42.00000000") }, new Apcomplex("500000.0000"));
+        assertEquals("1; 3.3, 42; 500000 precision", 6, a.precision());
+        assertEquals("1; 3.3, 42; 500000 value", new Apcomplex("3.558159e538"), a, new Apfloat("5e532"));
 
         // Not quite start term cases
         a = HypergeometricHelper.hypergeometricPFQ(new Apcomplex[] { new Apcomplex("2.20000") }, new Apcomplex[] { new Apcomplex("3.30000"), new Apcomplex("42.0000") }, new Apcomplex("0.900000"));

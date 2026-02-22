@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -183,6 +183,7 @@ public abstract class FunctionCalculatorImpl
         public Number cosIntegral(Number x);
         public Number cosh(Number x);
         public Number coshIntegral(Number x);
+        public Number dawsonF(Number x);
         public Number digamma(Number x);
         public Number doubleFactorial(Number x);
         public Number e(Number x);
@@ -337,6 +338,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("cosIntegral", fixedFunction("cosIntegral", 1, (functions, arguments) -> functions.cosIntegral(arguments.get(0))));
         setFunction("cosh", fixedFunction("cosh", 1, (functions, arguments) -> functions.cosh(arguments.get(0))));
         setFunction("coshIntegral", fixedFunction("coshIntegral", 1, (functions, arguments) -> functions.coshIntegral(arguments.get(0))));
+        setFunction("dawsonF", fixedFunction("dawsonF", 1, (functions, arguments) -> functions.dawsonF(arguments.get(0))));
         setFunction("digamma", fixedFunction("digamma", 1, (functions, arguments) -> functions.digamma(arguments.get(0))));
         setFunction("doubleFactorial", fixedFunction("doubleFactorial", 1, (functions, arguments) -> functions.doubleFactorial(arguments.get(0))));
         setFunction("e", fixedFunction("e", 0, 1, (functions, arguments) -> functions.e(argumentOrInputPrecision(arguments))));

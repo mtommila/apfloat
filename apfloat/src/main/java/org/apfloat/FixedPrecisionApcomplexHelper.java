@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1442,6 +1442,22 @@ public class FixedPrecisionApcomplexHelper
         throws ApfloatRuntimeException
     {
         return valueOf(ApcomplexMath.erfiFixedPrecision(setErfPrecision(z)));
+    }
+
+    /**
+     * Dawson's integral F.
+     *
+     * @param z The argument.
+     *
+     * @return <i>F(z)</i>
+     *
+     * @since 1.16.0
+     */
+
+    public Apcomplex dawsonF(Apcomplex z)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApcomplexMath.dawsonF(setPrecision(z)));
     }
 
     /**

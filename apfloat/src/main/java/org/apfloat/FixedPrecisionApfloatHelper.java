@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -1534,6 +1534,22 @@ public class FixedPrecisionApfloatHelper
     {
         long precision = ApfloatHelper.extendPrecision(precision(), Math.max(-x.scale(), x.equalDigits(new Apfloat(2, Apfloat.INFINITE, x.radix()))));
         return valueOf(ApfloatMath.inverseErfc(x.precision(precision)));
+    }
+
+    /**
+     * Dawson's integral F.<p>
+     *
+     * @param x The argument.
+     *
+     * @return <i>F(x)</i>
+     *
+     * @since 1.16.0
+     */
+
+    public Apfloat dawsonF(Apfloat x)
+        throws ApfloatRuntimeException
+    {
+        return valueOf(ApfloatMath.dawsonF(setPrecision(x)));
     }
 
     /**
