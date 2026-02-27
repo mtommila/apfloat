@@ -372,6 +372,8 @@ public class CalculatorTest
         assertCalculation("2/3", "sqrt(4/9)");
         assertCalculation("7.07+7.07i", "sqrt(100.i)");
         assertCalculation("1.4142", "sqrt(2.0000)");
+        assertCalculation("-1960", "stirlingS1(8, 5)");
+        assertCalculation("1050", "stirlingS2(8, 5)");
         assertCalculation("1.45336", "struveH(1.80000,4.70000)");
         assertCalculation("1.40023", "struveL(1.80000,2.70000)");
         assertCalculation("2", "truncate(2.5)");
@@ -707,6 +709,14 @@ public class CalculatorTest
         assertCalculationFailure("sqrt(2)");
         assertCalculationFailure("sqrt()");
         assertCalculationFailure("sqrt(4, 2)");
+        assertCalculationFailure("stirlingS1(8)");
+        assertCalculationFailure("stirlingS1(8, 5, 10)");
+        assertCalculationFailure("stirlingS1(-1, 0)");
+        assertCalculationFailure("stirlingS1(0, -1)");
+        assertCalculationFailure("stirlingS2(8)");
+        assertCalculationFailure("stirlingS2(8, 5, 10)");
+        assertCalculationFailure("stirlingS2(-1, 0)");
+        assertCalculationFailure("stirlingS2(0, -1)");
         assertCalculationFailure("struveH()");
         assertCalculationFailure("struveH(1.0)");
         assertCalculationFailure("struveH(-1.0,0)");

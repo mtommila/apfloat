@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import java.util.Random;
 /**
  * Various mathematical functions for arbitrary precision integers.
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -898,6 +898,130 @@ public class ApintMath
         Apint two = new Apint(2, n.radix());
         Apint k = m.divide(two);
         return pochhammer(n, k).multiply(pochhammer(n.add(k), m.subtract(k)));
+    }
+
+    /**
+     * Stirling number of the first kind. Uses the default radix.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     *
+     * @return <i>s(n, k)</i>
+     *
+     * @throws IllegalArgumentException In case n or k is negative.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apint stirlingS1(long n, long k)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return stirlingS1(n, k, radix);
+    }
+
+    /**
+     * Stirling number of the first kind. Uses the specified radix.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     * @param radix The radix.
+     *
+     * @return <i>s(n, k)</i>
+     *
+     * @throws NumberFormatException If the radix is not valid.
+     * @throws IllegalArgumentException In case n or k is negative.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apint stirlingS1(long n, long k, int radix)
+        throws NumberFormatException, IllegalArgumentException, ApfloatRuntimeException
+    {
+        return StirlingHelper.stirlingS1(n, k, radix);
+    }
+
+    /**
+     * Stirling number of the first kind.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     *
+     * @return <i>s(n, k)</i>
+     *
+     * @throws IllegalArgumentException In case n or k is negative.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apint stirlingS1(Apint n, Apint k)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return StirlingHelper.stirlingS1(n, k);
+    }
+
+    /**
+     * Stirling number of the second kind. Uses the default radix.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     *
+     * @return <i>S(n, k)</i>
+     *
+     * @throws IllegalArgumentException In case n or k is negative.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apint stirlingS2(long n, long k)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return stirlingS2(n, k, radix);
+    }
+
+    /**
+     * Stirling number of the second kind. Uses the specified radix.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     * @param radix The radix.
+     *
+     * @return <i>S(n, k)</i>
+     *
+     * @throws NumberFormatException If the radix is not valid.
+     * @throws IllegalArgumentException In case n or k is negative.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apint stirlingS2(long n, long k, int radix)
+        throws NumberFormatException, IllegalArgumentException, ApfloatRuntimeException
+    {
+        return StirlingHelper.stirlingS2(n, k, radix);
+    }
+
+    /**
+     * Stirling number of the second kind.
+     *
+     * @param n The first argument.
+     * @param k The second argument.
+     *
+     * @return <i>S(n, k)</i>
+     *
+     * @throws IllegalArgumentException In case n or k is negative.
+     *
+     * @since 1.16.0
+     */
+
+    public static Apint stirlingS2(Apint n, Apint k)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        return StirlingHelper.stirlingS2(n, k);
     }
 
     /**

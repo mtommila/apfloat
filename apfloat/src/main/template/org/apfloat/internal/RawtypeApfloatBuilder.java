@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2023 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ import org.apfloat.spi.ApfloatImpl;
  * Builder class for building {@link ApfloatImpl} implementations with the
  * <code>rawtype</code> data element type.
  *
- * @version 1.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -75,5 +75,12 @@ public class RawtypeApfloatBuilder
         throws IOException, NumberFormatException, ApfloatRuntimeException
     {
         return new RawtypeApfloatImpl(in, precision, radix, isInteger);
+    }
+
+    @Override
+    public ApfloatImpl createApfloat(PushbackReader in, long precision, int radix, boolean isInteger, long initialSize)
+        throws IOException, NumberFormatException, ApfloatRuntimeException
+    {
+        return new RawtypeApfloatImpl(in, precision, radix, isInteger, initialSize);
     }
 }

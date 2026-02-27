@@ -259,6 +259,8 @@ public abstract class FunctionCalculatorImpl
         public Number sinhIntegral(Number x);
         public Number sphericalHarmonicY(Number x, Number y, Number z, Number w);
         public Number sqrt(Number x);
+        public Number stirlingS1(Number x, Number y);
+        public Number stirlingS2(Number x, Number y);
         public Number struveH(Number x, Number y);
         public Number struveL(Number x, Number y);
         public Number tan(Number x);
@@ -405,6 +407,8 @@ public abstract class FunctionCalculatorImpl
         setFunction("sinhIntegral", fixedFunction("sinhIntegral", 1, (functions, arguments) -> functions.sinhIntegral(arguments.get(0))));
         setFunction("sphericalHarmonicY", fixedFunction("sphericalHarmonicY", 4, (functions, arguments) -> functions.sphericalHarmonicY(arguments.get(0), arguments.get(1), arguments.get(2), arguments.get(3))));
         setFunction("sqrt", fixedFunction("sqrt", 1, (functions, arguments) -> functions.sqrt(arguments.get(0))));
+        setFunction("stirlingS1", fixedFunction("stirlingS1", 2, (functions, arguments) -> functions.stirlingS1(arguments.get(0), arguments.get(1))));
+        setFunction("stirlingS2", fixedFunction("stirlingS2", 2, (functions, arguments) -> functions.stirlingS2(arguments.get(0), arguments.get(1))));
         setFunction("struveH", fixedFunction("struveH", 2, (functions, arguments) -> functions.struveH(arguments.get(0), arguments.get(1))));
         setFunction("struveL", fixedFunction("struveL", 2, (functions, arguments) -> functions.struveL(arguments.get(0), arguments.get(1))));
         setFunction("tan", fixedFunction("tan", 1, (functions, arguments) -> functions.tan(arguments.get(0))));

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ import static org.apfloat.spi.RadixConstants.*;
 /**
  * Various utility methods related to apfloats.
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -189,11 +189,32 @@ class ApfloatHelper
         return implCreateApfloat(in, precision, radix, isInteger);
     }
 
+    public static ApfloatImpl createApfloat(PushbackReader in, long precision, int radix, boolean isInteger, long initialSize)
+        throws IOException, NumberFormatException, IllegalArgumentException, ApfloatRuntimeException
+    {
+        if (precision != Apfloat.DEFAULT)
+        {
+            checkPrecision(precision);
+        }
+        if (initialSize <= 0)
+        {
+            throw new IllegalArgumentException("Initial size " + initialSize + " is not positive");
+        }
+        return implCreateApfloat(in, precision, radix, isInteger, initialSize);
+    }
+
     private static ApfloatImpl implCreateApfloat(PushbackReader in, long precision, int radix, boolean isInteger)
         throws IOException, NumberFormatException, ApfloatRuntimeException
     {
         ApfloatBuilder factory = getApfloatBuilder();
         return factory.createApfloat(in, precision, radix, isInteger);
+    }
+
+    private static ApfloatImpl implCreateApfloat(PushbackReader in, long precision, int radix, boolean isInteger, long initialSize)
+        throws IOException, NumberFormatException, ApfloatRuntimeException
+    {
+        ApfloatBuilder factory = getApfloatBuilder();
+        return factory.createApfloat(in, precision, radix, isInteger, initialSize);
     }
 
     public static ApfloatImpl createApfloat(BigInteger value)

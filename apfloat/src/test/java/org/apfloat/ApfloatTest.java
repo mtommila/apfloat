@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -337,6 +337,26 @@ public class ApfloatTest
         assertEquals("990.0 precision", 4, a.precision());
         assertEquals("990.0 String", "990", a.toString(true));
 
+        in = new PushbackReader(new StringReader("99"));
+        a = new Apfloat(in, Apfloat.DEFAULT, 10, 2);
+        assertEquals("99 String", "9.9e1", a.toString());
+        assertEquals("99 next char", -1, in.read());
+
+        in = new PushbackReader(new StringReader("z.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"));
+        a = new Apfloat(in, Apfloat.DEFAULT, 36, 1);
+        assertEquals("zz radix", 36, a.radix());
+        assertEquals("zz String", "z.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", a.toString());
+
+        in = new PushbackReader(new StringReader("x.x"));
+        a = new Apfloat(in, Apfloat.DEFAULT, 35, 200);
+        assertEquals("xx radix", 35, a.radix());
+        assertEquals("xx String", "x.x", a.toString());
+
+        in = new PushbackReader(new StringReader("1"));
+        a = new Apfloat(in, Apfloat.DEFAULT, 10, 10000000);
+        assertEquals("1 radix", 10, a.radix());
+        assertEquals("1 String", "1", a.toString());
+
         try
         {
             in = new PushbackReader(new StringReader("0"));
@@ -390,6 +410,16 @@ public class ApfloatTest
         catch (NumberFormatException | OverflowException e)
         {
             // OK: should overflow
+        }
+
+        try
+        {
+            a = new Apfloat(new PushbackReader(new StringReader("1")), 10, 0);
+            fail("Initial size 0 accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK: illegal initialSize
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ import org.apfloat.spi.ApfloatImpl;
  *
  * @see ApfloatMath
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -402,6 +402,30 @@ public class Apfloat
         throws IOException, NumberFormatException, IllegalArgumentException, ApfloatRuntimeException
     {
         this(ApfloatHelper.createApfloat(in, precision, radix, false));
+    }
+
+    /**
+     * Reads an apfloat from a stream using the specified precision
+     * and radix. A hint for the size of the number can be specified.
+     *
+     * @param in The stream to read from
+     * @param precision The precision of the number.
+     * @param radix The radix of the number.
+     * @param initialSize The initially allocated size (in digits of the radix) for the number.
+     *
+     * @exception IOException If an I/O error occurs accessing the stream.
+     * @exception NumberFormatException If the number is not valid.
+     * @exception IllegalArgumentException In case the precision or initial size is invalid.
+     *
+     * @see #Apfloat(PushbackReader)
+     *
+     * @since 1.16.0
+     */
+
+    public Apfloat(PushbackReader in, long precision, int radix, long initialSize)
+        throws IOException, NumberFormatException, IllegalArgumentException, ApfloatRuntimeException
+    {
+        this(ApfloatHelper.createApfloat(in, precision, radix, false, initialSize));
     }
 
     /**

@@ -881,6 +881,18 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number stirlingS1(Number x, Number y)
+        {
+            throw new IllegalArgumentException("stirlingS1 can only be used with valid integer arguments");
+        }
+
+        @Override
+        public Number stirlingS2(Number x, Number y)
+        {
+            throw new IllegalArgumentException("stirlingS2 can only be used with valid integer arguments");
+        }
+
+        @Override
         public Number struveH(Number x, Number y)
         {
             return ApcomplexMath.struveH((Apcomplex) x, (Apcomplex) y);
@@ -1403,6 +1415,18 @@ public class ApfloatCalculatorImpl
         protected Number scale(Number x, long y)
         {
             return (y >= 0 ? ApintMath.scale((Apint) x, y) : super.scale(x, y));
+        }
+
+        @Override
+        public Number stirlingS1(Number x, Number y)
+        {
+            return ApintMath.stirlingS1((Apint) x, (Apint) y);
+        }
+
+        @Override
+        public Number stirlingS2(Number x, Number y)
+        {
+            return ApintMath.stirlingS2((Apint) x, (Apint) y);
         }
     }
 

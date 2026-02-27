@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import java.util.Map;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -65,6 +65,8 @@ public class ApintMathTest
         suite.addTest(new ApintMathTest("testDoubleFactorial"));
         suite.addTest(new ApintMathTest("testProduct"));
         suite.addTest(new ApintMathTest("testBinomial"));
+        suite.addTest(new ApintMathTest("testStirlingS1"));
+        suite.addTest(new ApintMathTest("testStirlingS2"));
         suite.addTest(new ApintMathTest("testSum"));
         suite.addTest(new ApintMathTest("testRandom"));
         suite.addTest(new ApintMathTest("testMax"));
@@ -689,6 +691,32 @@ public class ApintMathTest
             // OK: overflow
             assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
+    }
+
+    public static void testStirlingS1()
+    {
+        Apint a = ApintMath.stirlingS1(7, 4);
+        assertEquals("7, 4 value", new Apint(-735), a);
+
+        a = ApintMath.stirlingS1(new Apint(7), new Apint(3));
+        assertEquals("7, 3 value", new Apint(1624), a);
+
+        a = ApintMath.stirlingS1(7, 5, 13);
+        assertEquals("7, 5 radix", 13, a.radix());
+        assertEquals("7, 5 value", new Apint(175, 13), a);
+    }
+
+    public static void testStirlingS2()
+    {
+        Apint a = ApintMath.stirlingS2(7, 4);
+        assertEquals("7, 4 value", new Apint(350), a);
+
+        a = ApintMath.stirlingS2(new Apint(7), new Apint(3));
+        assertEquals("7, 3 value", new Apint(301), a);
+
+        a = ApintMath.stirlingS2(7, 5, 13);
+        assertEquals("7, 5 radix", 13, a.radix());
+        assertEquals("7, 5 value", new Apint(140, 13), a);
     }
 
     public static void testProduct()

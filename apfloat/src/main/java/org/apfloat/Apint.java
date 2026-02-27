@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ import org.apfloat.spi.ApfloatImpl;
  *
  * @see ApintMath
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -63,6 +63,9 @@ public class Apint
     // Package private constructor that skips validating that the provided value actually is an integer
     Apint(Apfloat value)
     {
+        assert (value != null);
+        assert (value.precision() == Apfloat.INFINITE);
+        assert (value.isInteger());
         this.value = value;
     }
 
@@ -156,6 +159,26 @@ public class Apint
         throws IOException, NumberFormatException, ApfloatRuntimeException
     {
         this.value = new Apfloat(ApfloatHelper.createApfloat(in, INFINITE, radix, true));
+    }
+
+    /**
+     * Reads an apint from a stream using the specified radix. A hint for the size of the number can be specified.
+     *
+     * @param in The stream to read from
+     * @param radix The radix of the number.
+     * @param initialSize The initially allocated size (in digits of the radix) for the number.
+     *
+     * @exception IOException If an I/O error occurs accessing the stream.
+     * @exception NumberFormatException If the number is not valid.
+     * @exception IllegalArgumentException In case the initial size is invalid.
+     *
+     * @since 1.16.0
+     */
+
+    public Apint(PushbackReader in, int radix, long initialSize)
+        throws IOException, NumberFormatException, ApfloatRuntimeException
+    {
+        this.value = new Apfloat(ApfloatHelper.createApfloat(in, INFINITE, radix, true, initialSize));
     }
 
     /**

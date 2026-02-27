@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ import static org.apfloat.internal.RawtypeRadixConstants.*;
  * This implementation doesn't necessarily store any extra digits for added
  * precision, so the last digit of any operation may be inaccurate.
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -585,9 +585,45 @@ public class RawtypeApfloatImpl
     public RawtypeApfloatImpl(PushbackReader in, long precision, int radix, boolean isInteger)
         throws IOException, NumberFormatException, ApfloatRuntimeException
     {
+        this(in, precision, radix, getBlockSize(), isInteger);
+    }
+
+    /**
+     * Create a new <code>RawtypeApfloatImpl</code> instance reading from a stream. A hint for the size of the number can be specified.<p>
+     *
+     * Implementation note: this constructor calls the <code>in</code> stream's
+     * single-character <code>read()</code> method. If the underlying stream doesn't
+     * explicitly implement this method in some efficient way, but simply inherits it
+     * from the <code>Reader</code> base class, performance will suffer as the default
+     * <code>Reader</code> method creates a <code>new char[1]</code> on every call to
+     * <code>read()</code>.
+     *
+     * @param in The stream to read from.
+     * @param precision The precision of the number (in digits of the radix).
+     * @param radix The radix in which the number is created.
+     * @param isInteger Specifies if the number to be parsed from the stream is to be treated as an integer or not.
+     * @param initialSize The initially allocated size (in digits of the radix) for the number.
+     *
+     * @exception IOException If an I/O error occurs accessing the stream.
+     * @exception NumberFormatException If the number is not valid.
+     *
+     * @since 1.16.0
+     */
+
+    public RawtypeApfloatImpl(PushbackReader in, long precision, int radix, boolean isInteger, long initialSize)
+        throws IOException, NumberFormatException, ApfloatRuntimeException
+    {
+        // Needed initial storage size in rawtypes (but only if the digits align on an element boundary)
+        this(in, precision, radix, Long.divideUnsigned(initialSize + BASE_DIGITS[radix] - 1, BASE_DIGITS[radix]), isInteger);
+    }
+
+    private RawtypeApfloatImpl(PushbackReader in, long precision, int radix, long initialSize, boolean isInteger)
+        throws IOException, NumberFormatException, ApfloatRuntimeException
+    {
         super(checkRadix(radix));
 
         assert (precision == Apfloat.DEFAULT || precision > 0);
+        assert (initialSize > 0);
 
         this.radix = radix;
 
@@ -595,8 +631,7 @@ public class RawtypeApfloatImpl
         this.sign = 1;
 
         // Allocate a reasonable memory block, since we don't know how much data to expect
-        long initialSize = getBlockSize(),
-             previousAllocatedSize = 0,
+        long previousAllocatedSize = 0,
              allocatedSize = initialSize;
         this.dataStorage = createDataStorage(initialSize);
         this.dataStorage.setSize(initialSize);

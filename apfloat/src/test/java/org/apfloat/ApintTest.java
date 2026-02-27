@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import java.util.IllegalFormatException;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -169,6 +169,36 @@ public class ApintTest
         a = new Apint(in);
         assertEquals("05 String", "5", a.toString());
         assertEquals("05 next char", -1, in.read());
+
+        in = new PushbackReader(new StringReader("99"));
+        a = new Apint(in, 10, 2);
+        assertEquals("99 String", "99", a.toString());
+        assertEquals("99 next char", -1, in.read());
+
+        in = new PushbackReader(new StringReader("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"));
+        a = new Apint(in, 36, 1);
+        assertEquals("zz radix", 36, a.radix());
+        assertEquals("zz String", "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", a.toString());
+
+        in = new PushbackReader(new StringReader("xx"));
+        a = new Apint(in, 35, 100);
+        assertEquals("xx radix", 35, a.radix());
+        assertEquals("xx String", "xx", a.toString());
+
+        in = new PushbackReader(new StringReader("1"));
+        a = new Apint(in, 10, 10000000);
+        assertEquals("1 radix", 10, a.radix());
+        assertEquals("1 String", "1", a.toString());
+
+        try
+        {
+            a = new Apint(new PushbackReader(new StringReader("1")), 10, 0);
+            fail("Initial size 0 accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK: illegal initialSize
+        }
     }
 
     public static void testBigIntegerConstructor()
