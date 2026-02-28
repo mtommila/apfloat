@@ -24,6 +24,7 @@
 package org.apfloat;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 import junit.framework.TestSuite;
 
@@ -52,6 +53,7 @@ public class StirlingHelperTest
         suite.addTest(new StirlingHelperTest("testStirlingS1"));
         suite.addTest(new StirlingHelperTest("testStirlingS1s"));
         suite.addTest(new StirlingHelperTest("testStirlingS2"));
+        suite.addTest(new StirlingHelperTest("testStirlingS2s"));
 
         return suite;
     }
@@ -180,6 +182,7 @@ public class StirlingHelperTest
 
     public static void testStirlingS1s()
     {
+        assertEquals("0", Arrays.asList(new Apint(1)), Arrays.asList(StirlingHelper.stirlingS1s(0, 10)));
         assertEquals("7", Arrays.asList(new Apint(0), new Apint(720), new Apint(-1764), new Apint(1624), new Apint(-735), new Apint(175), new Apint(-21), new Apint(1)), Arrays.asList(StirlingHelper.stirlingS1s(7, 10)));
         assertEquals("7 radix 3", Arrays.asList(new Apint(0, 3), new Apint(720, 3), new Apint(-1764, 3), new Apint(1624, 3), new Apint(-735, 3), new Apint(175, 3), new Apint(-21, 3), new Apint(1, 3)), Arrays.asList(StirlingHelper.stirlingS1s(7, 3)));
 
@@ -285,6 +288,60 @@ public class StirlingHelperTest
         catch (IllegalArgumentException iae)
         {
             // OK; illegal
+        }
+    }
+
+    public static void testStirlingS2s()
+    {
+        Iterator<Apint> s2 = StirlingHelper.stirlingS2s(0, 10);
+        assertEquals("(0, 0)", new Apint(1), s2.next());
+        assertFalse("0", s2.hasNext());
+
+        s2 = StirlingHelper.stirlingS2s(1, 10);
+        assertEquals("(1, 0)", new Apint(0), s2.next());
+        assertEquals("(1, 1)", new Apint(1), s2.next());
+        assertFalse("1", s2.hasNext());
+
+        s2 = StirlingHelper.stirlingS2s(7, 10);
+        assertEquals("(7, 0)", new Apint(0), s2.next());
+        assertEquals("(7, 1)", new Apint(1), s2.next());
+        assertEquals("(7, 2)", new Apint(63), s2.next());
+        assertEquals("(7, 3)", new Apint(301), s2.next());
+        assertEquals("(7, 4)", new Apint(350), s2.next());
+        assertEquals("(7, 5)", new Apint(140), s2.next());
+        assertEquals("(7, 6)", new Apint(21), s2.next());
+        assertEquals("(7, 7)", new Apint(1), s2.next());
+        assertFalse("7", s2.hasNext());
+
+        s2 = StirlingHelper.stirlingS2s(7, 3);
+        assertEquals("(7, 0) radix 3", new Apint(0, 3), s2.next());
+        assertEquals("(7, 1) radix 3", new Apint(1, 3), s2.next());
+        assertEquals("(7, 2) radix 3", new Apint(63, 3), s2.next());
+        assertEquals("(7, 3) radix 3", new Apint(301, 3), s2.next());
+        assertEquals("(7, 4) radix 3", new Apint(350, 3), s2.next());
+        assertEquals("(7, 5) radix 3", new Apint(140, 3), s2.next());
+        assertEquals("(7, 6) radix 3", new Apint(21, 3), s2.next());
+        assertEquals("(7, 7) radix 3", new Apint(1, 3), s2.next());
+        assertFalse("7 radix 3", s2.hasNext());
+
+        try
+        {
+            StirlingHelper.stirlingS2s(-1, 10);
+            fail("Illegal argument accepted");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK; illegal
+        }
+        try
+        {
+            StirlingHelper.stirlingS2s(Integer.MAX_VALUE, 10);
+            fail("Maximum array size exceeded");
+        }
+        catch (ApfloatRuntimeException are)
+        {
+            // OK; doesn't fit in an array
+            assertEquals("Localization key", "maximumArraySizeExceeded", are.getLocalizationKey());
         }
     }
 }

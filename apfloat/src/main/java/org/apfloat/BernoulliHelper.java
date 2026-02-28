@@ -190,12 +190,11 @@ class BernoulliHelper
         Aprational sum = Aprational.ZERO;
         for (long k = 1; k <= n; k++)
         {
-            Apint binomial = Apint.ONES[radix];
+            Iterator<Apint> binomial = BinomialHelper.binomials(k, 1, radix);
             Apint part = Apint.ZERO;
             for (long v = 1; v <= k; v++)
             {
-                binomial = binomial.multiply(new Apint(k + 1 - v, radix)).divide(new Apint(v, radix));
-                Apint term = binomial.multiply(ApintMath.pow(new Apint(v, radix), n));
+                Apint term = binomial.next().multiply(ApintMath.pow(new Apint(v, radix), n));
                 part = ((v & 1) == 0 ? part.add(term) : part.subtract(term));
             }
             sum = sum.add(new Aprational(part, new Apint(k + 1, radix)));

@@ -25,7 +25,6 @@ package org.apfloat;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.OptionalLong;
 
 /**
@@ -132,6 +131,10 @@ class StirlingHelper {
         assert (n >= 0);
         assert (k >= 0);
         assert (k <= n);
+        if (n == 0)
+        {
+            return new Apint[] { Apint.ONES[radix] };
+        }
         return polynomialMultiply(0, n - 1, k, radix);
     }
 
@@ -162,6 +165,15 @@ class StirlingHelper {
     {
         return Math.max(1, Arrays.stream(a).mapToLong(Apint::scale).max().getAsLong());
     }
+
+    /**
+     * Stirling number of the first kind.
+     *
+     * @param n
+     * @param k
+     *
+     * @return s(n, k)
+     */
 
     public static Apint stirlingS1(Apint n, Apint k)
     {
@@ -248,6 +260,15 @@ class StirlingHelper {
         return sum.divide(factor);
     }
 
+    /**
+     * Stirling number of the second kind.
+     *
+     * @param n
+     * @param k
+     *
+     * @return S(n, k)
+     */
+
     public static Apint stirlingS2(Apint n, Apint k)
     {
         long nn, kk;
@@ -262,6 +283,16 @@ class StirlingHelper {
         }
         return stirlingS2(nn, kk, n.radix());
     }
+
+    /**
+     * Stirling number of the second kind.
+     *
+     * @param n
+     * @param k
+     * @param radix
+     *
+     * @return S(n, k)
+     */
 
     public static Apint stirlingS2(long n, long k, int radix)
     {
@@ -290,7 +321,7 @@ class StirlingHelper {
             return ApintMath.pow(new Apint(2, radix), n - 1).subtract(Apint.ONES[radix]);
         }
         Apint sum = Apint.ZEROS[radix];
-        Iterator<Apint> binomial = binomials(k, 0, radix);
+        Iterator<Apint> binomial = BinomialHelper.binomials(k, 0, radix);
         for (long i = 0; i <= k; i++)
         {
             Apint term = binomial.next().multiply(ApintMath.pow(new Apint(i, radix), n));
@@ -299,41 +330,57 @@ class StirlingHelper {
         return sum.divide(ApintMath.factorial(k, radix));
     }
 
-    private static Iterator<Apint> binomials(long n, int start, int radix)
+    /**
+     * Stirling numbers of the second kind.
+     *
+     * @param n
+     * @param radix
+     *
+     * @return Iterator for S(n, k)
+     */
+
+    public static Iterator<Apint> stirlingS2s(int n, int radix)
     {
-        Iterator<Apint> iterator = new Iterator<Apint>()
+        if (n < 0)
+        {
+            throw new IllegalArgumentException("Argument must be nonnegative");
+        }
+        if (n == Integer.MAX_VALUE)
+        {
+            throw new ApfloatRuntimeException("Maximum array size exceeded: " + (n + 1L), "maximumArraySizeExceeded", n + 1L);
+        }
+        Apint[] s2 = new Apint[n + 1];
+        Apint one = Apint.ONES[radix];
+        s2[0] = (n == 0 ? one : Apint.ZEROS[radix]);
+        return new Iterator<Apint>()
         {
             @Override
             public boolean hasNext()
             {
-                return this.i <= n;
+                return (this.k <= n);
             }
 
             @Override
             public Apint next()
             {
-                if (!hasNext())
+                if (this.k > 0)
                 {
-                    throw new NoSuchElementException();
+                    Apint kk = new Apint(this.k, radix);
+                    this.factorial = this.factorial.multiply(kk);
+                    s2[this.k] = ApintMath.pow(kk, n);
+                    Apint factor = one;
+                    for (int r = 1; r < this.k; r++)
+                    {
+                        factor = factor.multiply(new Apint(this.k - r + 1, radix));
+                        s2[this.k] = s2[this.k].subtract(s2[r].multiply(factor));
+                    }
+                    s2[this.k] = s2[this.k].divide(factorial);
                 }
-
-                if (this.i > 0)
-                {
-                    this.binomial = this.binomial.multiply(new Apint(n - this.i + 1, radix)).divide(new Apint(this.i, radix));
-                }
-                this.i++;
-                return this.binomial;
+                return s2[this.k++];
             }
 
-            private long i;
-            private Apint binomial = Apint.ONES[radix];
+            private int k;
+            private Apint factorial = one;
         };
-
-        while (start > 0)
-        {
-            iterator.next();
-            start--;
-        }
-        return iterator;
     }
 }

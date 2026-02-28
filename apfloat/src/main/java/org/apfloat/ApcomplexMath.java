@@ -2404,28 +2404,27 @@ public class ApcomplexMath
             Apcomplex result = nn.multiply(log(two.multiply(pi))).divide(two).multiply(pow(z, n - 1)).add(nn.multiply(zetaPrime(n1.negate(), z))),
                       zp = one,
                       z2 = z.multiply(z);
-            Apint binomial = nn;
-            for (long i = n - 1, d = 2; i > 0; i--, d++)
+            Iterator<Apint> binomial = BinomialHelper.binomials(n, 1, radix);
+            for (long i = n - 1; i > 0; i--)
             {
                 Apfloat ii = new Apfloat(i, precision, radix);
-                result = result.subtract(binomial.multiply(zetaPrime(ii.negate()).multiply(nn.subtract(ii)).multiply(zp)));
+                result = result.subtract(binomial.next().multiply(zetaPrime(ii.negate()).multiply(nn.subtract(ii)).multiply(zp)));
                 if (i > 1)
                 {
-                    binomial = binomial.multiply(new Apint(i, radix)).divide(new Apint(d, radix));
                     zp = zp.multiply(z);
                 }
             }
-            binomial = nn.multiply(nn.subtract(one)).divide(two);
+            binomial = BinomialHelper.binomials(n, 1, radix);
             Iterator<Apfloat> bernoulli = BernoulliHelper.bernoullis2(n / 2, precision, radix);
             Apfloat harmonicNumber = one;
             zp = pow(z, n - 2);
             Apcomplex iz2 = one.divide(z2);
             for (int i = 1; i <= n / 2; i++)
             {
-                result = result.add(binomial.multiply(bernoulli.next()).multiply(harmonicNumber).multiply(zp));
+                binomial.next();
+                result = result.add(binomial.next().multiply(bernoulli.next()).multiply(harmonicNumber).multiply(zp));
                 if (i < n / 2)
                 {
-                    binomial = binomial.multiply(new Apint(n - 2 * i, radix)).divide(new Apint(2 * i + 1, radix)).multiply(new Apint(n - 2 * i - 1, radix)).divide(new Apint(2 * i + 2, radix));
                     harmonicNumber = harmonicNumber.add(one.divide(new Apfloat(2 * i, precision, radix))).add(one.divide(new Apfloat(2 * i + 1, precision, radix)));
                     zp = zp.multiply(iz2);
                 }
@@ -2529,16 +2528,15 @@ public class ApcomplexMath
         for (int i = 1; i < n; i++)
         {
             d[i + 1] = Apfloat.ZEROS[radix];
-            Apint binomial = one;
+            Iterator<Apint> binomial = BinomialHelper.binomials(i, 0, radix);
             int j;
             for (j = 0; j <= (i - 1) / 2; j++)
             {
-                d[i + 1] = d[i + 1].add(binomial.multiply(d[j]).multiply(d[i - j]).multiply(two));
-                binomial = binomial.multiply(new Apint(i - j, radix)).divide(new Apint(j + 1, radix));
+                d[i + 1] = d[i + 1].add(binomial.next().multiply(d[j]).multiply(d[i - j]).multiply(two));
             }
             for (; j <= i / 2; j++)
             {
-                d[i + 1] = d[i + 1].add(binomial.multiply(pow(d[j], 2)));
+                d[i + 1] = d[i + 1].add(binomial.next().multiply(pow(d[j], 2)));
             }
         }
         Apcomplex result = d[n];
