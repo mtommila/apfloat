@@ -154,7 +154,7 @@ class StirlingHelper {
     {
         int radix = a[0].radix();
         // Kronecker substitution
-        long stride = (maxScale(a) + maxScale(b)) * (long) Math.ceil(Math.log(a.length + b.length) / Math.log(radix) + 0.5);
+        long stride = maxScale(a) + maxScale(b) + (long) Math.ceil(Math.log(a.length + b.length) / Math.log(radix) + 0.01);
         Apint x = Splitter.combine(stride, a),
               y = Splitter.combine(stride, b);
         Apint[] result = Splitter.split(stride, x.multiply(y).mod(ApintMath.pow(new Apint(radix, radix), stride * (maxDegree + 1))));
