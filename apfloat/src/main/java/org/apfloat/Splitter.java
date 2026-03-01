@@ -37,6 +37,7 @@ import java.util.Arrays;
  * @since 1.16.0
  * @author Mikko Tommila
  */
+
 class Splitter {
 
     private Splitter()

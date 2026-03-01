@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import org.apfloat.spi.Util;
 /**
  * Various mathematical functions for arbitrary precision rational numbers.
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -365,7 +365,7 @@ public class AprationalMath
         Arrays.sort(x, Comparator.comparing(ApfloatHelper::size));
 
         // Recursively add
-        return recursiveSum(x, 0, x.length - 1);
+        return recursiveSum(x);
     }
 
     /**
@@ -723,17 +723,9 @@ public class AprationalMath
         return h;
     }
 
-    private static Aprational recursiveSum(Aprational[] x, int n, int m)
+    private static Aprational recursiveSum(Aprational[] x)
         throws ApfloatRuntimeException
     {
-        if (n == m)
-        {
-            return x[n];
-        }
-        else
-        {
-            int k = (n + m) >>> 1;
-            return recursiveSum(x, n, k).add(recursiveSum(x, k + 1, m));
-        }
+        return RecursiveHelper.recursiveCompute(0, x.length - 1, i -> x[(int) i], Aprational::add);
     }
 }

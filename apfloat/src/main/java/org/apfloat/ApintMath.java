@@ -878,8 +878,7 @@ public class ApintMath
         {
             return new Apint(n, radix);
         }
-        long k = m >>> 1;
-        return pochhammer(n, k, radix).multiply(pochhammer(n + k, m - k, radix));
+        return RecursiveHelper.recursiveCompute(0, m - 1, i -> new Apint(n + i, radix), Apint::multiply);
     }
 
     // Product of the numbers n * (n + 1) * (n + 2) * ... * (n + m - 1)

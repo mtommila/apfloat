@@ -33,6 +33,7 @@ import java.util.OptionalLong;
  * @since 1.16.0
  * @author Mikko Tommila
  */
+
 class StirlingHelper {
 
     private StirlingHelper()
@@ -135,19 +136,7 @@ class StirlingHelper {
         {
             return new Apint[] { Apint.ONES[radix] };
         }
-        return polynomialMultiply(0, n - 1, k, radix);
-    }
-
-    private static Apint[] polynomialMultiply(long n, long m, int maxDegree, int radix)
-    {
-        if (n == m)
-        {
-            return new Apint[] { new Apint(n, radix), Apint.ONES[radix] };
-        }
-        long k = n + m >>> 1;
-        Apint[] a = polynomialMultiply(n, k, maxDegree, radix),
-                b = polynomialMultiply(k + 1, m, maxDegree, radix);
-        return polynomialMultiply(a, b, maxDegree);
+        return RecursiveHelper.recursiveCompute(0, n - 1, i -> new Apint[] { new Apint(i, radix), Apint.ONES[radix] }, (a, b) -> polynomialMultiply(a, b, k));
     }
 
     private static Apint[] polynomialMultiply(Apint[] a, Apint[] b, int maxDegree)

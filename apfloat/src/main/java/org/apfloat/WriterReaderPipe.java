@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 1.16.0
  * @author Mikko Tommila
  */
+
 class WriterReaderPipe {
 
     @FunctionalInterface
@@ -60,7 +61,14 @@ class WriterReaderPipe {
     /**
      * Opens a Reader that will receive everything written by the given WriterTask.
      * The WriterTask runs asynchronously in a separate thread.
+     * 
+     * @param task The task that writes the data.
+     *
+     * @return A reader for the data that is written by the writer task.
+     *
+     * @throws IOException In case of I/O failure.
      */
+
     public static Reader open(WriterTask task)
         throws IOException
     {

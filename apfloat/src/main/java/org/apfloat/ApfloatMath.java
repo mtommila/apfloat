@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -2242,7 +2242,7 @@ public class ApfloatMath
         }
 
         long terms = inverseFactorial(precision, radix);
-        Apfloat[] pq = e(1, terms, precision, radix);
+        Apfloat[] pq = RecursiveHelper.recursiveCompute(1, terms, i -> new Apfloat[] { Apfloat.ONES[radix], new Apfloat(i, precision, radix) }, (first, last) -> new Apfloat[] { first[0].multiply(last[1]).add(last[0]), first[1].multiply(last[1]) });
         return pq[0].divide(pq[1]).add(Apfloat.ONES[radix]);
     }
 
@@ -2258,21 +2258,6 @@ public class ApfloatMath
             n = x / (Math.log(n) - 1);
         } while ((long) p != (long) n);
         return (long) Math.ceil(n);
-    }
-
-    private static Apfloat[] e(long start, long end, long precision, int radix)
-    {
-        if (end - start == 1)
-        {
-            Apfloat[] pq = { Apfloat.ONES[radix], new Apfloat(start, precision, radix) };
-            return pq;
-        }
-
-        long mid = start + end >>> 1;
-        Apfloat[] first = e(start, mid, precision, radix),
-                  last = e(mid, end, precision, radix),
-                  pq = { first[0].multiply(last[1]).add(last[0]), first[1].multiply(last[1]) };
-        return pq;
     }
 
     /**
