@@ -709,10 +709,16 @@ public class CalculatorTest
         assertCalculationFailure("sqrt(2)");
         assertCalculationFailure("sqrt()");
         assertCalculationFailure("sqrt(4, 2)");
+        assertCalculationFailure("stirlingS1(i, i)");
+        assertCalculationFailure("stirlingS1(1.5, 1.5)");
+        assertCalculationFailure("stirlingS1(3/2, 3/2)");
         assertCalculationFailure("stirlingS1(8)");
         assertCalculationFailure("stirlingS1(8, 5, 10)");
         assertCalculationFailure("stirlingS1(-1, 0)");
         assertCalculationFailure("stirlingS1(0, -1)");
+        assertCalculationFailure("stirlingS2(i, i)");
+        assertCalculationFailure("stirlingS2(1.5, 1.5)");
+        assertCalculationFailure("stirlingS2(3/2, 3/2)");
         assertCalculationFailure("stirlingS2(8)");
         assertCalculationFailure("stirlingS2(8, 5, 10)");
         assertCalculationFailure("stirlingS2(-1, 0)");
