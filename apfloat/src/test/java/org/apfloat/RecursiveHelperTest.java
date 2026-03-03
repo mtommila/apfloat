@@ -23,9 +23,14 @@
  */
 package org.apfloat;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestSuite;
 
@@ -52,6 +57,8 @@ public class RecursiveHelperTest
         TestSuite suite = new TestSuite();
 
         suite.addTest(new RecursiveHelperTest("testRecursiveCompute"));
+        suite.addTest(new RecursiveHelperTest("testRecursiveComputeMoreIndexesThanProcessors"));
+        suite.addTest(new RecursiveHelperTest("testRecursiveComputeMoreProcessorsThanIndexes"));
         suite.addTest(new RecursiveHelperTest("testSequentialCompute"));
 
         return suite;
@@ -59,8 +66,10 @@ public class RecursiveHelperTest
 
     public static void testRecursiveCompute()
     {
-        ApfloatContext ctx = (ApfloatContext) ApfloatContext.getContext().clone();
-        ApfloatContext.setThreadContext(ctx);
+        ApfloatContext ctx = ApfloatContext.getContext();
+        ExecutorService globalExecutorService = ctx.getExecutorService();
+        int globalNumberOfProcessors = ctx.getNumberOfProcessors();
+
         for (int n = 7; n <= 19; n++)
         {
             long expected = 1;
@@ -68,9 +77,9 @@ public class RecursiveHelperTest
             {
                 expected *= i;
             }
-            for (int p = 1; p <= 32; p++)
+            for (int p = 2; p <= 32; p++)
             {
-                ExecutorService executorService = new ForkJoinPool(p);
+                ExecutorService executorService = new ForkJoinPool(p - 1);
                 ctx.setExecutorService(executorService);
                 ctx.setNumberOfProcessors(p);
 
@@ -80,7 +89,99 @@ public class RecursiveHelperTest
                 executorService.shutdown();
             }
         }
-        ApfloatContext.removeThreadContext();
+
+        ctx.setExecutorService(globalExecutorService);
+        ctx.setNumberOfProcessors(globalNumberOfProcessors);
+    }
+
+    public static void testRecursiveComputeMoreIndexesThanProcessors()
+    {
+        // Actually same number of indexes and processors
+        ApfloatContext ctx = ApfloatContext.getContext();
+        ExecutorService globalExecutorService = ctx.getExecutorService();
+        int globalNumberOfProcessors = ctx.getNumberOfProcessors();
+
+        for (int p = 2; p <= 32; p++)
+        {
+            ExecutorService executorService = new ForkJoinPool(p - 1);
+            ctx.setExecutorService(executorService);
+            ctx.setNumberOfProcessors(p);
+            assertNull("Thread context before", ApfloatContext.getThreadContext());
+
+            Set<Thread> threads = ConcurrentHashMap.newKeySet();
+            CountDownLatch latch = new CountDownLatch(p);
+            int t = p;
+            RecursiveHelper.recursiveCompute(1, p, i -> await(t, i, threads, latch), (a, b) -> null);
+            assertEquals(p + " threads", p, threads.size());
+
+            assertNull("Thread context after", ApfloatContext.getThreadContext());
+            executorService.shutdown();
+        }
+
+        ctx.setExecutorService(globalExecutorService);
+        ctx.setNumberOfProcessors(globalNumberOfProcessors);
+    }
+
+    private static Void await(int t, long i, Set<Thread> threads, CountDownLatch latch)
+    {
+        int numberOfProcessors = ApfloatContext.getContext().getNumberOfProcessors();
+        assertEquals("Number of processors", 1, numberOfProcessors);
+        threads.add(Thread.currentThread());
+        latch.countDown();
+        try
+        {
+            assertTrue(t + " threads, index " + i + ", more indexes than processors, latch reached zero", latch.await(5000, TimeUnit.MILLISECONDS));
+        }
+        catch (InterruptedException ie)
+        {
+            throw new RuntimeException(ie);
+        }
+        return null;
+    }
+
+    public static void testRecursiveComputeMoreProcessorsThanIndexes()
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        ExecutorService globalExecutorService = ctx.getExecutorService();
+        int globalNumberOfProcessors = ctx.getNumberOfProcessors();
+
+        for (int p = 2; p <= 32; p++)
+        {
+            ExecutorService executorService = new ForkJoinPool(p * p - 1);
+            ctx.setExecutorService(executorService);
+            ctx.setNumberOfProcessors(p * p);
+            assertNull("Thread context before", ApfloatContext.getThreadContext());
+
+            Map<Integer, Integer> processorCounts = new ConcurrentHashMap<>();
+            CountDownLatch latch = new CountDownLatch(p);
+            int t = p;
+            RecursiveHelper.recursiveCompute(1, p, i -> await(t, i, processorCounts, latch), (a, b) -> null);
+            assertEquals(p + " threads different processor counts", 1, processorCounts.size());
+            assertEquals(p + " threads processor count", (Integer) p, processorCounts.get(p));
+
+            assertNull("Thread context after", ApfloatContext.getThreadContext());
+            executorService.shutdown();
+        }
+
+        ctx.setExecutorService(globalExecutorService);
+        ctx.setNumberOfProcessors(globalNumberOfProcessors);
+    }
+
+    private static Void await(int p, long i, Map<Integer, Integer> processorCounts, CountDownLatch latch)
+    {
+        int numberOfProcessors = ApfloatContext.getContext().getNumberOfProcessors();
+        assertEquals("Index " + i + " number of processors", p, numberOfProcessors);
+        processorCounts.compute(p, (k, v) -> (v == null ? 0 : v) + 1);
+        latch.countDown();
+        try
+        {
+            assertTrue(p + " threads, index " + i + ", more processors than indexes, latch reached zero", latch.await(5000, TimeUnit.MILLISECONDS));
+        }
+        catch (InterruptedException ie)
+        {
+            throw new RuntimeException(ie);
+        }
+        return null;
     }
 
     public static void testSequentialCompute()

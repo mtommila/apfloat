@@ -25,6 +25,7 @@ package org.apfloat;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 import java.util.function.BiFunction;
 import java.util.function.LongFunction;
@@ -41,13 +42,14 @@ class RecursiveHelper
     private static class ParallelRecursiveTask<V>
         extends RecursiveTask<V>
     {
-        public ParallelRecursiveTask(long start, long end, LongFunction<V> unitFunction, BiFunction<V, V, V> combineFunction, int numberOfProcessors)
+        public ParallelRecursiveTask(long start, long end, LongFunction<V> unitFunction, BiFunction<V, V, V> combineFunction, int numberOfProcessors, ForkJoinPool forkJoinPool)
         {
             this.start = start;
             this.end = end;
             this.unitFunction = unitFunction;
             this.combineFunction = combineFunction;
             this.numberOfProcessors = numberOfProcessors;
+            this.forkJoinPool = forkJoinPool;
         }
 
         @Override
@@ -67,14 +69,37 @@ class RecursiveHelper
                 }
                 else
                 {
-                    int leftProcessors = this.numberOfProcessors >>> 1,
-                        rightProcessors = this.numberOfProcessors + 1 >>> 1;
-                    long mid = start + (end - start) / this.numberOfProcessors * leftProcessors;
-                    ParallelRecursiveTask<V> left = new ParallelRecursiveTask<>(this.start, mid, this.unitFunction, this.combineFunction, leftProcessors),
-                                             right = new ParallelRecursiveTask<>(mid + 1, this.end, this.unitFunction, this.combineFunction, rightProcessors);
-                    right.fork();
+                    int leftProcessors;
+                    long mid;
+                    if (this.numberOfProcessors - 1 > this.end - this.start)
+                    {
+                        // More processors than indexes
+                        mid = this.start + this.end + 1 >>> 1;
+                        leftProcessors = (int) ((mid - this.start) * (this.numberOfProcessors / (this.end - this.start + 1)));
+                    }
+                    else
+                    {
+                        // More indexes than processors (or exactly same amount)
+                        leftProcessors = this.numberOfProcessors >>> 1;
+                        mid = start + Long.divideUnsigned(end - start + 1, this.numberOfProcessors) * leftProcessors;
+                    }
+                    int rightProcessors = this.numberOfProcessors - leftProcessors;
+
+                    ParallelRecursiveTask<V> left = new ParallelRecursiveTask<>(this.start, mid - 1, this.unitFunction, this.combineFunction, leftProcessors, this.forkJoinPool),
+                                             right = new ParallelRecursiveTask<>(mid, this.end, this.unitFunction, this.combineFunction, rightProcessors, this.forkJoinPool);
+
+                    if (ForkJoinTask.inForkJoinPool())
+                    {
+                        right.fork();                       // Only if this task is being invoked in a fork-join pool
+                    }
+                    else
+                    {
+                        this.forkJoinPool.submit(right);    // If the current thread is not a worker of a fork-join pool, submit the other subtask to the pool
+                    }
+
                     V leftResult = left.compute(),
                       rightResult = right.join();
+
                     result = this.combineFunction.apply(leftResult, rightResult);
                 }
             }
@@ -114,6 +139,7 @@ class RecursiveHelper
         private LongFunction<V> unitFunction;
         private BiFunction<V, V, V> combineFunction;
         private int numberOfProcessors;
+        private ForkJoinPool forkJoinPool;
     
         private static final long serialVersionUID = 1L;
     }
@@ -141,16 +167,9 @@ class RecursiveHelper
     {
         ApfloatContext ctx = ApfloatContext.getContext();
         int numberOfProcessors = ctx.getNumberOfProcessors();
-        ParallelRecursiveTask<V> task = new ParallelRecursiveTask<V>(start, end, unitFunction, combineFunction, numberOfProcessors);
         ExecutorService executorService = ctx.getExecutorService();
-        if (executorService instanceof ForkJoinPool)
-        {
-            ForkJoinPool forkJoinPool = (ForkJoinPool) executorService;
-            return forkJoinPool.invoke(task);
-        }
-        else
-        {
-            return task.computeSequential();
-        }
+        ForkJoinPool forkJoinPool = (ForkJoinPool) (executorService instanceof ForkJoinPool ? executorService : null);
+        ParallelRecursiveTask<V> task = new ParallelRecursiveTask<V>(start, end, unitFunction, combineFunction, numberOfProcessors, forkJoinPool);
+        return (forkJoinPool != null ? task.compute() : task.computeSequential());  // Do not invoke the root task to the pool but use the current thread as a "worker thread", too
     }
 }
