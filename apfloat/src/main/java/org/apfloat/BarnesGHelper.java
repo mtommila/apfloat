@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -218,11 +218,6 @@ class BarnesGHelper
 
     private static Apfloat product(long[] a, int n, int m, long precision, int radix)
     {
-        if (n == m)
-        {
-            return ApfloatMath.pow(new Apfloat(n, precision, radix), a[n]);
-        }
-        int k = (n + m) >>> 1;
-        return product(a, n, k, precision, radix).multiply(product(a, k + 1, m, precision, radix));
+        return RecursiveHelper.recursiveCompute(n, m, i -> ApfloatMath.pow(new Apfloat(i, precision, radix), a[(int) i]), Apfloat::multiply);
     }
 }

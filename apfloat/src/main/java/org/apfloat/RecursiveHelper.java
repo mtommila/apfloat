@@ -63,7 +63,7 @@ class RecursiveHelper
             V result;
             try
             {
-                if (this.start == this.end || this.numberOfProcessors <= 1)
+                if (this.start == this.end || this.numberOfProcessors <= 1 || this.forkJoinPool == null)
                 {
                     result = compute(this.start, this.end);
                 }
@@ -128,12 +128,6 @@ class RecursiveHelper
             return this.combineFunction.apply(compute(n, k), compute(k + 1, m));
         }
 
-        public V computeSequential()
-        {
-            return compute(this.start, this.end);
-    
-        }
-
         private long start;
         private long end;
         private LongFunction<V> unitFunction;
@@ -165,11 +159,12 @@ class RecursiveHelper
 
     public static <V> V recursiveCompute(long start, long end, LongFunction<V> unitFunction, BiFunction<V, V, V> combineFunction)
     {
+        assert (start <= end);
         ApfloatContext ctx = ApfloatContext.getContext();
         int numberOfProcessors = ctx.getNumberOfProcessors();
         ExecutorService executorService = ctx.getExecutorService();
-        ForkJoinPool forkJoinPool = (ForkJoinPool) (executorService instanceof ForkJoinPool ? executorService : null);
+        ForkJoinPool forkJoinPool = (executorService instanceof ForkJoinPool ? (ForkJoinPool) executorService : null);
         ParallelRecursiveTask<V> task = new ParallelRecursiveTask<V>(start, end, unitFunction, combineFunction, numberOfProcessors, forkJoinPool);
-        return (forkJoinPool != null ? task.compute() : task.computeSequential());  // Do not invoke the root task to the pool but use the current thread as a "worker thread", too
+        return task.compute();  // Do not invoke the root task to the pool but use the current thread as a "worker thread", too
     }
 }

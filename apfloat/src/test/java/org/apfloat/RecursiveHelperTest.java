@@ -57,6 +57,8 @@ public class RecursiveHelperTest
         TestSuite suite = new TestSuite();
 
         suite.addTest(new RecursiveHelperTest("testRecursiveCompute"));
+        suite.addTest(new RecursiveHelperTest("testRecursiveComputeTooSmallPool"));
+        suite.addTest(new RecursiveHelperTest("testRecursiveComputeSingleThreadPool"));
         suite.addTest(new RecursiveHelperTest("testRecursiveComputeMoreIndexesThanProcessors"));
         suite.addTest(new RecursiveHelperTest("testRecursiveComputeMoreProcessorsThanIndexes"));
         suite.addTest(new RecursiveHelperTest("testSequentialCompute"));
@@ -89,6 +91,67 @@ public class RecursiveHelperTest
                 executorService.shutdown();
             }
         }
+
+        ctx.setExecutorService(globalExecutorService);
+        ctx.setNumberOfProcessors(globalNumberOfProcessors);
+    }
+
+    public static void testRecursiveComputeTooSmallPool()
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        ExecutorService globalExecutorService = ctx.getExecutorService();
+        int globalNumberOfProcessors = ctx.getNumberOfProcessors();
+
+        for (int n = 7; n <= 19; n++)
+        {
+            long expected = 1;
+            for (int i = 1; i <= n; i++)
+            {
+                expected *= i;
+            }
+            for (int p = 3; p <= 32; p++)
+            {
+                ExecutorService executorService = new ForkJoinPool(p - 2);  // Intentionally set the pool size smaller than we assume it is, to test for deadlocks
+                ctx.setExecutorService(executorService);
+                ctx.setNumberOfProcessors(p);
+
+                long factorial = RecursiveHelper.recursiveCompute(1, n, i -> i, (a, b) -> a * b);
+                assertEquals(n + "! with " + p + " processors", expected, factorial);
+
+                executorService.shutdown();
+            }
+        }
+
+        ctx.setExecutorService(globalExecutorService);
+        ctx.setNumberOfProcessors(globalNumberOfProcessors);
+    }
+
+    public static void testRecursiveComputeSingleThreadPool()
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        ExecutorService globalExecutorService = ctx.getExecutorService();
+        int globalNumberOfProcessors = ctx.getNumberOfProcessors();
+
+        ExecutorService executorService = new ForkJoinPool(1);
+        ctx.setExecutorService(executorService);
+
+        for (int n = 7; n <= 19; n++)
+        {
+            long expected = 1;
+            for (int i = 1; i <= n; i++)
+            {
+                expected *= i;
+            }
+            for (int p = 1; p <= 32; p++)
+            {
+                ctx.setNumberOfProcessors(p);
+
+                long factorial = RecursiveHelper.recursiveCompute(1, n, i -> i, (a, b) -> a * b);
+                assertEquals(n + "! with " + p + " processors", expected, factorial);
+            }
+        }
+
+        executorService.shutdown();
 
         ctx.setExecutorService(globalExecutorService);
         ctx.setNumberOfProcessors(globalNumberOfProcessors);
