@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,10 +23,9 @@
  */
 package org.apfloat.internal;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
@@ -47,7 +46,7 @@ import org.apfloat.ApfloatRuntimeException;
  * number of processors.
  *
  * @since 1.1
- * @version 1.14.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -111,34 +110,73 @@ public class ParallelRunner
         runTasks(stealer);
     }
 
-    private static void runTasks(Runnable runnable)
+    private static class CountedRunnable
+        extends FutureTask<Void>
     {
-        ApfloatContext ctx = ApfloatContext.getContext();
-        int numberOfProcessors = ctx.getNumberOfProcessors();
-
-        List<Future<?>> futures = new ArrayList<>();
-        if (numberOfProcessors > 1)
+        public CountedRunnable(Runnable runnable, ExecutorService executorService, int count)
         {
-            ExecutorService executorService = ctx.getExecutorService();
-
-            for (int i = 0; i < numberOfProcessors - 1; i++)
+            super(runnable, null);
+            this.executorService = executorService;
+            if (--count > 0)
             {
-                // Process the task also in other threads
-                FutureTask<?> futureTask = new FutureTask<>(runnable, null);
-                executorService.execute(futureTask);
-                futures.add(futureTask);
+                // Need one more task
+                this.next = new CountedRunnable(runnable, executorService, count);
             }
         }
 
+        @Override
+        public void run()
+        {
+            if (this.next != null)
+            {
+                // Process the task in one more thread
+                executorService.submit(this.next);
+            }
+            super.run();
+        }
+
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning)
+        {
+            if (this.next != null)
+            {
+                // Cancel also tasks running in other threads
+                this.next.cancel(mayInterruptIfRunning);
+            }
+            return super.cancel(mayInterruptIfRunning);
+        }
+
+        private ExecutorService executorService;
+        private CountedRunnable next;
+    }
+
+    private static void runTasks(Runnable runnable)
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        ExecutorService executorService = ctx.getExecutorService();
+        int numberOfProcessors = ctx.getNumberOfProcessors();
+
+        CountedRunnable countedRunnable = new CountedRunnable(runnable, executorService, numberOfProcessors);
+
         // Also process the task in the current thread, until it is finished
+        countedRunnable.run();
         try
         {
-            runnable.run();
+            countedRunnable.get();
         }
-        catch (ApfloatInterruptedException aie)
+        catch (InterruptedException ie)
         {
-            futures.forEach(future -> future.cancel(true));
-            throw aie;
+            countedRunnable.cancel(true);
+            throw new ApfloatInterruptedException("Waiting for dispatched task to complete was interrupted", ie, "task.interrupted");
+        }
+        catch (ExecutionException ee)
+        {
+            countedRunnable.cancel(true);
+            if (ee.getCause() instanceof ApfloatRuntimeException)
+            {
+                throw (ApfloatRuntimeException) ee.getCause();
+            }
+            throw new ApfloatRuntimeException("Task execution failed", ee, "task.error");
         }
     }
 

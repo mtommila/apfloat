@@ -23,10 +23,12 @@
  */
 package org.apfloat;
 
+import java.util.concurrent.CountedCompleter;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.LongFunction;
 
@@ -39,33 +41,42 @@ import java.util.function.LongFunction;
 
 class RecursiveHelper
 {
+    // Some implementation notes:
+    // - This task could be a subclass of RecursiveTask and just fork() and join() the subtask(s) but that's quite inefficient: then either subtask is idle for some time, while the other subtask still executes, and the thread is not able to do useful work while blocked
+    // - Getting around that inefficiency, while still also avoiding deadlocks in all possible cases, is rather impossible when using RecursiveTask
+    // - CountedCompleter exits execution as soon as compute() ends, and resumes execution after both subtasks are done, in onCompletion(): therefore it avoids this inefficiency as worker threads can do something useful in between (instead of being blocked on waiting)
+    // - Combining this class with the parallel NTT is still tricky (so that deadlocks are avoided in all cases)
+    // - Setting numberOfProcessor limits on subtasks still limits efficiency greatly
+    // - Parent task should not keep references to subtasks so that the subtasks can be garbage collected after they complete (subtasks should be given a place where they can put the result)
     private static class ParallelRecursiveTask<V>
-        extends RecursiveTask<V>
+        extends CountedCompleter<V>
     {
-        public ParallelRecursiveTask(long start, long end, LongFunction<V> unitFunction, BiFunction<V, V, V> combineFunction, int numberOfProcessors, ForkJoinPool forkJoinPool)
+        public ParallelRecursiveTask(long start, long end, LongFunction<V> unitFunction, BiFunction<V, V, V> combineFunction, int numberOfProcessors, ForkJoinPool forkJoinPool, ParallelRecursiveTask<V> parent, AtomicReference<V> resultTarget)
         {
+            super(parent);
             this.start = start;
             this.end = end;
             this.unitFunction = unitFunction;
             this.combineFunction = combineFunction;
             this.numberOfProcessors = numberOfProcessors;
             this.forkJoinPool = forkJoinPool;
+            this.resultTarget = (resultTarget != null ? resultTarget : new AtomicReference<>());
         }
 
         @Override
-        public final V compute()
+        public final void compute()
         {
             ApfloatContext threadCtx = ApfloatContext.getThreadContext();
             ApfloatContext ctx = (ApfloatContext) ApfloatContext.getContext().clone();
             ctx.setNumberOfProcessors(this.numberOfProcessors);
             ApfloatContext.setThreadContext(ctx);
     
-            V result;
             try
             {
                 if (this.start == this.end || this.numberOfProcessors <= 1 || this.forkJoinPool == null)
                 {
-                    result = compute(this.start, this.end);
+                    V result = compute(this.start, this.end);
+                    setRawResult(result);
                 }
                 else
                 {
@@ -85,8 +96,12 @@ class RecursiveHelper
                     }
                     int rightProcessors = this.numberOfProcessors - leftProcessors;
 
-                    ParallelRecursiveTask<V> left = new ParallelRecursiveTask<>(this.start, mid - 1, this.unitFunction, this.combineFunction, leftProcessors, this.forkJoinPool),
-                                             right = new ParallelRecursiveTask<>(mid, this.end, this.unitFunction, this.combineFunction, rightProcessors, this.forkJoinPool);
+                    this.leftResult = new AtomicReference<>();
+                    this.rightResult = new AtomicReference<>();
+                    ParallelRecursiveTask<V> left = new ParallelRecursiveTask<>(this.start, mid - 1, this.unitFunction, this.combineFunction, leftProcessors, this.forkJoinPool, this, this.leftResult),
+                                             right = new ParallelRecursiveTask<>(mid, this.end, this.unitFunction, this.combineFunction, rightProcessors, this.forkJoinPool, this, this.rightResult);
+
+                    setPendingCount(2);
 
                     if (ForkJoinTask.inForkJoinPool())
                     {
@@ -97,10 +112,7 @@ class RecursiveHelper
                         this.forkJoinPool.submit(right);    // If the current thread is not a worker of a fork-join pool, submit the other subtask to the pool
                     }
 
-                    V leftResult = left.compute(),
-                      rightResult = right.join();
-
-                    result = this.combineFunction.apply(leftResult, rightResult);
+                    left.compute();
                 }
             }
             finally
@@ -114,8 +126,49 @@ class RecursiveHelper
                    ApfloatContext.removeThreadContext();
                 }
             }
-    
-            return result;
+
+            tryComplete();
+        }
+
+        @Override
+        public void onCompletion(CountedCompleter<?> caller)
+        {
+            if (this.leftResult != null && this.rightResult != null)
+            {
+                ApfloatContext threadCtx = ApfloatContext.getThreadContext();
+                ApfloatContext ctx = (ApfloatContext) ApfloatContext.getContext().clone();
+                ctx.setNumberOfProcessors(this.numberOfProcessors);
+                ApfloatContext.setThreadContext(ctx);
+
+                try
+                {
+                    V result = this.combineFunction.apply(this.leftResult.get(), this.rightResult.get());
+                    setRawResult(result);
+                }
+                finally
+                {
+                    if (threadCtx != null)
+                    {
+                        ApfloatContext.setThreadContext(threadCtx);
+                    }
+                    else
+                    {
+                       ApfloatContext.removeThreadContext();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public V getRawResult()
+        {
+            return this.resultTarget.get();
+        }
+
+        @Override
+        protected void setRawResult(V result)
+        {
+            this.resultTarget.set(result);
         }
 
         private V compute(long n, long m)
@@ -134,7 +187,10 @@ class RecursiveHelper
         private BiFunction<V, V, V> combineFunction;
         private int numberOfProcessors;
         private ForkJoinPool forkJoinPool;
-    
+        private AtomicReference<V> resultTarget,
+                                   leftResult,
+                                   rightResult;
+
         private static final long serialVersionUID = 1L;
     }
 
@@ -164,7 +220,19 @@ class RecursiveHelper
         int numberOfProcessors = ctx.getNumberOfProcessors();
         ExecutorService executorService = ctx.getExecutorService();
         ForkJoinPool forkJoinPool = (executorService instanceof ForkJoinPool ? (ForkJoinPool) executorService : null);
-        ParallelRecursiveTask<V> task = new ParallelRecursiveTask<V>(start, end, unitFunction, combineFunction, numberOfProcessors, forkJoinPool);
-        return task.compute();  // Do not invoke the root task to the pool but use the current thread as a "worker thread", too
+        ParallelRecursiveTask<V> task = new ParallelRecursiveTask<V>(start, end, unitFunction, combineFunction, numberOfProcessors, forkJoinPool, null, null);
+        task.compute();  // Do not invoke the root task to the pool but use the current thread as a "worker thread", too
+        try
+        {
+            return task.get();
+        }
+        catch (InterruptedException ie)
+        {
+            throw new ApfloatInterruptedException("Waiting for dispatched task to complete was interrupted", ie, "task.interrupted");
+        }
+        catch (ExecutionException ee)
+        {
+            throw new ApfloatRuntimeException("Task execution failed", ee, "task.error");
+        }
     }
 }
