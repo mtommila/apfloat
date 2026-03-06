@@ -89,21 +89,32 @@ public class ParallelRunner
 
     public static void wait(Future<?> future)
     {
-        Runnable stealer = () -> {
-            while (!future.isDone())
+        StartableRunnable stealer = new StartableRunnable()
+        {
+            @Override
+            public void run()
             {
-                // Try and get any running task
-                ParallelRunnable parallelRunnable = ParallelRunner.tasks.peek();
-                if (parallelRunnable != null)
+                while (isWorkToBeStarted())
                 {
-                    // Steal a minimal amount of work while we wait
-                    parallelRunnable.runBatch();
+                    // Try and get any running task
+                    ParallelRunnable parallelRunnable = ParallelRunner.tasks.peek();
+                    if (parallelRunnable != null)
+                    {
+                        // Steal a minimal amount of work while we wait
+                        parallelRunnable.runBatch();
+                    }
+                    else
+                    {
+                        // Actually idle - give up the rest of the CPU time slice
+                        Thread.yield();
+                    }
                 }
-                else
-                {
-                    // Actually idle - give up the rest of the CPU time slice
-                    Thread.yield();
-                }
+            }
+
+            @Override
+            public boolean isWorkToBeStarted()
+            {
+                return !future.isDone();
             }
         };
 
@@ -113,9 +124,10 @@ public class ParallelRunner
     private static class CountedRunnable
         extends FutureTask<Void>
     {
-        public CountedRunnable(Runnable runnable, ExecutorService executorService, int count)
+        public CountedRunnable(StartableRunnable runnable, ExecutorService executorService, int count)
         {
             super(runnable, null);
+            this.runnable = runnable;
             this.executorService = executorService;
             if (--count > 0)
             {
@@ -127,7 +139,7 @@ public class ParallelRunner
         @Override
         public void run()
         {
-            if (this.next != null)
+            if (this.next != null && this.runnable.isWorkToBeStarted())
             {
                 // Process the task in one more thread
                 executorService.submit(this.next);
@@ -146,11 +158,12 @@ public class ParallelRunner
             return super.cancel(mayInterruptIfRunning);
         }
 
+        private StartableRunnable runnable;
         private ExecutorService executorService;
         private CountedRunnable next;
     }
 
-    private static void runTasks(Runnable runnable)
+    private static void runTasks(StartableRunnable runnable)
     {
         ApfloatContext ctx = ApfloatContext.getContext();
         ExecutorService executorService = ctx.getExecutorService();

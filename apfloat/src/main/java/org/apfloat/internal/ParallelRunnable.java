@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,12 +37,12 @@ import org.apfloat.spi.Util;
  * only returns when all batches are completed.
  *
  * @since 1.1
- * @version 1.14.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
 public abstract class ParallelRunnable
-    implements Runnable
+    implements StartableRunnable
 {
     /**
      * Subclass constructor.
@@ -124,6 +124,7 @@ public abstract class ParallelRunnable
      * @since 1.9.0
      */
 
+    @Override
     public boolean isWorkToBeStarted()
     {
         return this.started.get() < this.length;

@@ -246,6 +246,10 @@ class ApfloatHelper
         }
         catch (IOException ioe)
         {
+            if (ioe.getCause() instanceof InterruptedException)
+            {
+                throw new ApfloatInterruptedException("Interrupted", ioe, "interrupted");
+            }
             throw new ApfloatRuntimeException("Should not occur", ioe, "shouldNotOccur");
         }
         precision = (precision == Apfloat.DEFAULT ? Apfloat.INFINITE : precision);
@@ -783,6 +787,10 @@ class ApfloatHelper
         }
         catch (IOException ioe)
         {
+            if (ioe.getCause() instanceof InterruptedException)
+            {
+                throw new ApfloatInterruptedException("Interrupted", ioe, "interrupted");
+            }
             throw new ApfloatRuntimeException("Should not occur", ioe, "shouldNotOccur");
         }
 

@@ -70,6 +70,10 @@ class Splitter {
         }
         catch (IOException ioe)
         {
+            if (ioe.getCause() instanceof InterruptedException)
+            {
+                throw new ApfloatInterruptedException("Interrupted", ioe, "interrupted");
+            }
             throw new ApfloatRuntimeException("Should not occur", ioe, "shouldNotOccur");
         }
     }
@@ -110,6 +114,10 @@ class Splitter {
         }
         catch (IOException ioe)
         {
+            if (ioe.getCause() instanceof InterruptedException)
+            {
+                throw new ApfloatInterruptedException("Interrupted", ioe, "interrupted");
+            }
             throw new ApfloatRuntimeException("Should not occur", ioe, "shouldNotOccur");
         }
         return array;

@@ -61,6 +61,7 @@ public class RecursiveHelperTest
         suite.addTest(new RecursiveHelperTest("testRecursiveComputeSingleThreadPool"));
         suite.addTest(new RecursiveHelperTest("testRecursiveComputeMoreIndexesThanProcessors"));
         suite.addTest(new RecursiveHelperTest("testRecursiveComputeMoreProcessorsThanIndexes"));
+        suite.addTest(new RecursiveHelperTest("testInterrupt"));
         suite.addTest(new RecursiveHelperTest("testSequentialCompute"));
 
         return suite;
@@ -243,6 +244,75 @@ public class RecursiveHelperTest
         catch (InterruptedException ie)
         {
             throw new RuntimeException(ie);
+        }
+        return null;
+    }
+
+    public static void testInterrupt()
+        throws Exception
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        ExecutorService globalExecutorService = ctx.getExecutorService();
+        int globalNumberOfProcessors = ctx.getNumberOfProcessors();
+
+        for (int p = 2; p <= 32; p++)
+        {
+            ExecutorService executorService = new ForkJoinPool(p - 1);
+            ctx.setExecutorService(executorService);
+            ctx.setNumberOfProcessors(p);
+
+            CountDownLatch startedLatch = new CountDownLatch(p),
+                           interruptedLatch = new CountDownLatch(p);
+
+            Thread thread = Thread.currentThread();
+            new Thread(() -> {
+                await(startedLatch);
+                thread.interrupt();
+            }).start();
+
+            try
+            {
+                RecursiveHelper.recursiveCompute(1, p, i -> hang(i, startedLatch, interruptedLatch), (a, b) -> null);
+                fail("Did not interrupt");
+            }
+            catch (ApfloatInterruptedException aie)
+            {
+                // OK
+                assertEquals(p + " threads exception message", "Test hang", aie.getMessage());
+            }
+            assertTrue(p + " threads, interrupted latch await", interruptedLatch.await(5000, TimeUnit.MILLISECONDS));
+            assertEquals(p + " threads, how many threads were not interrupted", 0, interruptedLatch.getCount());
+
+            executorService.shutdown();
+        }
+
+        ctx.setExecutorService(globalExecutorService);
+        ctx.setNumberOfProcessors(globalNumberOfProcessors);
+    }
+
+    private static void await(CountDownLatch latch)
+    {
+        try
+        {
+            latch.await();
+        }
+        catch (InterruptedException ie)
+        {
+            throw new RuntimeException(ie);
+        }
+    }
+
+    private static Void hang(long i, CountDownLatch startedLatch, CountDownLatch interruptedLatch)
+    {
+        try
+        {
+            startedLatch.countDown();
+            Thread.sleep(Long.MAX_VALUE);
+        }
+        catch (InterruptedException ie)
+        {
+            interruptedLatch.countDown();
+            throw new ApfloatInterruptedException("Test hang", ie);
         }
         return null;
     }
