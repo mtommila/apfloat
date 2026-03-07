@@ -50,7 +50,7 @@ class RecursiveHelper
     private static class ParallelRecursiveTask<V>
         extends CountedCompleter<V>
     {
-        public ParallelRecursiveTask(long start, long end, LongFunction<V> unitFunction, BiFunction<V, V, V> combineFunction, int numberOfProcessors, ForkJoinPool forkJoinPool, ParallelRecursiveTask<V> parent)
+        public ParallelRecursiveTask(long start, long end, LongFunction<V> unitFunction, BiFunction<V, V, V> combineFunction, int numberOfProcessors, ForkJoinPool forkJoinPool, ParallelRecursiveTask<V> parent, ApfloatContext context)
         {
             super(parent);
             this.start = start;
@@ -59,15 +59,14 @@ class RecursiveHelper
             this.combineFunction = combineFunction;
             this.numberOfProcessors = numberOfProcessors;
             this.forkJoinPool = forkJoinPool;
+            this.context = context;
         }
 
         @Override
         public final void compute()
         {
             ApfloatContext threadCtx = ApfloatContext.getThreadContext();
-            ApfloatContext ctx = (ApfloatContext) ApfloatContext.getContext().clone();
-            ctx.setNumberOfProcessors(this.numberOfProcessors);
-            ApfloatContext.setThreadContext(ctx);
+            ApfloatContext.setThreadContext(this.context);
 
             setRunner();
 
@@ -96,8 +95,8 @@ class RecursiveHelper
                     }
                     int rightProcessors = this.numberOfProcessors - leftProcessors;
 
-                    this.left = new ParallelRecursiveTask<>(this.start, mid - 1, this.unitFunction, this.combineFunction, leftProcessors, this.forkJoinPool, this);
-                    this.right = new ParallelRecursiveTask<>(mid, this.end, this.unitFunction, this.combineFunction, rightProcessors, this.forkJoinPool, this);
+                    this.left = new ParallelRecursiveTask<>(this.start, mid - 1, this.unitFunction, this.combineFunction, leftProcessors, this.forkJoinPool, this, this.context);
+                    this.right = new ParallelRecursiveTask<>(mid, this.end, this.unitFunction, this.combineFunction, rightProcessors, this.forkJoinPool, this, this.context);
 
                     setPendingCount(2);
 
@@ -136,9 +135,7 @@ class RecursiveHelper
             if (this.left != null && this.right != null)
             {
                 ApfloatContext threadCtx = ApfloatContext.getThreadContext();
-                ApfloatContext ctx = (ApfloatContext) ApfloatContext.getContext().clone();
-                ctx.setNumberOfProcessors(this.numberOfProcessors);
-                ApfloatContext.setThreadContext(ctx);
+                ApfloatContext.setThreadContext(this.context);
 
                 setRunner();
 
@@ -236,6 +233,7 @@ class RecursiveHelper
         private BiFunction<V, V, V> combineFunction;
         private int numberOfProcessors;
         private ForkJoinPool forkJoinPool;
+        private ApfloatContext context;
         private volatile V result;
         private volatile ParallelRecursiveTask<V> left,
                                                   right;
@@ -270,7 +268,7 @@ class RecursiveHelper
         int numberOfProcessors = ctx.getNumberOfProcessors();
         ExecutorService executorService = ctx.getExecutorService();
         ForkJoinPool forkJoinPool = (executorService instanceof ForkJoinPool ? (ForkJoinPool) executorService : null);
-        ParallelRecursiveTask<V> task = new ParallelRecursiveTask<V>(start, end, unitFunction, combineFunction, numberOfProcessors, forkJoinPool, null);
+        ParallelRecursiveTask<V> task = new ParallelRecursiveTask<V>(start, end, unitFunction, combineFunction, numberOfProcessors, forkJoinPool, null, ctx);
         try
         {
             task.compute();  // Do not invoke the root task to the pool but use the current thread as a "worker thread", too
