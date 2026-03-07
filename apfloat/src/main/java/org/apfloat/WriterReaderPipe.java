@@ -26,12 +26,12 @@ package org.apfloat;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.concurrent.BlockingQueue;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -72,17 +72,18 @@ class WriterReaderPipe {
     public static Reader open(WriterTask task)
         throws IOException
     {
-        BlockingQueue<char[]> queue = new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
+        Queue<char[]> queue = new ConcurrentLinkedQueue<>();
+        AtomicInteger size = new AtomicInteger();
         AtomicBoolean cancelled = new AtomicBoolean(false);
         AtomicReference<Throwable> failure = new AtomicReference<>(null);
 
         // Use common ForkJoinPool instead of context ExecutorService because the task mostly does I/O and is not CPU-intensive
         Future<?> future = ForkJoinPool.commonPool().submit(() ->
         {
-            try (Writer pipeWriter = new PipeWriter(queue, cancelled, failure))
+            try (PipeWriter pipeWriter = new PipeWriter(queue, size, cancelled, failure))
             {
                 task.writeTo(pipeWriter);
-                queue.put(EOF);
+                pipeWriter.add(EOF);
             }
             catch (Throwable t)
             {
@@ -91,21 +92,23 @@ class WriterReaderPipe {
             }
         });
 
-        PipeReader pipeReader = new PipeReader(queue, cancelled, failure, future);
+        PipeReader pipeReader = new PipeReader(queue, size, cancelled, failure, future);
         return pipeReader;
     }
 
     private static class PipeWriter
         extends Writer
     {
-        private BlockingQueue<char[]> queue;
+        private Queue<char[]> queue;
+        private AtomicInteger size;
         private AtomicBoolean cancelled;
         private AtomicReference<Throwable> failure;
         private volatile boolean closed;
 
-        public PipeWriter(BlockingQueue<char[]> queue, AtomicBoolean cancelled, AtomicReference<Throwable> failure)
+        public PipeWriter(Queue<char[]> queue, AtomicInteger size, AtomicBoolean cancelled, AtomicReference<Throwable> failure)
         {
             this.queue = queue;
+            this.size = size;
             this.cancelled = cancelled;
             this.failure = failure;
         }
@@ -127,17 +130,30 @@ class WriterReaderPipe {
                 char[] chunk = new char[chunkLen];
                 System.arraycopy(cbuf, off, chunk, 0, chunkLen);
                 off += chunkLen;
+                add(chunk);
+            }
+        }
+
+        public void add(char[] chunk)
+            throws IOException
+        {
+            while (size.get() >= DEFAULT_QUEUE_CAPACITY)
+            {
                 try
                 {
-                    queue.put(chunk);
+                    ApfloatContext.checkInterrupted();
                 }
-                catch (InterruptedException ie)
+                catch (ApfloatInterruptedException aie)
                 {
                     Thread.currentThread().interrupt();
                     cancelled.set(true);
-                    throw new IOException("Writer interrupted", ie);
+                    throw new IOException("Writer interrupted", aie);
                 }
+                checkFailure();
+                Thread.yield();
             }
+            size.incrementAndGet();
+            queue.add(chunk);
         }
 
         @Override
@@ -185,7 +201,8 @@ class WriterReaderPipe {
     private static class PipeReader
         extends Reader
     {
-        private BlockingQueue<char[]> queue;
+        private Queue<char[]> queue;
+        private AtomicInteger size;
         private AtomicBoolean cancelled;
         private AtomicReference<Throwable> failure;
         private Future<?> producerFuture;
@@ -194,9 +211,10 @@ class WriterReaderPipe {
         private int pos = 0;
         private boolean eof = false;
 
-        public PipeReader(BlockingQueue<char[]> queue, AtomicBoolean cancelled, AtomicReference<Throwable> failure, Future<?> producerFuture)
+        public PipeReader(Queue<char[]> queue, AtomicInteger size, AtomicBoolean cancelled, AtomicReference<Throwable> failure, Future<?> producerFuture)
         {
             this.queue = queue;
+            this.size = size;
             this.cancelled = cancelled;
             this.failure = failure;
             this.producerFuture = producerFuture;
@@ -250,30 +268,25 @@ class WriterReaderPipe {
         {
             while (true)
             {
-                try
+                char[] chunk = queue.poll();
+                if (chunk == null)
                 {
+                    try
+                    {
+                        ApfloatContext.checkInterrupted();
+                    }
+                    catch (ApfloatInterruptedException aie)
+                    {
+                        Thread.currentThread().interrupt();
+                        cancelled.set(true);
+                        throw new IOException("Reader interrupted", aie);
+                    }
                     checkFailure();
-                    char[] chunk = queue.poll(1, TimeUnit.NANOSECONDS);
-                    if (chunk == null)
-                    {
-                        continue;
-                    }
-                    /*
-                    char[] chunk = queue.poll();
-                    if (chunk == null)
-                    {
-                        Thread.yield();
-                        continue;
-                    }
-                    */
-                    return chunk;
+                    Thread.yield();
+                    continue;
                 }
-                catch (InterruptedException ie)
-                {
-                    Thread.currentThread().interrupt();
-                    cancelled.set(true);
-                    throw new IOException("Reader interrupted", ie);
-                }
+                size.decrementAndGet();
+                return chunk;
             }
         }
 
