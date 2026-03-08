@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package org.apfloat.spi;
 
 import java.io.Serializable;
+import java.io.Reader;
 import java.io.Writer;
 import java.io.IOException;
 
@@ -36,7 +37,7 @@ import org.apfloat.ApfloatRuntimeException;
  * A class implementing <code>ApfloatImpl</code> is not required to accept any other <code>ApfloatImpl</code>
  * class as the argument than the same implementing class.
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -292,12 +293,25 @@ public interface ApfloatImpl
         throws ApfloatRuntimeException;
 
     /**
-     * Print this <code>ApfloatImpl</code> to a stream.
+     * Return a Reader from which the string representation of this <code>ApfloatImpl</code> can be read.
+     *
+     * @param pretty Flag for formatting.
+     *
+     * @return Reader for the string representation of this <code>ApfloatImpl</code>.
+     *
+     * @since 1.16.0
+     */
+
+    public Reader toReader(boolean pretty)
+        throws ApfloatRuntimeException;
+
+    /**
+     * Print this <code>ApfloatImpl</code> to a Writer.
      *
      * @param out The stream to write to.
      * @param pretty Flag for formatting.
      *
-     * @exception IOException In case of I/O error writing to the stream.
+     * @exception IOException In case of I/O error writing to the Writer.
      *
      * @see org.apfloat.Apfloat#writeTo(Writer,boolean)
      */

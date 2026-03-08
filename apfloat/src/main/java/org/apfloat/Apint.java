@@ -25,6 +25,7 @@ package org.apfloat;
 
 import java.math.BigInteger;
 import java.io.PushbackReader;
+import java.io.Reader;
 import java.io.Writer;
 import java.io.IOException;
 import java.util.Formatter;
@@ -710,7 +711,7 @@ public class Apint
     }
 
     /**
-     * Returns a string representation of this aprational.
+     * Returns a string representation of this apint.
      *
      * @param pretty <code>true</code> to use a fixed-point notation, <code>false</code> to use an exponential notation.
      *
@@ -722,6 +723,21 @@ public class Apint
         throws ApfloatRuntimeException
     {
         return this.value.toString(pretty);
+    }
+
+    /**
+     * Return a Reader from which the string representation of this apint can be read.
+     *
+     * @param pretty <code>true</code> to use a fixed-point notation, <code>false</code> to use an exponential notation.
+     *
+     * @return Reader for the string representation of this apint.
+     */
+
+    @Override
+    public Reader toReader(boolean pretty)
+        throws ApfloatRuntimeException
+    {
+        return this.value.toReader(pretty);
     }
 
     /**

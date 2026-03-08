@@ -25,6 +25,8 @@ package org.apfloat;
 
 import java.io.Serializable;
 import java.io.PushbackReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.io.IOException;
 import java.util.Comparator;
@@ -931,6 +933,39 @@ public class Apcomplex
         {
             return '(' + real().toString(pretty) + ", " +
                          imag().toString(pretty) + ')';
+        }
+    }
+
+    /**
+     * Return a Reader from which the string representation of this apcomplex can be read.
+     *
+     * @return Reader for the string representation of this apcomplex.
+     */
+
+    public Reader toReader()
+        throws ApfloatRuntimeException
+    {
+        return toReader(false);
+    }
+
+    /**
+     * Return a Reader from which the string representation of this apcomplex can be read.
+     *
+     * @param pretty <code>true</code> to use a fixed-point notation, <code>false</code> to use an exponential notation.
+     *
+     * @return Reader for the string representation of this apcomplex.
+     */
+
+    public Reader toReader(boolean pretty)
+        throws ApfloatRuntimeException
+    {
+        if (imag().signum() == 0)
+        {
+            return real().toReader(pretty);
+        }
+        else
+        {
+            return new ConcatReader(new StringReader("("), real().toReader(pretty), new StringReader(", "), imag().toReader(pretty), new StringReader(")"));
         }
     }
 

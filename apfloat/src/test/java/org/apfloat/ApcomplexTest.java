@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,8 @@ import java.util.Formatter;
 import java.util.Locale;
 
 import junit.framework.TestSuite;
+
+import static org.apfloat.ApfloatTest.readAllAsString;
 
 /**
  * @version 1.16.0
@@ -82,6 +84,7 @@ public class ApcomplexTest
         suite.addTest(new ApcomplexTest("testTest"));
         suite.addTest(new ApcomplexTest("testHashCode"));
         suite.addTest(new ApcomplexTest("testToString"));
+        suite.addTest(new ApcomplexTest("testToReader"));
         suite.addTest(new ApcomplexTest("testWriteTo"));
         suite.addTest(new ApcomplexTest("testFormatTo"));
         suite.addTest(new ApcomplexTest("testSerialization"));
@@ -834,6 +837,22 @@ public class ApcomplexTest
         assertEquals("(50,60)", "(5e1, 6e1)", "" + a);
         a = new Apcomplex("(50,60)");
         assertEquals("(50,60) pretty", "(50, 60)", a.toString(true));
+    }
+
+    public static void testToReader()
+        throws IOException
+    {
+        Apcomplex a = new Apcomplex("0");
+        String out = readAllAsString(a.toReader());
+        assertEquals("0", "0", out);
+        a = new Apcomplex("6");
+        out = readAllAsString(a.toReader());
+        assertEquals("6", "6", out);
+        a = new Apcomplex("(50,60)");
+        out = readAllAsString(a.toReader());
+        assertEquals("(50, 60)", "(5e1, 6e1)", out);
+        out = readAllAsString(a.toReader(true));
+        assertEquals("(50, 60) true", "(50, 60)", out.toString());
     }
 
     public static void testWriteTo()

@@ -37,6 +37,8 @@ import java.util.IllegalFormatException;
 
 import junit.framework.TestSuite;
 
+import static org.apfloat.ApfloatTest.readAllAsString;
+
 /**
  * @version 1.16.0
  * @author Mikko Tommila
@@ -90,6 +92,7 @@ public class ApintTest
         suite.addTest(new ApintTest("testTest"));
         suite.addTest(new ApintTest("testHashCode"));
         suite.addTest(new ApintTest("testToString"));
+        suite.addTest(new ApintTest("testToReader"));
         suite.addTest(new ApintTest("testWriteTo"));
         suite.addTest(new ApintTest("testFormatTo"));
         suite.addTest(new ApintTest("testSerialization"));
@@ -657,6 +660,22 @@ public class ApintTest
         a = new Apint(123456789);
         assertEquals("123456789", "123456789", "" + a);
         assertEquals("123456789 unpretty", "1.23456789e8", a.toString(false));
+    }
+
+    public static void testToReader()
+        throws IOException
+    {
+        Apint a = new Apint(0);
+        String out = readAllAsString(a.toReader());
+        assertEquals("0", "0", out);
+        a = new Apint(6);
+        out = readAllAsString(a.toReader());
+        assertEquals("6", "6", out);
+        a = new Apint(123456789);
+        out = readAllAsString(a.toReader());
+        assertEquals("123456789", "123456789", out.toString());
+        out = readAllAsString(a.toReader(false));
+        assertEquals("123456789 false", "1.23456789e8", out);
     }
 
     public static void testWriteTo()
