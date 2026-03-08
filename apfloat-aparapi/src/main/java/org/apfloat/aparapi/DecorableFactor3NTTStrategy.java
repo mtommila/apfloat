@@ -90,25 +90,25 @@ public class DecorableFactor3NTTStrategy
     private void preTransform(DataStorage dataStorage)
     {
         long length = dataStorage.getSize();
-    
+
         if (length > Integer.MAX_VALUE)
         {
             throw new ApfloatInternalException("Maximum array length exceeded: " + length);
         }
-    
+
         ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length);
-    
+
         preTransform(arrayAccess);
     }
 
     private void postTransform(DataStorage dataStorage)
     {
         long length = dataStorage.getSize();
-    
+
         assert (length <= Integer.MAX_VALUE);
-    
+
         ArrayAccess arrayAccess = dataStorage.getArray(DataStorage.READ_WRITE, 0, (int) length);
-    
+
         postTransform(arrayAccess);
     }
 

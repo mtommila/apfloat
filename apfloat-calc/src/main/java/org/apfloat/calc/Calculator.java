@@ -72,7 +72,7 @@ public class Calculator
                     System.exit(1);
             }
         }
-        
+
         CalculatorImpl calculatorImpl = new ApfloatCalculatorImpl();
         calculatorImpl.setFormat(pretty);
         calculatorImpl.setInputPrecision(inputPrecision);

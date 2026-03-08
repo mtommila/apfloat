@@ -87,7 +87,7 @@ public class LambertWHelperTest
 
         a = new Apfloat("1e1000000", 100);
         assertEquals("1e1000000", new Apfloat("2.302570443457404704952666749321722464564231438920240812279165776095559120686218647242692419819942329e6"), LambertWHelper.w(a), new Apfloat("5e-93"));
-        
+
         a = ApfloatMath.exp(new Apfloat(-1, 200)).negate().precision(100).add(new Apfloat("1e-50", 100));
         Apfloat w = LambertWHelper.w(a);
         assertEquals("-1/e + 1e-50 value", new Apfloat("-0.9999999999999999999999997668356018402875796636464119050387687556112724831557"), w, new Apfloat("1e-75"));
@@ -385,7 +385,7 @@ public class LambertWHelperTest
 
         a = new Apfloat("1e1000000", 100);
         assertEquals("1e1000000", new Apcomplex("(2.3025704434574047012295785562023389265357833825088593826397356104077744144457e6,-6.2831825784107028806218101388997157457028155078601957175368061400651450)"), LambertWHelper.w(a, -1), new Apfloat("5e-93"));
-        
+
         a = new Apcomplex("(0.1,0.1)").precision(50);
         assertEquals("(0.1,0.1)", new Apcomplex("(-3.494370237224259073810794317924915029229909917936,-3.078388134528402866198196276013121902626535540677)"), LambertWHelper.w(a, -1), new Apfloat("5e-49"));
 
@@ -519,7 +519,7 @@ public class LambertWHelperTest
 
         a = new Apcomplex("(0.1,0.1)").precision(50);
         assertEquals("(0.1,0.1)", new Apcomplex("(-3.76940931372708814708271270800229359221355274363303,4.83567134279640724016070688927989061085551400221897)"), LambertWHelper.w(a, 1), new Apfloat("5e-49"));
-        
+
         a = new Apcomplex("(0.1,-0.1)").precision(50);
         assertEquals("(0.1,-0.1)", new Apcomplex("(-3.494370237224259073810794317924915029229909917936,3.078388134528402866198196276013121902626535540677)"), LambertWHelper.w(a, 1), new Apfloat("5e-49"));
 
@@ -640,7 +640,7 @@ public class LambertWHelperTest
 
         a = new Apcomplex("(0.1,0.1)").precision(50);
         assertEquals("(0.1,0.1)", new Apcomplex("(-4.32694598298195301567101913174024904383609408294303,-9.79417240669519814321681889366099503452634756326525)"), LambertWHelper.w(a, -2), new Apfloat("5e-49"));
-        
+
         a = new Apcomplex("(0.1,-0.1)").precision(50);
         assertEquals("(0.1,-0.1)", new Apcomplex("(-4.46150099885356534168179199389468758681480568726818,-11.40818006630707645202745568528364138775149089044037)"), LambertWHelper.w(a, -2), new Apfloat("5e-48"));
 
@@ -730,7 +730,7 @@ public class LambertWHelperTest
 
         a = new Apfloat("1e1000000", 100);
         assertEquals("1e1000000", new Apcomplex("(2.3025704434574046900603139770105247722136418061583123550509005233524648309767e6,12.5663651568214058018813826529115311494596561375242805601367375513007391)"), LambertWHelper.w(a, 2), new Apfloat("5e-93"));
-        
+
         a = new Apcomplex("(0.1,0.1)").precision(50);
         assertEquals("(0.1,0.1)", new Apcomplex("(-4.46150099885356534168179199389468758681480568726818,11.40818006630707645202745568528364138775149089044037)"), LambertWHelper.w(a, 2), new Apfloat("5e-48"));
 

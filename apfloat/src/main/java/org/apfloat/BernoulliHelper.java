@@ -132,7 +132,7 @@ class BernoulliHelper
             this.iterator = iterator;
             this.iterator.next();
         }
-        
+
         @Override
         public boolean hasNext()
         {

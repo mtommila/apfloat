@@ -1136,7 +1136,7 @@ public class FixedPrecisionApcomplexHelperTest
         result = helper.erfc(z);
         assertEquals("-0.1-0.2i value", new Apcomplex("(1.11702,0.226384)"), result, new Apfloat("5e-5"));
         assertEquals("-0.1-0.2i precision", 6, result.precision());
-        
+
         helper = new FixedPrecisionApcomplexHelper(30);
         z = new Apcomplex("3.53553390593273762200422181052e34");
         result = helper.erfc(z);

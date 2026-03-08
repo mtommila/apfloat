@@ -1147,7 +1147,6 @@ public class ApintMath
         {
             throw new ApfloatRuntimeException("Error generating random number", ioe, "random.error");
         }
-        
     }
 
     /**

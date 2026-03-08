@@ -135,7 +135,6 @@ class ContinuedFractionHelper
             @Override
             public Aprational next()
             {
-                
                 Apint a = continuedFraction.next(),
                       numerator = a.multiply(h1).add(h2),
                       denominator = a.multiply(k1).add(k2);
