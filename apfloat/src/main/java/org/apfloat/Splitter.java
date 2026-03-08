@@ -60,9 +60,9 @@ class Splitter {
                 }
                 readers.add(a[i].toReader());
             }
-            
+
             long size = scale(a[a.length - 1]) + stride * (a.length - 1);
-            return new Apint(new LimitedReader(new ConcatReader(readers), size), radix, size);
+            return new Apint(new NoPushbackReader(new ConcatReader(readers)), radix, size);
         }
         catch (IOException ioe)
         {
@@ -207,5 +207,44 @@ class Splitter {
 
         private Reader in;
         private long remaining;
+    }
+
+    private static class NoPushbackReader
+        extends PushbackReader
+    {
+        public NoPushbackReader(Reader in)
+        {
+            super(in);
+            this.in = in;
+        }
+
+        @Override
+        public int read()
+            throws IOException
+        {
+            return in.read();
+        }
+
+        @Override
+        public int read(char[] buffer, int offset, int length)
+            throws IOException
+        {
+            return in.read(buffer, offset, length);
+        }
+
+        @Override
+        public void close()
+            throws IOException
+        {
+            in.close();
+        }
+
+        @Override
+        public void unread(int c)
+        {
+            throw new ApfloatRuntimeException("Should not occur", "shouldNotOccur");
+        }
+
+        private Reader in;
     }
 }
