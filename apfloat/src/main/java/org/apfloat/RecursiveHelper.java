@@ -138,7 +138,8 @@ class RecursiveHelper
             {
                 ApfloatContext threadCtx = ApfloatContext.getThreadContext();
                 ApfloatContext ctx = (ApfloatContext) this.context.clone();
-                ctx.setNumberOfProcessors(this.numberOfProcessors);
+                ParallelRecursiveTask<?> parent = (ParallelRecursiveTask<?>) getCompleter();
+                ctx.setNumberOfProcessors(parent == null ? this.numberOfProcessors : parent.numberOfProcessors);    // Hack to improve CPU utilization: use parent amount of processors, just in case the other half already completed
                 ApfloatContext.setThreadContext(ctx);
 
                 setRunner();
