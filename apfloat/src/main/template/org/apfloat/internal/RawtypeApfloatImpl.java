@@ -2502,12 +2502,12 @@ public class RawtypeApfloatImpl
                 return out;
             }
 
-            boolean leftPadZeros = false;       // If the written base unit should be left-padded with zeros
-            long size = getSize(),
-                 digitsToWrite = Math.min(precision, getInitialDigits() + (size - 1) * BASE_DIGITS[radix]),
-                 trailingZeros = 0;
-            DataStorage.Iterator iterator = dataStorage.iterator(DataStorage.READ, 0, size);
-            char[] buffer = new char[BASE_DIGITS[radix]];
+            private boolean leftPadZeros = false;           // If the written base unit should be left-padded with zeros
+            private long size = getSize(),
+                         digitsToWrite = Math.min(precision, getInitialDigits() + (size - 1) * BASE_DIGITS[radix]),
+                         trailingZeros = 0;
+            private DataStorage.Iterator iterator = dataStorage.iterator(DataStorage.READ, 0, size);
+            private char[] buffer = new char[BASE_DIGITS[radix]];
         };
     }
 
@@ -2603,7 +2603,7 @@ public class RawtypeApfloatImpl
             {
                 assert (remaining == 0);
 
-                while (mantissaIterator.hasNext() && remaining == 0)
+                while (remaining == 0 && mantissaIterator.hasNext())
                 {
                     out = mantissaIterator.next();
                     remaining = out.length();

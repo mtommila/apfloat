@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package org.apfloat.internal;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
@@ -37,7 +38,7 @@ import junit.framework.TestSuite;
 
 /**
  * @since 1.1
- * @version 1.14.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -89,6 +90,7 @@ public class ParallelRunnerTest
         suite.addTest(new ParallelRunnerTest("testRunParallel"));
         suite.addTest(new ParallelRunnerTest("testRunParallelLong"));
         suite.addTest(new ParallelRunnerTest("testRunParallelTwo"));
+        suite.addTest(new ParallelRunnerTest("testRunNoUnnecessaryTasks"));
         suite.addTest(new ParallelRunnerTest("testWait"));
         suite.addTest(new ParallelRunnerTest("testInterrupt"));
 
@@ -224,6 +226,73 @@ public class ParallelRunnerTest
             {
                 assertEquals(threads + " threads, other element " + i, i, values2[i]);
             }
+        }
+    }
+
+    public static void testRunNoUnnecessaryTasks()
+        throws Exception
+    {
+        for (int threads = 1; threads <= 32; threads++)
+        {
+            ApfloatContext ctx = ApfloatContext.getContext();
+            ctx.setNumberOfProcessors(threads);
+            ctx.setExecutorService(ApfloatContext.getDefaultExecutorService());
+
+            // Start dummy tasks that just consume all threads in the pool
+            CountDownLatch beforeLatch = new CountDownLatch(1),
+                           afterLatch = new CountDownLatch(threads - 1);
+            for (int i = 0; i < threads - 1; i++)
+            {
+                ctx.getExecutorService().submit(() -> 
+                {
+                    awaitUninterrupted(beforeLatch);
+                    afterLatch.countDown();
+                });
+            }
+
+            // Run the real task
+            Set<Thread> checkWorkers = ConcurrentHashMap.newKeySet(),
+                        runWorkers = ConcurrentHashMap.newKeySet();
+            final int LENGTH = 1000000;
+            int[] values = new int[LENGTH];
+            ParallelRunnable parallelRunnable = new ParallelRunnable(LENGTH)
+            {
+                @Override
+                public boolean isWorkToBeStarted()
+                {
+                    checkWorkers.add(Thread.currentThread());
+                    return super.isWorkToBeStarted();
+                }
+
+                @Override
+                public Runnable getRunnable(int start, int length)
+                {
+                    return () ->
+                    {
+                        for (int i = start; i < start + length; i++)
+                        {
+                            values[i] += i;
+                        }
+                        runWorkers.add(Thread.currentThread());
+                    };
+                }
+            };
+
+            ParallelRunner.runParallel(parallelRunnable);
+
+            for (int i = 0; i < LENGTH; i++)
+            {
+                assertEquals(threads + " threads, element " + i, i, values[i]);
+            }
+            assertEquals(threads + " threads, before release checked threads", 1, runWorkers.size());
+            assertEquals(threads + " threads, before release run threads", 1, runWorkers.size());
+
+            beforeLatch.countDown();
+            afterLatch.await();
+            Thread.sleep(100);
+
+            assertEquals(threads + " threads, after release checked threads", 1, runWorkers.size());
+            assertEquals(threads + " threads, after release run threads", 1, runWorkers.size());
         }
     }
 
