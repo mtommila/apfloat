@@ -23,13 +23,12 @@
  */
 package org.apfloat;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Reader;
-import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Combines multiple Apints into one, or splits one to multiple, for Kronecker substitution.
@@ -52,21 +51,18 @@ class Splitter {
         int radix = a[0].radix();
         try
         {
-            return new Apint(new PushbackReader(WriterReaderPipe.open(out -> {
-                if (!(out instanceof BufferedWriter))
+            List<Reader> readers = new ArrayList<>();
+            for (int i = a.length - 1; i >= 0; i--)
+            {
+                if (i < a.length - 1)
                 {
-                    out = new BufferedWriter(out);
+                    readers.add(padReader(stride - scale(a[i])));
                 }
-                for (int i = a.length - 1; i >= 0; i--)
-                {
-                    if (i < a.length - 1)
-                    {
-                        pad(out, stride - scale(a[i]));
-                    }
-                    a[i].writeTo(out);
-                }
-                out.flush();
-            })), radix, scale(a[a.length - 1]) + stride * (a.length - 1));
+                readers.add(a[i].toReader());
+            }
+            
+            long size = scale(a[a.length - 1]) + stride * (a.length - 1);
+            return new Apint(new LimitedReader(new ConcatReader(readers), size), radix, size);
         }
         catch (IOException ioe)
         {
@@ -83,13 +79,46 @@ class Splitter {
         return Math.max(1, i.scale());  // When printed out, zero has one digit i.e. effectively equivalent to a scale of 1
     }
 
-    private static void pad(Writer out, long count)
-        throws IOException
+    private static Reader padReader(long count)
     {
-        while (count-- > 0)
+        return new Reader()
         {
-            out.write('0');
-        }
+            @Override
+            public int read()
+            {
+                if (remaining <= 0)
+                {
+                    return -1;
+                }
+
+                remaining--;
+                return '0';
+            }
+
+            @Override
+            public int read(char[] buffer, int offset, int length)
+            {
+                if (remaining <= 0)
+                {
+                    return -1;
+                }
+
+                int n = (int) Math.min(length, remaining);
+                for (int i = 0; i < n; i++)
+                {
+                    buffer[offset + i] = '0';
+                }
+                remaining -= n;
+                return n;
+            }
+
+            @Override
+            public void close()
+            {
+            }
+
+            private long remaining = count;
+        };
     }
 
     public static Apint[] split(long stride, Apint a)
@@ -105,11 +134,11 @@ class Splitter {
         Apint[] array = new Apint[(int) length];
         try
         {
-            Reader in = new BufferedReader(WriterReaderPipe.open(a::writeTo));
+            Reader in = a.toReader();
             for (int i = array.length - 1; i >= 0; i--)
             {
                 long limit = (i == array.length - 1 ? digits - (length - 1) * stride : stride);
-                array[i] = new Apint(new PushbackReader(new LimitedReader(in, limit)), radix, limit);
+                array[i] = new Apint(new LimitedReader(in, limit), radix, limit);
             }
         }
         catch (IOException ioe)
@@ -124,24 +153,43 @@ class Splitter {
     }
 
     private static class LimitedReader
-        extends Reader
+        extends PushbackReader
     {
-        private Reader in;
-        private long remaining;
-
         public LimitedReader(Reader in, long limit)
         {
+            super(in);
             this.in = in;
             this.remaining = limit;
         }
 
         @Override
-        public int read(char[] cbuf, int off, int len)
+        public int read()
             throws IOException
         {
-            len = (int) Math.min(remaining, len);
-            remaining -= len;
-            return in.read(cbuf, off, len);
+            if (remaining <= 0)
+            {
+                return -1;
+            }
+            remaining--;
+            return in.read();
+        }
+
+        @Override
+        public int read(char[] buffer, int offset, int length)
+            throws IOException
+        {
+            if (remaining <= 0)
+            {
+                return -1;
+            }
+            length = (int) Math.min(remaining, length);
+            int n = in.read(buffer, offset, length);
+            if (n == -1)
+            {
+                throw new ApfloatRuntimeException("Should not occur", "shouldNotOccur");
+            }
+            remaining -= n;
+            return n;
         }
 
         @Override
@@ -150,5 +198,14 @@ class Splitter {
         {
             in.close();
         }
+
+        @Override
+        public void unread(int c)
+        {
+            throw new ApfloatRuntimeException("Should not occur", "shouldNotOccur");
+        }
+
+        private Reader in;
+        private long remaining;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,8 +37,10 @@ import java.util.IllegalFormatException;
 
 import junit.framework.TestSuite;
 
+import static org.apfloat.ApfloatTest.readAllAsString;
+
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -90,6 +92,7 @@ public class AprationalTest
         suite.addTest(new AprationalTest("testTest"));
         suite.addTest(new AprationalTest("testHashCode"));
         suite.addTest(new AprationalTest("testToString"));
+        suite.addTest(new AprationalTest("testToReader"));
         suite.addTest(new AprationalTest("testWriteTo"));
         suite.addTest(new AprationalTest("testFormatTo"));
         suite.addTest(new AprationalTest("testSerialization"));
@@ -833,6 +836,22 @@ public class AprationalTest
         assertEquals("123456789/555555555555557", "123456789/555555555555557", "" + a);
         a = new Aprational("123456789/555555555555557");
         assertEquals("123456789/555555555555557 unpretty", "1.23456789e8/5.55555555555557e14", a.toString(false));
+    }
+
+    public static void testToReader()
+        throws IOException
+    {
+        Aprational a = new Aprational("0");
+        String out = readAllAsString(a.toReader());
+        assertEquals("0", "0", out);
+        a = new Aprational("6");
+        out = readAllAsString(a.toReader());
+        assertEquals("6", "6", out);
+        a = new Aprational("123456789/555555555555557");
+        out = readAllAsString(a.toReader());
+        assertEquals("123456789/555555555555557", "123456789/555555555555557", out);
+        out = readAllAsString(a.toReader(false));
+        assertEquals("123456789/555555555555557 false", "1.23456789e8/5.55555555555557e14", out.toString());
     }
 
     public static void testWriteTo()

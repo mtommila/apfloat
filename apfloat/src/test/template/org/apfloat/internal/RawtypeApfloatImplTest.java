@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import org.apfloat.spi.*;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -83,6 +83,7 @@ public class RawtypeApfloatImplTest
         suite.addTest(new RawtypeApfloatImplTest("testEquals"));
         suite.addTest(new RawtypeApfloatImplTest("testHashCode"));
         suite.addTest(new RawtypeApfloatImplTest("testToString"));
+        suite.addTest(new RawtypeApfloatImplTest("testToReader"));
         suite.addTest(new RawtypeApfloatImplTest("testWriteTo"));
         suite.addTest(new RawtypeApfloatImplTest("testSerialization"));
 
@@ -3266,6 +3267,81 @@ public class RawtypeApfloatImplTest
                 }
             }
         }
+    }
+
+    public static void testToReader()
+        throws IOException
+    {
+        ApfloatImpl a = new RawtypeApfloatImpl("1234560.01", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1234560.01", readAllAsString(a.toReader(true)));
+
+        a = new RawtypeApfloatImpl("123456000000000.01", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "123456000000000.01", readAllAsString(a.toReader(true)));
+
+        a = new RawtypeApfloatImpl("1234560000000000.01", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1234560000000000.01", readAllAsString(a.toReader(true)));
+
+        a = new RawtypeApfloatImpl("1234560000000001.01", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1234560000000001.01", readAllAsString(a.toReader(true)));
+
+        a = new RawtypeApfloatImpl("1234560000000001.101", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1234560000000001.101", readAllAsString(a.toReader(true)));
+
+        a = new RawtypeApfloatImpl("123456", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1.23456e5", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("123456789", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1.23456789e8", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("1234567890", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1.23456789e9", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("12345.6", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1.23456e4", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("1.23456", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1.23456", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("123456780", 8, 10, false);
+        assertEquals("unpretty", "1.2345678e8", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("1234567890", 9, 10, false);
+        assertEquals("unpretty", "1.23456789e9", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("0.1", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1e-1", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("0.000000001", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1e-9", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("0.12", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1.2e-1", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("0.0000000012", Apfloat.INFINITE, 10, false);
+        assertEquals("unpretty", "1.2e-9", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("12345600000000000000000000000000000000000000000000000000000000000000", Apfloat.INFINITE, 10, false);
+        assertEquals("pretty", "12345600000000000000000000000000000000000000000000000000000000000000", readAllAsString(a.toReader(true)));
+
+        a = new RawtypeApfloatImpl("123450", 5, 10, true);
+        assertEquals("pretty", "123450", readAllAsString(a.toReader(true)));
+        assertEquals("unpretty", "1.2345e5", readAllAsString(a.toReader(false)));
+
+        a = new RawtypeApfloatImpl("0", 5, 10, true);
+        assertEquals("zero", "0", readAllAsString(a.toReader(false)));
+    }
+
+    private static String readAllAsString(Reader in)
+        throws IOException
+    {
+        StringBuilder result = new StringBuilder();
+        char[] buffer = new char[8192];
+        int n;
+        while ((n = in.read(buffer, 0, buffer.length)) != -1)
+        {
+            result.append(buffer, 0, n);
+        }
+        return result.toString();
     }
 
     public static void testWriteTo()

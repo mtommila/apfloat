@@ -26,6 +26,7 @@ package org.apfloat;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.io.PushbackReader;
+import java.io.Reader;
 import java.io.Writer;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -95,6 +96,7 @@ public class ApfloatTest
         suite.addTest(new ApfloatTest("testTest"));
         suite.addTest(new ApfloatTest("testHashCode"));
         suite.addTest(new ApfloatTest("testToString"));
+        suite.addTest(new ApfloatTest("testToReader"));
         suite.addTest(new ApfloatTest("testWriteTo"));
         suite.addTest(new ApfloatTest("testFormatTo"));
         suite.addTest(new ApfloatTest("testSerialization"));
@@ -1216,6 +1218,35 @@ public class ApfloatTest
         assertEquals("123456789 pretty", "123456789", a.toString(true));
         a = new Apfloat("1.1e-1000000", Apfloat.INFINITE - 1);
         assertEquals("1.1e-1000000 infinite-1 precision", "1.1e-1000000", a.toString());
+    }
+
+    public static void testToReader()
+        throws IOException
+    {
+        Apfloat a = new Apfloat(0);
+        String out = readAllAsString(a.toReader());
+        assertEquals("0", "0", out);
+        a = new Apfloat(6);
+        out = readAllAsString(a.toReader());
+        assertEquals("6", "6", out);
+        a = new Apfloat(123456789, 9);
+        out = readAllAsString(a.toReader());
+        assertEquals("123456789", "1.23456789e8", out);
+        out = readAllAsString(a.toReader(true));
+        assertEquals("123456789 true", "123456789", out.toString());
+    }
+
+    static String readAllAsString(Reader in)
+        throws IOException
+    {
+        StringBuilder result = new StringBuilder();
+        char[] buffer = new char[8192];
+        int n;
+        while ((n = in.read(buffer, 0, buffer.length)) != -1)
+        {
+            result.append(buffer, 0, n);
+        }
+        return result.toString();
     }
 
     public static void testWriteTo()

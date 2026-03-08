@@ -23,11 +23,19 @@
  */
 package org.apfloat.internal;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PushbackReader;
-import java.io.Writer;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
 
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatContext;
@@ -2380,6 +2388,250 @@ public class RawtypeApfloatImpl
         return value;
     }
 
+    private static void add(List<Supplier<Reader>> readers, String text)
+    {
+        readers.add(() -> new StringReader(text));
+    }
+
+    private static void addZeros(List<Supplier<Reader>> readers, long count)
+    {
+        addZeros(readers, () -> count);
+    }
+
+    private static void addZeros(List<Supplier<Reader>> readers, Supplier<Long> count)
+    {
+        readers.add(() -> new Reader()
+        {
+            @Override
+            public int read()
+            {
+                if (remaining <= 0)
+                {
+                    return -1;
+                }
+
+                remaining--;
+                return '0';
+            }
+
+            @Override
+            public int read(char[] buffer, int offset, int length)
+            {
+                if (remaining <= 0)
+                {
+                    return -1;
+                }
+
+                int n = (int) Math.min(length, remaining);
+                for (int i = 0; i < n; i++)
+                {
+                    buffer[offset + i] = '0';
+                }
+                remaining -= n;
+                return n;
+            }
+
+            @Override
+            public void close()
+            {
+            }
+
+            private long remaining = count.get();
+        });
+    }
+
+    private Iterator<CharSequence> mantissaIterator(long integerDigits, AtomicLong digitsWritten)
+    {
+        return new Iterator<CharSequence>()
+        {
+            @Override
+            public boolean hasNext()
+            {
+                return size > 0;
+            }
+
+            @Override
+            public CharSequence next()
+            {
+                if (size == 0)
+                {
+                    throw new NoSuchElementException();
+                }
+
+                StringBuilder out = new StringBuilder();
+
+                int start = (leftPadZeros ? 0 : BASE_DIGITS[radix] - getInitialDigits()),
+                    digits = (int) Math.min(digitsToWrite, BASE_DIGITS[radix] - start);
+
+                formatWord(buffer, iterator.getRawtype());
+
+                for (int i = 0; i < digits; i++)
+                {
+                    char c = buffer[start + i];
+                    if (c == '0')
+                    {
+                        trailingZeros++;
+                        digitsToWrite--;
+                    }
+                    else
+                    {
+                        while (trailingZeros > 0)
+                        {
+                            if (digitsWritten.get() == integerDigits)
+                            {
+                                out.append('.');
+                            }
+                            out.append('0');
+                            digitsWritten.incrementAndGet();
+                            trailingZeros--;
+                        }
+                        if (digitsWritten.get() == integerDigits)
+                        {
+                            out.append('.');
+                        }
+                        out.append(c);
+                        digitsWritten.incrementAndGet();
+                        digitsToWrite--;
+                    }
+                }
+                leftPadZeros = true;                        // Always pad with zeros after first word
+
+                iterator.next();
+                size--;
+
+                return out;
+            }
+
+            boolean leftPadZeros = false;       // If the written base unit should be left-padded with zeros
+            long size = getSize(),
+                 digitsToWrite = Math.min(precision, getInitialDigits() + (size - 1) * BASE_DIGITS[radix]),
+                 trailingZeros = 0;
+            DataStorage.Iterator iterator = dataStorage.iterator(DataStorage.READ, 0, size);
+            char[] buffer = new char[BASE_DIGITS[radix]];
+        };
+    }
+
+    @Override
+    public Reader toReader(boolean pretty)
+        throws ApfloatRuntimeException
+    {
+        if (this.sign == 0)
+        {
+            return new StringReader("0");
+        }
+
+        List<Supplier<Reader>> readers = new ArrayList<>();
+
+        if (this.sign < 0)
+        {
+            add(readers, "-");
+        }
+
+        long integerDigits,                 // Number of digits to write before the decimal point
+             exponent;                      // Exponent to print
+
+        if (pretty)
+        {
+            if (this.exponent <= 0)
+            {
+                add(readers, "0.");         // Output is 0.xxxx
+                addZeros(readers, -scale());// Print leading zeros after decimal point before first nonzero digit
+                integerDigits = -1;         // Decimal point is already written
+            }
+            else
+            {
+                integerDigits = scale();    // Decimal point location
+            }
+            exponent = 0;                   // Do not print exponent
+        }
+        else
+        {
+            integerDigits = 1;              // Always write as x.xxxey
+            exponent = scale() - 1;         // Print exponent
+        }
+
+        AtomicLong digitsWritten = new AtomicLong();
+        Iterator<CharSequence> mantissaIterator = mantissaIterator(integerDigits, digitsWritten);
+        Reader mantissaReader = new Reader()
+        {
+            @Override
+            public int read()
+            {
+                if (remaining == 0)
+                {
+                    produce();
+                }
+                if (remaining == 0)
+                {
+                    return -1;
+                }
+
+                int c = out.charAt(position);
+                position++;
+                remaining--;
+                return c;
+            }
+
+            @Override
+            public int read(char[] buffer, int offset, int length)
+            {
+                if (remaining == 0)
+                {
+                    produce();
+                }
+                if (remaining == 0)
+                {
+                    return -1;
+                }
+
+                int n = (int) Math.min(length, remaining);
+                for (int i = 0; i < n; i++)
+                {
+                    buffer[offset + i] = out.charAt(position + i);
+                }
+                position += n;
+                remaining -= n;
+                return n;
+            }
+
+            @Override
+            public void close()
+            {
+            }
+
+            private void produce()
+            {
+                assert (remaining == 0);
+
+                while (mantissaIterator.hasNext() && remaining == 0)
+                {
+                    out = mantissaIterator.next();
+                    remaining = out.length();
+                }
+                if (remaining == 0)
+                {
+                    out = null;
+                }
+
+                position = 0;
+            }
+
+            private CharSequence out;
+            private int position = 0,
+                        remaining = 0;
+        };
+        readers.add(() -> mantissaReader);
+
+        if (!pretty && exponent != 0)
+        {
+            add(readers, "e" + exponent);
+        }
+
+        addZeros(readers, () -> integerDigits - digitsWritten.get());   // If format is xxxx0000
+
+        return new LazyConcatReader(readers);
+    }
+
     private static void writeZeros(Writer out, long count)
         throws IOException
     {
@@ -2427,54 +2679,11 @@ public class RawtypeApfloatImpl
             exponent = scale() - 1;         // Print exponent
         }
 
-        boolean leftPadZeros = false;       // If the written base unit should be left-padded with zeros
-        long size = getSize(),
-             digitsToWrite = Math.min(this.precision, getInitialDigits() + (size - 1) * BASE_DIGITS[this.radix]),
-             digitsWritten = 0,
-             trailingZeros = 0;
-        DataStorage.Iterator iterator = this.dataStorage.iterator(DataStorage.READ, 0, size);
-        char[] buffer = new char[BASE_DIGITS[this.radix]];
-
-        while (size > 0)
+        AtomicLong digitsWritten = new AtomicLong();
+        Iterator<CharSequence> mantissaIterator = mantissaIterator(integerDigits, digitsWritten);
+        while (mantissaIterator.hasNext())
         {
-            int start = (leftPadZeros ? 0 : BASE_DIGITS[this.radix] - getInitialDigits()),
-                digits = (int) Math.min(digitsToWrite, BASE_DIGITS[this.radix] - start);
-
-            formatWord(buffer, iterator.getRawtype());
-
-            for (int i = 0; i < digits; i++)
-            {
-                int c = buffer[start + i];
-                if (c == '0')
-                {
-                    trailingZeros++;
-                    digitsToWrite--;
-                }
-                else
-                {
-                    while (trailingZeros > 0)
-                    {
-                        if (digitsWritten == integerDigits)
-                        {
-                            out.write('.');
-                        }
-                        out.write('0');
-                        digitsWritten++;
-                        trailingZeros--;
-                    }
-                    if (digitsWritten == integerDigits)
-                    {
-                        out.write('.');
-                    }
-                    out.write(c);
-                    digitsWritten++;
-                    digitsToWrite--;
-                }
-            }
-            leftPadZeros = true;                        // Always pad with zeros after first word
-
-            iterator.next();
-            size--;
+            out.write(mantissaIterator.next().toString());
         }
 
         if (!pretty && exponent != 0)
@@ -2482,7 +2691,7 @@ public class RawtypeApfloatImpl
             out.write("e" + exponent);
         }
 
-        writeZeros(out, integerDigits - digitsWritten); // If format is xxxx0000
+        writeZeros(out, integerDigits - digitsWritten.get());   // If format is xxxx0000
     }
 
     private void formatWord(char[] buffer, rawtype word)

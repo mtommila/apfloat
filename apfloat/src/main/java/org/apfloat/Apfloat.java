@@ -26,6 +26,7 @@ package org.apfloat;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.io.PushbackReader;
+import java.io.Reader;
 import java.io.Writer;
 import java.io.IOException;
 import java.util.Formatter;
@@ -1303,6 +1304,21 @@ public class Apfloat
         throws ApfloatRuntimeException
     {
         return this.impl.toString(pretty);
+    }
+
+    /**
+     * Return a Reader from which the string representation of this apfloat can be read.
+     *
+     * @param pretty <code>true</code> to use a fixed-point notation, <code>false</code> to use an exponential notation.
+     *
+     * @return Reader for the string representation of this apfloat.
+     */
+
+    @Override
+    public Reader toReader(boolean pretty)
+        throws ApfloatRuntimeException
+    {
+        return this.impl.toReader(pretty);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@ package org.apfloat;
 
 import java.math.BigInteger;
 import java.io.PushbackReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
@@ -41,7 +43,7 @@ import static org.apfloat.spi.RadixConstants.*;
  * @see Apint
  * @see AprationalMath
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -877,6 +879,34 @@ public class Aprational
     {
         return numerator().toString(pretty) +
                (denominator().equals(ONE) ? "" : '/' + denominator().toString(pretty));
+    }
+
+    /**
+     * Return a Reader from which the string representation of this aprational can be read.
+     *
+     * @return Reader for the string representation of this aprational.
+     */
+
+    @Override
+    public Reader toReader()
+        throws ApfloatRuntimeException
+    {
+        return toReader(true);
+    }
+
+    /**
+     * Return a Reader from which the string representation of this aprational can be read.
+     *
+     * @param pretty <code>true</code> to use a fixed-point notation, <code>false</code> to use an exponential notation.
+     *
+     * @return Reader for the string representation of this aprational.
+     */
+
+    @Override
+    public Reader toReader(boolean pretty)
+        throws ApfloatRuntimeException
+    {
+        return (denominator().equals(ONE) ? numerator().toReader(pretty) : new ConcatReader(numerator().toReader(pretty), new StringReader("/"), denominator().toReader(pretty)));
     }
 
     /**
