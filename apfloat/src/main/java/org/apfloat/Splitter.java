@@ -23,12 +23,7 @@
  */
 package org.apfloat;
 
-import java.io.IOException;
-import java.io.PushbackReader;
-import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Combines multiple Apints into one, or splits one to multiple, for Kronecker substitution.
@@ -48,77 +43,26 @@ class Splitter {
         // Equivalent to a sum of the numbers in array a, each element multiplied by radix^(stride * index)
         assert (a.length > 0);
         assert (Arrays.stream(a).mapToInt(Apint::radix).distinct().count() == 1);
-        int radix = a[0].radix();
-        try
-        {
-            List<Reader> readers = new ArrayList<>();
-            for (int i = a.length - 1; i >= 0; i--)
-            {
-                if (i < a.length - 1)
-                {
-                    readers.add(padReader(stride - scale(a[i])));
-                }
-                readers.add(a[i].toReader());
-            }
 
-            long size = scale(a[a.length - 1]) + stride * (a.length - 1);
-            return new Apint(new NoPushbackReader(new ConcatReader(readers)), radix, size);
-        }
-        catch (IOException ioe)
+        // Disk transfer speed or memory transfer speed will be a bottleneck, no point in parallelizing this
+        // In theory this is not optimal as it does log(a.length) passes through the data when we could do just 1, but there's no API for that
+        // We could do 1 pass through the data with a concatenated Reader from Apint.toReader() but it performs very poorly in practice
+        return combine(0, a.length - 1, stride, a);
+    }
+
+    private static Apint combine(int n, int m, long stride, Apint[] a)
+    {
+        if (n == m)
         {
-            if (ioe.getCause() instanceof InterruptedException)
-            {
-                throw new ApfloatInterruptedException("Interrupted", ioe, "interrupted");
-            }
-            throw new ApfloatRuntimeException("Should not occur", ioe, "shouldNotOccur");
+            return ApintMath.scale(a[n], stride * n);
         }
+        int k = n + m >>> 1;
+        return combine(n, k, stride, a).add(combine(k + 1, m, stride, a));
     }
 
     private static long scale(Apint i)
     {
         return Math.max(1, i.scale());  // When printed out, zero has one digit i.e. effectively equivalent to a scale of 1
-    }
-
-    private static Reader padReader(long count)
-    {
-        return new Reader()
-        {
-            @Override
-            public int read()
-            {
-                if (remaining <= 0)
-                {
-                    return -1;
-                }
-
-                remaining--;
-                return '0';
-            }
-
-            @Override
-            public int read(char[] buffer, int offset, int length)
-            {
-                if (remaining <= 0)
-                {
-                    return -1;
-                }
-
-                int n = (int) Math.min(length, remaining);
-                for (int i = 0; i < n; i++)
-                {
-                    buffer[offset + i] = '0';
-                }
-                remaining -= n;
-                return n;
-            }
-
-            @Override
-            public void close()
-            {
-            }
-
-            private long remaining = count;
-        };
     }
 
     public static Apint[] split(long stride, Apint a)
@@ -131,120 +75,18 @@ class Splitter {
         {
             throw new ApfloatRuntimeException("Maximum array size exceeded: " + length, "maximumArraySizeExceeded", length);
         }
+        Apint one = Apint.ONES[radix];
+
+        // Disk transfer speed or memory transfer speed will be a bottleneck, no point in parallelizing this
         Apint[] array = new Apint[(int) length];
-        try
+        for (int i = 0; i < array.length; i++)
         {
-            Reader in = a.toReader();
-            for (int i = array.length - 1; i >= 0; i--)
-            {
-                long limit = (i == array.length - 1 ? digits - (length - 1) * stride : stride);
-                array[i] = new Apint(new LimitedReader(in, limit), radix, limit);
-            }
-        }
-        catch (IOException ioe)
-        {
-            if (ioe.getCause() instanceof InterruptedException)
-            {
-                throw new ApfloatInterruptedException("Interrupted", ioe, "interrupted");
-            }
-            throw new ApfloatRuntimeException("Should not occur", ioe, "shouldNotOccur");
+            long position = (i + 1L) * stride,
+                 limit = digits - i * stride,
+                 shift = -i * stride;
+            Apint m = ApintMath.scale(one, position);
+            array[i] = a.precision(limit).mod(m).scale(shift).truncate();
         }
         return array;
-    }
-
-    private static class LimitedReader
-        extends PushbackReader
-    {
-        public LimitedReader(Reader in, long limit)
-        {
-            super(in);
-            this.in = in;
-            this.remaining = limit;
-        }
-
-        @Override
-        public int read()
-            throws IOException
-        {
-            if (remaining <= 0)
-            {
-                return -1;
-            }
-            remaining--;
-            return in.read();
-        }
-
-        @Override
-        public int read(char[] buffer, int offset, int length)
-            throws IOException
-        {
-            if (remaining <= 0)
-            {
-                return -1;
-            }
-            length = (int) Math.min(remaining, length);
-            int n = in.read(buffer, offset, length);
-            if (n == -1)
-            {
-                throw new ApfloatRuntimeException("Should not occur", "shouldNotOccur");
-            }
-            remaining -= n;
-            return n;
-        }
-
-        @Override
-        public void close()
-            throws IOException
-        {
-            in.close();
-        }
-
-        @Override
-        public void unread(int c)
-        {
-            throw new ApfloatRuntimeException("Should not occur", "shouldNotOccur");
-        }
-
-        private Reader in;
-        private long remaining;
-    }
-
-    private static class NoPushbackReader
-        extends PushbackReader
-    {
-        public NoPushbackReader(Reader in)
-        {
-            super(in);
-            this.in = in;
-        }
-
-        @Override
-        public int read()
-            throws IOException
-        {
-            return in.read();
-        }
-
-        @Override
-        public int read(char[] buffer, int offset, int length)
-            throws IOException
-        {
-            return in.read(buffer, offset, length);
-        }
-
-        @Override
-        public void close()
-            throws IOException
-        {
-            in.close();
-        }
-
-        @Override
-        public void unread(int c)
-        {
-            throw new ApfloatRuntimeException("Should not occur", "shouldNotOccur");
-        }
-
-        private Reader in;
     }
 }
