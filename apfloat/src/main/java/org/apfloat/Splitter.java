@@ -44,20 +44,12 @@ class Splitter {
         assert (a.length > 0);
         assert (Arrays.stream(a).mapToInt(Apint::radix).distinct().count() == 1);
 
-        // Disk transfer speed or memory transfer speed will be a bottleneck, no point in parallelizing this
-        // In theory this is not optimal as it does log(a.length) passes through the data when we could do just 1, but there's no API for that
-        // We could do 1 pass through the data with a concatenated Reader from Apint.toReader() but it performs very poorly in practice
-        return combine(0, a.length - 1, stride, a);
-    }
-
-    private static Apint combine(int n, int m, long stride, Apint[] a)
-    {
-        if (n == m)
+        Apint[] scaled = new Apint[a.length];
+        for (int i = 0; i < a.length; i++)
         {
-            return ApintMath.scale(a[n], stride * n);
+            scaled[a.length - 1 - i] = ApintMath.scale(a[i], stride * i);   // Largest first
         }
-        int k = n + m >>> 1;
-        return combine(n, k, stride, a).add(combine(k + 1, m, stride, a));
+        return Apfloat.combine(scaled).truncate();
     }
 
     private static long scale(Apint i)

@@ -57,6 +57,17 @@ public interface ApfloatImpl
         throws ApfloatRuntimeException;
 
     /**
+     * Add numbers together.
+     *
+     * @param x The numbers to be added to this number.
+     *
+     * @return The sum.
+     */
+
+    public ApfloatImpl addAll(ApfloatImpl... x)
+        throws ApfloatRuntimeException;
+
+    /**
      * Multiply this object by an <code>ApfloatImpl</code>.
      *
      * @param x The number to be multiplied by this <code>ApfloatImpl</code>.

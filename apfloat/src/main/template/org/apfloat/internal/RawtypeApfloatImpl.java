@@ -31,11 +31,14 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
+import static java.util.Comparator.comparing;
 
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatContext;
@@ -1219,6 +1222,167 @@ public class RawtypeApfloatImpl
         dataStorage.setReadOnly();
 
         return new RawtypeApfloatImpl(sign, precision, exponent, dataStorage, this.radix);
+    }
+
+    @Override
+    public ApfloatImpl addAll(ApfloatImpl... x)
+        throws ApfloatRuntimeException
+    {
+        // Implementation class
+        assert (Arrays.stream(x).allMatch(a -> a instanceof RawtypeApfloatImpl));
+        // No zeros
+        assert (this.sign != 0);
+        // All numbers must have same sign
+        assert (Arrays.stream(x).allMatch(a -> a.signum() == this.sign));
+        assert (x.length != Integer.MAX_VALUE);
+
+        return addAll(Stream.concat(Stream.of(this), Arrays.stream(x).map(RawtypeApfloatImpl.class::cast)).toArray(RawtypeApfloatImpl[]::new));
+    }
+
+    private static ApfloatImpl addAll(RawtypeApfloatImpl... x)
+        throws ApfloatRuntimeException
+    {
+        // Sort by scale (biggest first)
+        Arrays.sort(x, comparing(RawtypeApfloatImpl::scale).reversed());
+        // Find largest number
+        RawtypeApfloatImpl biggest = x[0];
+        int sign = biggest.sign,
+            radix = biggest.radix;
+        long scale = biggest.scale(),
+             exponent = biggest.exponent;
+
+        // Find precision of calculation considering scale and precision of numbers
+        long precision = biggest.precision();
+        for (RawtypeApfloatImpl a : x)
+        {
+            long scaleDifference = Util.ifFiniteOrZero(scale - a.scale()),
+                 aPrecision = Util.ifFinite(a.precision(), scaleDifference + a.precision());
+            precision = Math.min(aPrecision, precision);
+        }
+        // Find size of calculation (in rawtypes) considering scale and size of numbers, does not include possible carries
+        long size = 0;
+        for (RawtypeApfloatImpl a : x)
+        {
+            long aSize = exponent - a.exponent + a.getSize();
+            size = Math.max(aSize, size);
+        }
+
+        ApfloatContext ctx = ApfloatContext.getContext();
+        AdditionBuilder<RawType> additionBuilder = ctx.getBuilderFactory().getAdditionBuilder(RawType.TYPE);
+        AdditionStrategy<RawType> additionStrategy = additionBuilder.createAddition(radix);
+
+        long dstSize = size + 2;                    // Allocate two extra elements for many carry overflows
+        DataStorage dataStorageWithCarries = createDataStorage(dstSize);
+        dataStorageWithCarries.setSize(dstSize);
+        DataStorage dataStorage = dataStorageWithCarries.subsequence(2, size);
+
+        // Initialize overflow carries to zero
+        try (DataStorage.Iterator dst = dataStorageWithCarries.iterator(DataStorage.WRITE, 2, 0))
+        {
+            long blockSize = 2;
+            additionStrategy.add(null, null, (rawtype) 0, dst, blockSize);
+        }
+
+        long dstStart = 0,                                                          // Position of the destination dataStorage that has been written
+             leadingZeros = 2;
+
+        // Add numbers from biggest to smallest
+        for (RawtypeApfloatImpl a : x)
+        {
+            long scaleDifference = Util.ifFiniteOrZero(scale - a.scale());
+            // Omit numbers, which are insignificant
+            if (scaleDifference >= precision)
+            {
+                // Number is insignificantly small in this calculation
+                continue;
+            }
+
+            long exponentDifference = exponent - a.exponent,
+                 srcSize = a.getSize();
+            DataStorage.Iterator src = a.dataStorage.iterator(DataStorage.READ, srcSize, 0);
+
+            rawtype carry = (rawtype) 0;
+
+            long srcStart = srcSize + exponentDifference;                           // Position of the source dataStorage (in same coordinates as dstStart)
+            // If there is any uninitialized segment in the destination, just copy the source digits there
+            if (srcStart > dstStart)
+            {
+                long blockSize = Math.min(srcSize, srcStart - dstStart);            // The numbers might overlap, or there might be some empty between them (which is padded with zeros in the next step)
+                try (DataStorage.Iterator dst = dataStorage.iterator(DataStorage.WRITE, srcStart, srcStart - blockSize))
+                {
+                    carry = additionStrategy.add(null, src, carry, dst, blockSize);
+                }
+            }
+            // Then pad with zeros until we reach the previous result (if we did not reach it yet)
+            if (exponentDifference > dstStart)
+            {
+                long blockSize = exponentDifference - dstStart;
+                try (DataStorage.Iterator dst = dataStorage.iterator(DataStorage.WRITE, exponentDifference, dstStart))
+                {
+                    carry = additionStrategy.add(null, null, carry, dst, blockSize);
+                }
+            }
+            // Then add the remaining digits to the existing result (if there are any left)
+            if (exponentDifference < dstStart)
+            {
+                long blockSize = Math.min(srcSize, dstStart - exponentDifference);  // The number to be added may start at dstStart, or somewhere after it
+                try (DataStorage.Iterator dst = dataStorage.iterator(DataStorage.READ_WRITE, exponentDifference + blockSize, exponentDifference))
+                {
+                    carry = additionStrategy.add(dst, src, carry, dst, blockSize);
+                }
+            }
+            // Then propagate the carry to the rest of the existing result (if any)
+            if (exponentDifference > 0 && carry != (rawtype) 0)
+            {
+                try (DataStorage.Iterator dst = dataStorage.iterator(DataStorage.READ_WRITE, exponentDifference, 0))
+                {
+                    for (long i = 0; i < exponentDifference && carry != (rawtype) 0; i++)
+                    {
+                        carry = additionStrategy.add(dst, null, carry, dst, 1);
+                    }
+                }
+            }
+            // Propagate overflow carries
+            if (carry != (rawtype) 0)
+            {
+                leadingZeros = Math.min(leadingZeros, 1);   // At most 1 leading zero
+                try (DataStorage.Iterator dst = dataStorageWithCarries.iterator(DataStorage.READ_WRITE, 2, 0))
+                {
+                    carry = additionStrategy.add(dst, null, carry, dst, 1);
+                    if (carry != (rawtype) 0)
+                    {
+                        leadingZeros = 0;
+                        carry = additionStrategy.add(dst, null, carry, dst, 1);
+                        assert (carry == (rawtype) 0);
+                    }
+                }
+            }
+
+            // Set new position where result has been stored
+            dstStart = Math.max(dstStart, srcStart);
+        }
+
+        // Check if carry overflowed to the two most significant words
+        exponent += 2 - leadingZeros;
+        if (exponent > MAX_EXPONENT[radix])
+        {
+            throw new OverflowException("Overflow", "overflow");
+        }
+
+        dstSize -= getTrailingZeros(dataStorageWithCarries, dstSize);
+
+        dataStorageWithCarries = dataStorageWithCarries.subsequence(leadingZeros, dstSize - leadingZeros);
+
+        if (precision != Apfloat.INFINITE)
+        {
+            // If scale of number changes, the number of significant digits changes accordingly
+            long scaleChange = (2 - leadingZeros) * BASE_DIGITS[radix] + biggest.getInitialDigits(dataStorageWithCarries) - biggest.getInitialDigits();
+            precision = Util.ifFinite(precision, precision + scaleChange);
+        }
+
+        dataStorageWithCarries.setReadOnly();
+
+        return new RawtypeApfloatImpl(sign, precision, exponent, dataStorageWithCarries, radix);
     }
 
     @Override

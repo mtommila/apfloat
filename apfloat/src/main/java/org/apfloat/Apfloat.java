@@ -29,10 +29,17 @@ import java.io.PushbackReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Formatter;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 import static java.util.FormattableFlags.*;
+import static java.util.stream.Collectors.toList;
 
 import org.apfloat.spi.ApfloatImpl;
+import org.apfloat.spi.Util;
 
 /**
  * Arbitrary precision floating-point number class.<p>
@@ -801,6 +808,56 @@ public class Apfloat
         }
 
         return new Apfloat(impl);
+    }
+
+    /**
+     * Sum of numbers.
+     * This uses a different algorithm than {@link ApfloatMath#sum(Apfloat...)} and is more efficient if the numbers
+     * don't overlap (much). In particular suitable for Kronecker substitution.
+     *
+     * @param x The argument(s).
+     *
+     * @return The sum of the given numbers.
+     *
+     * @since 1.16.0
+     */
+
+    static Apfloat combine(Apfloat... x)
+        throws ApfloatRuntimeException
+    {
+        // Separate positive and negative numbers (and omit zeros)
+        Apfloat positive = combine(Arrays.stream(x).filter(a -> a.signum() > 0).collect(toList())),
+                negative = combine(Arrays.stream(x).filter(a -> a.signum() < 0).collect(toList()));
+
+        Apfloat sum = Stream.of(positive, negative).filter(Objects::nonNull).reduce(Apfloat::add).orElse(Apfloat.ZERO);
+        return sum;
+    }
+
+    private static Apfloat combine(List<Apfloat> x)
+        throws ApfloatRuntimeException
+    {
+        if (x.size() == 0)
+        {
+            return null;
+        }
+
+        // Find largest number's scale
+        long scale = x.stream().mapToLong(Apfloat::scale).max().getAsLong();
+
+        // Estimate cumulative round-off error
+        long extraPrecision = (long) (Math.log(Math.sqrt(x.size())) / Math.log(x.get(0).radix()));
+
+        // Find precision of calculation considering scale and precision of numbers
+        long precision = x.stream().mapToLong(a -> Util.ifFinite(a.precision(), Util.ifFiniteOrZero(scale - a.scale()) + a.precision())).map(p -> Util.ifFinite(p, p + extraPrecision)).min().getAsLong();
+        // Limit precision of numbers
+        List<ApfloatImpl> impls = x.stream().map(a ->
+        {
+            long scaleDifference = Util.ifFiniteOrZero(scale - a.scale());
+            return (scaleDifference >= precision ? null : a.getImpl(precision - scaleDifference));
+        }).filter(Objects::nonNull).collect(toList());
+
+        ApfloatImpl impl = impls.get(0).addAll(impls.subList(1, impls.size()).toArray(new ApfloatImpl[impls.size() - 1]));
+        return ApfloatHelper.reducePrecision(new Apfloat(impl), extraPrecision);
     }
 
     /**

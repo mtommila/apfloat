@@ -35,6 +35,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Formatter;
 import java.util.Locale;
 
@@ -78,6 +79,7 @@ public class ApfloatTest
         suite.addTest(new ApfloatTest("testNegate"));
         suite.addTest(new ApfloatTest("testAdd"));
         suite.addTest(new ApfloatTest("testSubtract"));
+        suite.addTest(new ApfloatTest("testCombine"));
         suite.addTest(new ApfloatTest("testMultiply"));
         suite.addTest(new ApfloatTest("testDivide"));
         suite.addTest(new ApfloatTest("testMod"));
@@ -760,6 +762,46 @@ public class ApfloatTest
         b = new Apfloat("0.00001");
         assertEquals("1 - 0.00001", new Apfloat(1), a.subtract(b), b);
         assertEquals("0.00001 - 1", new Apfloat(-1), b.subtract(a), b);
+    }
+
+    public static void testCombine()
+    {
+        Apfloat a = new Apfloat(4),
+                b = new Apfloat(5);
+        assertEquals("4 + 5", new Apfloat(9), Apfloat.combine(a, b));
+        assertEquals("4 + 0", new Apfloat(4), Apfloat.combine(a, new Apfloat(0)));
+        assertEquals("0 + 4", new Apfloat(4), Apfloat.combine(new Apfloat(0), a));
+
+        assertEquals("Empty", new Apfloat(0), Apfloat.combine());
+
+        assertEquals("0", new Apfloat(0), Apfloat.combine(new Apfloat(0)));
+
+        assertEquals("4", new Apfloat(4), Apfloat.combine(a));
+
+        assertEquals("-5", new Apfloat(-5), Apfloat.combine(new Apfloat(-5)));
+
+        a = new Apfloat("1.00000");
+        b = new Apfloat("-0.00001");
+        assertEquals("1 - 0.00001", new Apfloat("0.99999"), Apfloat.combine(a, b));
+        assertEquals("0.00001 - 1", new Apfloat("-0.99999"), Apfloat.combine(a.negate(), b.negate()));
+
+        a = new Apfloat("1");
+        b = new Apfloat("0.00001");
+        assertEquals("1 + 0.00001 precision", 1, Apfloat.combine(a, b).precision());
+        assertEquals("1 + 0.00001 value ", new Apfloat(1), Apfloat.combine(a, b));
+
+        a = new Apfloat(10, 1);
+        b = new Apfloat(1, 1);
+        assertEquals("10 + 1 precision", 1, Apfloat.combine(a, b).precision());
+        assertEquals("10 + 1 value ", "10", Apfloat.combine(a, b).toString(true));
+
+        a = Apfloat.combine(Collections.nCopies(1000000, new Apfloat(5)).toArray(new Apfloat[0]));
+        assertEquals("1000000 * 5 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("1000000 * 5 value", new Apfloat(5000000), a);
+
+        a = Apfloat.combine(Collections.nCopies(1000000, new Apfloat(5, 100)).toArray(new Apfloat[0]));
+        assertEquals("1000000 * 5 precision 100", 106, a.precision());
+        assertEquals("1000000 * 5 value 100", new Apfloat(5000000), a);
     }
 
     public static void testMultiply()

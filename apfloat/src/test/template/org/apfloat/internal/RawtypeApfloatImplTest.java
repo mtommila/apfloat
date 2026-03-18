@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Random;
 
 import org.apfloat.*;
@@ -67,6 +68,7 @@ public class RawtypeApfloatImplTest
         suite.addTest(new RawtypeApfloatImplTest("testStreamConstructor"));
         suite.addTest(new RawtypeApfloatImplTest("testAdd"));
         suite.addTest(new RawtypeApfloatImplTest("testSubtract"));
+        suite.addTest(new RawtypeApfloatImplTest("testAddAll"));
         suite.addTest(new RawtypeApfloatImplTest("testMultiply"));
         suite.addTest(new RawtypeApfloatImplTest("testIsShort"));
         suite.addTest(new RawtypeApfloatImplTest("testDivideShort"));
@@ -1603,6 +1605,195 @@ public class RawtypeApfloatImplTest
         {
             // OK: radix mismatch
             assertEquals("Localization key", "radix.mismatch", rme.getLocalizationKey());
+        }
+    }
+
+    public static void testAddAll()
+    {
+        ApfloatImpl a, b, c, r;
+
+        for (int radix = 8; radix <= 10; radix++)
+        {
+            char nine = Character.forDigit(radix - 1, radix),
+                 eight = Character.forDigit(radix - 2, radix);
+
+            for (int i = 6; i <= 7; i++)
+            {
+                a = new RawtypeApfloatImpl(getString(nine, i), Apfloat.INFINITE, radix, true);
+                r = a.addAll(Collections.nCopies((int) Math.pow(radix, i) + 1, a).stream().toArray(RawtypeApfloatImpl[]::new));
+                assertEquals("radix " + radix + " 9(" + i + ") * 10000002 precision", Apfloat.INFINITE, r.precision());
+                assertEquals("radix " + radix + " 9(" + i + ") * 10000002 String", '1' + getString('0', i) + getString(nine, i - 1) + eight, r.toString(true));
+            }
+        }
+
+        for (int radix = 7; radix <= Character.MAX_RADIX; radix++)
+        {
+            for (int i = 6; i <= 20; i++)
+            {
+                a = new RawtypeApfloatImpl(getString('1', i) + getString('0', 2 * i), Apfloat.INFINITE, radix, true);
+                b = new RawtypeApfloatImpl(getString('2', i) + getString('0', i), Apfloat.INFINITE, radix, true);
+                c = new RawtypeApfloatImpl(getString('4', i), Apfloat.INFINITE, radix, true);
+                r = a.addAll(b, c);
+                assertEquals("radix " + radix + " 1 + 2 + 4 length " + i + " precision", Apfloat.INFINITE, r.precision());
+                assertEquals("radix " + radix + " 1 + 2 + 4 length " + i + " String", getString('1', i) + getString('2', i) + getString('4', i), r.toString(true));
+
+                a = new RawtypeApfloatImpl(getString('1', i) + getString('0', 4 * i), Apfloat.INFINITE, radix, true);
+                b = new RawtypeApfloatImpl(getString('2', i) + getString('0', 2 * i), Apfloat.INFINITE, radix, true);
+                c = new RawtypeApfloatImpl(getString('4', i), Apfloat.INFINITE, radix, true);
+                r = a.addAll(b, c);
+                assertEquals("radix " + radix + " 1 + 2 + 4 length " + i + " padding precision", Apfloat.INFINITE, r.precision());
+                assertEquals("radix " + radix + " 1 + 2 + 4 length " + i + " padding String", getString('1', i) + getString('0', i) + getString('2', i) + getString('0', i) + getString('4', i), r.toString(true));
+
+                a = new RawtypeApfloatImpl(getString('1', 2 * i) + getString('0', 3 * i), Apfloat.INFINITE, radix, true);
+                b = new RawtypeApfloatImpl(getString('2', 3 * i) + getString('0', i), Apfloat.INFINITE, radix, true);
+                c = new RawtypeApfloatImpl(getString('4', 2 * i), Apfloat.INFINITE, radix, true);
+                r = a.addAll(b, c);
+                assertEquals("radix " + radix + " 1 + 2 + 4 length " + i + " overlap precision", Apfloat.INFINITE, r.precision());
+                assertEquals("radix " + radix + " 1 + 2 + 4 length " + i + " overlap String", getString('1', i) + getString('3', i) + getString('2', i) + getString('6', i) + getString('4', i), r.toString(true));
+            }
+        }
+
+        a = new RawtypeApfloatImpl("111111100000000000000", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("000000000000004444444", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("000000022222220000000", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("1 + 4 + 2 short precision", Apfloat.INFINITE, r.precision());
+        assertEquals("1 + 4 + 2 short String", "111111122222224444444", r.toString(true));
+
+        a = new RawtypeApfloatImpl("00000000000000222222200000000000000", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("11111110000000000000000000000000000", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("00000000000000000000000000004444444", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("2 + 1 + 4 short padding precision", Apfloat.INFINITE, r.precision());
+        assertEquals("2 + 1 + 4 short padding String", "11111110000000222222200000004444444", r.toString(true));
+
+        a = new RawtypeApfloatImpl("00000000000000000000044444444444444", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("11111111111111000000000000000000000", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("00000002222222222222222222220000000", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("4 + 1 + 2 short overlap precision", Apfloat.INFINITE, r.precision());
+        assertEquals("4 + 1 + 2 short overlap String", "11111113333333222222266666664444444", r.toString(true));
+
+        a = new RawtypeApfloatImpl("000000022222220000000", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("000000000000004444444", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("111111100000000000000", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("2 + 4 + 1 short precision", Apfloat.INFINITE, r.precision());
+        assertEquals("2 + 4 + 1 short String", "111111122222224444444", r.toString(true));
+
+        a = new RawtypeApfloatImpl("000000022222220000000", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("111111100000000000000", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("000000000000004444444", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("2 + 1 + 4 short precision", Apfloat.INFINITE, r.precision());
+        assertEquals("2 + 1 + 4 short String", "111111122222224444444", r.toString(true));
+
+        a = new RawtypeApfloatImpl("000000000000004444444", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("000000022222220000000", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("111111100000000000000", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("4 + 2 + 1 short precision", Apfloat.INFINITE, r.precision());
+        assertEquals("4 + 2 + 1 short String", "111111122222224444444", r.toString(true));
+
+        a = new RawtypeApfloatImpl("111111100000000000000", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("000000022222222222222", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("000000004444440000000", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("1 + 22 + 4 short precision", Apfloat.INFINITE, r.precision());
+        assertEquals("1 + 22 + 4 short String", "111111126666662222222", r.toString(true));
+
+        a = new RawtypeApfloatImpl("111111111111111111111", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("000000022222222222222", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("000000004444440000000", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("111 + 22 + 4 short precision", Apfloat.INFINITE, r.precision());
+        assertEquals("111 + 22 + 4 short String", "111111137777773333333", r.toString(true));
+
+        a = new RawtypeApfloatImpl("111111111111111111111", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("000000088888888888888", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("000000001000000000000", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("111 + 88 + 10 short precision", Apfloat.INFINITE, r.precision());
+        assertEquals("111 + 88 + 10 short String", "111111200999999999999", r.toString(true));
+
+        a = new RawtypeApfloatImpl("999999911111111111111", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("000000088888888888888", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("000000001000000000000", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("911 + 88 + 10 short precision", Apfloat.INFINITE, r.precision());
+        assertEquals("911 + 88 + 10 short String", "1000000000999999999999", r.toString(true));
+
+        a = new RawtypeApfloatImpl("999999999999999999999", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("000000001000000000000", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b);
+        assertEquals("999 + 10 short precision", Apfloat.INFINITE, r.precision());
+        assertEquals("999 + 10 short String", "1000000000999999999999", r.toString(true));
+
+        a = new RawtypeApfloatImpl("999999999999999999999", Apfloat.DEFAULT, 10, false);
+        b = new RawtypeApfloatImpl("000000000000000000001", Apfloat.DEFAULT, 10, false);
+        r = a.addAll(b);
+        assertEquals("999 + 1 short precision", 22, r.precision());
+        assertEquals("999 + 1 short String", "1000000000000000000000", r.toString(true));
+
+        a = new RawtypeApfloatImpl("-999999900000009999999", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("-000000000000000000001", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b);
+        assertEquals("909 + 1 short precision", Apfloat.INFINITE, r.precision());
+        assertEquals("909 + 1 short String", "-999999900000010000000", r.toString(true));
+
+        a = new RawtypeApfloatImpl("111111111111111111110000000000000000000000000000000000000000000000000000000000000000000000", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("000000000000000000000000000000000000000000000000000000000000000000004444444444444444444444", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("000000000000000000000000000000222222222222222222222222222200000000000000000000000000000000", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("1 + 4 + 2 long padding precision", Apfloat.INFINITE, r.precision());
+        assertEquals("1 + 4 + 2 long padding String", "111111111111111111110000000000222222222222222222222222222200000000004444444444444444444444", r.toString(true));
+
+        a = new RawtypeApfloatImpl("000000000000000000000000000000222222222222222222222222222200000000000000000000000000000000", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("000000000000000000000000000000000000000000000000000000000044444444444444444444444444444444", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("111111111111111111111111111111000000000000000000000000000000000000000000000000000000000000", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("2 + 4 + 1 long no overlap precision", Apfloat.INFINITE, r.precision());
+        assertEquals("2 + 4 + 1 long no overlap String", "111111111111111111111111111111222222222222222222222222222244444444444444444444444444444444", r.toString(true));
+
+        a = new RawtypeApfloatImpl("111111111111111111111111111111100000000000000000000000000000000000000000000000000000000000", Apfloat.INFINITE, 10, true);
+        b = new RawtypeApfloatImpl("000000000000000000000000000000222222222222222222222222222222222222222200000000000000000000", Apfloat.INFINITE, 10, true);
+        c = new RawtypeApfloatImpl("000000000000000000000000000000000000000000000000000000000044444444444444444444444444444444", Apfloat.INFINITE, 10, true);
+        r = a.addAll(b, c);
+        assertEquals("1 + 2 + 4 long overlap precision", Apfloat.INFINITE, r.precision());
+        assertEquals("1 + 2 + 4 long overlap String", "111111111111111111111111111111322222222222222222222222222266666666666644444444444444444444", r.toString(true));
+
+        a = new RawtypeApfloatImpl("-11111110000000.", Apfloat.DEFAULT, 10, false);
+        b = new RawtypeApfloatImpl("-00000000000000.4444444", Apfloat.DEFAULT, 10, false);
+        c = new RawtypeApfloatImpl("-00000002222222.", Apfloat.DEFAULT, 10, false);
+        r = a.addAll(b, c);
+        assertEquals("1 + .4 + 2 short precision", 14, r.precision());
+        assertEquals("1 + .4 + 2 short String", "-11111112222222", r.toString(true));
+
+        a = new RawtypeApfloatImpl("11111110000000.", Apfloat.DEFAULT, 10, false);
+        b = new RawtypeApfloatImpl("00000004444444.4444444", Apfloat.DEFAULT, 10, false);
+        c = new RawtypeApfloatImpl("00000002222222.", Apfloat.DEFAULT, 10, false);
+        r = a.addAll(b, c);
+        assertEquals("1 + 4.4 + 2 short precision", 14, r.precision());
+        assertEquals("1 + 4.4 + 2 short String", "11111116666666", r.toString(true));
+
+        a = new RawtypeApfloatImpl("1", Apfloat.DEFAULT, 10, false);
+        r = a.addAll();
+        assertEquals("1 precision", 1, r.precision());
+        assertEquals("1 String", "1", r.toString(true));
+
+        a = new RawtypeApfloatImpl("1e" + (Long.MAX_VALUE - 400), Apfloat.INFINITE, 2, false);
+        try
+        {
+            for (int i = 0; i < 400; i++)
+            {
+                a = a.addAll(Collections.nCopies(400, a).stream().toArray(RawtypeApfloatImpl[]::new));
+            }
+            fail("No overflow adding");
+        }
+        catch (OverflowException oe)
+        {
+            // OK: overflow
+            assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
     }
 

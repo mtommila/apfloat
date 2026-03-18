@@ -474,6 +474,22 @@ public class Util
     }
 
     /**
+     * If <code>x</code> is negative, this is treated as a case of overflow,
+     * and <code>Apfloat.INFINITE</code> is returned. Otherwise returns <code>x</code>.
+     *
+     * @param x The argument that is tested to be negative.
+     *
+     * @return <code>(x &lt; 0 ? Apfloat.INFINITE : x)</code>
+     *
+     * @since 1.16.0
+     */
+
+    public static long ifFiniteOrZero(long x)
+    {
+        return (x < 0 ? Apfloat.INFINITE : x);
+    }
+
+    /**
      * Returns the maximum of the arguments.
      *
      * @param x The first argument.
