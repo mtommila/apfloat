@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,9 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.Formattable;
 import java.util.Formatter;
+
+import org.apfloat.spi.Util;
+
 import static java.util.FormattableFlags.*;
 
 /**
@@ -46,7 +49,7 @@ import static java.util.FormattableFlags.*;
  * @see Apfloat
  * @see ApcomplexMath
  *
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -810,13 +813,13 @@ public class Apcomplex
             // Neither is zero, but the real part OR the imaginary part of each number may be zero
             long realScale = Math.max(real().scale(), z.real().scale()),
                  imagScale = Math.max(imag().scale(), z.imag().scale()),
-                 realScaleDiff = (maxScale - realScale < 0 ? Apfloat.INFINITE : maxScale - realScale),
-                 imagScaleDiff = (maxScale - imagScale < 0 ? Apfloat.INFINITE : maxScale - imagScale),
+                 realScaleDiff = Util.ifFiniteOrZero(maxScale - realScale),
+                 imagScaleDiff = Util.ifFiniteOrZero(maxScale - imagScale),
                  realEquals = real().equalDigits(z.real()),
                  imagEquals = imag().equalDigits(z.imag());
 
-            return Math.min(realEquals + realScaleDiff < 0 ? Apfloat.INFINITE : realEquals + realScaleDiff,
-                            imagEquals + imagScaleDiff < 0 ? Apfloat.INFINITE : imagEquals + imagScaleDiff);
+            return Math.min(Util.ifFiniteOrZero(realEquals + realScaleDiff),
+                            Util.ifFiniteOrZero(imagEquals + imagScaleDiff));
         }
     }
 

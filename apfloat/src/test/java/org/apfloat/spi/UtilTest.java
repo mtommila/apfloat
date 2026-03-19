@@ -66,6 +66,7 @@ public class UtilTest
         suite.addTest(new UtilTest("testLog2down"));
         suite.addTest(new UtilTest("testLog2up"));
         suite.addTest(new UtilTest("testIfFinite"));
+        suite.addTest(new UtilTest("testIfFiniteOrZero"));
         suite.addTest(new UtilTest("testMax"));
         suite.addTest(new UtilTest("testMin"));
         suite.addTest(new UtilTest("testMultiplyExact"));
@@ -298,6 +299,15 @@ public class UtilTest
     {
         assertEquals("Finite", 2, Util.ifFinite(1, 2));
         assertEquals("Infinite", Apfloat.INFINITE, Util.ifFinite(Apfloat.INFINITE, 2));
+    }
+
+    public static void testIfFiniteOrZero()
+    {
+        assertEquals("1", 1, Util.ifFiniteOrZero(1));
+        assertEquals("0", 0, Util.ifFiniteOrZero(0));
+        assertEquals("-1", Apfloat.INFINITE, Util.ifFiniteOrZero(-1));
+        assertEquals("MIN_VALUE", Apfloat.INFINITE, Util.ifFiniteOrZero(Long.MIN_VALUE));
+        assertEquals("Infinite", Apfloat.INFINITE, Util.ifFiniteOrZero(Apfloat.INFINITE));
     }
 
     public static void testMax()

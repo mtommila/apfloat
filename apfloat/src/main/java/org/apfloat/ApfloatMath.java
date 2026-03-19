@@ -728,7 +728,7 @@ public class ApfloatMath
             return x;                           // abs(x) < abs(y)
         }
         long scaleDiff = x.scale() - y.scale();                                 // We now know that x.scale() >= y.scale()
-        scaleDiff = (scaleDiff < 0 ? Apfloat.INFINITE : scaleDiff);             // Check for overflow
+        scaleDiff = Util.ifFiniteOrZero(scaleDiff);                             // Check for overflow
         if (x.precision() <= scaleDiff)                                         // We now know that scaleDiff >= 0
         {
             return Apfloat.ZEROS[x.radix()];    // Degenerate case; not enough precision to make any sense
@@ -2103,8 +2103,8 @@ public class ApfloatMath
                  newScale = x[i].scale(),
                  newPrec = x[i].precision();
             maxScale = Math.max(oldScale, newScale);
-            long oldScaleDiff = (maxScale - oldScale < 0 ? Apfloat.INFINITE : maxScale - oldScale),
-                 newScaleDiff = (maxScale - newScale < 0 ? Apfloat.INFINITE : maxScale - newScale);
+            long oldScaleDiff = Util.ifFiniteOrZero(maxScale - oldScale),
+                 newScaleDiff = Util.ifFiniteOrZero(maxScale - newScale);
             maxPrec = Math.min(Util.ifFinite(oldPrec, oldPrec + oldScaleDiff),
                                Util.ifFinite(newPrec, newPrec + newScaleDiff));
         }
@@ -2115,7 +2115,7 @@ public class ApfloatMath
         for (int i = 0; i < x.length; i++)
         {
             long scale = x[i].scale(),
-                 scaleDiff = (maxScale - scale < 0 ? Apfloat.INFINITE : maxScale - scale),
+                 scaleDiff = Util.ifFiniteOrZero(maxScale - scale),
                  destPrec = (maxPrec - scaleDiff <= 0 ? 0 : Util.ifFinite(maxPrec, maxPrec - scaleDiff));
             if (destPrec > 0)
             {

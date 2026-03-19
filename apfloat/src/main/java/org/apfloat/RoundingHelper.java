@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +25,15 @@ package org.apfloat;
 
 import java.math.RoundingMode;
 
+import org.apfloat.spi.Util;
+
 import static org.apfloat.ApfloatMath.abs;
 
 /**
  * Helper class for rounding functions.
  *
  * @since 1.7.0
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -66,7 +68,7 @@ class RoundingHelper
         else
         {
             long scaleDiff = x.scale() - y.scale();                             // We now know that x.scale() >= y.scale()
-            scaleDiff = (scaleDiff < 0 ? Apfloat.INFINITE : scaleDiff);         // Check for overflow
+            scaleDiff = Util.ifFiniteOrZero(scaleDiff);                         // Check for overflow
             precision = ApfloatHelper.extendPrecision(scaleDiff);               // Some extra precision to avoid round-off errors
         }
 
