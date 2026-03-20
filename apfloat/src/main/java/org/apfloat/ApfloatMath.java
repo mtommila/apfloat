@@ -2176,19 +2176,16 @@ public class ApfloatMath
 
             // Sort again the list as it has been now mixed up
             Collections.sort(list, comparator);
+
+            x = list.toArray(new Apfloat[list.size()]);
         }
         else
         {
             // Single thread case - just add all the numbers
-            list = Arrays.asList(x);
         }
 
         // Add the remaining elements in the queue (all, for the single-thread case, and sub-sums for the parallel case)
-        Apfloat s = Apfloat.ZERO;
-        for (Apfloat a : list)
-        {
-            s = s.add(a);
-        }
+        Apfloat s = Apfloat.combine(x);
 
         return s;
     }
