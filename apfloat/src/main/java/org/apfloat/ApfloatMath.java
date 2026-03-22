@@ -25,7 +25,6 @@ package org.apfloat;
 
 import java.math.RoundingMode;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
@@ -2173,9 +2172,6 @@ public class ApfloatMath
 
             // Put the remaining sub-sums to the list to be added once more
             list.addAll(queue);
-
-            // Sort again the list as it has been now mixed up
-            Collections.sort(list, comparator);
 
             x = list.toArray(new Apfloat[list.size()]);
         }
