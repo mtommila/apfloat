@@ -1170,7 +1170,7 @@ public class FixedPrecisionApfloatHelper
      *
      * @return logG(x)
      *
-     * @throws ArithmeticException If <code>z</code> is a nonpositive integer.
+     * @throws ArithmeticException If <code>x</code> is a nonpositive integer.
      *
      * @since 1.16.0
      */
