@@ -27,9 +27,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apfloat.*;
 
@@ -92,6 +95,7 @@ public class ParallelRunnerTest
         suite.addTest(new ParallelRunnerTest("testRunParallelTwo"));
         suite.addTest(new ParallelRunnerTest("testRunNoUnnecessaryTasks"));
         suite.addTest(new ParallelRunnerTest("testWait"));
+        suite.addTest(new ParallelRunnerTest("testWaitIdle"));
         suite.addTest(new ParallelRunnerTest("testInterrupt"));
 
         return suite;
@@ -348,6 +352,34 @@ public class ParallelRunnerTest
             awaitUninterrupted(otherLatch);
 
             assertEquals(threads + " threads (" + threadNames + ")", threads, threadNames.size());
+        }
+    }
+
+    public static void testWaitIdle()
+    {
+        for (int threads = 2; threads <= 32; threads += 5)
+        {
+            ApfloatContext ctx = ApfloatContext.getContext();
+            ctx.setNumberOfProcessors(threads);
+            ForkJoinPool forkJoinPool = (ForkJoinPool) ApfloatContext.getDefaultExecutorService();
+            ctx.setExecutorService(forkJoinPool);
+
+            AtomicInteger queuedSubmissionCount = new AtomicInteger();
+            AtomicLong queuedTaskCount = new AtomicLong();
+            long time = System.currentTimeMillis();
+            Future<?> dummyFuture = new DummyFuture()
+            {
+                @Override
+                public boolean isDone()
+                {
+                    queuedSubmissionCount.set(Math.max(queuedSubmissionCount.get(), forkJoinPool.getQueuedSubmissionCount()));
+                    queuedTaskCount.set(Math.max(queuedTaskCount.get(),  forkJoinPool.getQueuedTaskCount()));
+                    return System.currentTimeMillis() - time > 1000;
+                }
+            };
+            ctx.wait(dummyFuture);
+            assertTrue(threads + " threads max queued submission count (" + queuedSubmissionCount + " <= " + threads + ")", queuedSubmissionCount.get() <= threads);
+            assertTrue(threads + " threads max queued task count (" + queuedTaskCount + " <= " + threads + ")", queuedTaskCount.get() <= threads);
         }
     }
 

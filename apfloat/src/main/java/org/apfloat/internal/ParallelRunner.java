@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apfloat.ApfloatContext;
 import org.apfloat.ApfloatInterruptedException;
@@ -89,12 +90,16 @@ public class ParallelRunner
 
     public static void wait(Future<?> future)
     {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int numberOfProcessors = ctx.getNumberOfProcessors();
+        AtomicInteger inflightTasks = new AtomicInteger();
+
         StartableRunnable stealer = new StartableRunnable()
         {
             @Override
             public void run()
             {
-                while (isWorkToBeStarted())
+                if (!future.isDone())
                 {
                     // Try and get any running task
                     ParallelRunnable parallelRunnable = ParallelRunner.tasks.peek();
@@ -103,22 +108,31 @@ public class ParallelRunner
                         // Steal a minimal amount of work while we wait
                         parallelRunnable.runBatch();
                     }
-                    else
-                    {
-                        // Actually idle - give up the rest of the CPU time slice
-                        Thread.yield();
-                    }
                 }
+                inflightTasks.decrementAndGet();
             }
 
             @Override
             public boolean isWorkToBeStarted()
             {
-                return !future.isDone();
+                // Limit the number of inflight tasks as we repeatedly submit them
+                return !future.isDone() && inflightTasks.get() < numberOfProcessors;
+            }
+
+            @Override
+            public void submitted()
+            {
+                inflightTasks.incrementAndGet();
             }
         };
 
-        runTasks(stealer);
+        while (!future.isDone())
+        {
+            // Tasks should run only for a minimal time, so if there are other (non-ParallelRunner) tasks, they get to run, too
+            runTasks(stealer);
+            // Regardless of if we stole any work, give up the rest of the CPU time slice
+            Thread.yield();
+        }
     }
 
     private static class CountedRunnable
@@ -142,6 +156,7 @@ public class ParallelRunner
             if (this.next != null && this.runnable.isWorkToBeStarted())
             {
                 // Process the task in one more thread
+                this.next.submitted();
                 executorService.submit(this.next);
             }
             super.run();
@@ -158,6 +173,11 @@ public class ParallelRunner
             return super.cancel(mayInterruptIfRunning);
         }
 
+        public void submitted()
+        {
+            this.runnable.submitted();
+        }
+
         private StartableRunnable runnable;
         private ExecutorService executorService;
         private CountedRunnable next;
@@ -172,6 +192,7 @@ public class ParallelRunner
         CountedRunnable countedRunnable = new CountedRunnable(runnable, executorService, numberOfProcessors);
 
         // Also process the task in the current thread, until it is finished
+        countedRunnable.submitted();
         countedRunnable.run();
         try
         {

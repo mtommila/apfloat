@@ -41,4 +41,13 @@ public interface StartableRunnable
      */
 
     public boolean isWorkToBeStarted();
+
+    /**
+     * Callback indicating that this task is being submitted to the ExecutorService.
+     */
+
+    default public void submitted()
+    {
+        // By default does nothing
+    }
 }

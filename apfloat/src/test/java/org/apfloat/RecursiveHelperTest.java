@@ -189,7 +189,7 @@ public class RecursiveHelperTest
     private static Void await(int t, long i, Set<Thread> threads, CountDownLatch latch)
     {
         int numberOfProcessors = ApfloatContext.getContext().getNumberOfProcessors();
-        assertEquals("Number of processors", 1, numberOfProcessors);
+        assertEquals("Number of processors", t, numberOfProcessors);
         threads.add(Thread.currentThread());
         latch.countDown();
         try
@@ -234,7 +234,7 @@ public class RecursiveHelperTest
     private static Void await(int p, long i, Map<Integer, Integer> processorCounts, CountDownLatch latch)
     {
         int numberOfProcessors = ApfloatContext.getContext().getNumberOfProcessors();
-        assertEquals("Index " + i + " number of processors", p, numberOfProcessors);
+        assertEquals("Index " + i + " number of processors", p * p, numberOfProcessors);
         processorCounts.compute(p, (k, v) -> (v == null ? 0 : v) + 1);
         latch.countDown();
         try
