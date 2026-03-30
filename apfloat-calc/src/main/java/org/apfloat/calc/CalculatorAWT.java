@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2024 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 /**
  * Graphical AWT elements for the calculator.
  *
- * @version 1.14.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -216,7 +216,28 @@ public class CalculatorAWT
             }
             catch (Exception e)
             {
-                this.out.println(e.getMessage());
+                String previousMessage = null;
+                StringBuilder buffer = null;
+                Throwable t = e;
+                while (t != null)
+                {
+                    String message = t.getMessage();
+                    if (message != null && !message.equals(previousMessage))
+                    {
+                        if (buffer == null)
+                        {
+                            buffer = new StringBuilder();
+                        }
+                        else
+                        {
+                            buffer.append(": ");
+                        }
+                        buffer.append(message);
+                    }
+                    previousMessage = message;
+                    t = t.getCause();
+                }
+                this.out.println(buffer == null ? e : buffer);
             }
             finally
             {
