@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import org.apfloat.internal.IntBuilderFactory;
  * Builder factory for aparapi transform implementations for the <code>int</code> element type.
  *
  * @since 1.8.3
- * @version 1.15.0
+ * @version 1.16.0
  * @author Mikko Tommila
  */
 
@@ -44,15 +44,17 @@ public class IntAparapiBuilderFactory
 
     public IntAparapiBuilderFactory()
     {
-        boolean rowOrientation = Boolean.parseBoolean(ApfloatContext.getContext().getProperty("rowOrientation"));
-        this.nttBuilder = new IntAparapiNTTBuilder(rowOrientation);
+        this.columnNttBuilder = new IntAparapiNTTBuilder(false);
+        this.rowNttBuilder = new IntAparapiNTTBuilder(true);
     }
 
     @Override
     public NTTBuilder getNTTBuilder()
     {
-        return this.nttBuilder;
+        boolean rowOrientation = Boolean.parseBoolean(ApfloatContext.getContext().getProperty("rowOrientation"));
+        return (rowOrientation ? this.rowNttBuilder : this.columnNttBuilder);
     }
 
-    private NTTBuilder nttBuilder;
+    private NTTBuilder columnNttBuilder,
+                       rowNttBuilder;
 }
