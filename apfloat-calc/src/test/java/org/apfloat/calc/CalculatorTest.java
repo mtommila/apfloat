@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.16.0
+ * @version 1.17.0
  * @author Mikko Tommila
  */
 
@@ -288,7 +288,7 @@ public class CalculatorTest
         assertCalculation("-2.60129", "gegenbauerC(-1.10000,-1.30000,2.50000)");
         assertCalculation("1.282427", "glaisher(7)");
         assertCalculation("1.12151", "harmonicNumber(1.20000)");
-        assertCalculation("1.104113", "harmonicNumber(1.200000,1.300000)");
+        assertCalculation("1.104113", "harmonicNumber(1.2000000,1.3000000)");
         assertCalculation("42142223/12252240", "harmonicNumber(17)");
         assertCalculation("6301272372663207205033976933/6076911214672415134617600000", "harmonicNumber(13,5)");
         assertCalculation("3.04424", "hermiteH(1.20000,1.30000)");

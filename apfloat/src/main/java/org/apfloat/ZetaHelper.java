@@ -108,7 +108,12 @@ class ZetaHelper
         }
         else
         {
-            return alternatingSum(s);
+            Apcomplex result = alternatingSum(s);
+            if (sEqualDigitsOne > 0)
+            {
+                result = ApfloatHelper.limitPrecision(result, precision - sEqualDigitsOne);
+            }
+            return result;
         }
     }
 

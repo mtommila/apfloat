@@ -51,7 +51,8 @@ class HurwitzZetaHelper
         {
             throw new ApfloatArithmeticException("Zeta of first argument one", "zeta.ofFirstOne");
         }
-        if (a.real().signum() > 0 && a.scale() >= 1 && s.equalDigits(one) >= Long.divideUnsigned(s.precision() + 2, 3) + a.scale() / 3)
+        long sEqualDigitsOne = s.equalDigits(one);
+        if (a.real().signum() > 0 && a.scale() >= 1 && sEqualDigitsOne >= Long.divideUnsigned(s.precision() + 2, 3) + a.scale() / 3)
         {
             // The generalized Stieltjes gamma constants in the Hurwitz zeta series grow logarithmically with |a| so they reduce the precision of the result
             return one.divide(s.subtract(one)).subtract(digamma(a));
@@ -129,7 +130,8 @@ class HurwitzZetaHelper
                 a = ApfloatHelper.ensurePrecision(a, precision);
             }
         } while (precisionLoss > 0);
-        return ApfloatHelper.limitPrecision(result, targetPrecision);
+        long limitPrecision = Math.max(1, targetPrecision - sEqualDigitsOne);
+        return ApfloatHelper.limitPrecision(result, limitPrecision);
     }
 
     private static long zetaScale(Apcomplex s, Apcomplex a)

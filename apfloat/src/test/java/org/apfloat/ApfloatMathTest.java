@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
 import static java.math.RoundingMode.*;
 
 /**
- * @version 1.16.0
+ * @version 1.17.0
  * @author Mikko Tommila
  */
 
@@ -3582,6 +3582,14 @@ public class ApfloatMathTest
         assertEquals("0.5 precision", 6, a.precision());
         assertEquals("0.5 value", new Apfloat("-1.46035"), a, new Apfloat("5e-5"));
 
+        a = ApfloatMath.zeta(new Apfloat("1.10000"));
+        assertEquals("1.1 precision", 5, a.precision());
+        assertEquals("1.1 value", new Apfloat("10.5844"), a, new Apfloat("5e-3"));
+
+        a = ApfloatMath.zeta(new Apfloat("0.990000"));
+        assertEquals("0.99 precision", 5, a.precision());
+        assertEquals("0.99 value", new Apfloat("-99.424"), a, new Apfloat("5e-3"));
+
         a = ApfloatMath.zeta(new Apfloat("0"));
         assertEquals("0 precision", Apfloat.INFINITE, a.precision());
         assertEquals("0 value", new Apfloat("-0.5"), a);
@@ -3686,6 +3694,10 @@ public class ApfloatMathTest
         a = ApfloatMath.zeta(new Apfloat("-3.00000"), new Apfloat("1.00000"));
         assertEquals("-3,1 precision", 6, a.precision());
         assertEquals("-3,1 value", new Apfloat("0.00833333"), a, new Apfloat("5e-8"));
+
+        a = ApfloatMath.zeta(new Apfloat("1.0000000000000000001"), new Apfloat("3.500000000"));
+        assertEquals("1.0000000000000000001,3.5 precision", 1, a.precision());
+        assertEquals("1.0000000000000000001,3.5 value", new Apfloat("1e19"), a, new Apfloat("5e18"));
 
         a = ApfloatMath.zeta(new Apfloat("0"), new Apfloat("0"));
         assertEquals("0,0 precision", Apfloat.INFINITE, a.precision());
@@ -5884,9 +5896,9 @@ public class ApfloatMathTest
         assertEquals("-4, -3 value", new Apfloat("36.0000"), a, new Apfloat("5e-4"));
 
         a = ApfloatMath.harmonicNumber(new Apfloat("0.1", 21, 2), new Apfloat("0.11", 21, 2));
-        assertEquals("0.5, 0.75 precision", 18, a.precision());
+        assertEquals("0.5, 0.75 precision", 17, a.precision());
         assertEquals("0.5, 0.75 radix", 2, a.radix());
-        assertEquals("0.5, 0.75 value", new Apfloat("0.10010110001101010101", 18, 2), a, new Apfloat("1e-18", 1, 2));
+        assertEquals("0.5, 0.75 value", new Apfloat("0.10010110001101010101", 17, 2), a, new Apfloat("1e-17", 1, 2));
 
         try
         {
