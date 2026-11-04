@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,13 @@ package org.apfloat;
 
 import org.apfloat.spi.Util;
 
+import static org.apfloat.ApfloatMath.euler;
+
 /**
  * Helper class for the Riemann zeta function.
  *
  * @since 1.11.0
- * @version 1.15.0
+ * @version 1.17.0
  * @author Mikko Tommila
  */
 
@@ -48,6 +50,11 @@ class ZetaHelper
         if (s.equals(one))
         {
             throw new ApfloatArithmeticException("Zeta of one", "zeta.ofOne");
+        }
+        long sEqualDigitsOne = s.equalDigits(one);
+        if (sEqualDigitsOne > 0 && sEqualDigitsOne >= Long.divideUnsigned(s.precision() + 2, 3))
+        {
+            return one.divide(s.subtract(one)).add(euler(s.precision(), s.radix()));
         }
         Apint two = new Apint(2, radix);
         if (s.isZero())
@@ -119,15 +126,14 @@ class ZetaHelper
     public static Apcomplex alternatingSum(Apcomplex s)
     {
         int radix = s.radix();
-        long doublePrecision = ApfloatHelper.getDoublePrecision(radix),
-             extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
+        long extraPrecision = ApfloatHelper.getSmallExtraPrecision(radix),
              workingPrecision = ApfloatHelper.extendPrecision(s.precision(), extraPrecision);
         s = ApfloatHelper.extendPrecision(s, extraPrecision);
         Apint one = Apint.ONES[radix],
               two = new Apint(2, radix),
               four = new Apint(4, radix);
         double t = Math.abs(s.imag().doubleValue()),
-               s12 = ApcomplexMath.abs(one.subtract(ApcomplexMath.pow(two, one.subtract(s.precision(doublePrecision))))).doubleValue();
+               s12 = ApcomplexMath.abs(one.subtract(ApcomplexMath.pow(two, one.subtract(s)))).doubleValue();
         long n = (long) ((workingPrecision * Math.log(radix) + t * Math.PI / 2 + Math.log((1 + 2 * t) / s12)) / Math.log(3 + Math.sqrt(8))),
              n2 = Util.multiplyExact(n, 2);
         Apfloat denominator = ApfloatMath.factorial(n2, workingPrecision, radix),

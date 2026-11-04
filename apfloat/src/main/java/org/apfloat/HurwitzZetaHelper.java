@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,13 +27,14 @@ import java.util.Iterator;
 
 import org.apfloat.spi.Util;
 
+import static org.apfloat.ApcomplexMath.digamma;
 import static org.apfloat.ApcomplexMath.isNonPositiveInteger;
 
 /**
  * Helper class for the Hurwitz zeta function.
  *
  * @since 1.11.0
- * @version 1.16.0
+ * @version 1.17.0
  * @author Mikko Tommila
  */
 
@@ -49,6 +50,11 @@ class HurwitzZetaHelper
         if (s.equals(one))
         {
             throw new ApfloatArithmeticException("Zeta of first argument one", "zeta.ofFirstOne");
+        }
+        if (a.real().signum() > 0 && a.scale() >= 1 && s.equalDigits(one) >= Long.divideUnsigned(s.precision() + 2, 3) + a.scale() / 3)
+        {
+            // The generalized Stieltjes gamma constants in the Hurwitz zeta series grow logarithmically with |a| so they reduce the precision of the result
+            return one.divide(s.subtract(one)).subtract(digamma(a));
         }
         if (s.isZero() && a.isZero())
         {
