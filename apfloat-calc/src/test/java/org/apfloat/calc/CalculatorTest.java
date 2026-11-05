@@ -220,6 +220,7 @@ public class CalculatorTest
         assertCalculation("4.61789e-1", "airyBiPrime(0.200000)");
         assertCalculation("9.5235e-1", "angerJ(0.200000,0.700000)");
         assertCalculation("127313963299399416749559771247411200000000000", "barnesG(14)");
+        assertCalculation("190899322", "bellB(14)");
         assertCalculation("7/6", "bernoulli(14)");
         assertCalculation("3.3124e4", "bernoulliB(4,14.0000)");
         assertCalculation("1.72763", "besselI(0.700000,1.90000)");
@@ -451,6 +452,10 @@ public class CalculatorTest
         assertCalculationFailure("angerJ(1.0,1.0,1.0)");
         assertCalculationFailure("barnesG()");
         assertCalculationFailure("barnesG(1, 1)");
+        assertCalculationFailure("bellB(-1)");
+        assertCalculationFailure("bellB(i)");
+        assertCalculationFailure("bellB()");
+        assertCalculationFailure("bellB(1,1)");
         assertCalculationFailure("bernoulli(-1)");
         assertCalculationFailure("bernoulli(i)");
         assertCalculationFailure("bernoulli()");

@@ -40,7 +40,7 @@ import org.apfloat.spi.Util;
 /**
  * Arbitrary precision calculator implementation.
  *
- * @version 1.16.0
+ * @version 1.17.0
  * @author Mikko Tommila
  */
 
@@ -210,6 +210,12 @@ public class ApfloatCalculatorImpl
         public Number barnesG(Number x)
         {
             return ApcomplexMath.barnesG((Apcomplex) x);
+        }
+
+        @Override
+        public Number bellB(Number x)
+        {
+            throw new IllegalArgumentException("Bell B can only be used with a valid integer argument");
         }
 
         @Override
@@ -1377,6 +1383,12 @@ public class ApfloatCalculatorImpl
     private class ApintFunctions
         extends AprationalFunctions
     {
+        @Override
+        public Number bellB(Number x)
+        {
+            return ApintMath.bellB((Apint) x);
+        }
+
         @Override
         public Number binomial(Number x, Number y)
         {

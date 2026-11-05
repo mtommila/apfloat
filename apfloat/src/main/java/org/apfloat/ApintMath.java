@@ -26,12 +26,13 @@ package org.apfloat;
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Reader;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
  * Various mathematical functions for arbitrary precision integers.
  *
- * @version 1.16.0
+ * @version 1.17.0
  * @author Mikko Tommila
  */
 
@@ -1021,6 +1022,93 @@ public class ApintMath
         throws IllegalArgumentException, ApfloatRuntimeException
     {
         return StirlingHelper.stirlingS2(n, k);
+    }
+
+    /**
+     * Bell number. Uses the default radix.
+     *
+     * @param n The index.
+     *
+     * @return <i>B<sub>n</sub></i>
+     *
+     * @throws IllegalArgumentException In case n is negative.
+     *
+     * @since 1.17.0
+     */
+
+    public static Apint bellB(long n)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        ApfloatContext ctx = ApfloatContext.getContext();
+        int radix = ctx.getDefaultRadix();
+
+        return bellB(n, radix);
+    }
+
+    /**
+     * Bell number. Uses the specified radix.
+     *
+     * @param n The index.
+     * @param radix The radix.
+     *
+     * @return <i>B<sub>n</sub></i>
+     *
+     * @throws NumberFormatException If the radix is not valid.
+     * @throws IllegalArgumentException In case n is negative.
+     *
+     * @since 1.17.0
+     */
+
+    public static Apint bellB(long n, int radix)
+        throws NumberFormatException, IllegalArgumentException, ApfloatRuntimeException
+    {
+        if (n < 0)
+        {
+            throw new IllegalArgumentException("Index must be nonnegative");
+        }
+        ApfloatHelper.checkRadix(radix);
+        if (n <= 1)
+        {
+            return Apint.ONES[radix];
+        }
+        // Finite Dobiński's formula
+        Apint factorial = factorial(n, radix),
+              d = Apint.ONES[radix],
+              sum = pow(new Apint(n, radix), n);
+        Iterator<Apint> binomial = BinomialHelper.binomials(n, 1, radix);
+        for (long i = n; i > 1; i--)
+        {
+            Apint k = new Apint(i, radix),
+                  p = pow(new Apint(i - 1, radix), n),
+                  b = binomial.next();
+            d = d.multiply(k);
+            d = ((n - i & 1) == 0 ? d.subtract(b) : d.add(b));
+            sum = sum.add(p.multiply(d));
+        }
+        sum = sum.divide(factorial);
+        return sum;
+    }
+
+    /**
+     * Bell number.
+     *
+     * @param n The index.
+     *
+     * @return <i>B<sub>n</sub></i>
+     *
+     * @throws IllegalArgumentException In case n is negative.
+     *
+     * @since 1.17.0
+     */
+
+    public static Apint bellB(Apint n)
+        throws IllegalArgumentException, ApfloatRuntimeException
+    {
+        if (n.signum() < 0)
+        {
+            throw new IllegalArgumentException("Index must be nonnegative");
+        }
+        return bellB(ApfloatHelper.longValueExact(n), n.radix());
     }
 
     /**

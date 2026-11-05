@@ -33,7 +33,7 @@ import java.util.Map;
  * Calculator implementation with function support.
  * Provides a mapping mechanism for functions.
  *
- * @version 1.16.0
+ * @version 1.17.0
  * @author Mikko Tommila
  */
 
@@ -160,6 +160,7 @@ public abstract class FunctionCalculatorImpl
         public Number atan(Number x);
         public Number atanh(Number x);
         public Number barnesG(Number x);
+        public Number bellB(Number x);
         public Number bernoulli(Number x);
         public Number bernoulliB(Number x, Number y);
         public Number besselI(Number x, Number y);
@@ -319,6 +320,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("atan", fixedFunction("atan", 1, (functions, arguments) -> functions.atan(arguments.get(0))));
         setFunction("atanh", fixedFunction("atanh", 1, (functions, arguments) -> functions.atanh(arguments.get(0))));
         setFunction("barnesG", fixedFunction("barnesG", 1, (functions, arguments) -> functions.barnesG(arguments.get(0))));
+        setFunction("bellB", fixedFunction("bellB", 1, (functions, arguments) -> functions.bellB(arguments.get(0))));
         setFunction("bernoulli", fixedFunction("bernoulli", 1, (functions, arguments) -> functions.bernoulli(arguments.get(0))));
         setFunction("bernoulliB", fixedFunction("bernoulliB", 2, (functions, arguments) -> functions.bernoulliB(arguments.get(0), arguments.get(1))));
         setFunction("besselI", fixedFunction("besselI", 2, (functions, arguments) -> functions.besselI(arguments.get(0), arguments.get(1))));

@@ -29,7 +29,7 @@ import java.util.Map;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.16.0
+ * @version 1.17.0
  * @author Mikko Tommila
  */
 
@@ -67,6 +67,7 @@ public class ApintMathTest
         suite.addTest(new ApintMathTest("testBinomial"));
         suite.addTest(new ApintMathTest("testStirlingS1"));
         suite.addTest(new ApintMathTest("testStirlingS2"));
+        suite.addTest(new ApintMathTest("testBellB"));
         suite.addTest(new ApintMathTest("testSum"));
         suite.addTest(new ApintMathTest("testRandom"));
         suite.addTest(new ApintMathTest("testMax"));
@@ -717,6 +718,32 @@ public class ApintMathTest
         a = ApintMath.stirlingS2(7, 5, 13);
         assertEquals("7, 5 radix", 13, a.radix());
         assertEquals("7, 5 value", new Apint(140, 13), a);
+    }
+
+    public static void testBellB()
+    {
+        Apint a = ApintMath.bellB(7);
+        assertEquals("7 value", new Apint(877), a);
+
+        a = ApintMath.bellB(new Apint(10));
+        assertEquals("10 value", new Apint(115975), a);
+
+        a = ApintMath.bellB(0);
+        assertEquals("0 value", new Apint(1), a);
+
+        a = ApintMath.bellB(7, 13);
+        assertEquals("7, 13 radix", 13, a.radix());
+        assertEquals("7, 13 value", new Apint(877, 13), a);
+
+        try
+        {
+            ApintMath.bellB(-1);
+            fail("-1 allowed");
+        }
+        catch (IllegalArgumentException iae)
+        {
+            // OK: zero precision
+        }
     }
 
     public static void testProduct()
