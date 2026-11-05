@@ -692,6 +692,16 @@ public class ApintMathTest
             // OK: overflow
             assertEquals("Localization key", "overflow", oe.getLocalizationKey());
         }
+
+        try
+        {
+            ApintMath.binomial(-2, -1, 1);
+            fail("Radix 1 allowed");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK: invalid radix
+        }
     }
 
     public static void testStirlingS1()
@@ -743,6 +753,16 @@ public class ApintMathTest
         catch (IllegalArgumentException iae)
         {
             // OK: zero precision
+        }
+
+        try
+        {
+            ApintMath.bellB(0, 1);
+            fail("Radix 1 allowed");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK: invalid radix
         }
     }
 

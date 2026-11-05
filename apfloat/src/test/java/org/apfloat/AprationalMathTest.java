@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2002-2025 Mikko Tommila
+ * Copyright (c) 2002-2026 Mikko Tommila
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import java.util.Arrays;
 import junit.framework.TestSuite;
 
 /**
- * @version 1.15.0
+ * @version 1.17.0
  * @author Mikko Tommila
  */
 
@@ -780,6 +780,16 @@ public class AprationalMathTest
         catch (IllegalArgumentException iae)
         {
             // OK
+        }
+
+        try
+        {
+            AprationalMath.bernoulli(0, 1);
+            fail("Radix 1 allowed");
+        }
+        catch (NumberFormatException nfe)
+        {
+            // OK: invalid radix
         }
     }
 

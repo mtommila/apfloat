@@ -33,7 +33,7 @@ import org.apfloat.spi.Util;
 /**
  * Various mathematical functions for arbitrary precision rational numbers.
  *
- * @version 1.16.0
+ * @version 1.17.0
  * @author Mikko Tommila
  */
 
@@ -632,6 +632,7 @@ public class AprationalMath
             throw new IllegalArgumentException("Negative Bernoulli number: " + n);
         }
 
+        ApfloatHelper.checkRadix(radix);
         if (n == 0)
         {
             return Apint.ONES[radix];

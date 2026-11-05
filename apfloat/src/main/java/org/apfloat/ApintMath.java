@@ -748,6 +748,7 @@ public class ApintMath
     public static Apint binomial(long n, long k, int radix)
         throws NumberFormatException, ApfloatRuntimeException
     {
+        ApfloatHelper.checkRadix(radix);
         // See https://mathworld.wolfram.com/BinomialCoefficient.html for the logic on negative values
         boolean negate = false;
         if (n < 0)
