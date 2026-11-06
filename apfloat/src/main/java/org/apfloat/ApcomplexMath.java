@@ -1285,9 +1285,10 @@ public class ApcomplexMath
     public static Apcomplex acosh(Apcomplex z)
         throws ApfloatRuntimeException
     {
-        Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix());
+        Apfloat one = new Apfloat(1, Apfloat.INFINITE, z.radix()),
+                minusOne = new Apfloat(-1, Apfloat.INFINITE, z.radix());
 
-        if (z.real().signum() > 0 || z.real().signum() == 0 && z.imag().signum() >= 0)
+        if (z.real().signum() > 0 || z.real().signum() == 0 && z.imag().signum() >= 0 || z.imag().signum() == 0 && z.real().compareTo(minusOne) > 0 && z.real().signum() < 0)
         {
             return log(z.add(sqrt(z.multiply(z).subtract(one))));
         }
