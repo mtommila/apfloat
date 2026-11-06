@@ -757,21 +757,23 @@ public class ApcomplexMath
     {
         // See  D. A. Cox, "The Arithmetic-Geometric Mean of Gauss", L'Enseignement Mathematique, Vol. 30, 1984, pp. 275-330
         // or for example Tomack Gilmore's paper about it: https://homepage.univie.ac.at/tomack.gilmore/papers/Agm.pdf
+        // It is the "right" result if:
         // 1. norm(a1 - b1) <= norm(a1 + b1)
         // 2. If norm(a1 - b1) = norm(a1 + b1) then imag(b1 / a1) > 0
         Apcomplex result = sqrt(z);
 
-        // First compare norms with low precision
-        int doublePrecision = ApfloatHelper.getDoublePrecision(z.radix());
-        Apcomplex approxResult = result.precision(doublePrecision);
-        Apcomplex approxReference = reference.precision(doublePrecision);
-        int comparison = norm(approxReference.subtract(approxResult)).compareTo(norm(approxReference.add(approxResult)));
-        if (comparison == 0)
-        {
-            // Full precision comparison as they are equal to low precision
-            comparison = norm(reference.subtract(result)).compareTo(norm(reference.add(result)));
-        }
-        if (comparison > 0 || comparison == 0 && result.divide(reference).imag().signum() <= 0)
+        // Note that:
+        // norm(a + b) - norm(a - b) = 4 Re(ab̅)
+        // Thus:
+        // norm(a - b) <= norm(a + b) <==> Re(ab̅) >= 0
+        // norm(a - b) == norm(a + b) <==> Re(ab̅) == 0
+        // And:
+        // Im(b/a) = Im(ba̅)/norm(a)
+        // Hence the signum of Im(b/a) is the signum of Im(ba̅)
+        // (a is the "reference", b is the "result", although the right choice remains the same even if we swap them)
+        Apcomplex rr = reference.multiply(result.conj());
+        int comparison = rr.real().signum();
+        if (comparison < 0 || comparison == 0 && rr.imag().signum() > 0)
         {
             result = result.negate();
         }

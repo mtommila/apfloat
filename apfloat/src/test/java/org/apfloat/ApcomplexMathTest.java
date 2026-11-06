@@ -693,6 +693,11 @@ public class ApcomplexMathTest
         assertEquals("(-1,-2), (-3,-4), prec 10, precision", 10, a.precision());
         assertEquals("(-1,-2), (-3,-4), prec 10, value", new Apcomplex("(-1.877468123,-2.921948542)"), a, new Apfloat("5e-9"));
 
+        a = ApcomplexMath.agm(new Apcomplex(new Apfloat(1, 10)),
+                              new Apcomplex(new Apfloat(2, 10), new Apfloat(3, 10)));
+        assertEquals("1, (2,3), prec 10, precision", 10, a.precision());
+        assertEquals("1, (2,3), prec 10, value", new Apcomplex("(1.599383992,1.197001337)"), a, new Apfloat("5e-9"));
+
         a = ApcomplexMath.agm(new Apcomplex(new Apfloat(0)), new Apcomplex(new Apfloat(1)));
         assertEquals("0, 1", new Apfloat(0), a);
 
@@ -6143,6 +6148,10 @@ public class ApcomplexMathTest
         Apcomplex a = ApcomplexMath.ellipticK(new Apcomplex("(3.00000,4.00000)"));
         assertEquals("3 + 4i precision", 6, a.precision());
         assertEquals("3 + 4i value", new Apcomplex("(0.911196,0.631334)"), a, new Apfloat("5e-6"));
+
+        a = ApcomplexMath.ellipticK(new Apcomplex("1.000000000000000000000000e200"));
+        assertEquals("1e15 precision", 25, a.precision());
+        assertEquals("1e15 value", new Apcomplex("(1.570796326794896619231322e-100,-2.316448036605244590206336e-98)"), a, new Apfloat("5e-122"));
 
         a = ApcomplexMath.ellipticK(new Apcomplex(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2)));
         assertEquals("0.5 + 0.75i precision", 18, a.precision());
