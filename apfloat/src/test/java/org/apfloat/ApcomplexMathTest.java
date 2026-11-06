@@ -2343,10 +2343,10 @@ public class ApcomplexMathTest
         assertEquals("-1.539926526059491e2-8.659643233600654i,3.651741272548377e1+3.651741272548377e1i precision 10", 7, a.precision());
         assertEquals("-1.539926526059491e2-8.659643233600654i,3.651741272548377e1+3.651741272548377e1i value 10", new Apcomplex("(-1.000387473e-279,2.19340186e-280)"), a, new Apfloat("5e-288"));
         a = ApcomplexMath.gamma(new Apcomplex("(-1.539926526059491e2,-8.659643233600654)").precision(100), new Apcomplex("(3.651741272548377e1,3.651741272548377e1)").precision(100));
-        assertEquals("-1.539926526059491e2-8.659643233600654i,3.651741272548377e1+3.651741272548377e1i precision 100", 99, a.precision());
+        assertEquals("-1.539926526059491e2-8.659643233600654i,3.651741272548377e1+3.651741272548377e1i precision 100", 98, a.precision());
         assertEquals("-1.539926526059491e2-8.659643233600654i,3.651741272548377e1+3.651741272548377e1i value 100", new Apcomplex("(-1.000387472881261786364648259266083073101695881441237876788775418264481632743088708557828811438171176e-279,2.19340185670881734177337416745907040764484275856218117734431994846665774924244282427508784873315962e-280)"), a, new Apfloat("5e-378"));
         a = ApcomplexMath.gamma(new Apcomplex("(-1.539926526059491e2,-8.659643233600654)").precision(150), new Apcomplex("(3.651741272548377e1,3.651741272548377e1)").precision(150));
-        assertEquals("-1.539926526059491e2-8.659643233600654i,3.651741272548377e1+3.651741272548377e1i precision 150", 149, a.precision());
+        assertEquals("-1.539926526059491e2-8.659643233600654i,3.651741272548377e1+3.651741272548377e1i precision 150", 148, a.precision());
         assertEquals("-1.539926526059491e2-8.659643233600654i,3.651741272548377e1+3.651741272548377e1i value 150", new Apcomplex("(-1.00038747288126178636464825926608307310169588144123787678877541826448163274308870855782881143817117680690207698118346329877280924878328777673631757823e-279,2.1934018567088173417733741674590704076448427585621811773443199484666577492424428242750878487331596225808712634666511287059353332666354112564113593836e-280)"), a, new Apfloat("5e-428"));
 
         a = ApcomplexMath.gamma(new Apcomplex("(-1.539926526059491e2,3.651741272548377e1)"), new Apcomplex("(-1.539926526059491e2,2.053525026457146)"));
@@ -2403,7 +2403,7 @@ public class ApcomplexMathTest
         assertEquals("100000+100000i,2+3i", new Apcomplex("(3.13729e437509,2.911201e437510)"), a, new Apfloat("5e437505"));
 
         a = ApcomplexMath.gamma(new Apcomplex("(0,100000.00000)"), new Apcomplex("(2.0000000000,3.0000000000)"));
-        assertEquals("100000i,2+3i precision", 7, a.precision());
+        assertEquals("100000i,2+3i precision", 6, a.precision());
         assertEquals("100000i,2+3i", new Apcomplex("(8.7426106520e-42689,-4.958470896e-42690)"), a, new Apfloat("5e-42695"));
 
         a = ApcomplexMath.gamma(new Apcomplex("(-100000.000,100000.000)"), new Apcomplex("(2.00000000,3.00000000)"));
@@ -2419,7 +2419,7 @@ public class ApcomplexMathTest
         assertEquals("-100000-100000i,2+3i", new Apcomplex("(-9.8621266689e-13022,-1.956797639e-13022)"), a, new Apfloat("5e-13030"));
 
         a = ApcomplexMath.gamma(new Apcomplex("(0,-100000.00000)"), new Apcomplex("(2.0000000000,3.0000000000)"));
-        assertEquals("-100000i,2+3i precision", 7, a.precision());
+        assertEquals("-100000i,2+3i precision", 6, a.precision());
         assertEquals("-100000i,2+3i", new Apcomplex("(1.97199906e42676,6.97215465e42675)"), a, new Apfloat("5e42670"));
 
         a = ApcomplexMath.gamma(new Apcomplex("(100000.000,-100000.000)"), new Apcomplex("(2.00000000,3.00000000)"));
@@ -4898,11 +4898,11 @@ public class ApcomplexMathTest
 
         // z very large
         a = ApcomplexMath.hypergeometricU(new Apcomplex("(1.000000,2.000000)"), new Apcomplex("(3.000000,4.000000)"), new Apcomplex("(500000.0,600000.0)"));
-        assertEquals("1+2i, 3+4i, 500000+600000i precision", 3, a.precision());
+        assertEquals("1+2i, 3+4i, 500000+600000i precision", 6, a.precision());
         assertEquals("1+2i, 3+4i, 500000+600000i value", new Apcomplex("(-7.13250e-6,-1.90930e-6)"), a, new Apfloat("5e-8"));
 
         a = ApcomplexMath.hypergeometricU(new Apcomplex("(1.000000,2.000000)"), new Apcomplex("(3.000000,2.000000)"), new Apcomplex("(500000.0,600000.0)"));
-        assertEquals("1+2i, 3+2i, 500000+600000i precision", 3, a.precision());
+        assertEquals("1+2i, 3+2i, 500000+600000i precision", 6, a.precision());
         assertEquals("1+2i, 3+2i, 500000+600000i value", new Apcomplex("(-7.13252e-6,-1.90926e-6)"), a, new Apfloat("5e-8"));
 
         a = ApcomplexMath.hypergeometricU(new Apcomplex("(3.000000,2.000000)"), new Apcomplex("(1.000000,2.000000)"), new Apcomplex("(500.0000,600.0000)"));    // z very large and b - a nonpositive integer
@@ -4924,7 +4924,7 @@ public class ApcomplexMathTest
         assertEquals("-1, 1.5, 0 value", new Apcomplex("-1.50000"), a, new Apfloat("5e-5"));
 
         a = ApcomplexMath.hypergeometricU(new Apcomplex("-42.00000"), new Apcomplex("(3.00000,4.00000)"), new Apcomplex("(5.00000,6.00000)"));
-        assertEquals("-42, 3+4i, 5+6i precision", 6, a.precision());
+        assertEquals("-42, 3+4i, 5+6i precision", 5, a.precision());
         assertEquals("-42, 3+4i, 5+6i value", new Apcomplex("(2.80183e55,8.28632e56)"), a, new Apfloat("5e51"));
 
         a = ApcomplexMath.hypergeometricU(new Apcomplex("(1.000000,2.000000)"), new Apcomplex("(3.000000,2.000000)"), new Apcomplex("(500.0000,600.0000)"));    // z very large and a - b + 1 nonpositive integer

@@ -2727,10 +2727,10 @@ public class ApfloatMathTest
         assertEquals("1,-1 precision", 10, a.precision());
         assertEquals("1,-1 value", new Apfloat("2.718281828"), a, new Apfloat("5e-9"));
         a = ApfloatMath.gamma(new Apfloat(100, 10), new Apfloat(1, 10));
-        assertEquals("100,1 precision", 10, a.precision());
+        assertEquals("100,1 precision", 9, a.precision());
         assertEquals("100,1 value", new Apfloat("9.332621544e155"), a, new Apfloat("5e-146"));
         a = ApfloatMath.gamma(new Apfloat("-100.5", 12), new Apfloat(1, 12));
-        assertEquals("-100.5,1 precision", 11, a.precision());
+        assertEquals("-100.5,1 precision", 10, a.precision());
         assertEquals("-100.5,1 value", new Apfloat("0.00362407278773"), a, new Apfloat("5e-13"));
 
         a = ApfloatMath.gamma(new Apfloat(-1, 10), new Apfloat(1, 10));
@@ -2740,7 +2740,7 @@ public class ApfloatMathTest
         assertEquals("-1,10 precision", 9, a.precision());
         assertEquals("-1,10 value", new Apfloat("3.830240466e-7"), a, new Apfloat("5e-16"));
         a = ApfloatMath.gamma(new Apfloat(-10, 10), new Apfloat(1, 10));
-        assertEquals("-10,1 precision", 10, a.precision());
+        assertEquals("-10,1 precision", 9, a.precision());
         assertEquals("-10,1 value", new Apfloat("0.03314854471"), a, new Apfloat("5e-11"));
         a = ApfloatMath.gamma(new Apfloat(-10, 10), new Apfloat(10, 10));
         assertEquals("-10,10 precision", 9, a.precision());
@@ -4067,6 +4067,40 @@ public class ApfloatMathTest
         a = ApfloatMath.hypergeometricU(new Apfloat("1.0"), new Apfloat("0.50"), new Apfloat("0"));
         assertEquals("1, 0.5, 0 precision", 2, a.precision());
         assertEquals("1, 0.5, 0 value", new Apcomplex("2.0"), a, new Apfloat("5e-1"));
+
+        // Integer cases
+        a = ApfloatMath.hypergeometricU(new Apfloat(15, 30), new Apfloat(6, 30), new Apfloat(60, 30));
+        assertEquals("15, 6, 60 precision", 29, a.precision());
+        assertEquals("15, 6, 60 value", new Apcomplex("2.61701279292339367001428994910e-28"), a, new Apfloat("5e-56"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat(15, 30), new Apfloat(-6, 30), new Apfloat(60, 30));
+        assertEquals("15, 6, -60 precision", 29, a.precision());
+        assertEquals("15, -6, 60 value", new Apcomplex("2.81682339399684727861270590818e-29"), a, new Apfloat("5e-57"));
+
+        // Near-nteger cases
+        a = ApfloatMath.hypergeometricU(new Apfloat(15, 30), new Apfloat("6.00000000000000000000000000001"), new Apfloat(60, 30));
+        assertEquals("15, 6.00000000000000000000000000001, 60 precision", 29, a.precision());
+        assertEquals("15, 6.00000000000000000000000000001, 60 value", new Apcomplex("2.61701279292339367001428994910e-28"), a, new Apfloat("5e-56"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat(15, 30), new Apfloat("-6.00000000000000000000000000001"), new Apfloat(60, 30));
+        assertEquals("15, -6.00000000000000000000000000001, 60 precision", 29, a.precision());
+        assertEquals("15, -6.00000000000000000000000000001, 60 value", new Apcomplex("2.81682339399684727861270590805e-29"), a, new Apfloat("5e-57"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat(15, 30), new Apfloat("5.99999999999999999999999999999"), new Apfloat(60, 30));
+        assertEquals("15, 5.99999999999999999999999999999, 60 precision", 29, a.precision());
+        assertEquals("15, 5.99999999999999999999999999999, 60 value", new Apcomplex("2.61701279292339367001428994910e-28"), a, new Apfloat("5e-56"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat(15, 30), new Apfloat("-5.99999999999999999999999999999"), new Apfloat(60, 30));
+        assertEquals("15, -5.99999999999999999999999999999, 60 precision", 29, a.precision());
+        assertEquals("15, -5.99999999999999999999999999999, 60 value", new Apcomplex("2.81682339399684727861270590831e-29"), a, new Apfloat("5e-57"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat(15, 30), new Apfloat("1e-30", 30), new Apfloat(60, 30));
+        assertEquals("15, 1e-30, 60 precision", 29, a.precision());
+        assertEquals("15, 1e-30, 60 value", new Apcomplex("8.28838071606668342397427938904e-29"), a, new Apfloat("5e-57"));
+
+        a = ApfloatMath.hypergeometricU(new Apfloat(15, 30), new Apfloat("-1e-30", 30), new Apfloat(60, 30));
+        assertEquals("15, -1e-30, 60 precision", 29, a.precision());
+        assertEquals("15, -1e-30, 60 value", new Apcomplex("8.28838071606668342397427938904e-29"), a, new Apfloat("5e-57"));
 
         // Limit cases
         a = ApfloatMath.hypergeometricU(new Apfloat("1.50000"), new Apfloat("-2.00000"), new Apfloat("0.100000"));

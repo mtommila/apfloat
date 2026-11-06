@@ -52,7 +52,7 @@ import static org.apfloat.ApfloatMath.scale;
  * Helper class for hypergeometric functions.
  *
  * @since 1.11.0
- * @version 1.16.0
+ * @version 1.17.0
  * @author Mikko Tommila
  */
 
@@ -568,6 +568,7 @@ class HypergeometricHelper
     public static Apcomplex hypergeometricU(Apcomplex a, Apcomplex b, Apcomplex z, boolean fastOnly)
     {
         HypergeometricHelper helper = new HypergeometricHelper(new Apcomplex[] { a }, new Apcomplex[] { b }, z);
+        helper.reducePrecision = reducePrecision(1, a, b);
         return helper.result(helper.hypergeometricU(fastOnly));
     }
 
@@ -1048,10 +1049,11 @@ class HypergeometricHelper
             return null;
         }
 
-        // All needs to be done only with small precision
-        a = doublePrecision(a);
-        b = doublePrecision(b);
-        z = doublePrecision(z);
+        // All needs to be done only with small precision (but big enough so that negative near-integers aren't rounded to integers in a[] and b[])
+        long termPrecision = Stream.concat(Arrays.stream(a), Arrays.stream(b)).filter(e -> e.imag().signum() == 0 && e.real().signum() < 0).map(Apcomplex::real).mapToLong(e -> e.equalDigits(e.truncate()) + 1).reduce(ApfloatHelper.getDoublePrecision(z.radix()), Long::max);
+        a = limitPrecision(a, termPrecision);
+        b = limitPrecision(b, termPrecision);
+        z = ApfloatHelper.limitPrecision(z, termPrecision);
 
         // Binary search for largest term
         long base = minN.longValueExact(),
@@ -1146,9 +1148,9 @@ class HypergeometricHelper
         return values;
     }
 
-    private Apcomplex[] doublePrecision(Apcomplex[] a)
+    private Apcomplex[] limitPrecision(Apcomplex[] a, long precision)
     {
-        return Arrays.stream(a).map(this::doublePrecision).toArray(Apcomplex[]::new);
+        return Arrays.stream(a).map(e -> ApfloatHelper.limitPrecision(e, precision)).toArray(Apcomplex[]::new);
     }
 
     private Apcomplex doublePrecision(Apcomplex a)
@@ -1257,7 +1259,12 @@ class HypergeometricHelper
 
     private static long reducePrecision(Apcomplex z0, Apcomplex... z1)
     {
-        return Math.max(2, stream(z1, z0).mapToLong(Apcomplex::scale).max().getAsLong()) - 2;
+        return reducePrecision(2, z0, z1);
+    }
+
+    private static long reducePrecision(long threshold, Apcomplex z0, Apcomplex... z1)
+    {
+        return Math.max(threshold, stream(z1, z0).mapToLong(Apcomplex::scale).max().getAsLong()) - threshold;
     }
 
     // Returns precision so that hypergeometric functions should return the given precision 
