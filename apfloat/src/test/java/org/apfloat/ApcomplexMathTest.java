@@ -4369,8 +4369,8 @@ public class ApcomplexMathTest
         assertEquals("0, 1, 1 value", new Apcomplex("1.0"), a);
  
         a = ApcomplexMath.hypergeometric1F1(new Apcomplex("-42.0000000"), new Apcomplex("(3.0000000,4.0000000)"), new Apcomplex("(5.0000000,6.0000000)"));
-        assertEquals("-42, 3+4i, 5+6i precision", 2, a.precision());
-        assertEquals("-42, 3+4i, 5+6i value", new Apcomplex("(-56.0081,-31.8473)"), a, new Apfloat("5e0"));
+        assertEquals("-42, 3+4i, 5+6i precision", 8, a.precision());
+        assertEquals("-42, 3+4i, 5+6i value", new Apcomplex("(-56.008128,-31.847252)"), a, new Apfloat("5e-6"));
 
         // Reduction to 0F0
         a = ApcomplexMath.hypergeometric1F1(new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(1.00000,2.00000)"), new Apcomplex("(5.00000,6.00000)"));

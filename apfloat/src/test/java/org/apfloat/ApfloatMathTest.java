@@ -3242,6 +3242,10 @@ public class ApfloatMathTest
         assertEquals("-0.1, 1, 6 precision", 6, a.precision(), 1);
         assertEquals("-0.1, 1, 6 value", new Apfloat("-0.128594"), a, new Apfloat("5e-6"));
 
+        a = ApfloatMath.beta(new Apfloat("0.5", 17), new Apfloat(40, 17), new Apfloat(60, 17));
+        assertEquals("0.5, 40, 60 precision", 16, a.precision());
+        assertEquals("0.5, 40, 60, 6 value", new Apfloat("2.964637268507001e-30"), a, new Apfloat("5e-45"));
+
         a = ApfloatMath.beta(new Apfloat("1", 40, 2), new Apfloat("10", 40, 2), new Apfloat("0.1111111111111111111111111111111111111111", Apfloat.DEFAULT, 2));
         assertEquals("1, 10, 0.1111111111111111111111111111111111111111 radix 2 value", new Apfloat("0.1000000000000000000000000000000000000000", 40, 2), a, new Apfloat("1e-40", 1, 2));
         assertEquals("1, 10, 0.1111111111111111111111111111111111111111 radix 2 precision", 40, a.precision());
@@ -3832,9 +3836,13 @@ public class ApfloatMathTest
         assertEquals("-3, -1, -2, 1 precision", 6, a.precision());
         assertEquals("-3, -1, -2, 1 value", new Apfloat("-0.500000"), a, new Apfloat("5e-6"));
 
-        a = ApfloatMath.hypergeometric2F1(new Apfloat("-3.00000"), new Apfloat("-2.00000"), new Apfloat("-3.00000"), new Apfloat("1.00000"));
+        a = ApfloatMath.hypergeometric2F1(new Apfloat("-3.00000"), new Apfloat("-2.00000"), new Apfloat("-3.00000"), new Apfloat("1.00000"));   // The value is genuinely exactly zero
         assertEquals("-3, -2, -3, 1 precision", Apfloat.INFINITE, a.precision());
         assertEquals("-3, -2, -3, 1 value", new Apfloat("0"), a);
+
+        a = ApfloatMath.hypergeometric2F1(new Apfloat(40, 17), new Apfloat(-59, 17), new Apfloat(41, 17), new Apfloat("0.5", 17));              // A partial sum is zero, but only due to insufficient working precision
+        assertEquals("40, -59, 41, 0.5 precision", 17, a.precision());
+        assertEquals("40, -59, 41, 0.5 value", new Apfloat("1.3038612595446109e-16"), a, new Apfloat("5e-32"));
 
         a = ApfloatMath.hypergeometric2F1(new Apfloat(1, 40, 2), new Apfloat(2, 40, 2), new Apfloat(3, 40, 2), new Apfloat("0.1111111111111111111111111111111111111111", Apfloat.DEFAULT, 2));
         assertEquals("1, 2, 3, 0.1111111111111111111111111111111111111111 radix 2 value", new Apfloat("110101.0111001110100111011111010111000111", 40, 2), a, new Apfloat("1e-31", 1, 2));
@@ -5253,8 +5261,8 @@ public class ApfloatMathTest
         assertEquals("2, -1.1 value", new Apfloat("1.31500"), a, new Apfloat("5e-5"));
 
         a = ApfloatMath.legendreP(new Apfloat("5.000000"), new Apfloat("-1.000000"));
-        assertEquals("5, -1 precision", 6, a.precision());
-        assertEquals("5, -1 value", new Apfloat("-1.00000"), a, new Apfloat("5e-5"));
+        assertEquals("5, -1 precision", 7, a.precision());
+        assertEquals("5, -1 value", new Apfloat("-1.000000"), a, new Apfloat("5e-6"));
 
         a = ApfloatMath.legendreP(new Apfloat("0.1", 18, 2), new Apfloat("0.11", 18, 2));
         assertEquals("0.1, 0.11 radix 2 precision", 18, a.precision());

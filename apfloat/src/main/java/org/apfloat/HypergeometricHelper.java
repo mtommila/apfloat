@@ -992,7 +992,16 @@ class HypergeometricHelper
                     }
                     if (numerator.isZero())
                     {
-                        return s;   // It was a polynomial
+                        // It was a polynomial
+                        if (s.isZero())
+                        {
+                            // Check that we used sufficient working precision to come to the conclusion that the function value really is exactly zero
+                            if (maxSScale < extendedPrecision)
+                            {
+                                return s;
+                            }
+                        }
+                        break;          // Check the precision loss
                     }
                     numerator = numerator.multiply(z);
                     for (int j = 0; j < b.length; j++)
