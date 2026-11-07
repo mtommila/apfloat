@@ -65,6 +65,8 @@ public class ApintMathTest
         suite.addTest(new ApintMathTest("testDoubleFactorial"));
         suite.addTest(new ApintMathTest("testProduct"));
         suite.addTest(new ApintMathTest("testBinomial"));
+        suite.addTest(new ApintMathTest("testFibonacci"));
+        suite.addTest(new ApintMathTest("testLucasL"));
         suite.addTest(new ApintMathTest("testStirlingS1"));
         suite.addTest(new ApintMathTest("testStirlingS2"));
         suite.addTest(new ApintMathTest("testBellB"));
@@ -702,6 +704,82 @@ public class ApintMathTest
         {
             // OK: invalid radix
         }
+    }
+
+    public static void testFibonacci()
+    {
+        Apint f1 = Apint.ZERO,
+              f2 = Apint.ONE;
+        for (int n = 2; n <= 100; n++)
+        {
+            Apint f = f1.add(f2),
+                  a = ApintMath.fibonacci(n);
+            assertEquals(n + " value", f, a);
+            f1 = f2;
+            f2 = f;
+        }
+        Apint a = ApintMath.fibonacci(0);
+        assertEquals("0 value", new Apint(0), a);
+
+        a = ApintMath.fibonacci(1);
+        assertEquals("1 value", new Apint(1), a);
+
+        a = ApintMath.fibonacci(new Apint(-1));
+        assertEquals("-1 value", new Apint(1), a);
+
+        a = ApintMath.fibonacci(new Apint(-2));
+        assertEquals("-2 value", new Apint(-1), a);
+
+        a = ApintMath.fibonacci(new Apint(-3));
+        assertEquals("-3 value", new Apint(2), a);
+
+        a = ApintMath.fibonacci(new Apint(-4));
+        assertEquals("-4 value", new Apint(-3), a);
+
+        a = ApintMath.fibonacci(new Apint(1000));
+        assertEquals("1000 value", new Apint("43466557686937456435688527675040625802564660517371780402481729089536555417949051890403879840079255169295922593080322634775209689623239873322471161642996440906533187938298969649928516003704476137795166849228875"), a);
+
+        a = ApintMath.fibonacci(8, 13);
+        assertEquals("8 radix", 13, a.radix());
+        assertEquals("8 value", new Apint(21, 13), a);
+    }
+
+    public static void testLucasL()
+    {
+        Apint l1 = new Apint(2),
+              l2 = Apint.ONE;
+        for (int n = 2; n <= 100; n++)
+        {
+            Apint l = l1.add(l2),
+                  a = ApintMath.lucasL(n);
+            assertEquals(n + " value", l, a);
+            l1 = l2;
+            l2 = l;
+        }
+        Apint a = ApintMath.lucasL(0);
+        assertEquals("0 value", new Apint(2), a);
+
+        a = ApintMath.lucasL(1);
+        assertEquals("1 value", new Apint(1), a);
+
+        a = ApintMath.lucasL(new Apint(-1));
+        assertEquals("-1 value", new Apint(-1), a);
+
+        a = ApintMath.lucasL(new Apint(-2));
+        assertEquals("-2 value", new Apint(3), a);
+
+        a = ApintMath.lucasL(new Apint(-3));
+        assertEquals("-3 value", new Apint(-4), a);
+
+        a = ApintMath.lucasL(new Apint(-4));
+        assertEquals("-4 value", new Apint(7), a);
+
+        a = ApintMath.lucasL(new Apint(1000));
+        assertEquals("1000 value", new Apint("97194177735908175207981982079326473737797879155345685082728081084772518818444815269080619149045968297679578305403209347401163036907660573971740862463751801641201490284097309096322681531675707666695323797578127"), a);
+
+        a = ApintMath.lucasL(8, 13);
+        assertEquals("8 radix", 13, a.radix());
+        assertEquals("8 value", new Apint(47, 13), a);
     }
 
     public static void testStirlingS1()

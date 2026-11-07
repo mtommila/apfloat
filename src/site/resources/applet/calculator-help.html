@@ -188,7 +188,7 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>airyBiPrime(x)</code></td><td>Derivative of the Airy function Bi, i.e. <code>Bi&prime;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>angerJ(&nu;, x)</code></td><td>Anger function <code>&#x1D409;<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>barnesG(x)</code></td><td>Barnes G function, <code>G(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
-<tr><td><code>bellB(x)</code></td><td>Bell number B<sub><i>x</i></sub>.</td></tr>
+<tr><td><code>bellB(n)</code></td><td>Bell number <code>B<sub><i>n</i></sub></code>. Parameter <code>n</code> must be a nonnegative integer.</td></tr>
 <tr><td><code>bernoulli(x)</code></td><td>Bernoulli number B<sub><i>x</i></sub>.</td></tr>
 <tr><td><code>bernoulliB(n, x)</code></td><td>Bernoulli polynomial <code>B<sub>n</sub>(x)</code>. Parameter <code>n</code> must be a nonnegative integer. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>besselI(&nu;, x)</code></td><td>Bessel function <code>I<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
@@ -220,6 +220,7 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>eulerE(n, x)</code></td><td>Euler polynomial <code>E<sub>n</sub>(x)</code>. Parameter <code>n</code> must be a nonnegative integer. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>expIntegralE(&nu;, x)</code></td><td>Exponential integral <code>E<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>expIntegralEi(x)</code></td><td>Exponential integral <code>Ei(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
+<tr><td><code>fibonacci(&nu;)</code></td><td>Fibonacci number <code>F<sub>&nu;</sub></code>.</td></tr>
 <tr><td><code>fibonacci(&nu;, x)</code></td><td>Fibonacci polynomial <code>F<sub>&nu;</sub>(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>fresnelC(x)</code></td><td>Fresnel integral C, i.e. <code>C(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>fresnelS(x)</code></td><td>Fresnel integral S, i.e. <code>S(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
@@ -255,6 +256,7 @@ values. Displaying such numbers in the fixed-point format may be impractical.
 <tr><td><code>logGamma(x)</code></td><td>Logarithm of the gamma function, <code>log&Gamma;(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>logIntegral(x)</code></td><td>Logarithmic integral i.e. <code>li(x)</code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>logisticSigmoid(x)</code></td><td>Logistic sigmoid function.</td></tr>
+<tr><td><code>lucasL(n)</code></td><td>Lucas number <code>L<sub>n</sub></code>. Parameter <code>n</code> must be an integer.</td></tr>
 <tr><td><code>pi(x)</code></td><td>&pi; calculated to <code>x</code> digits of precision. Parameter <code>x</code> must be an integer.</td></tr>
 <tr><td><code>pochhammer(x, n)</code></td><td>Pochhammer symbol i.e. <code>(x)<sub>n</sub></code>. Note that the implementation is <i>slow</i>.</td></tr>
 <tr><td><code>polygamma(n, x)</code></td><td>Polygamma function i.e. <code>&psi;<sup>(n)</sup>(x)</code>. Parameter <code>n</code> must be an integer. Note that the implementation is <i>slow</i>.</td></tr>
@@ -406,7 +408,7 @@ then <code>pi()</code> would just return &pi; to the specified input precision.
 
 <p>Bug reports, questions and comments should be sent to <a href="mailto:Mikko.Tommila@apfloat.org">the author</a>.</p>
 
-<p>Last updated: November 5th, 2026</p>
+<p>Last updated: November 7th, 2026</p>
 
 </div>
 

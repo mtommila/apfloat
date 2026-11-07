@@ -497,6 +497,12 @@ public class ApfloatCalculatorImpl
         }
 
         @Override
+        public Number fibonacci(Number x)
+        {
+            return fibonacci(x, new Apfloat(1,  ((Apcomplex) x).precision(), ((Apcomplex) x).radix()));
+        }
+
+        @Override
         public Number fibonacci(Number x, Number y)
         {
             return ApcomplexMath.fibonacci((Apcomplex) x, (Apcomplex) y);
@@ -726,6 +732,12 @@ public class ApfloatCalculatorImpl
         public Number logisticSigmoid(Number x)
         {
             return ApcomplexMath.logisticSigmoid((Apcomplex) x);
+        }
+
+        @Override
+        public Number lucasL(Number x)
+        {
+            throw new IllegalArgumentException("Lucas L can only be used with an integer argument");
         }
 
         @Override
@@ -1421,6 +1433,12 @@ public class ApfloatCalculatorImpl
         public Number lcm(Number x, Number y)
         {
             return ApintMath.lcm((Apint) x, (Apint) y);
+        }
+
+        @Override
+        public Number lucasL(Number x)
+        {
+            return ApintMath.lucasL((Apint) x);
         }
 
         @Override

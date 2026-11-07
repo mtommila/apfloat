@@ -4933,7 +4933,7 @@ public class ApcomplexMath
              precision = ApfloatHelper.extendPrecision(targetPrecision, extraPrecision);
         ν = ApfloatHelper.ensurePrecision(ν, precision);
         z = ApfloatHelper.ensurePrecision(z, precision);
-        Apint zero = Apfloat.ZEROS[radix],
+        Apint zero = Apint.ZEROS[radix],
               two = new Apint(2, radix),
               four = new Apint(4, radix);
         Apcomplex twoI = new Apcomplex(zero, two),
@@ -4943,6 +4943,10 @@ public class ApcomplexMath
             long n = ν.real().truncate().mod(four).longValueExact();
             Apcomplex i = new Apcomplex(zero, new Apint(z.imag().signum() < 0 ? -1 : 1, radix));
             result = pow(i, n + 1).multiply(ν).negate();
+        }
+        else if (ν.isInteger() && z.equals(Apint.ONES[radix]) && targetPrecision == Apfloat.INFINITE)
+        {
+            return ApintMath.fibonacci(ν.real().truncate());
         }
         else
         {

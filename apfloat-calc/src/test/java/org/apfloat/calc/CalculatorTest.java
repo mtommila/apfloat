@@ -274,6 +274,8 @@ public class CalculatorTest
         assertCalculation("1.1722", "expIntegralE(0.70000,0.30000)");
         assertCalculation("2.44209", "expIntegralEi(1.20000)");
         assertCalculation("5040", "factorial(7)");
+        assertCalculation("1.37579", "fibonacci(2.40000)");
+        assertCalculation("2971215073", "fibonacci(47)");
         assertCalculation("7.3936", "fibonacci(5.00000, 1.20000)");
         assertCalculation("2", "floor(2.9)");
         assertCalculation("2", "floor(29/10)");
@@ -321,6 +323,7 @@ public class CalculatorTest
         assertCalculation("-4.371-3.651i", "logGamma(-1.234+2.345i)");
         assertCalculation("1.04516", "logIntegral(2.0000)");
         assertCalculation("8.80797e-1", "logisticSigmoid(2.00000)");
+        assertCalculation("10749957122", "lucasL(48)");
         assertCalculation("1.23", "n(1.23456, 3)");
         assertCalculation("1.04748", "pochhammer(1.20000,0.700000)");
         assertCalculation("280/81", "pochhammer(1/3,4)");
@@ -558,7 +561,7 @@ public class CalculatorTest
         assertCalculationFailure("factorial(2/3)");
         assertCalculationFailure("factorial()");
         assertCalculationFailure("factorial(2, 2)");
-        assertCalculationFailure("fibonacci(1.0)");
+        assertCalculationFailure("fibonacci()");
         assertCalculationFailure("fibonacci(1.0,1.0,1.0)");
         assertCalculationFailure("floor(i)");
         assertCalculationFailure("floor()");
@@ -656,6 +659,10 @@ public class CalculatorTest
         assertCalculationFailure("logIntegral(1.0,1.0)");
         assertCalculationFailure("logisticSigmoid()");
         assertCalculationFailure("logisticSigmoid(2.0,2.0)");
+        assertCalculationFailure("lucasL()");
+        assertCalculationFailure("lucasL(2,2)");
+        assertCalculationFailure("lucasL(1/2)");
+        assertCalculationFailure("lucasL(i)");
         assertCalculationFailure("n(1.23456, i)");
         assertCalculationFailure("n(1.23456, 0.5)");
         assertCalculationFailure("n(1.23456)");

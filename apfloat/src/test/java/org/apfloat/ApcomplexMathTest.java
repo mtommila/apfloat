@@ -6992,6 +6992,10 @@ public class ApcomplexMathTest
         assertEquals("3, -2i precision", 6, a.precision());
         assertEquals("3, -2i value", new Apcomplex("-3.00000"), a, new Apfloat("5e-5"));
 
+        a = ApcomplexMath.fibonacci(new Apfloat(9), new Apfloat(1));
+        assertEquals("9, 1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("9, 1 value", new Apfloat(34), a);
+
         a = ApcomplexMath.fibonacci(new Apint(2, 9), new Apcomplex(new Apint(0, 9), new Apint(2, 9)));
         assertEquals("2, 2i precision radix 9", Apfloat.INFINITE, a.precision());
         assertEquals("2, 2i radix radix 9", 9, a.radix());

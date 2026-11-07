@@ -199,6 +199,7 @@ public abstract class FunctionCalculatorImpl
         public Number expIntegralE(Number x, Number y);
         public Number expIntegralEi(Number x);
         public Number factorial(Number x);
+        public Number fibonacci(Number x);
         public Number fibonacci(Number x, Number y);
         public Number floor(Number x);
         public Number frac(Number x);
@@ -236,6 +237,7 @@ public abstract class FunctionCalculatorImpl
         public Number logGamma(Number x);
         public Number logIntegral(Number x);
         public Number logisticSigmoid(Number x);
+        public Number lucasL(Number x);
         public Number max(Number x, Number y);
         public Number min(Number x, Number y);
         public Number nextAfter(Number x, Number y);
@@ -357,7 +359,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("expIntegralE", fixedFunction("expIntegralE", 2, (functions, arguments) -> functions.expIntegralE(arguments.get(0), arguments.get(1))));
         setFunction("expIntegralEi", fixedFunction("expIntegralEi", 1, (functions, arguments) -> functions.expIntegralEi(arguments.get(0))));
         setFunction("factorial", fixedFunction("factorial", 1, (functions, arguments) -> functions.factorial(arguments.get(0))));
-        setFunction("fibonacci", fixedFunction("fibonacci", 2, (functions, arguments) -> functions.fibonacci(arguments.get(0), arguments.get(1))));
+        setFunction("fibonacci", fixedFunction("fibonacci", 1, 2, (functions, arguments) -> (arguments.size() == 1 ? functions.fibonacci(arguments.get(0)) : functions.fibonacci(arguments.get(0), arguments.get(1)))));
         setFunction("floor", fixedFunction("floor", 1, (functions, arguments) -> functions.floor(arguments.get(0))));
         setFunction("frac", fixedFunction("frac", 1, (functions, arguments) -> functions.frac(arguments.get(0))));
         setFunction("fresnelC", fixedFunction("fresnelC", 1, (functions, arguments) -> functions.fresnelC(arguments.get(0))));
@@ -386,6 +388,7 @@ public abstract class FunctionCalculatorImpl
         setFunction("logGamma", fixedFunction("logGamma", 1, (functions, arguments) -> functions.logGamma(arguments.get(0))));
         setFunction("logIntegral", fixedFunction("logIntegral", 1, (functions, arguments) -> functions.logIntegral(arguments.get(0))));
         setFunction("logisticSigmoid", fixedFunction("logisticSigmoid", 1, (functions, arguments) -> functions.logisticSigmoid(arguments.get(0))));
+        setFunction("lucasL", fixedFunction("lucasL", 1, (functions, arguments) -> functions.lucasL(arguments.get(0))));
         setFunction("max", fixedFunction("max", 2, (functions, arguments) -> functions.max(arguments.get(0), arguments.get(1))));
         setFunction("min", fixedFunction("min", 2, (functions, arguments) -> functions.min(arguments.get(0), arguments.get(1))));
         setFunction("nextAfter", fixedFunction("nextAfter", 2, (functions, arguments) -> functions.nextAfter(arguments.get(0), arguments.get(1))));

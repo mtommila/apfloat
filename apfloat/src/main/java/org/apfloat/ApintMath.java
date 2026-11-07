@@ -26,6 +26,7 @@ package org.apfloat;
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Reader;
+import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -899,6 +900,141 @@ public class ApintMath
         Apint two = new Apint(2, n.radix());
         Apint k = m.divide(two);
         return pochhammer(n, k).multiply(pochhammer(n.add(k), m.subtract(k)));
+    }
+
+    /**
+     * Fibonacci number.
+     *
+     * @param n The index.
+     *
+     * @return <i>F<sub>n</sub></i>
+     *
+     * @since 1.17.0
+     */
+
+    public static Apint fibonacci(long n)
+        throws ApfloatRuntimeException
+    {
+        return fibonacci(new Apint(n));
+    }
+
+    /**
+     * Fibonacci number.
+     *
+     * @param n The index.
+     * @param radix The radix.
+     *
+     * @return <i>F<sub>n</sub></i>
+     *
+     * @since 1.17.0
+     */
+
+    public static Apint fibonacci(long n, int radix)
+        throws ApfloatRuntimeException
+    {
+        return fibonacci(new Apint(n, radix));
+    }
+
+    /**
+     * Fibonacci number.
+     *
+     * @param n The index.
+     *
+     * @return <i>F<sub>n</sub></i>
+     *
+     * @since 1.17.0
+     */
+
+    public static Apint fibonacci(Apint n)
+        throws ApfloatRuntimeException
+    {
+        int radix = n.radix();
+        Apint one = Apint.ONES[radix];
+        if (n.signum() == 0 || n.equals(one))
+        {
+            return n;
+        }
+        Apint two = new Apint(2, radix);
+        if (n.signum() < 0)
+        {
+            Apint f = fibonacci(n.negate());
+            return (n.mod(two).signum() == 0 ? f.negate() : f);
+        }
+        long precision = ApfloatHelper.extendPrecision((long) Math.ceil(Math.log((Math.sqrt(5) + 1) / 2) / Math.log(radix) * n.doubleValue()));
+        Apfloat five = new Apfloat(5, precision, radix),
+                invSqrtFive = ApfloatMath.inverseRoot(five, 2),
+                φ = invSqrtFive.multiply(five).add(one).divide(two),
+                f = ApfloatMath.pow(φ, n).multiply(invSqrtFive);
+        return ApfloatMath.roundToInteger(f, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Lucas number.
+     *
+     * @param n The index.
+     *
+     * @return <i>L<sub>n</sub></i>
+     *
+     * @since 1.17.0
+     */
+
+    public static Apint lucasL(long n)
+        throws ApfloatRuntimeException
+    {
+        return lucasL(new Apint(n));
+    }
+
+    /**
+     * Lucas number.
+     *
+     * @param n The index.
+     * @param radix The radix.
+     *
+     * @return <i>L<sub>n</sub></i>
+     *
+     * @since 1.17.0
+     */
+
+    public static Apint lucasL(long n, int radix)
+        throws ApfloatRuntimeException
+    {
+        return lucasL(new Apint(n, radix));
+    }
+
+    /**
+     * Lucas number.
+     *
+     * @param n The index.
+     *
+     * @return <i>L<sub>n</sub></i>
+     *
+     * @since 1.17.0
+     */
+
+    public static Apint lucasL(Apint n)
+        throws ApfloatRuntimeException
+    {
+        int radix = n.radix();
+        Apint one = Apint.ONES[radix],
+              two = new Apint(2, radix);
+        if (n.signum() == 0)
+        {
+            return two;
+        }
+        if (n.equals(one))
+        {
+            return n;
+        }
+        if (n.signum() < 0)
+        {
+            Apint l = lucasL(n.negate());
+            return (n.mod(two).signum() == 0 ? l : l.negate());
+        }
+        long precision = ApfloatHelper.extendPrecision((long) Math.ceil(Math.log((Math.sqrt(5) + 1) / 2) / Math.log(radix) * n.doubleValue()));
+        Apfloat five = new Apfloat(5, precision, radix),
+                φ = ApfloatMath.sqrt(five).add(one).divide(two),
+                l = ApfloatMath.pow(φ, n);
+        return ApfloatMath.roundToInteger(l, RoundingMode.HALF_UP);
     }
 
     /**

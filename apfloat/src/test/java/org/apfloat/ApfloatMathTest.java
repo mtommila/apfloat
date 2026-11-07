@@ -3840,6 +3840,10 @@ public class ApfloatMathTest
         assertEquals("-3, -2, -3, 1 precision", Apfloat.INFINITE, a.precision());
         assertEquals("-3, -2, -3, 1 value", new Apfloat("0"), a);
 
+        a = ApfloatMath.hypergeometric2F1(new Apfloat("-100.0000"), new Apfloat("51.0000"), new Apfloat("1.00000"), new Apfloat("1.00000"));    // The value is genuinely exactly zero and there's initially extreme precision loss
+        assertEquals("-100, 51, 1, 1 precision", Apfloat.INFINITE, a.precision());
+        assertEquals("-100, 51, 1, 1 value", new Apfloat("0"), a);
+
         a = ApfloatMath.hypergeometric2F1(new Apfloat(40, 17), new Apfloat(-59, 17), new Apfloat(41, 17), new Apfloat("0.5", 17));              // A partial sum is zero, but only due to insufficient working precision
         assertEquals("40, -59, 41, 0.5 precision", 17, a.precision());
         assertEquals("40, -59, 41, 0.5 value", new Apfloat("1.3038612595446109e-16"), a, new Apfloat("5e-32"));
